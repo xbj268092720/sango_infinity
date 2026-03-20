@@ -924,14 +924,14 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 3824537971023689053}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5149108134032039960}
         m_TargetAssemblyTypeName: Sango.Game.Render.UI.UIStart, Assembly-CSharp
-        m_MethodName: OnLoadGame
+        m_MethodName: OnModManager
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

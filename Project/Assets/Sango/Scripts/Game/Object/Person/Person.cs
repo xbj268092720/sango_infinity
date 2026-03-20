@@ -491,6 +491,11 @@ namespace Sango.Game
         [JsonProperty] public int missionParams1;
         [JsonProperty] public int missionParams2;
 
+        /// <summary>
+        /// 在当前城市的停留回合数
+        /// </summary>
+        [JsonProperty] public int stayTurnCount;
+
         public bool rewardOver;
 
         public int Age { get; private set; }
@@ -747,12 +752,42 @@ namespace Sango.Game
 
         public override bool OnTurnStart(Scenario scenario)
         {
+            // 在野武将移动逻辑
+            if (IsWild && BelongCity != null)
+            {
+                stayTurnCount++;
+                if (stayTurnCount > 5 && GameRandom.Chance(10)) // 10%概率
+                {
+                    // 随机选择一个邻接城市
+                    SangoObjectList<City> neighborCities = BelongCity.NeighborList;
+                    if (neighborCities.Count > 0)
+                    {
+                        int randomIndex = GameRandom.Random(0, neighborCities.Count - 1);
+                        City targetCity = neighborCities[randomIndex];
+                        if (targetCity != null)
+                        {
+                            // 移动到新城市
+                            ChangeCity(targetCity);
+                            // 重置停留时间
+                            stayTurnCount = 0;
+#if SANGO_DEBUG
+                            Sango.Log.Print($"@人才@在野武将{Name}从{BelongCity.Name}移动到{targetCity.Name}");
+#endif
+                        }
+                    }
+                }
+            }
             return base.OnTurnStart(scenario);
         }
         public override bool OnForceTurnStart(Scenario scenario)
         {
             //TODO:在野角色随机移动
             //UpdateMission(scenario);
+            if (BelongForce != null && IsAlive)
+            {
+                BelongForce.GainHegemonyPoint(1);
+            }
+            
             ActionOver = !IsFree;
             return base.OnForceTurnStart(scenario);
         }

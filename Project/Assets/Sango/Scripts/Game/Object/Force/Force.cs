@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
@@ -72,6 +72,11 @@ namespace Sango.Game
         /// 技巧点数
         /// </summary>
         [JsonProperty] public int TechniquePoint { get; private set; }
+
+        /// <summary>
+        /// 霸业点数
+        /// </summary>
+        [JsonProperty] public int HegemonyPoint { get; set; }
 
         /// <summary>
         /// 势力方针
@@ -670,6 +675,12 @@ namespace Sango.Game
         {
             TechniquePoint += value;
             GameEvent.OnForceGainTechniquePoint?.Invoke(this, value);
+        }
+
+        public void GainHegemonyPoint(int value)
+        {
+            HegemonyPoint += value;
+            GameEvent.OnForceGainHegemonyPoint?.Invoke(this, value);
         }
 
         public bool HasTechnique(int techId)

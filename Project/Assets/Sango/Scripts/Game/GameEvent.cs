@@ -1,4 +1,4 @@
-﻿using Sango.Game.Tools;
+using Sango.Game.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -235,6 +235,7 @@ namespace Sango.Game
         /// </summary>
         public static EventDelegate<Force, City, Troop> OnForceFall;
         public static EventDelegate<Force, int> OnForceGainTechniquePoint;
+        public static EventDelegate<Force, int> OnForceGainHegemonyPoint;
         public static EventDelegate<Force, Technique> OnForceResearchComplete;
 
         /// <summary>

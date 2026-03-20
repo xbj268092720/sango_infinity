@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Sango.Game.Render.UI
@@ -40,6 +40,12 @@ namespace Sango.Game.Render.UI
             scenario.Info.cameraDistance = 400f;
 
             Scenario.StartScenario(scenario);
+        }
+
+        public void OnModManager()
+        {
+            Window.Instance.Open("window_mod_manager");
+            Window.Instance.Close("window_start");
         }
     }
 }
