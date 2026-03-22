@@ -118,11 +118,7 @@ namespace Sango.Game.Render.UI
 
         public void ShowModInfo(int index)
         {
-            if (index == selectedIndex)
-                return;
-
-            selectedIndex = index;
-            if (index < 0)
+            if (index < 0 || index >= allMods.Count)
             {
                 modInfoText.text = "";
                 modDescriptionText.text = "";
@@ -134,7 +130,7 @@ namespace Sango.Game.Render.UI
                 return;
             }
 
-            Mod.Mod mod = allMods[selectedIndex];
+            Mod.Mod mod = allMods[index];
             modInfoText.text = $"{mod.Name} v{mod.Version}";
             modDescriptionText.text = mod.Description;
             
@@ -182,11 +178,11 @@ namespace Sango.Game.Render.UI
                 if (destIndex < totalCount)
                 {
                     Mod.Mod mod = allMods[destIndex];
-                    listItem.SetSelected(selectedIndex == destIndex).SetName(mod.Name).SetVersion(mod.Version);
+                    listItem.SetSelected(selectedIndex == destIndex).SetName(mod.Name).SetVersion(mod.Version).enableToggle.gameObject.SetActive(true);
                 }
                 else
                 {
-                    listItem.SetSelected(false).SetName("").SetVersion("");
+                    listItem.SetSelected(false).SetName("").SetVersion("").enableToggle.gameObject.SetActive(false);
                 }
             }
         }
@@ -232,6 +228,7 @@ namespace Sango.Game.Render.UI
         public void OnObjectListItemPointEnter(UIModItem item)
         {
             item.SetOver(true);
+            ShowModInfo(item.targetIndex);
         }
         public void OnObjectListItemPointExit(UIModItem item)
         {

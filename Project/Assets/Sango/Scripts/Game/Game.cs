@@ -74,6 +74,22 @@ namespace Sango.Game
             GameData.Instance.Init();
             GameEvent.OnGameInit?.Invoke();
             GameState.Instance.ChangeState((int)GameState.State.GAME_START_MENU);
+
+            while (true)
+            {
+                bool all_ready = true;
+                for (int i = 0; i < ShortScenario.all_scenario_info_list.Count; i++)
+                {
+                    if(!ShortScenario.all_scenario_info_list[i].loadOK)
+                    {
+                        all_ready = false;
+                        break;
+                    }
+                }
+
+                if (all_ready) break;
+            }
+
             Window.Instance.Open("window_start");
             Window.Instance.Close("window_loading");
 

@@ -3,6 +3,8 @@ using Sango.Hexagon;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Task = System.Threading.Tasks.Task;
+using System.Threading;
 
 namespace Sango.Game
 {
@@ -117,11 +119,18 @@ namespace Sango.Game
         public static ShortScenario CurSelected { get; set; }
 
         public string FilePath { internal set; get; }
+        Task task;
+        public bool loadOK = false;
 
         public ShortScenario(string filePath)
         {
             this.FilePath = filePath;
-            LoadContent();
+            LoadInfo();
+            task = Task.Run(() =>
+            {
+                LoadContent();
+                loadOK = true;
+            });
         }
         public static void Add(string path)
         {
@@ -133,8 +142,35 @@ namespace Sango.Game
             all_scenario_info_list.Add(scenario);
         }
 
+        public void LoadInfo()
+        {
+            LoadInfo(FilePath);
+        }
+        public void LoadInfo(string path)
+        {
+            FilePath = path;
+
+            using (StreamReader file = System.IO.File.OpenText(FilePath))
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                while (reader.Read()) // Advances to the next token in the JSON stream.
+                {
+                    if (reader.TokenType == JsonToken.StartObject) // Check for start of an object in the JSON stream.
+                    {
+                        if (!string.IsNullOrEmpty(reader.Path) && reader.Path == "Info")
+                        {
+                            Info = JsonSerializer.CreateDefault().Deserialize<ScenarioInfo>(reader); // Deserialize the object.
+                            Name = Info.name;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         public void LoadContent()
         {
+
             LoadContent(FilePath);
         }
 

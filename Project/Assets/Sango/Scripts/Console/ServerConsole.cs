@@ -107,9 +107,10 @@ public class ServerConsole : MonoBehaviour
         //string defaultString = new string(defaultChars);
 
         System.Console.WriteLine(message);
- 
-		// If we were typing something re-add it.
-		input?.RedrawInputLine();
+        System.Console.WriteLine(stackTrace);
+
+        // If we were typing something re-add it.
+        input?.RedrawInputLine();
 	}
 
     //
