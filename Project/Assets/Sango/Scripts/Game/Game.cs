@@ -1,7 +1,8 @@
-﻿using Sango.Game.Action;
+using Sango.Game.Action;
 using Sango.Mod;
 using Sango.Render;
 using Sango.Tools;
+using Sango.Manager;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,9 +16,10 @@ namespace Sango.Game
         public Canvas RootCanvas { get; internal set; }
         public CanvasScaler CanvasScaler { get; internal set; }
         public float CanvasScalerFactor { get; internal set; }
-
+        bool inited = false;
         public override void Init(MonoBehaviour start, Platform.PlatformName targetPlatform)
         {
+            inited = false;
             CanvasScalerFactor = CanvasScaler.referenceResolution.y / 1080f;
             base.Init(start, targetPlatform);
             Window.Instance.Init(1024, 720);
@@ -71,28 +73,29 @@ namespace Sango.Game
             CursorManager.Instance.InitCursorTextures();
             CursorManager.Instance.SetCursorStyle(0);
 #endif
+            // 初始化音效管理器
+            AudioManager.Instance.Init();
+            
             GameData.Instance.Init();
-            GameEvent.OnGameInit?.Invoke();
-            GameState.Instance.ChangeState((int)GameState.State.GAME_START_MENU);
-
             while (true)
             {
                 bool all_ready = true;
                 for (int i = 0; i < ShortScenario.all_scenario_info_list.Count; i++)
                 {
-                    if(!ShortScenario.all_scenario_info_list[i].loadOK)
+                    if (!ShortScenario.all_scenario_info_list[i].loadOK)
                     {
                         all_ready = false;
-                        break;
+                        yield return null;
                     }
                 }
-
                 if (all_ready) break;
             }
 
+            GameEvent.OnGameInit?.Invoke();
+            GameState.Instance.ChangeState((int)GameState.State.GAME_START_MENU);
             Window.Instance.Open("window_start");
             Window.Instance.Close("window_loading");
-
+            inited = true;
             //Scenario scenario = new Scenario();
             //string path = Path.FindFile("Data/Scenario/Scenario.json");
             //scenario.FilePath = path;
@@ -123,8 +126,11 @@ namespace Sango.Game
 
         public override void Update()
         {
+            if(!inited) return;
             GameController.Instance.Update();
             base.Update();
+            // 更新音效管理器
+            AudioManager.Instance.Update();
             Scenario scenario = Scenario.Cur;
             if (scenario != null)
             {

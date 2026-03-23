@@ -55,7 +55,13 @@ namespace Sango.Game.Object.Arrow
         /// <summary>
         /// 初始颜色
         /// </summary>
-        private Color[] initialColors;
+        //private Color[] initialColors;
+
+        private void Awake()
+        {
+            // 获取所有渲染器组件
+            renderers = GetComponentsInChildren<Renderer>();
+        }
 
         /// <summary>
         /// 开始抛物线飞行
@@ -73,16 +79,16 @@ namespace Sango.Game.Object.Arrow
             isDisappearing = false;
             disappearTimer = 0f;
 
-            // 获取所有渲染器组件
-            renderers = GetComponentsInChildren<Renderer>();
-            initialColors = new Color[renderers.Length];
+            
+            //initialColors = new Color[renderers.Length];
             
             // 保存初始颜色
             for (int i = 0; i < renderers.Length; i++)
             {
                 if (renderers[i].material != null)
                 {
-                    initialColors[i] = renderers[i].material.color;
+                    //initialColors[i] = renderers[i].material.color;
+                    renderers[i].material.SetFloat("_Alpha", 1f);
                 }
             }
 
@@ -150,9 +156,10 @@ namespace Sango.Game.Object.Arrow
                 {
                     if (renderers[i].material != null)
                     {
-                        Color newColor = initialColors[i];
-                        newColor.a = 1f - disappearProgress;
-                        renderers[i].material.color = newColor;
+                        //Color newColor = initialColors[i];
+                        //newColor.a = 1f - disappearProgress;
+                        //renderers[i].material.color = newColor;
+                        renderers[i].material.SetFloat("_Alpha", 1f - disappearProgress);
                     }
                 }
                 

@@ -20,16 +20,16 @@ public class ModPackageBuilder
         Path.Init();
         string packageFolder = "Assets/Packages";
         string modRootFolder = Path.ModRootPath;
-        string[] findFolders = AssetDatabase.FindAssets("*.pkg", new string[] { packageFolder });
+        string[] findFolders = AssetDatabase.GetSubFolders(packageFolder);
         for (int i = 0; i < findFolders.Length; i++)
         {
             List<AssetBundleBuild> assetBundle = new List<AssetBundleBuild>();
 
-            string folder = AssetDatabase.GUIDToAssetPath(findFolders[i]);
+            string folder = findFolders[i];
             string substr_folder = folder.Substring(packageFolder.Length + 1);
             string[] mod_and_pkg = substr_folder.Split('+');
             string pkgName = mod_and_pkg[0];
-            string modName = mod_and_pkg.Length > 1 ? mod_and_pkg[1] : "Content";
+            string modName = mod_and_pkg.Length > 1 ? mod_and_pkg[1] : pkgName;
 
             string[] findObject = AssetDatabase.FindAssets("t:Object", new string[] { folder });
             List<string> assetList = new List<string>();
@@ -63,10 +63,10 @@ public class ModPackageBuilder
             EditorUserBuildSettings.activeBuildTarget);
 
             string dstFile = $"{saveDir}/{modName}_{pkgName}";
-            string moveDstDir = $"{modRootFolder}/{modName}/Package/{pkgName}";
+            string moveDstDir = $"{modRootFolder}/{modName}/Package/{PlatformUtility.GetPlatformName()}/{pkgName}.pkg";
 
             if(modName.Equals("Content"))
-                moveDstDir = $"{Path.ContentRootPath}/Package/{pkgName}";
+                moveDstDir = $"{Path.ContentRootPath}/Package/{PlatformUtility.GetPlatformName()}/{pkgName}.pkg";
             Sango.Directory.Create(moveDstDir, false);
             if (File.Exists(dstFile))
                 File.Copy(dstFile, moveDstDir);

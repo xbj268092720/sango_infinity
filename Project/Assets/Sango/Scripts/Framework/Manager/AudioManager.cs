@@ -1,0 +1,298 @@
+using UnityEngine;
+using System.Collections.Generic;
+using Sango.Loader;
+
+namespace Sango.Manager
+{
+    /// <summary>
+    /// 音效管理器
+    /// </summary>
+    public class AudioManager : Singleton<AudioManager>
+    {
+        /// <summary>
+        /// 音效声道数量
+        /// </summary>
+        private const int SFX_CHANNEL_COUNT = 50;
+
+        /// <summary>
+        /// 背景音乐AudioSource
+        /// </summary>
+        private AudioSource _bgmSource;
+
+        /// <summary>
+        /// 音效AudioSource列表
+        /// </summary>
+        private List<AudioSource> _sfxSources;
+
+        /// <summary>
+        /// 空闲的音效声道索引
+        /// </summary>
+        private Queue<int> _freeSfxChannels;
+
+        /// <summary>
+        /// 音效资源缓存
+        /// </summary>
+        private Dictionary<string, AudioClip> _audioClipCache;
+
+        /// <summary>
+        /// 背景音乐音量
+        /// </summary>
+        public float BgmVolume { get; set; } = 0.7f;
+
+        /// <summary>
+        /// 音效音量
+        /// </summary>
+        public float SfxVolume { get; set; } = 1.0f;
+
+        /// <summary>
+        /// 初始化音效管理器
+        /// </summary>
+        public void Init()
+        {
+            // 创建音效管理器GameObject
+            GameObject audioManagerObj = new GameObject("AudioManager");
+            GameObject.DontDestroyOnLoad(audioManagerObj);  
+
+            // 创建背景音乐AudioSource
+            _bgmSource = audioManagerObj.AddComponent<AudioSource>();
+            _bgmSource.loop = true;
+            _bgmSource.volume = BgmVolume;
+
+            // 初始化音效声道
+            _sfxSources = new List<AudioSource>();
+            _freeSfxChannels = new Queue<int>();
+
+            for (int i = 0; i < SFX_CHANNEL_COUNT; i++)
+            {
+                AudioSource source = audioManagerObj.AddComponent<AudioSource>();
+                source.volume = SfxVolume;
+                _sfxSources.Add(source);
+                _freeSfxChannels.Enqueue(i);
+            }
+
+            // 初始化音效缓存
+            _audioClipCache = new Dictionary<string, AudioClip>();
+        }
+
+        /// <summary>
+        /// 播放背景音乐
+        /// </summary>
+        /// <param name="audioName">音效名称</param>
+        /// <param name="loop">是否循环</param>
+        public void PlayBgm(string audioName, bool loop = true)
+        {
+            AudioClip clip = LoadAudioClip(audioName);
+            if (clip != null)
+            {
+                _bgmSource.clip = clip;
+                _bgmSource.loop = loop;
+                _bgmSource.Play();
+            }
+        }
+
+        /// <summary>
+        /// 停止背景音乐
+        /// </summary>
+        public void StopBgm()
+        {
+            _bgmSource.Stop();
+        }
+
+        /// <summary>
+        /// 暂停背景音乐
+        /// </summary>
+        public void PauseBgm()
+        {
+            _bgmSource.Pause();
+        }
+
+        /// <summary>
+        /// 恢复背景音乐
+        /// </summary>
+        public void ResumeBgm()
+        {
+            _bgmSource.UnPause();
+        }
+
+        /// <summary>
+        /// 切换背景音乐
+        /// </summary>
+        /// <param name="audioName">音效名称</param>
+        /// <param name="loop">是否循环</param>
+        public void SwitchBgm(string audioName, bool loop = true)
+        {
+            StopBgm();
+            PlayBgm(audioName, loop);
+        }
+
+        /// <summary>
+        /// 播放音效
+        /// </summary>
+        /// <param name="audioName">音效名称</param>
+        /// <param name="volume">音量</param>
+        /// <returns>播放音效的声道索引</returns>
+        public int PlaySfx(string audioName, float volume = 1.0f)
+        {
+            AudioClip clip = LoadAudioClip(audioName);
+            if (clip == null)
+                return -1;
+
+            int channelIndex = GetFreeSfxChannel();
+            if (channelIndex >= 0)
+            {
+                AudioSource source = _sfxSources[channelIndex];
+                source.clip = clip;
+                source.volume = SfxVolume * volume;
+                source.Play();
+            }
+
+            return channelIndex;
+        }
+
+        /// <summary>
+        /// 播放3D音效
+        /// </summary>
+        /// <param name="audioName">音效名称</param>
+        /// <param name="position">位置</param>
+        /// <param name="volume">音量</param>
+        /// <returns>播放音效的声道索引</returns>
+        public int PlaySfx3D(string audioName, Vector3 position, float volume = 1.0f)
+        {
+            AudioClip clip = LoadAudioClip(audioName);
+            if (clip == null)
+                return -1;
+
+            int channelIndex = GetFreeSfxChannel();
+            if (channelIndex >= 0)
+            {
+                AudioSource source = _sfxSources[channelIndex];
+                source.clip = clip;
+                source.volume = SfxVolume * volume;
+                source.spatialBlend = 1.0f; // 3D音效
+                source.transform.position = position;
+                source.Play();
+            }
+
+            return channelIndex;
+        }
+
+        /// <summary>
+        /// 停止音效
+        /// </summary>
+        /// <param name="channelIndex">声道索引</param>
+        public void StopSfx(int channelIndex)
+        {
+            if (channelIndex >= 0 && channelIndex < _sfxSources.Count)
+            {
+                AudioSource source = _sfxSources[channelIndex];
+                source.Stop();
+                _freeSfxChannels.Enqueue(channelIndex);
+            }
+        }
+
+        /// <summary>
+        /// 停止所有音效
+        /// </summary>
+        public void StopAllSfx()
+        {
+            foreach (AudioSource source in _sfxSources)
+            {
+                source.Stop();
+            }
+
+            // 重新初始化空闲声道队列
+            _freeSfxChannels.Clear();
+            for (int i = 0; i < _sfxSources.Count; i++)
+            {
+                _freeSfxChannels.Enqueue(i);
+            }
+        }
+
+        /// <summary>
+        /// 设置背景音乐音量
+        /// </summary>
+        /// <param name="volume">音量（0-1）</param>
+        public void SetBgmVolume(float volume)
+        {
+            BgmVolume = Mathf.Clamp01(volume);
+            _bgmSource.volume = BgmVolume;
+        }
+
+        /// <summary>
+        /// 设置音效音量
+        /// </summary>
+        /// <param name="volume">音量（0-1）</param>
+        public void SetSfxVolume(float volume)
+        {
+            SfxVolume = Mathf.Clamp01(volume);
+            foreach (AudioSource source in _sfxSources)
+            {
+                source.volume = SfxVolume;
+            }
+        }
+
+        /// <summary>
+        /// 加载音频剪辑
+        /// </summary>
+        /// <param name="audioName">音频名称</param>
+        /// <returns>音频剪辑</returns>
+        private AudioClip LoadAudioClip(string audioName)
+        {
+            // 检查缓存
+            if (_audioClipCache.TryGetValue(audioName, out AudioClip cachedClip))
+            {
+                return cachedClip;
+            }
+
+            // 使用ObjectLoader加载音频
+            AudioClip clip = ObjectLoader.LoadObject<AudioClip>(audioName);
+            if (clip != null)
+            {
+                // 缓存音频
+                _audioClipCache[audioName] = clip;
+            }
+
+            return clip;
+        }
+
+        /// <summary>
+        /// 获取空闲的音效声道
+        /// </summary>
+        /// <returns>声道索引，-1表示没有空闲声道</returns>
+        private int GetFreeSfxChannel()
+        {
+            // 检查是否有空闲声道
+            if (_freeSfxChannels.Count > 0)
+            {
+                return _freeSfxChannels.Dequeue();
+            }
+
+            // 查找正在播放完成的声道
+            for (int i = 0; i < _sfxSources.Count; i++)
+            {
+                if (!_sfxSources[i].isPlaying)
+                {
+                    return i;
+                }
+            }
+
+            // 没有空闲声道，返回-1
+            return -1;
+        }
+
+        /// <summary>
+        /// 更新逻辑
+        /// </summary>
+        public void Update()
+        {
+            // 回收完成播放的音效声道
+            for (int i = 0; i < _sfxSources.Count; i++)
+            {
+                if (!_sfxSources[i].isPlaying && !_freeSfxChannels.Contains(i))
+                {
+                    _freeSfxChannels.Enqueue(i);
+                }
+            }
+        }
+    }
+}

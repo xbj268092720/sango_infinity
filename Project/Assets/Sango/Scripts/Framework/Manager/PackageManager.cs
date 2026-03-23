@@ -60,7 +60,7 @@ namespace Sango
         public UnityEngine.Object LoadAssets(string packageName, string assetName, Type assetType)
         {
 #if UNITY_EDITOR
-            string assetsPath = $"Assets/Packages/{packageName}.pkg+{ModManager.EditModName ?? "Content"}/{assetName}";
+            string assetsPath = $"Assets/Packages/{packageName}/{assetName}";
             UnityEngine.Object editorObj = UnityEditor.AssetDatabase.LoadAssetAtPath(assetsPath, assetType);
             if (editorObj != null) return editorObj;
 #endif

@@ -186,7 +186,7 @@ namespace Sango.Mod
             for (int i = 0; i < mModList.Count; i++)
                 mModList[i].LoadData();
             for (int i = 0; i < mModList.Count; i++)
-                Path.AddSearchPath($"{mModList[i].ModDir}/Assets", true);
+                Path.AddSearchPath($"{mModList[i].ModDir}", true);
             // 加载dll
             for (int i = 0; i < mModList.Count; i++)
                 mModList[i].LoadAssembly();

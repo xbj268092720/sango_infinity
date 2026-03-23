@@ -178,11 +178,11 @@ namespace Sango.Game.Render.UI
                 if (destIndex < totalCount)
                 {
                     Mod.Mod mod = allMods[destIndex];
-                    listItem.SetSelected(selectedIndex == destIndex).SetName(mod.Name).SetVersion(mod.Version).enableToggle.gameObject.SetActive(true);
+                    listItem.SetSelected(selectedIndex == destIndex).SetEnabled(enabledMods.Contains(mod.Id)).SetName(mod.Name).SetVersion(mod.Version).enableToggle.gameObject.SetActive(true);
                 }
                 else
                 {
-                    listItem.SetSelected(false).SetName("").SetVersion("").enableToggle.gameObject.SetActive(false);
+                    listItem.SetSelected(false).SetEnabled(false).SetName("").SetVersion("").enableToggle.gameObject.SetActive(false);
                 }
             }
         }

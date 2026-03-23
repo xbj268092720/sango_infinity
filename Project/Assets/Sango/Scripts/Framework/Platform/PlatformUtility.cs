@@ -40,19 +40,17 @@ namespace Sango
         /// <returns></returns>
         static public string GetPlatformName()
         {
-            switch (Platform.targetPlatform)
-            {
-                case Platform.PlatformName.Android:
-                    return "android";
-                case Platform.PlatformName.Ios:
-                    return "ios";
-                case Platform.PlatformName.Window:
-                    return "win";
-                case Platform.PlatformName.Mac:
-                    return "mac";
-                default:
-                    return "editor";
-            }
+#if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
+            return "mac";
+#elif UNITY_STANDALONE_WIN
+            return "win";
+#elif UNITY_ANDROID
+            return "android";
+#elif UNITY_IPHONE
+            return "ios";
+#elif UNITY_WEBGL
+            return "webgl";
+#endif
         }
 
         /// <summary>

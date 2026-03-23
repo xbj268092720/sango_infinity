@@ -433,7 +433,7 @@ namespace Sango.Game
                 }
 
             }
-            if (time > 1f)
+            if (time > 1.2f)
                 action();
             if (time > 2.5f)
             {

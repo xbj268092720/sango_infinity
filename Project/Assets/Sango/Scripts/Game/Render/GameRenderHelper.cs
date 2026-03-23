@@ -28,7 +28,7 @@ namespace Sango.Game
         public static Texture LoadHeadIcon(int id, int type)
         {
             string headPath = $"{HeadIconPath}/{id}_{type}.png";
-            Texture headSpr = ObjectLoader.LoadObject<Texture>(headPath);
+            Texture headSpr = ObjectLoader.LoadObject<Texture>(headPath, "Face");
             if (headSpr == null)
             {
                 headPath = $"{HeadIconPath}/0_{type}.png";

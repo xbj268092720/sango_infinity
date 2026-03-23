@@ -177,6 +177,31 @@ namespace Sango.Loader
                     {
                         AssetStore.Instance.StoreAsset(storeName, obj);
                     }
+                    else
+                    {
+                        if (objType == TextureType)
+                        {
+                            bool textureNeedCompress = true;
+                            bool needMipmap = false;
+                            if (ps.Length > 0)
+                                textureNeedCompress = (bool)ps[0];
+                            if (ps.Length > 1)
+                                needMipmap = (bool)ps[1];
+                            obj = TextureLoader.LoadFromFileSync(objName, textureNeedCompress, needMipmap);
+                        }
+                        else if (objType == MaterialType && ps.Length > 0)
+                        {
+                            obj = MaterialLoader.LoadMaterial(objName, (bool)ps[0]);
+                        }
+                        else if (objType == GameObjectType && ps.Length > 3)
+                        {
+                            obj = ModelLoader.LoadFromFileSync(objName, (string)ps[0], (bool)ps[1], (string)ps[2], (bool)ps[3]);
+                        }
+                        else if (objType == SpriteType)
+                        {
+                            obj = SpriteLoader.LoadSprite(objName);
+                        }
+                    }
                 }
                 return obj;
             }
@@ -220,6 +245,10 @@ namespace Sango.Loader
             Type type = typeof(T);
             return LoadObject(assetName, type, ps) as T;
         }
-
+        public static T LoadObject<T>(string assetName, string packageName, params object[] ps) where T : UnityEngine.Object
+        {
+            Type type = typeof(T);
+            return LoadObject(assetName, packageName, type, ps) as T;
+        }
     }
 }

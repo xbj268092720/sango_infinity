@@ -44,10 +44,9 @@ namespace Sango.Game.Render
 
             if (time <= 0f)
             {
-                //troop.Render.FaceTo(targetCell.Position);
-                //troop.Render.SetAniShow(1);
+                building.Render.CastArrow(targetCell.Position);
             }
-            if (time > 0.5f)
+            if (time > 1.2f)
             {
                 Action();
                 IsDone = true;

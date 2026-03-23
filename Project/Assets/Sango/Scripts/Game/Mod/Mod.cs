@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace Sango.Mod
 {
@@ -115,7 +116,7 @@ namespace Sango.Mod
         }
         public void LoadPackage()
         {
-            string path = GetFullPath("Package");
+            string path = GetFullPath($"Package/{PlatformUtility.GetPlatformName()}");
             Directory.EnumFiles(path, "*.pkg", SearchOption.AllDirectories, (file) =>
             {
 #if SANGO_DEBUG

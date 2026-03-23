@@ -10,14 +10,16 @@ using UnityEngine.UI;
 /// </summary>
 public class GameStart : MonoBehaviour
 {
-    
     public bool Debug = false;
     public Camera uiCamera;
     public RectTransform uiRoot;
     public CanvasScaler canvasScaler;
+    public GameObject initObject;
 
     void Awake()
     {
+        initObject.SetActive(true);
+        GameEvent.OnGameInit += OnGameInit;
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
         Application.targetFrameRate = 0;
 #else
@@ -41,6 +43,28 @@ public class GameStart : MonoBehaviour
         Screen.sleepTimeout = UnityEngine.SleepTimeout.NeverSleep;
         Sango.Path.Init();
         StartCoroutine(GameInit());
+    }
+
+    void OnGameInit()
+    {
+        StartCoroutine(AlphaOut());
+        GameEvent.OnGameInit -= OnGameInit;
+    }
+
+    IEnumerator AlphaOut()
+    {
+        float alpha = 1;
+        while (alpha > 0)
+        {
+            CanvasGroup canvasGroup = initObject.GetComponent<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = alpha;
+            }
+            alpha -= Time.deltaTime * 1.2f;
+            yield return null;
+        }
+        initObject.SetActive(false);
     }
 
     IEnumerator GameInit()
