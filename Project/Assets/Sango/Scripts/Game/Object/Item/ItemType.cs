@@ -16,6 +16,9 @@ namespace Sango.Game
         /// </summary>
         [JsonProperty] public byte storeKind;
 
+        /// <summary>
+        /// 下一阶道具
+        /// </summary>
         [JsonProperty] public int nextId;
 
         /// <summary>

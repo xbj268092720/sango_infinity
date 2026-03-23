@@ -36,7 +36,8 @@
             string fileName = GetSaveFileName(index + 1);
             GameEvent.OnGameSave?.Invoke(Scenario.Cur, index);
             Scenario.Cur.Save(fileName);
-            all_saved_scenario_list[index] = new ShortScenario(fileName);
+            ShortScenario scenario = new ShortScenario(fileName);
+            all_saved_scenario_list[index] = scenario;
         }
 
         public void Load(int index)

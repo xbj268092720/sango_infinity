@@ -132,6 +132,26 @@ namespace Sango.Game
                 loadOK = true;
             });
         }
+
+        public ShortScenario(string filePath, bool notask)
+        {
+            this.FilePath = filePath;
+            LoadInfo();
+            if(!notask)
+            {
+                LoadContent();
+                loadOK = true;
+            }
+            else
+            {
+                task = Task.Run(() =>
+                {
+                    LoadContent();
+                    loadOK = true;
+                });
+            }
+        }
+
         public static void Add(string path)
         {
             if (!File.Exists(path))

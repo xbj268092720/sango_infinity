@@ -185,10 +185,11 @@ namespace Sango.Game.Render.UI
         {
             ShortScenario scenario = player.all_saved_scenario_list[index];
             string content = scenario != null ? $"是否覆盖{index + 1}号存档" : $"是否保存至{index + 1}号存档";
-            UIDialog.Open(content, () =>
+            UIDialog.Open(content, async () =>
             {
                 player.Save(index);
                 newestData = player.all_saved_scenario_list[index];
+                while(!newestData.loadOK) { }
                 UIDialog.Close();
                 ShowPage(curShowPage);
             });

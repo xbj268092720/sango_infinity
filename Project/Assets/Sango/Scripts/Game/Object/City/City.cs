@@ -184,8 +184,8 @@ namespace Sango.Game
         /// <summary>
         /// 太守
         /// </summary>
-        [JsonConverter(typeof(Id2ObjConverter<Person>))]
-        [JsonProperty]
+        //[JsonConverter(typeof(Id2ObjConverter<Person>))]
+        //[JsonProperty]
         public Person Leader;
 
         /// <summary>
@@ -272,9 +272,10 @@ namespace Sango.Game
         public List<Cell> areaCellList = new List<Cell>();
 
         // 初始化地图的时候就添加完全了
-        public void AddAreaCell(Cell cell) { 
-            areaCellList.Add(cell); 
-            if(BelongCity != null)
+        public void AddAreaCell(Cell cell)
+        {
+            areaCellList.Add(cell);
+            if (BelongCity != null)
             {
                 BelongCity.AddAreaCell(cell);
             }
@@ -796,6 +797,9 @@ namespace Sango.Game
             }
             GameEvent.OnCityTurnEnd?.Invoke(this, scenario);
 
+            if (Leader == null || Leader.BelongCity != this)
+                UpdateNewLeader();
+
             return base.OnForceTurnEnd(scenario);
         }
 
@@ -1251,7 +1255,7 @@ namespace Sango.Game
             if (BelongCity != null)
             {
                 // 隶属范围内,需要1回合
-                if(BelongCity == other) return 1;
+                if (BelongCity == other) return 1;
                 return BelongCity.Distance(other);
             }
 
@@ -3130,36 +3134,50 @@ namespace Sango.Game
         /// 更新太守
         /// </summary>
         /// <param name="person"></param>
-        public void UpdateLeader(Person person)
+        public void UpdateNewLeader()
         {
-            if (person.BelongCity == this)
+            Person dest = null;
+            Official higher = null;
+            int commandHigher = 0;
+            for (int i = 0; i < allPersons.Count; i++)
             {
-                return;
-            }
-
-            if (person == BelongForce.Governor)
-            {
-                person.BelongCity.CheckIfLoseLeader(person);
-                Leader = person;
-                return;
-            }
-
-            if (person.Official.level > Leader.Official.level)
-            {
-                person.BelongCity.CheckIfLoseLeader(person);
-                Leader = person;
-                return;
-            }
-            else if (person.Official.level == Leader.Official.level)
-            {
-                if (person.Command > Leader.Command)
+                Person checker = allPersons[i];
+                if (checker != null && checker.IsAlive)
                 {
-                    person.BelongCity.CheckIfLoseLeader(person);
-                    Leader = person;
-                    return;
+                    if (checker.IsGovernor)
+                    {
+                        dest = checker;
+                        break;
+                    }
+
+                    if (dest == null)
+                    {
+                        dest = checker;
+                        higher = dest.Official;
+                        commandHigher = dest.Command;
+                    }
+                    else
+                    {
+                        if (checker.Official.level > higher.level)
+                        {
+                            dest = checker;
+                            higher = dest.Official;
+                            commandHigher = dest.Command;
+                        }
+                        else if (checker.Official.level == higher.level)
+                        {
+                            if (checker.Command > commandHigher)
+                            {
+                                dest = checker;
+                                higher = dest.Official;
+                                commandHigher = dest.Command;
+                            }
+                        }
+                    }
                 }
             }
-
+            Leader = dest;
+            Leader?.SetStateLeader();
         }
 
         /// <summary>

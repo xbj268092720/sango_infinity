@@ -40,7 +40,16 @@ namespace Sango.Game
         /// <summary>
         /// 船
         /// </summary>
-        Boat
+        Boat,
+
+        /// <summary>
+        /// 装备
+        /// </summary>
+        Equipment_Weapon,
+
+        Equipment_Horse,
+
+        Equipment_Armor
     }
 
     /*

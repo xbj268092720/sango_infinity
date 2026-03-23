@@ -60,6 +60,7 @@ namespace Sango
             string destDir = System.IO.File.ReadAllText(settingSavePath);
             ContentRootPath = destDir + "/Content";
             ModRootPath = destDir + "/Mods";
+            SaveRootPath = destDir;
 #endif
 
 #endif

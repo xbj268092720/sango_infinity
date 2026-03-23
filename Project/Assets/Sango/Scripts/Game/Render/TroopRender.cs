@@ -183,11 +183,11 @@ namespace Sango.Game.Render
             base.Clear();
         }
 
-        public void SetAniShow(int name)
+        public void SetAniShow(int name, bool onlyRenderAni = false)
         {
             if (TroopModel != null)
             {
-                TroopModel.SetAniShow(name);
+                TroopModel.SetAniShow(name, onlyRenderAni);
             }
         }
 

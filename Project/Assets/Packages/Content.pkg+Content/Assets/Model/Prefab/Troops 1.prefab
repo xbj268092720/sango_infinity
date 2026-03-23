@@ -3423,6 +3423,7 @@ GameObject:
   - component: {fileID: 6334099004971977049}
   - component: {fileID: 7435284445553741438}
   - component: {fileID: 691176793}
+  - component: {fileID: 430148236000469114}
   m_Layer: 0
   m_Name: Troops 1
   m_TagString: Untagged
@@ -3528,6 +3529,7 @@ MonoBehaviour:
   - {fileID: 0}
   meshScale: 1
   totalScale: 7
+  elementCount: 60
   showCount: 60
   smoke: {fileID: 5164168828097505112}
   size: {x: 0.31, y: 0.31}
@@ -3614,6 +3616,8 @@ MonoBehaviour:
   troopsRender: {fileID: 6334099004971977049}
   animation: {fileID: 0}
   smoke: {fileID: 0}
+  flashRenderers: []
+  flashFalg: 0
 --- !u!95 &691176793
 Animator:
   serializedVersion: 5
@@ -3635,6 +3639,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &430148236000469114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6334099004971977048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f36cff72866da634881b91aac1db1009, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 4116575783262419930, guid: 76bdea1491112644f9fd2618b3f559e5, type: 3}
+  arrowsPerShot: 50
+  targetRandomRadius: 10
+  flightTimeRange: {x: 1, y: 2}
+  spawnOffsetRadius: 6
 --- !u!1 &6496013244787951686
 GameObject:
   m_ObjectHideFlags: 0

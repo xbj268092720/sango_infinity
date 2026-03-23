@@ -112,7 +112,7 @@ namespace Sango.Game.Render.Model
                 troopsRender.SetShowPercent(Mathf.Clamp01(0.1f + (float)troop.troops / 7000f));
         }
 
-        public void SetAniShow(int name)
+        public void SetAniShow(int name, bool onlyRenderAni = false)
         {
             if (troopsRender != null)
             {

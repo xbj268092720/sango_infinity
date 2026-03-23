@@ -1,4 +1,5 @@
-﻿using Sango.Render;
+﻿using Sango.Game.Object.Arrow;
+using Sango.Render;
 using UnityEngine;
 
 namespace Sango.Game.Render
@@ -38,6 +39,13 @@ namespace Sango.Game.Render
         {
             MapObject.forward = forward;
         }
+
+        public virtual void CastArrow(Vector3 target)
+        {
+            BowmanUnitArrowManager arrowManager = MapObject.GetComponentInChildren<BowmanUnitArrowManager>(true);
+            arrowManager?.FireArrows(target);
+        }
+
         public virtual void Clear()
         {
             if (MapObject != null)

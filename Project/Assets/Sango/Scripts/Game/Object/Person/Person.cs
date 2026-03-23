@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using Sango.Game.Render;
 using System;
 using System.Collections.Generic;
@@ -209,7 +209,7 @@ namespace Sango.Game
         /// <summary>
         /// 伤病
         /// </summary>
-        [JsonProperty] public int injury; 
+        [JsonProperty] public int injury;
 
         /// <summary>
         /// 父亲
@@ -324,6 +324,27 @@ namespace Sango.Game
         [JsonConverter(typeof(ItemStoreConverter))]
         public ItemStore itemStore = new ItemStore();
 
+        /// <summary>
+        /// 装备的武器
+        /// </summary>
+        [JsonConverter(typeof(Id2ObjConverter<Equipment>))]
+        [JsonProperty]
+        public Equipment EquippedWeapon { get; set; }
+
+        /// <summary>
+        /// 装备的马
+        /// </summary>
+        [JsonConverter(typeof(Id2ObjConverter<Equipment>))]
+        [JsonProperty]
+        public Equipment EquippedHorse { get; set; }
+
+        /// <summary>
+        /// 装备的铠甲
+        /// </summary>
+        [JsonConverter(typeof(Id2ObjConverter<Equipment>))]
+        [JsonProperty]
+        public Equipment EquippedArmor { get; set; }
+
         [JsonProperty]
         public int bannedForceId;
 
@@ -334,6 +355,16 @@ namespace Sango.Game
         public bool HasItem(int itemTypeId)
         {
             return itemStore.GetNumber(itemTypeId) > 0;
+        }
+
+        public bool IsLeader => state == (int)PersonStateType.Leader || state == (int)PersonStateType.Governor;
+        public bool IsGovernor => state == (int)PersonStateType.Governor;
+
+        public void SetStateNormal() { state = (int)PersonStateType.Normal; }
+        public void SetStateLeader()
+        {
+            if (IsGovernor) return;
+            state = (int)PersonStateType.Leader;
         }
 
         /// <summary>
@@ -369,27 +400,27 @@ namespace Sango.Game
         /// <summary>
         /// 统率
         /// </summary>
-        public int Command => command.value;
+        public int Command => command.value + GetEquipmentBonus(x => x.commandBonus);
 
         /// <summary>
         /// 武力
         /// </summary>
-        public int Strength => strength.value;
+        public int Strength => strength.value + GetEquipmentBonus(x => x.strengthBonus);
 
         /// <summary>
         /// 智力
         /// </summary>
-        public int Intelligence => intelligence.value;
+        public int Intelligence => intelligence.value + GetEquipmentBonus(x => x.intelligenceBonus);
 
         /// <summary>
         /// 政治
         /// </summary>
-        public int Politics => politics.value;
+        public int Politics => politics.value + GetEquipmentBonus(x => x.politicsBonus);
 
         /// <summary>
         /// 魅力
         /// </summary>
-        public int Glamour => glamour.value;
+        public int Glamour => glamour.value + GetEquipmentBonus(x => x.glamourBonus);
 
         /// <summary>
         /// 是否可登场
@@ -543,7 +574,7 @@ namespace Sango.Game
 
         public override void OnScenarioPrepare(Scenario scenario)
         {
-            if(Brother != null)
+            if (Brother != null)
             {
                 if (Brother.BrotherList == null)
                     Brother.BrotherList = new List<Person>();
@@ -578,6 +609,15 @@ namespace Sango.Game
                     else
                     {
                         BelongCity.Add(this);
+                        if (state == (int)PersonStateType.Leader)
+                        {
+                            BelongCity.Leader = this;
+                        }
+                        else if (state == (int)PersonStateType.Governor)
+                        {
+                            BelongCity.Leader = this;
+                        }
+
                         if (BelongForce != BelongCity.BelongForce || BelongCorps != BelongCity.BelongCorps)
                         {
                             Sango.Log.Error($"[{Id}]{Name}归属force:{BelongForce.Name} corps:{BelongCorps.Name}, 但在city[{BelongCity.Id}] force:{BelongCity.BelongForce.Name} corps:{BelongCity.BelongCorps.Name}");
@@ -606,7 +646,7 @@ namespace Sango.Game
 
             if (Brother != null)
             {
-                if(Brother == this)
+                if (Brother == this)
                 {
                     BrotherList.Sort(SangoObject.Compare);
 
@@ -787,7 +827,7 @@ namespace Sango.Game
             {
                 BelongForce.GainHegemonyPoint(1);
             }
-            
+
             ActionOver = !IsFree;
             return base.OnForceTurnStart(scenario);
         }
@@ -838,9 +878,9 @@ namespace Sango.Game
 #endif
                 if (!IsWild)
                 {
-                    if(BelongCity.allPersons.Contains(this))
+                    if (BelongCity.allPersons.Contains(this))
                         BelongCity.allPersons.Remove(this);
-                    BelongCity.CheckIfLoseLeader(this);
+
                     city.allPersons.Add(this);
                     BelongCity = city;
                     if (BelongCorps != city.BelongCorps)
@@ -851,14 +891,17 @@ namespace Sango.Game
                             BelongForce = city.BelongForce;
                         }
                     }
-                    city.UpdateLeader(this);
+
+                    if (!IsGovernor)
+                    {
+                        SetStateNormal();
+                    }
                 }
                 else
                 {
                     BelongCity.wildPersons.Remove(this);
                     city.wildPersons.Add(this);
                     BelongCity = city;
-                    city.UpdateLeader(this);
                 }
 
                 BelongTroop?.OnPersonChangeCity(this, last, city);
@@ -1175,6 +1218,93 @@ namespace Sango.Game
                     return Glamour;
             }
             return 0;
+        }
+
+        /// <summary>
+        /// 获取装备的属性加成
+        /// </summary>
+        /// <param name="getBonus">获取单个装备加成的委托</param>
+        /// <returns>总加成值</returns>
+        private int GetEquipmentBonus(System.Func<Equipment, int> getBonus)
+        {
+            int bonus = 0;
+
+            if (EquippedWeapon != null)
+            {
+                bonus += getBonus(EquippedWeapon);
+            }
+
+            if (EquippedHorse != null)
+            {
+                bonus += getBonus(EquippedHorse);
+            }
+
+            if (EquippedArmor != null)
+            {
+                bonus += getBonus(EquippedArmor);
+            }
+
+            return bonus;
+        }
+
+        /// <summary>
+        /// 装备武器
+        /// </summary>
+        /// <param name="weapon">武器</param>
+        public void EquipWeapon(Equipment weapon)
+        {
+            if (weapon != null && weapon.kind == (int)ItemKindType.Equipment_Weapon)
+            {
+                EquippedWeapon = weapon;
+            }
+        }
+
+        /// <summary>
+        /// 装备马
+        /// </summary>
+        /// <param name="horse">马</param>
+        public void EquipHorse(Equipment horse)
+        {
+            if (horse != null && horse.kind == (int)ItemKindType.Equipment_Horse)
+            {
+                EquippedHorse = horse;
+            }
+        }
+
+        /// <summary>
+        /// 装备铠甲
+        /// </summary>
+        /// <param name="armor">铠甲</param>
+        public void EquipArmor(Equipment armor)
+        {
+            if (armor != null && armor.kind == (int)ItemKindType.Equipment_Armor)
+            {
+                EquippedArmor = armor;
+            }
+        }
+
+        /// <summary>
+        /// 卸下武器
+        /// </summary>
+        public void UnequipWeapon()
+        {
+            EquippedWeapon = null;
+        }
+
+        /// <summary>
+        /// 卸下马
+        /// </summary>
+        public void UnequipHorse()
+        {
+            EquippedHorse = null;
+        }
+
+        /// <summary>
+        /// 卸下铠甲
+        /// </summary>
+        public void UnequipArmor()
+        {
+            EquippedArmor = null;
         }
     }
 }

@@ -93,6 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9008087018713237227}
   - component: {fileID: 5305497863516442145}
+  - component: {fileID: 212655812921578647}
   m_Layer: 9
   m_Name: 4294
   m_TagString: Untagged
@@ -134,9 +135,24 @@ MonoBehaviour:
   flashRenderers:
   - {fileID: 7818677922960108141}
   flashFalg: 0
-  flashFactor: {x: -3, y: 0.3}
-  flashTime: 1
-  propertyName: _BaseColorIntensity
+  maxLevelEffect: {fileID: 0}
+--- !u!114 &212655812921578647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8523334725421866065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f36cff72866da634881b91aac1db1009, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 4116575783262419930, guid: 76bdea1491112644f9fd2618b3f559e5, type: 3}
+  arrowsPerShot: 50
+  targetRandomRadius: 10
+  flightTimeRange: {x: 1, y: 2}
+  spawnOffsetRadius: 6
 --- !u!1001 &2327695344220305609
 PrefabInstance:
   m_ObjectHideFlags: 0

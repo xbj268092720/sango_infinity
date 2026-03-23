@@ -421,7 +421,17 @@ namespace Sango.Game
             if (time <= 0f)
             {
                 troop.Render.FaceTo(spellCell.Position);
-                troop.Render.SetAniShow(1);
+
+                if (IsRange())
+                {
+                    troop.Render.SetAniShow(1, true);
+                    troop.Render.CastArrow(spellCell.Position);
+                }
+                else
+                {
+                    troop.Render.SetAniShow(1);
+                }
+
             }
             if (time > 1f)
                 action();
