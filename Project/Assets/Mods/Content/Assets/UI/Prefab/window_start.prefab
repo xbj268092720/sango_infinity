@@ -1436,11 +1436,11 @@ RectTransform:
   m_Father: {fileID: 5973749658295835790}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 16, y: -12}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -656, y: 375}
   m_SizeDelta: {x: 588, y: 300}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4886754380188860181
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2010,6 +2010,7 @@ GameObject:
   - component: {fileID: 174056003858870177}
   - component: {fileID: 576643473640125865}
   - component: {fileID: 5149108134032039960}
+  - component: {fileID: 595760306896646220}
   m_Layer: 5
   m_Name: window_start
   m_TagString: Untagged
@@ -2096,6 +2097,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: {fileID: 6109800555525701124}
+--- !u!111 &595760306896646220
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9039031632039893254}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: bd8c4712078399e43a811f3a8b14b42f, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: bd8c4712078399e43a811f3a8b14b42f, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1001 &5765921833684967767
 PrefabInstance:
   m_ObjectHideFlags: 0
