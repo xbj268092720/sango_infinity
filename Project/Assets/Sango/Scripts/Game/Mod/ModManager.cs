@@ -86,6 +86,9 @@ namespace Sango.Mod
                             case "poster":
                                 mod.Poster = c_v[1];
                                 break;
+                            case "assembly":
+                                mod.EntryAssembly = c_v[1];
+                                break;
                         }
                     }
                 }

@@ -80,3 +80,5 @@
 /Build/Content/Package/win
 /Build/Content/Package/android
 /Project/PackageTemp/Face
+/Project/Assets/Plugins/Roslyn
+/Project/Assets/Plugins/Roslyn.meta

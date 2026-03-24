@@ -58,7 +58,7 @@ namespace Sango.Tools
         {
             Path.Init();
             //Path.AddSearchPath("D:/project_tk/Build/Mods/CoreMap");
-            string assetsPath = $"{Application.dataPath}/Packages/Content.pkg+Content/Assets/Map/Default";
+            string assetsPath = $"{Application.dataPath}/Mods/Content/Assets/Map/Default";
             Path.AddSearchPath(assetsPath, false);
 
             IsEditOn = true;

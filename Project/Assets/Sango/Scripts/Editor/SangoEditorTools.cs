@@ -178,14 +178,14 @@ public static class SangeEditorTools
         Dictionary<int, ModelDataaa> datas = new Dictionary<int, ModelDataaa>();
         datas = TKNewtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<int, ModelDataaa>>(data);
 
-        string matDir = "Assets/Packages/Content.pkg+Content/Assets/Model/Materials/";
+        string matDir = "Assets/Mods/Content/Assets/Model/Materials/";
 
-        string goSaveDir = "Assets/Packages/Content.pkg+Content/Assets/Model/Prefab/Auto";
+        string goSaveDir = "Assets/Mods/Content/Assets/Model/Prefab/Auto";
 
         foreach (ModelDataaa model in datas.Values)
         {
-            string modelFile = model.model.Replace("Model/", "Assets/Packages/Content.pkg+Content/Assets/Model/Mesh/");
-            string texFile = "Assets/Packages/Content.pkg+Content/Assets/Model/" + model.texture;
+            string modelFile = model.model.Replace("Model/", "Assets/Mods/Content/Assets/Model/Mesh/");
+            string texFile = "Assets/Mods/Content/Assets/Model/" + model.texture;
             string modelName = System.IO.Path.GetFileNameWithoutExtension(model.model);
 
             GameObject modelObj = AssetDatabase.LoadAssetAtPath<GameObject>($"{goSaveDir}{modelName}.prefab");
@@ -362,7 +362,7 @@ public static class SangeEditorTools
                                 if (dir.Length > 0)
                                 {
                                     string dstDir = dir[0];
-                                    Sprite spr = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Packages/Content.pkg+Content/Assets/UI/AtlasTexture/{dstDir}/{name}.png");
+                                    Sprite spr = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Mods/Content/Assets/UI/AtlasTexture/{dstDir}/{name}.png");
                                     if (spr != null)
                                     {
                                         Debug.Log($"Sprite替换 {image.sprite.name}");
@@ -392,7 +392,7 @@ public static class SangeEditorTools
                                 if (dir.Length > 0)
                                 {
                                     string dstDir = dir[0];
-                                    Sprite spr = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Packages/Content.pkg+Content/Assets/UI/AtlasTexture/{dstDir}/{name}.png");
+                                    Sprite spr = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Mods/Content/Assets/UI/AtlasTexture/{dstDir}/{name}.png");
                                     if (spr != null)
                                     {
                                         Debug.Log($"Sprite替换 {spr.name}");
@@ -413,7 +413,7 @@ public static class SangeEditorTools
                                 if (dir.Length > 0)
                                 {
                                     string dstDir = dir[0];
-                                    Sprite spr = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Packages/Content.pkg+Content/Assets/UI/AtlasTexture/{dstDir}/{name}.png");
+                                    Sprite spr = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Mods/Content/Assets/UI/AtlasTexture/{dstDir}/{name}.png");
                                     if (spr != null)
                                     {
                                         Debug.Log($"Sprite替换 {spr.name}");
@@ -434,7 +434,7 @@ public static class SangeEditorTools
                                 if (dir.Length > 0)
                                 {
                                     string dstDir = dir[0];
-                                    Sprite spr = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Packages/Content.pkg+Content/Assets/UI/AtlasTexture/{dstDir}/{name}.png");
+                                    Sprite spr = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Mods/Content/Assets/UI/AtlasTexture/{dstDir}/{name}.png");
                                     if (spr != null)
                                     {
                                         Debug.Log($"Sprite替换 {spr.name}");

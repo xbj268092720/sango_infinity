@@ -18,7 +18,7 @@ public class ModPackageBuilder
     public static void BuildAssetBundls()
     {
         Path.Init();
-        string packageFolder = "Assets/Packages";
+        string packageFolder = "Assets/Mods";
         string modRootFolder = Path.ModRootPath;
         string[] findFolders = AssetDatabase.GetSubFolders(packageFolder);
         for (int i = 0; i < findFolders.Length; i++)
