@@ -1,4 +1,4 @@
-﻿
+
 using System.Collections.Generic;
 using UnityEngine;
 using Sango;
@@ -132,6 +132,7 @@ namespace Sango.Loader
         private static Type GameObjectType = typeof(UnityEngine.GameObject);
         private static Type MaterialType = typeof(UnityEngine.Material);
         private static Type SpriteType = typeof(UnityEngine.Sprite);
+        private static Type AudioClipType = typeof(UnityEngine.AudioClip);
 
         /// <summary>
         /// assetName = "PackageName:AssetPath" PackageName = "Resources"时在Resources文件夹中读取
@@ -201,6 +202,13 @@ namespace Sango.Loader
                         {
                             obj = SpriteLoader.LoadSprite(objName);
                         }
+                        else if (objType == AudioClipType)
+                        {
+                            bool is3D = false;
+                            if (ps.Length > 0)
+                                is3D = (bool)ps[0];
+                            obj = AudioLoader.LoadFromFileSync(objName, is3D);
+                        }
                     }
                 }
                 return obj;
@@ -229,6 +237,13 @@ namespace Sango.Loader
                 else if (objType == SpriteType)
                 {
                     obj = SpriteLoader.LoadSprite(objName);
+                }
+                else if (objType == AudioClipType)
+                {
+                    bool is3D = false;
+                    if (ps.Length > 0)
+                        is3D = (bool)ps[0];
+                    obj = AudioLoader.LoadFromFileSync(objName, is3D);
                 }
 
                 if (obj == null)
