@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using Sango.Hexagon;
 using Sango.Tools;
 using System;
@@ -326,87 +326,7 @@ namespace Sango.Game
             }
         }
 
-        //        public void GetMoveRange2(Troop troops, List<Cell> cellList)
-        //        {
 
-        //            frontier.Clear();
-        //            came_from.Clear();
-        //            cost_so_far.Clear();
-        //            cellList.Add(troops.cell);
-        //            int moveAttr = troops.MoveAbility;
-        //            came_from[troops.cell] = null;
-        //            frontier.Enqueue(troops.cell, 0);
-        //            cost_so_far[troops.cell] = new cellTempInfo()
-        //            {
-        //                cost = 0,
-        //                isZOC = false
-        //            };
-        //            while (frontier.Count > 0)
-        //            {
-        //                Cell current = frontier.Dequeue();
-        //                cellTempInfo cellTempInfo = cost_so_far[current] as cellTempInfo;
-
-        //                if (cellTempInfo.isZOC)
-        //                    continue;
-
-        //                int cost_current = cellTempInfo.cost;
-        //                for (int i = 0; i < 6; i++)
-        //                {
-        //                    Cell next = GetNeighbor(current, i);
-        //                    if (next != null && next.CanMove(troops) && next.CanPassThrough(troops))
-        //                    {
-
-        //                        cellTempInfo cellTempInfo_next = cost_so_far[next] as cellTempInfo;
-        //                        if (cellTempInfo_next == null)
-        //                        {
-        //                            bool isZoc = IsZOC(troops, next);
-        //                            int new_cost;
-        //                            if (isZoc)
-        //                                new_cost = moveAttr;
-        //                            else
-        //                                new_cost = cost_current + troops.MoveCost(next);
-
-        //                            if (new_cost > moveAttr)
-        //                                continue;
-
-        //                            cost_so_far.Add(next, new cellTempInfo()
-        //                            {
-        //                                cost = new_cost,
-        //                                isZOC = isZoc
-        //                            });
-        //                            int priority = new_cost;
-        //                            came_from[next] = current;
-        //                            frontier.Enqueue(next, priority);
-        //                            cellList.Add(next);
-        //#if SANGO_DEBUG_AI
-        //                            GameAIDebug.Instance.ShowCellCost(next, priority, troops);
-        //#endif
-        //                        }
-        //                        else
-        //                        {
-        //                            int new_cost = 0;
-        //                            bool isZoc = cellTempInfo_next.isZOC;
-        //                            if (isZoc)
-        //                                new_cost = moveAttr;
-        //                            else
-        //                                new_cost = cost_current + troops.MoveCost(next);
-
-        //                            if (new_cost < cellTempInfo_next.cost)
-        //                            {
-        //                                cellTempInfo_next.cost = new_cost;
-        //                                int priority = new_cost;
-        //                                came_from[next] = current;
-        //                                frontier.Enqueue(next, priority);
-        //#if SANGO_DEBUG_AI
-        //                                GameAIDebug.Instance.ShowCellCost(next, priority, troops);
-        //#endif
-        //                            }
-
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
 
         /// <summary>
         /// 该方法确定dest一定是在troop的移动范围内可到达
@@ -420,7 +340,10 @@ namespace Sango.Game
             while (c != null)
             {
                 cellList.Insert(0, c);
-                c = came_from[c] as Cell;
+                if (came_from.TryGetValue(c, out Cell parent))
+                    c = parent;
+                else
+                    c = null;
             }
             //GetMinCostMovePath(troops, dest, cellList);
         }
@@ -460,9 +383,8 @@ namespace Sango.Game
 
 
         System.Collections.Generic.PriorityQueue<Cell, int> frontier = new PriorityQueue<Cell, int>(new LowPriorit());
-        Hashtable came_from = new Hashtable();
-        //Dictionary<Cell, cellTempInfo> cost_so_far = new Dictionary<Cell, cellTempInfo>();
-        Hashtable cost_so_far = new Hashtable();
+        Dictionary<Cell, Cell> came_from = new Dictionary<Cell, Cell>();
+        Dictionary<Cell, Cell> cost_so_far = new Dictionary<Cell, Cell>();
 
         public class LowPriorit : IComparer<int>
         {
@@ -488,15 +410,9 @@ namespace Sango.Game
         /// <param name="cellList"></param>
         public void GetDirectPath(Cell start, Cell dest, List<Cell> cellList, CellCheck action = null)
         {
-            //if (start.Cub.Distance(dest.Cub) > 100)
-            //{
-            //    UnityEngine.Debug.LogError($"寻路距离: 100 At:<{start.x},{start.y}> => <{dest.x},{dest.y}>]");
-            //    return;
-            //}
-
             frontier.Clear();
             came_from.Clear();
-            int safe_count = 1000;
+            int safe_count = Scenario.Cur.Variables.pathfindingSafeCount;
             frontier.Enqueue(start, 0);
             came_from[start] = null;
 
@@ -517,7 +433,10 @@ namespace Sango.Game
                     while (c != null)
                     {
                         cellList.Insert(0, c);
-                        c = came_from[c] as Cell;
+                        if (came_from.TryGetValue(c, out Cell parent))
+                            c = parent;
+                        else
+                            c = null;
                     }
                     return;
                 }
@@ -562,14 +481,14 @@ namespace Sango.Game
                     if (!cost_so_far.ContainsKey(current))
                     {
                         cellList.Add(current);
-                        cost_so_far.Add(current, current);
+                        cost_so_far[current] = current;
                         for (int i = 0; i < 6; i++)
                         {
                             Cell next = current.Neighbors[i];
                             // 一定是目标所占格也可以进判断
                             if (next != null && next.moveAble && !cost_so_far.ContainsKey(next))
                             {
-                                openList.Add((Cell)next);
+                                openList.Add(next);
                             }
                         }
                     }
@@ -600,14 +519,14 @@ namespace Sango.Game
                     {
                         if (begin >= startLen)
                             cellList.Add(current);
-                        cost_so_far.Add(current, current);
+                        cost_so_far[current] = current;
                         for (int i = 0; i < 6; i++)
                         {
                             Cell next = current.Neighbors[i];
                             // 一定是目标所占格也可以进判断
                             if (next != null && next.moveAble && !cost_so_far.ContainsKey(next))
                             {
-                                openList.Add((Cell)next);
+                                openList.Add(next);
                             }
                         }
                     }
@@ -630,16 +549,10 @@ namespace Sango.Game
         /// <param name="cellList"></param>
         public void GetDirectMovePath(Troop troops, Cell dest, List<Cell> cellList, CellCheck action = null)
         {
-            //if (troops.cell.Distance(dest) > 200)
-            //{
-            //    UnityEngine.Debug.LogError($"寻路超出安全次数: [{troops.Name},At:<{troops.x},{troops.y}> => <{dest.x},{dest.y}>] count:{troops.cell.Distance(dest)}");
-            //    return;
-            //}
-
             frontier.Clear();
             came_from.Clear();
             closeList.Clear();
-            int safe_count = 100000;
+            int safe_count = Scenario.Cur.Variables.pathfindingSafeCount;
             frontier.Enqueue(troops.cell, 0);
             came_from[troops.cell] = null;
             troops.cell._isChecked = true;
@@ -668,7 +581,10 @@ namespace Sango.Game
                     while (c != null)
                     {
                         cellList.Insert(0, c);
-                        c = came_from[c] as Cell;
+                        if (came_from.TryGetValue(c, out Cell parent))
+                            c = parent;
+                        else
+                            c = null;
                     }
                     for (int i = 0; i < closeList.Count; i++)
                     {
@@ -702,13 +618,6 @@ namespace Sango.Game
                             came_from[next] = current;
                             frontier.Enqueue(next, priority);
                         }
-                        //else if (new_cost < next._cost)
-                        //{
-                        //    next._cost = new_cost;
-                        //    int priority = new_cost + Distance(next, dest) * 2;
-                        //    came_from[next] = current;
-                        //    frontier.Enqueue(next, priority);
-                        //}
                     }
                 }
             }

@@ -950,9 +950,61 @@ namespace Sango.Game
                 if (a != null && a.IsAlive)
                     a.OnTurnEnd(this);
             }
+
+            // 处理俘虏逃跑
+            HandlePrisonerEscape();
+
             HasTurnEnded = true;
             Info.turnCount++;
             return true;
+        }
+
+        /// <summary>
+        /// 处理俘虏逃跑
+        /// </summary>
+        private void HandlePrisonerEscape()
+        {
+            // 遍历所有武将
+            for (int i = 1; i < personSet.Count; i++)
+            {
+                Person person = personSet[i];
+                if (person != null && person.IsAlive && person.state == (int)PersonStateType.Prisoner)
+                {
+                    // 计算逃跑概率（最高不超过30%）
+                    int escapeChance = 5; // 基础逃跑概率5%
+                    
+                    // 如果在队伍中，逃跑概率增加
+                    if (person.BelongTroop != null)
+                    {
+                        escapeChance += 5; // 队伍中增加5%
+                    }
+                    // 如果在城市中，逃跑概率减少
+                    else if (person.BelongCity != null)
+                    {
+                        escapeChance -= 2; // 城市中减少2%
+                    }
+                    
+                    // 确保逃跑概率在合理范围内
+                    if (escapeChance < 1) escapeChance = 1;
+                    if (escapeChance > 30) escapeChance = 30;
+                    
+                    // 检查是否逃跑
+                    if (GameRandom.Chance(escapeChance))
+                    {
+                        // 记录逃跑前的位置
+                        SangoObject escapeLocation = person.BelongTroop as SangoObject ?? person.BelongCity as SangoObject;
+                        
+                        // 执行逃跑逻辑
+                        person.Escape();
+                        
+                        // 触发逃跑事件
+                        GameEvent.OnPersonEscape?.Invoke(person, escapeLocation);
+                        
+                        // 记录逃跑事件
+                        Sango.Log.Print($"{person.Name} 成功逃跑了！");
+                    }
+                }
+            }
         }
 
         public bool IncreaseDate()

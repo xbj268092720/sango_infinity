@@ -65,10 +65,14 @@ namespace Sango.Game
             // 获取AI个性
             AIPersonalityType personality = GetAIPersonality(force);
 
+            // 清理过期的外交免疫时间
+            CleanupDiplomacyImmunity(force, scenario);
+
             // 优先处理停战请求
             foreach (Force neighbor in force.NeighborForceList)
             {
                 if (force.IsAlliance(neighbor)) continue;
+                if (IsInDiplomacyImmunity(force, neighbor.Id)) continue;
 
                 int relation = scenario.GetRelation(force, neighbor);
                 if (relation < -500)
@@ -82,8 +86,22 @@ namespace Sango.Game
                         {
                             // 计算附加金钱价值，关系越差，投入越多
                             int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Truce, personality);
-                            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, null, additionalValue);
-                            return true;
+                            
+                            // 计算成功率
+                            Person diplomat = FindSuitableDiplomat(force);
+                            if (diplomat != null)
+                            {
+                                int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
+                                if (successRate >= 20)
+                                {
+                                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
+                                    if (!success)
+                                    {
+                                        RecordDiplomacyFailure(force, neighbor.Id);
+                                    }
+                                    return true;
+                                }
+                            }
                         }
                     }
                 }
@@ -93,6 +111,7 @@ namespace Sango.Game
             foreach (Force neighbor in force.NeighborForceList)
             {
                 if (force.IsAlliance(neighbor)) continue;
+                if (IsInDiplomacyImmunity(force, neighbor.Id)) continue;
 
                 int relation = scenario.GetRelation(force, neighbor);
                 if (relation >= 1000)
@@ -106,8 +125,22 @@ namespace Sango.Game
                         {
                             // 计算附加金钱价值，关系越好，投入越多
                             int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Alliance, personality);
-                            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Alliance, force, neighbor, null, additionalValue);
-                            return true;
+                            
+                            // 计算成功率
+                            Person diplomat = FindSuitableDiplomat(force);
+                            if (diplomat != null)
+                            {
+                                int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Alliance, force, neighbor, diplomat, additionalValue);
+                                if (successRate >= 20)
+                                {
+                                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Alliance, force, neighbor, diplomat, additionalValue);
+                                    if (!success)
+                                    {
+                                        RecordDiplomacyFailure(force, neighbor.Id);
+                                    }
+                                    return true;
+                                }
+                            }
                         }
                     }
                 }
@@ -117,6 +150,7 @@ namespace Sango.Game
             foreach (Force neighbor in force.NeighborForceList)
             {
                 if (force.IsAlliance(neighbor)) continue;
+                if (IsInDiplomacyImmunity(force, neighbor.Id)) continue;
 
                 int relation = scenario.GetRelation(force, neighbor);
                 if (relation >= 0)
@@ -128,8 +162,22 @@ namespace Sango.Game
                     {
                         // 计算附加金钱价值，促进通商成功
                         int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Trade, personality);
-                        DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Trade, force, neighbor, null, additionalValue);
-                        return true;
+                        
+                        // 计算成功率
+                        Person diplomat = FindSuitableDiplomat(force);
+                        if (diplomat != null)
+                        {
+                            int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Trade, force, neighbor, diplomat, additionalValue);
+                            if (successRate >= 20)
+                            {
+                                bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Trade, force, neighbor, diplomat, additionalValue);
+                                if (!success)
+                                {
+                                    RecordDiplomacyFailure(force, neighbor.Id);
+                                }
+                                return true;
+                            }
+                        }
                     }
                 }
             }
@@ -138,6 +186,7 @@ namespace Sango.Game
             foreach (Force neighbor in force.NeighborForceList)
             {
                 if (force.IsAlliance(neighbor)) continue;
+                if (IsInDiplomacyImmunity(force, neighbor.Id)) continue;
 
                 int relation = scenario.GetRelation(force, neighbor);
                 if (relation >= 800)
@@ -151,8 +200,22 @@ namespace Sango.Game
                         {
                             // 计算附加金钱价值，和亲需要较高投入
                             int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Marriage, personality);
-                            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Marriage, force, neighbor, null, additionalValue);
-                            return true;
+                            
+                            // 计算成功率
+                            Person diplomat = FindSuitableDiplomat(force);
+                            if (diplomat != null)
+                            {
+                                int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Marriage, force, neighbor, diplomat, additionalValue);
+                                if (successRate >= 20)
+                                {
+                                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Marriage, force, neighbor, diplomat, additionalValue);
+                                    if (!success)
+                                    {
+                                        RecordDiplomacyFailure(force, neighbor.Id);
+                                    }
+                                    return true;
+                                }
+                            }
                         }
                     }
                 }
@@ -162,6 +225,7 @@ namespace Sango.Game
             foreach (Force neighbor in force.NeighborForceList)
             {
                 if (force.IsAlliance(neighbor)) continue;
+                if (IsInDiplomacyImmunity(force, neighbor.Id)) continue;
 
                 int relation = scenario.GetRelation(force, neighbor);
                 if (relation < 500 && centerCity.gold >= 1000)
@@ -174,8 +238,21 @@ namespace Sango.Game
                         int giftValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.SendGift, personality);
                         if (centerCity.gold >= giftValue)
                         {
-                            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, neighbor, null, giftValue);
-                            return true;
+                            // 计算成功率
+                            Person diplomat = FindSuitableDiplomat(force);
+                            if (diplomat != null)
+                            {
+                                int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.SendGift, force, neighbor, diplomat, giftValue);
+                                if (successRate >= 20)
+                                {
+                                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, neighbor, diplomat, giftValue);
+                                    if (!success)
+                                    {
+                                        RecordDiplomacyFailure(force, neighbor.Id);
+                                    }
+                                    return true;
+                                }
+                            }
                         }
                     }
                 }
@@ -193,6 +270,8 @@ namespace Sango.Game
                 {
                     if (enemysenemy != force && !enemysenemy.IsAlliance(neighbor) && !force.NeighborForceList.Contains(enemysenemy) && !enemysenemy.IsAlliance(force))
                     {
+                        if (IsInDiplomacyImmunity(force, enemysenemy.Id)) continue;
+                        
                         int enemysenemy_relation = scenario.GetRelation(enemysenemy, force);
                         if (enemysenemy_relation > 1000)
                         {
@@ -205,8 +284,22 @@ namespace Sango.Game
                                 {
                                     // 计算附加金钱价值
                                     int additionalValue = CalculateDiplomacyResourceValue(force, enemysenemy, enemysenemy_relation, DiplomacyActionType.AllianceRequest, personality);
-                                    DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.AllianceRequest, force, enemysenemy, null, additionalValue);
-                                    return true;
+                                    
+                                    // 计算成功率
+                                    Person diplomat = FindSuitableDiplomat(force);
+                                    if (diplomat != null)
+                                    {
+                                        int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.AllianceRequest, force, enemysenemy, diplomat, additionalValue);
+                                        if (successRate >= 20)
+                                        {
+                                            bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.AllianceRequest, force, enemysenemy, diplomat, additionalValue);
+                                            if (!success)
+                                            {
+                                                RecordDiplomacyFailure(force, enemysenemy.Id);
+                                            }
+                                            return true;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -218,8 +311,21 @@ namespace Sango.Game
                                 int giftValue = CalculateDiplomacyResourceValue(force, enemysenemy, enemysenemy_relation, DiplomacyActionType.SendGift, personality);
                                 if (centerCity.gold >= giftValue)
                                 {
-                                    DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, enemysenemy, null, giftValue);
-                                    return true;
+                                    // 计算成功率
+                                    Person diplomat = FindSuitableDiplomat(force);
+                                    if (diplomat != null)
+                                    {
+                                        int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.SendGift, force, enemysenemy, diplomat, giftValue);
+                                        if (successRate >= 20)
+                                        {
+                                            bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, enemysenemy, diplomat, giftValue);
+                                            if (!success)
+                                            {
+                                                RecordDiplomacyFailure(force, enemysenemy.Id);
+                                            }
+                                            return true;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -228,6 +334,100 @@ namespace Sango.Game
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 查找合适的外交使者
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <returns>合适的武将</returns>
+        private static Person FindSuitableDiplomat(Force force)
+        {
+            if (force.Governor?.BelongCity == null) return null;
+            
+            // 使用ForceAI中的外交推荐方法选择合适的武将
+            Person[] recommendedDiplomats = CounsellorRecommendDiplomacy(force.Governor.BelongCity.freePersons);
+            if (recommendedDiplomats != null && recommendedDiplomats.Length > 0)
+            {
+                return recommendedDiplomats[0];
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 检查是否处于外交免疫期
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <param name="targetForceId">目标势力ID</param>
+        /// <returns>是否处于免疫期</returns>
+        private static bool IsInDiplomacyImmunity(Force force, int targetForceId)
+        {
+            if (force.DiplomacyImmunityTime.TryGetValue(targetForceId, out int immunityEndTime))
+            {
+                return immunityEndTime > Scenario.Cur?.NowTime ?? 0;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 清理过期的外交免疫时间
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <param name="scenario">场景</param>
+        private static void CleanupDiplomacyImmunity(Force force, Scenario scenario)
+        {
+            if (scenario == null || force.DiplomacyImmunityTime.Count == 0) return;
+            
+            List<int> expiredForces = new List<int>();
+            foreach (var kvp in force.DiplomacyImmunityTime)
+            {
+                if (kvp.Value <= scenario.NowTime)
+                {
+                    expiredForces.Add(kvp.Key);
+                }
+            }
+            
+            foreach (int forceId in expiredForces)
+            {
+                force.DiplomacyImmunityTime.Remove(forceId);
+                force.DiplomacyFailCount.Remove(forceId);
+            }
+        }
+
+        /// <summary>
+        /// 记录外交失败
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <param name="targetForceId">目标势力ID</param>
+        private static void RecordDiplomacyFailure(Force force, int targetForceId)
+        {
+            // 增加失败次数
+            if (force.DiplomacyFailCount.TryGetValue(targetForceId, out int failCount))
+            {
+                failCount++;
+                force.DiplomacyFailCount[targetForceId] = failCount;
+            }
+            else
+            {
+                force.DiplomacyFailCount[targetForceId] = 1;
+            }
+            
+            // 如果失败次数超过3次，设置外交免疫时间
+            if (force.DiplomacyFailCount[targetForceId] >= 3)
+            {
+                // 设置30天的免疫时间
+                force.DiplomacyImmunityTime[targetForceId] = (Scenario.Cur?.NowTime ?? 0) + 30;
+                force.DiplomacyFailCount.Remove(targetForceId);
+                
+                #if SANGO_DEBUG
+                Force targetForce = Scenario.Cur?.forceSet.Get(targetForceId);
+                if (targetForce != null)
+                {
+                    Sango.Log.Print($"@外交@{force.Name} 对 {targetForce.Name} 的外交连续失败3次，进入30天外交免疫期！");
+                }
+                #endif
+            }
         }
 
         /// <summary>

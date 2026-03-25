@@ -142,6 +142,18 @@ namespace Sango.Game
 
         public List<ActionBase> actionList;
 
+        /// <summary>
+        /// 外交失败次数记录 (key: 目标势力ID, value: 失败次数)
+        /// </summary>
+        [JsonProperty]
+        public Dictionary<int, int> DiplomacyFailCount = new Dictionary<int, int>();
+
+        /// <summary>
+        /// 外交免疫时间记录 (key: 目标势力ID, value: 免疫结束时间)
+        /// </summary>
+        [JsonProperty]
+        public Dictionary<int, int> DiplomacyImmunityTime = new Dictionary<int, int>();
+
         public override void Init(Scenario scenario)
         {
             actionList = new List<ActionBase>();

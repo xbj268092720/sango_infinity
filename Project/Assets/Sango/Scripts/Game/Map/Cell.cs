@@ -143,7 +143,7 @@ namespace Sango.Game
             Cell dest = this;
             for (int i = 0; i < length; ++i)
             {
-                dest = dest.GetNrighbor(dir);
+                dest = dest.GetNeighbor(dir);
                 if (dest != null && action != null)
                     action.Add(dest);
             }
@@ -154,7 +154,7 @@ namespace Sango.Game
             Cell dest = this;
             for (int i = 0; i < length; ++i)
             {
-                dest = dest.GetNrighbor(dir);
+                dest = dest.GetNeighbor(dir);
                 if (dest != null && action != null)
                     action(dest);
             }
@@ -164,7 +164,7 @@ namespace Sango.Game
         {
             Cell dest = this;
             for (int i = 0; i < length; ++i)
-                dest = dest.GetNrighbor(dir);
+                dest = dest.GetNeighbor(dir);
             return dest;
         }
 
@@ -173,7 +173,7 @@ namespace Sango.Game
             return Cub.DirectionTo(to.Cub);
         }
 
-        public Cell GetNrighbor(int dir)
+        public Cell GetNeighbor(int dir)
         {
             while (dir < 0)
                 dir += 6;

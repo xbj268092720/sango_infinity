@@ -216,10 +216,10 @@ namespace Sango.Game
                         {
                             int dir = atker.cell.Cub.DirectionTo(spell.Cub);
                             cells.Add(spell);
-                            Cell nCell = atker.cell.GetNrighbor(dir + 1);
+                            Cell nCell = atker.cell.GetNeighbor(dir + 1);
                             if (nCell.moveAble)
                                 cells.Add(nCell);
-                            nCell = atker.cell.GetNrighbor(dir - 1);
+                            nCell = atker.cell.GetNeighbor(dir - 1);
                             if (nCell.moveAble)
                                 cells.Add(nCell);
                         }

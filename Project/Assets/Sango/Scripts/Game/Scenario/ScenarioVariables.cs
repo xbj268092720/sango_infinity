@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using TKNewtonsoft.Json;
 using UnityEngine;
 
@@ -373,6 +373,10 @@ namespace Sango.Game
         /// </summary>
         [JsonProperty] public int baseEscapeProbablilityAddByTurn = 50;
 
+        /// <summary>
+        /// 寻路安全次数限制
+        /// </summary>
+        [JsonProperty] public int pathfindingSafeCount = 100000;
 
         public float DifficultyDamageFactor
         {

@@ -1,4 +1,4 @@
-﻿using Sango.Game.Action;
+using Sango.Game.Action;
 using Sango.Game.Render;
 using Sango.Tools;
 using System;
@@ -1059,35 +1059,6 @@ namespace Sango.Game
                 }
             }
             return false;
-
-            //if (tempMoveEventList.Count == 0)
-            //{
-            //    Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 移动到=> ({x},{y})]");
-            //    isMoving = false;
-            //    return true;
-            //}
-
-            //if (!Render.IsVisible())
-            //{
-            //    while (tempMoveEventList.Count > 0)
-            //    {
-            //        TroopMoveEvent @event = tempMoveEventList[0];
-            //        UpdateCell(@event.dest, @event.start, tempMoveEventList.Count == 1);
-            //        tempMoveEventList.RemoveAt(0);
-            //    }
-            //    isMoving = false;
-            //    return true;
-            //}
-            //else
-            //{
-            //    TroopMoveEvent @event = tempMoveEventList[0];
-            //    if (@event.Update(UnityEngine.Time.deltaTime))
-            //    {
-            //        UpdateCell(@event.dest, @event.start, tempMoveEventList.Count == 1);
-            //        tempMoveEventList.RemoveAt(0);
-            //    }
-            //    return false;
-            //}
         }
 
         public bool TryMoveToSpell(Cell destCell, SkillInstance skill)
@@ -1134,77 +1105,10 @@ namespace Sango.Game
                 }
             }
 
-            //if (tempMoveEventList.Count == 0)
-            //{
-            //    Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 移动到=> ({x},{y})]");
-            //    isMoving = false;
-            //    return true;
-            //}
-
-            //if (!Render.IsVisible())
-            //{
-            //    while (tempMoveEventList.Count > 0)
-            //    {
-            //        TroopMoveEvent @event = tempMoveEventList[0];
-            //        UpdateCell(@event.dest, @event.start, tempMoveEventList.Count == 1);
-            //        tempMoveEventList.RemoveAt(0);
-            //    }
-            //    return false;
-            //}
-            //else
-            //{
-            //    TroopMoveEvent @event = tempMoveEventList[0];
-            //    if (@event.Update(UnityEngine.Time.deltaTime))
-            //    {
-            //        UpdateCell(@event.dest, @event.start, tempMoveEventList.Count == 1);
-            //        tempMoveEventList.RemoveAt(0);
-            //    }
-            //    return false;
-            //}
-
             return false;
-
         }
 
-        //public bool MoveToClosest(Cell destCell)
-        //{
-        //    if (!isMoving)
-        //    {
-        //        tempCellList.Clear();
-        //        tempMoveEventList.Clear();
-        //        //TODO: 移动
-        //        Scenario.Cur.Map.GetClosestMovePath(this, destCell, tempCellList);
-        //        isMoving = true;
-        //        Cell start = cell;
-        //        for (int i = 1; i < tempCellList.Count; i++)
-        //        {
-        //            Cell dest = tempCellList[i];
-        //            tempMoveEventList.Add(new TroopMoveEvent()
-        //            {
-        //                troop = this,
-        //                dest = dest,
-        //                start = start,
-        //                isLastMove = i == tempCellList.Count - 1
-        //            });
-        //            start = dest;
-        //        }
-        //    }
 
-        //    if (tempMoveEventList.Count == 0)
-        //    {
-        //        Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 移动到=> ({x},{y})]");
-        //        isMoving = false;
-        //        return true;
-        //    }
-        //    TroopMoveEvent @event = tempMoveEventList[0];
-        //    if (!@event.IsVisible() || @event.Update(UnityEngine.Time.deltaTime))
-        //    {
-        //        UpdateCell(@event.dest, @event.start, tempMoveEventList.Count == 1);
-        //        tempMoveEventList.RemoveAt(0);
-        //    }
-
-        //    return false;
-        //}
         public bool ChangeGold(int num, bool showInfo = true)
         {
             if (num != 0)
