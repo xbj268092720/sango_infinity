@@ -1,4 +1,4 @@
-﻿namespace Sango.Game
+namespace Sango.Game
 {
 
     public enum SkillCellOffsetType : int
@@ -27,6 +27,26 @@
         /// <summary>
         /// 施法者从最末开始往初始位置找,找到第一个落脚点,位移至此
         /// </summary>
-        MasterJustCheckEnd = 5
+        MasterJustCheckEnd = 5,
+
+        /// <summary>
+        /// 施法者随机位移到周围可移动的格子
+        /// </summary>
+        MasterRandom = 6,
+
+        /// <summary>
+        /// 目标随机位移到周围可移动的格子
+        /// </summary>
+        TargetRandom = 7,
+
+        /// <summary>
+        /// 施法者位移到指定位置
+        /// </summary>
+        Master指定位置 = 8,
+
+        /// <summary>
+        /// 目标位移到指定位置
+        /// </summary>
+        Target指定位置 = 9
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
@@ -122,11 +122,25 @@ namespace Sango.Game
         /// </summary>
         [JsonProperty] public string criticalMethod;
 
+        /// <summary>
+        /// 技能时间轴
+        /// </summary>
+        [JsonProperty] public SkillTimeline timeline;
+
         protected List<SkillEffect> effects;
+        protected SkillVisualizer skillVisualizer;
         public int tempCriticalFactor;
 
         SkillSuccessMethod skillSuccessMethod;
         SkillCriticalMethod skillCriticalMethod;
+
+        // 时间轴事件处理相关
+        private int lastProcessedEventIndex = -1;
+        private List<Cell> tempTimelineCellList = new List<Cell>();
+        private Troop tempTimelineTroop;
+        private Cell tempTimelineSpellCell;
+        private int tempTimelineCriticalFactor;
+        private System.Action tempTimelineAction;
 
         protected void InitSkillEffects()
         {
@@ -192,10 +206,32 @@ namespace Sango.Game
             criticalMethod = skill.criticalMethod;
 
             InitSkillEffects();
+            InitSkillVisualizer();
+            InitTimeline();
             skillCriticalMethod = SkillCriticalMethod.Create(criticalMethod);
             skillSuccessMethod = SkillSuccessMethod.Create(successMethod);
 
             GameEvent.OnSkillCalculateAttribute?.Invoke(master, this);
+        }
+
+        protected void InitTimeline()
+        {
+            if (skill.timelineData != null)
+            {
+                timeline = new SkillTimeline();
+                timeline.Init(skill.timelineData);
+                timeline.SortEvents();
+            }
+        }
+
+        protected void InitSkillVisualizer()
+        {
+            string visualType = skill.visualType ?? "Default";
+            skillVisualizer = SkillVisualizer.Create(visualType);
+            if (skillVisualizer != null)
+            {
+                skillVisualizer.Init(this);
+            }
         }
 
         /// <summary>
@@ -421,26 +457,170 @@ namespace Sango.Game
             if (time <= 0f)
             {
                 troop.Render.FaceTo(spellCell.Position);
+                lastProcessedEventIndex = -1;
+                tempTimelineTroop = troop;
+                tempTimelineSpellCell = spellCell;
+                tempTimelineAction = action;
+                tempTimelineCellList.Clear();
+                GetAttackCells(troop, spellCell, tempTimelineCellList);
+            }
 
-                if (IsRange())
+            // 使用时间轴处理技能表现
+            if (timeline != null)
+            {
+                ProcessTimelineEvents(troop, spellCell, time);
+                if (time > timeline.duration)
                 {
-                    troop.Render.SetAniShow(1, true);
-                    troop.Render.CastArrow(spellCell.Position);
+                    troop.Render.SetAniShow(0);
+                    return true;
+                }
+            }
+            else
+            {
+                // 传统处理方式（兼容旧技能）
+                if (time <= 0f)
+                {
+                    // 播放技能视觉效果
+                    PlaySkillVisual(troop, spellCell, tempTimelineCellList);
+                }
+                if (time > 1.2f)
+                    action();
+                if (time > 2.5f)
+                {
+                    troop.Render.SetAniShow(0);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void ProcessTimelineEvents(Troop troop, Cell spellCell, float time)
+        {
+            if (timeline == null || timeline.events == null)
+                return;
+
+            for (int i = lastProcessedEventIndex + 1; i < timeline.events.Count; i++)
+            {
+                SkillTimelineEvent timelineEvent = timeline.events[i];
+                if (time >= timelineEvent.time)
+                {
+                    ProcessTimelineEvent(troop, spellCell, timelineEvent);
+                    lastProcessedEventIndex = i;
                 }
                 else
                 {
-                    troop.Render.SetAniShow(1);
+                    break;
                 }
+            }
+        }
 
-            }
-            if (time > 1.2f)
-                action();
-            if (time > 2.5f)
+        private void ProcessTimelineEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
+        {
+            switch (timelineEvent.GetEventType())
             {
-                troop.Render.SetAniShow(0);
-                return true;
+                case SkillTimelineEventType.PlayAnimation:
+                    ProcessPlayAnimationEvent(troop, timelineEvent);
+                    break;
+                case SkillTimelineEventType.PlayEffect:
+                    ProcessPlayEffectEvent(troop, spellCell, timelineEvent);
+                    break;
+                case SkillTimelineEventType.PlaySound:
+                    ProcessPlaySoundEvent(timelineEvent);
+                    break;
+                case SkillTimelineEventType.ExecuteDamage:
+                    ProcessExecuteDamageEvent(troop, spellCell, timelineEvent);
+                    break;
+                case SkillTimelineEventType.ExecuteOffset:
+                    ProcessExecuteOffsetEvent(troop, spellCell, timelineEvent);
+                    break;
+                case SkillTimelineEventType.ExecuteEffect:
+                    ProcessExecuteEffectEvent(troop, spellCell, timelineEvent);
+                    break;
+                case SkillTimelineEventType.ShowText:
+                    ProcessShowTextEvent(troop, spellCell, timelineEvent);
+                    break;
+                case SkillTimelineEventType.CameraShake:
+                    ProcessCameraShakeEvent(timelineEvent);
+                    break;
             }
-            return false;
+        }
+
+        private void ProcessPlayAnimationEvent(Troop troop, SkillTimelineEvent timelineEvent)
+        {
+            if (timelineEvent.parameters != null && timelineEvent.parameters.TryGetValue("animationName", out JToken animationNameToken))
+            {
+                string animationName = animationNameToken.Value<string>();
+                // 播放动画逻辑
+                // troop.Render.PlayAnimation(animationName);
+            }
+        }
+
+        private void ProcessPlayEffectEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
+        {
+            // 播放特效逻辑
+            PlaySkillVisual(troop, spellCell, tempTimelineCellList);
+        }
+
+        private void ProcessPlaySoundEvent(SkillTimelineEvent timelineEvent)
+        {
+            if (timelineEvent.parameters != null && timelineEvent.parameters.TryGetValue("soundName", out JToken soundNameToken))
+            {
+                string soundName = soundNameToken.Value<string>();
+                // 播放音效逻辑
+                // AudioManager.Instance.PlaySound(soundName);
+            }
+        }
+
+        private void ProcessExecuteDamageEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
+        {
+            // 执行伤害逻辑
+            tempTimelineCriticalFactor = CheckCritical(troop, spellCell);
+            Action(troop, spellCell, tempTimelineCriticalFactor);
+            tempTimelineAction?.Invoke();
+        }
+
+        private void ProcessExecuteOffsetEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
+        {
+            // 执行位移逻辑
+            Troop targetTroop = spellCell.troop;
+            DoOffset(troop, targetTroop, 0);
+        }
+
+        private void ProcessExecuteEffectEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
+        {
+            // 执行效果逻辑
+            DoEffect(troop, spellCell, tempTimelineCellList);
+        }
+
+        private void ProcessShowTextEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
+        {
+            if (timelineEvent.parameters != null && timelineEvent.parameters.TryGetValue("text", out JToken textToken))
+            {
+                string text = textToken.Value<string>();
+                // 显示文本逻辑
+                // UIManager.Instance.ShowSkillText(text, spellCell.Position);
+            }
+        }
+
+        private void ProcessCameraShakeEvent(SkillTimelineEvent timelineEvent)
+        {
+            float intensity = 1.0f;
+            float duration = 0.5f;
+            
+            if (timelineEvent.parameters != null)
+            {
+                if (timelineEvent.parameters.TryGetValue("intensity", out JToken intensityToken))
+                {
+                    intensity = intensityToken.Value<float>();
+                }
+                if (timelineEvent.parameters.TryGetValue("duration", out JToken durationToken))
+                {
+                    duration = durationToken.Value<float>();
+                }
+            }
+            
+            // 相机抖动逻辑
+            // CameraManager.Instance.ShakeCamera(intensity, duration);
         }
 
         List<Cell> tempCellList = new List<Cell>();
@@ -771,6 +951,78 @@ namespace Sango.Game
                             }
                         }
                         break;
+                    case (int)SkillCellOffsetType.MasterRandom:
+                        {
+                            if (troop.IsAlive)
+                            {
+                                // 收集周围可移动的格子
+                                List<Cell> availableCells = new List<Cell>();
+                                troop.cell.GetNeighbors((cell) =>
+                                {
+                                    if (cell.CanStay(troop))
+                                        availableCells.Add(cell);
+                                });
+                                // 随机选择一个格子位移
+                                if (availableCells.Count > 0)
+                                {
+                                    int randomIndex = UnityEngine.Random.Range(0, availableCells.Count);
+                                    Cell targetCell = availableCells[randomIndex];
+                                    troop.UpdateCell(targetCell, troop.cell, true);
+                                }
+                            }
+                        }
+                        break;
+                    case (int)SkillCellOffsetType.TargetRandom:
+                        {
+                            if (targetTroop.IsAlive)
+                            {
+                                // 收集周围可移动的格子
+                                List<Cell> availableCells = new List<Cell>();
+                                targetTroop.cell.GetNeighbors((cell) =>
+                                {
+                                    if (cell.CanStay(targetTroop))
+                                        availableCells.Add(cell);
+                                });
+                                // 随机选择一个格子位移
+                                if (availableCells.Count > 0)
+                                {
+                                    int randomIndex = UnityEngine.Random.Range(0, availableCells.Count);
+                                    Cell targetCell = availableCells[randomIndex];
+                                    targetTroop.UpdateCell(targetCell, targetTroop.cell, true);
+                                }
+                            }
+                        }
+                        break;
+                    case (int)SkillCellOffsetType.Master指定位置:
+                        {
+                            if (troop.IsAlive && offsetAction.Length > k + 2)
+                            {
+                                // 从offsetAction数组中获取指定位置的坐标
+                                int targetX = offsetAction[k + 2];
+                                int targetY = offsetAction[k + 3];
+                                Cell targetCell = Scenario.Cur.Map.GetCell(targetX, targetY);
+                                if (targetCell != null && targetCell.CanStay(troop))
+                                {
+                                    troop.UpdateCell(targetCell, troop.cell, true);
+                                }
+                            }
+                        }
+                        break;
+                    case (int)SkillCellOffsetType.Target指定位置:
+                        {
+                            if (targetTroop.IsAlive && offsetAction.Length > k + 2)
+                            {
+                                // 从offsetAction数组中获取指定位置的坐标
+                                int targetX = offsetAction[k + 2];
+                                int targetY = offsetAction[k + 3];
+                                Cell targetCell = Scenario.Cur.Map.GetCell(targetX, targetY);
+                                if (targetCell != null && targetCell.CanStay(targetTroop))
+                                {
+                                    targetTroop.UpdateCell(targetCell, targetTroop.cell, true);
+                                }
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -784,12 +1036,25 @@ namespace Sango.Game
 
         }
 
+        public void PlaySkillVisual(Troop troop, Cell spellCell, List<Cell> atkCellList)
+        {
+            if (skillVisualizer != null)
+            {
+                skillVisualizer.PlaySkillVisual(troop, spellCell, atkCellList);
+            }
+        }
+
         public override void Clear()
         {
             if (effects != null)
             {
                 effects.ForEach(s => s.Clear());
                 effects.Clear();
+            }
+            if (skillVisualizer != null)
+            {
+                skillVisualizer.StopSkillVisual();
+                skillVisualizer = null;
             }
         }
 

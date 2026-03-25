@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using Sango.Mod;
 using System.Xml;
 
@@ -21,6 +21,7 @@ namespace Sango.Game
             Sango.Log.Print("GameData.Init()");
             LoadCommonData();
             LoadModelConfig();
+            SkillConfigManager.Instance.Init();
         }
 
         public ScenarioCommonData LoadNewCommonData()

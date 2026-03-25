@@ -45,6 +45,46 @@ namespace Sango.Manager
         public float SfxVolume { get; set; } = 1.0f;
 
         /// <summary>
+        /// 淡入淡出状态
+        /// </summary>
+        private enum FadeState
+        {
+            None,
+            FadingOut,
+            FadingIn
+        }
+
+        /// <summary>
+        /// 当前淡入淡出状态
+        /// </summary>
+        private FadeState _fadeState = FadeState.None;
+
+        /// <summary>
+        /// 淡入淡出持续时间
+        /// </summary>
+        private float _fadeDuration = 1.0f;
+
+        /// <summary>
+        /// 淡入淡出当前时间
+        /// </summary>
+        private float _fadeTime = 0f;
+
+        /// <summary>
+        /// 目标背景音乐
+        /// </summary>
+        private string _targetBgmName;
+
+        /// <summary>
+        /// 目标背景音乐是否循环
+        /// </summary>
+        private bool _targetBgmLoop;
+
+        /// <summary>
+        /// 原始音量
+        /// </summary>
+        private float _originalVolume;
+
+        /// <summary>
         /// 初始化音效管理器
         /// </summary>
         public void Init()
@@ -123,6 +163,24 @@ namespace Sango.Manager
         {
             StopBgm();
             PlayBgm(audioName, loop);
+        }
+
+        /// <summary>
+        /// 带淡入淡出的切换背景音乐
+        /// </summary>
+        /// <param name="audioName">音效名称</param>
+        /// <param name="loop">是否循环</param>
+        /// <param name="fadeDuration">淡入淡出持续时间</param>
+        public void SwitchBgmWithFade(string audioName, bool loop = true, float fadeDuration = 1.0f)
+        {
+            if (_fadeState != FadeState.None) return;
+
+            _targetBgmName = audioName;
+            _targetBgmLoop = loop;
+            _fadeDuration = fadeDuration;
+            _fadeTime = 0f;
+            _originalVolume = _bgmSource.volume;
+            _fadeState = FadeState.FadingOut;
         }
 
         /// <summary>
@@ -285,6 +343,9 @@ namespace Sango.Manager
         /// </summary>
         public void Update()
         {
+            // 处理淡入淡出逻辑
+            HandleFade();
+
             // 回收完成播放的音效声道
             for (int i = 0; i < _sfxSources.Count; i++)
             {
@@ -292,6 +353,52 @@ namespace Sango.Manager
                 {
                     _freeSfxChannels.Enqueue(i);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 处理淡入淡出逻辑
+        /// </summary>
+        private void HandleFade()
+        {
+            if (_fadeState == FadeState.None) return;
+
+            _fadeTime += Time.deltaTime;
+            float normalizedTime = Mathf.Clamp01(_fadeTime / _fadeDuration);
+
+            switch (_fadeState)
+            {
+                case FadeState.FadingOut:
+                    // 音量从原始值逐渐减小到0
+                    _bgmSource.volume = Mathf.Lerp(_originalVolume, 0, normalizedTime);
+                    
+                    if (normalizedTime >= 1)
+                    {
+                        // 淡出完成，切换音乐
+                        _bgmSource.Stop();
+                        AudioClip clip = LoadAudioClip(_targetBgmName);
+                        if (clip != null)
+                        {
+                            _bgmSource.clip = clip;
+                            _bgmSource.loop = _targetBgmLoop;
+                            _bgmSource.volume = 0;
+                            _bgmSource.Play();
+                        }
+                        _fadeState = FadeState.FadingIn;
+                        _fadeTime = 0f;
+                    }
+                    break;
+
+                case FadeState.FadingIn:
+                    // 音量从0逐渐增加到原始值
+                    _bgmSource.volume = Mathf.Lerp(0, _originalVolume, normalizedTime);
+                    
+                    if (normalizedTime >= 1)
+                    {
+                        // 淡入完成
+                        _fadeState = FadeState.None;
+                    }
+                    break;
             }
         }
     }

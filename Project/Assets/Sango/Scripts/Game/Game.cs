@@ -76,6 +76,10 @@ namespace Sango.Game
             // 初始化音效管理器
             AudioManager.Instance.Init();
             
+            // 初始化外交管理器
+            DiplomacyManager.Instance.Init();
+            DiplomacyEventManager.Instance.Init();
+            
             GameData.Instance.Init();
             while (true)
             {

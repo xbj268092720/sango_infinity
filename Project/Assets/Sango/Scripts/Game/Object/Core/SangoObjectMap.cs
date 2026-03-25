@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TKNewtonsoft.Json;
@@ -144,6 +145,10 @@ namespace Sango.Game
                     objects.Remove(obj.Id);
                 }
             }
+        }
+        public override IEnumerator GetEnumerator()
+        {
+            return objects.Values.GetEnumerator();
         }
 
         public int DataCount => objects.Count;

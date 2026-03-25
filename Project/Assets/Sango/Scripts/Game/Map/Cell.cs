@@ -1,4 +1,4 @@
-﻿using Sango.Hexagon;
+using Sango.Hexagon;
 using Sango.Render;
 using System;
 using System.Collections.Generic;
@@ -180,6 +180,44 @@ namespace Sango.Game
             while (dir >= 6)
                 dir -= 6;
             return Neighbors[dir];
+        }
+
+        /// <summary>
+        /// 获取所有邻居单元格
+        /// </summary>
+        /// <param name="predicate">可选的条件过滤器</param>
+        /// <returns>邻居单元格列表</returns>
+        public List<Cell> GetNeighbors(Func<Cell, bool> predicate = null)
+        {
+            List<Cell> neighbors = new List<Cell>();
+            for (int i = 0; i < 6; i++)
+            {
+                Cell neighbor = Neighbors[i];
+                if (neighbor != null)
+                {
+                    if (predicate == null || predicate(neighbor))
+                    {
+                        neighbors.Add(neighbor);
+                    }
+                }
+            }
+            return neighbors;
+        }
+
+        /// <summary>
+        /// 获取所有邻居单元格
+        /// </summary>
+        /// <param name="action">对每个邻居执行的操作</param>
+        public void GetNeighbors(Action<Cell> action)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                Cell neighbor = Neighbors[i];
+                if (neighbor != null)
+                {
+                    action(neighbor);
+                }
+            }
         }
 
         public bool HasGridState(MapGrid.GridState state)

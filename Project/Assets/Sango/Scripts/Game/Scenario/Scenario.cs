@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using Sango.Game.Render;
 using Sango.Render;
 using System;
@@ -872,10 +872,38 @@ namespace Sango.Game
                     a.OnTurnStart(this);
             }
 
+            // 检查并触发外交事件
+            CheckDiplomacyEvents();
+
             allianceSet.RemoveAll(a => !a.IsAlive);
 
             HasTurnStarted = true;
             return true;
+        }
+
+        /// <summary>
+        /// 检查并触发外交事件
+        /// </summary>
+        private void CheckDiplomacyEvents()
+        {
+            // 遍历所有势力对，检查外交事件
+            int forceCount = forceSet.Count;
+            for (int i = 0; i < forceCount; i++)
+            {
+                Force forceA = forceSet[i];
+                if (forceA == null || !forceA.IsAlive)
+                    continue;
+
+                for (int j = i + 1; j < forceCount; j++)
+                {
+                    Force forceB = forceSet[j];
+                    if (forceB == null || !forceB.IsAlive)
+                        continue;
+
+                    // 检查并触发外交事件
+                    DiplomacyEventManager.Instance.CheckAndTriggerEvents(forceA, forceB);
+                }
+            }
         }
         public bool RunForces()
         {

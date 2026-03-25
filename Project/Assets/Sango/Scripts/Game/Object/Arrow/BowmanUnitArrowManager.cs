@@ -36,11 +36,6 @@ namespace Sango.Game.Object.Arrow
         private float spawnOffsetRadius = 0.5f;
 
         /// <summary>
-        /// 弓箭池
-        /// </summary>
-        private List<GameObject> arrowPool = new List<GameObject>();
-
-        /// <summary>
         /// 发射弓箭到目标点
         /// </summary>
         /// <param name="targetPosition">目标点位置</param>

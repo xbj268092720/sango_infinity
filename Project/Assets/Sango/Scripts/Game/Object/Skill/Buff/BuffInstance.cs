@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
@@ -58,6 +58,16 @@ namespace Sango.Game
                 Clear();
                 return true;
             }
+            
+            // 执行BUFF效果
+            if (effects != null)
+            {
+                foreach (var effect in effects)
+                {
+                    effect.Action(this, Target, null, null);
+                }
+            }
+            
             return false;
         }
 

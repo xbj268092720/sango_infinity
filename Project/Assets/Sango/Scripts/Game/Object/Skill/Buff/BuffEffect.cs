@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
@@ -34,6 +34,12 @@ namespace Sango.Game
         {
             Register("Stun", CraeteHandle<Stun>);
             Register("Escape", CraeteHandle<Escape>);
+            Register("Poison", CraeteHandle<Poison>);
+            Register("Burn", CraeteHandle<Burn>);
+            Register("Freeze", CraeteHandle<Freeze>);
+            Register("Silence", CraeteHandle<Silence>);
+            Register("Invincible", CraeteHandle<Invincible>);
+            Register("Shield", CraeteHandle<Shield>);
             //Register("AddBuff", CraeteHandle<AddBuff>);
 
         }

@@ -1,8 +1,7 @@
 using Sango.Game.Action;
-using TKNewtonsoft.Json;
-using Sango.Game.Render;
-using System;
 using System.Collections.Generic;
+using TKNewtonsoft.Json;
+using TKNewtonsoft.Json.Linq;
 
 namespace Sango.Game
 {
@@ -49,11 +48,26 @@ namespace Sango.Game
         [JsonProperty]
         [JsonConverter(typeof(SangoObjectListIDConverter<Feature>))]
         public SangoObjectList<Feature> features = new SangoObjectList<Feature>();
-        
-        /// <summary>
-        /// 附加效果
-        /// </summary>
-        public ActionBase action;
 
+        /// <summary>
+        /// 效果实体集合
+        /// </summary>
+        [JsonProperty]
+        public TKNewtonsoft.Json.Linq.JArray actionEntities;
+
+        public void InitActions(List<ActionBase> list, params SangoObject[] sangoObjects)
+        {
+            if (actionEntities == null) return;
+            for (int i = 0; i < actionEntities.Count; i++)
+            {
+                JObject valus = actionEntities[i] as JObject;
+                ActionBase action = ActionBase.Create(valus.Value<string>("class"));
+                if (action != null)
+                {
+                    action.Init(valus, sangoObjects);
+                    list.Add(action);
+                }
+            }
+        }
     }
 }

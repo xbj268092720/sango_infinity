@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
@@ -33,7 +33,7 @@ namespace Sango.Game
         public static void Init()
         {
 
-            Register("Burn", CraeteHandle<Burn>);
+            Register("SetFire", CraeteHandle<SetFire>);
             Register("AddBuff", CraeteHandle<AddBuff>);
             Register("RemoveBuffById", CraeteHandle<RemoveBuffById>);
             Register("RemoveBuffByKind", CraeteHandle<RemoveBuffByKind>);

@@ -1,4 +1,4 @@
-﻿
+
 using TKNewtonsoft.Json;
 
 namespace Sango.Game
@@ -51,6 +51,46 @@ namespace Sango.Game
         ///// 作为主将释放[内讧]的暴击率加成
         ///// </summary>
         //public int infightingCriticalAdd;
+
+        /// <summary>
+        /// 战争倾向加成
+        /// </summary>
+        public int warTendencyAdd;
+
+        /// <summary>
+        /// 防御倾向加成
+        /// </summary>
+        public int defenseTendencyAdd;
+
+        /// <summary>
+        /// 外交倾向加成
+        /// </summary>
+        public int diplomacyTendencyAdd;
+
+        /// <summary>
+        /// 经济发展倾向加成
+        /// </summary>
+        public int economicTendencyAdd;
+
+        /// <summary>
+        /// 科技研发倾向加成
+        /// </summary>
+        public int technologyTendencyAdd;
+
+        /// <summary>
+        /// 俘虏招降倾向加成
+        /// </summary>
+        public int recruitCaptiveTendencyAdd;
+
+        /// <summary>
+        /// 俘虏释放倾向加成
+        /// </summary>
+        public int releaseCaptiveTendencyAdd;
+
+        /// <summary>
+        /// 俘虏赎回倾向加成
+        /// </summary>
+        public int ransomCaptiveTendencyAdd;
 
     }
 }

@@ -213,6 +213,7 @@ namespace Sango
                     GameObject uguiWinObj = GameObject.Instantiate(winObj) as GameObject;
                     if (uguiWinObj != null)
                     {
+                        uguiWinObj.name = windowName;
                         //Canvas canvas = uguiWinObj.GetComponent<Canvas>();
                         //if (canvas != null)
                         //{
@@ -276,6 +277,17 @@ namespace Sango
             return win;
         }
 
+        public T Open<T>(string windowName) where T : UGUIWindow
+        {
+            WindowInterface win = Open(windowName);
+            return win.ugui_instance as T;
+        }
+
+        public T Open<T>(string windowName, params object[] objects) where T : UGUIWindow
+        {
+            WindowInterface win = Open(windowName, objects);
+            return win.ugui_instance as T;
+        }
 
         public WindowInterface GetWindow(string windowName)
         {

@@ -1,4 +1,4 @@
-﻿namespace Sango.Game
+namespace Sango.Game
 {
     public enum MissionType : int
     {
@@ -38,7 +38,12 @@
         /// <summary>
         /// 招募
         /// </summary>
-        PersonRecruitPerson
+        PersonRecruitPerson,
+
+        /// <summary>
+        /// 外交任务
+        /// </summary>
+        PersonDiplomacy
 
     }
 }

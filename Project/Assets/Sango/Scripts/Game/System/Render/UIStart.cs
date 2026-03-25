@@ -1,3 +1,4 @@
+using Sango.Manager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,7 @@ namespace Sango.Game.Render.UI
         private void Start()
         {
             version.text = $"版本: {Application.version}";
+            AudioManager.Instance.PlayBgm("Assets/Sound/2238.ogg");
         }
 
         public void OnNewGame()

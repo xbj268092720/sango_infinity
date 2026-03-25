@@ -1,4 +1,4 @@
-﻿using Sango.Game.Player;
+using Sango.Game.Player;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
@@ -427,6 +427,15 @@ namespace Sango.Game.Render.UI
 
         public void OnDiplomacyButton()
         {
+            List<Force> allForces = new List<Force>();
+            Scenario.Cur.forceSet.ForEach(force =>
+            {
+                if (force.IsAlive)
+                {
+                    allForces.Add(force);
+                }
+            });
+            GameSystem.GetSystem<DiplomacySystem>().Start(Target, allForces);
         }
 
         public void OnTechniqueButton()

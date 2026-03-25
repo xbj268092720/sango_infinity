@@ -521,6 +521,7 @@ namespace Sango.Game
         [JsonProperty] public int missionCounter;
         [JsonProperty] public int missionParams1;
         [JsonProperty] public int missionParams2;
+        [JsonProperty] public int missionParams3;
 
         /// <summary>
         /// 在当前城市的停留回合数
@@ -756,7 +757,100 @@ namespace Sango.Game
                         }
                     }
                     break;
+                case (int)MissionType.PersonDiplomacy:
+                    {
+                        // 检查是否到达目标城市
+                        City targetCity = scenario.citySet.Get(missionTarget);
+                        if (BelongCity == targetCity)
+                        {
+                            // 执行外交行动
+                            Force receiverForce = scenario.forceSet.Get(missionParams1);
+                            DiplomacyActionType actionType = (DiplomacyActionType)missionParams2;
+                            
+                            // 计算成功率
+                            int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(actionType, BelongForce, receiverForce, this, missionParams3);
+                            bool success = false;
+                            
+                            // 根据成功率判断是否执行成功
+                            if (GameRandom.Chance(successRate))
+                            {
+                                switch (actionType)
+                                {
+                                    case DiplomacyActionType.Alliance:
+                                        success = DiplomacyManager.Instance.PerformAlliance(BelongForce, receiverForce);
+                                        break;
+                                    case DiplomacyActionType.Truce:
+                                        success = DiplomacyManager.Instance.PerformTruce(BelongForce, receiverForce);
+                                        break;
+                                    case DiplomacyActionType.DeclareWar:
+                                        success = DiplomacyManager.Instance.PerformDeclareWar(BelongForce, receiverForce);
+                                        break;
+                                    case DiplomacyActionType.SendGift:
+                                        // 使用missionParams3存储礼物价值
+                                        success = DiplomacyManager.Instance.PerformSendGift(BelongForce, receiverForce, missionParams3);
+                                        break;
+                                    case DiplomacyActionType.RequestTechnique:
+                                        // 使用missionParams3存储技术ID
+                                        success = DiplomacyManager.Instance.PerformRequestTechnique(BelongForce, receiverForce, missionParams3);
+                                        break;
+                                    case DiplomacyActionType.RequestTroops:
+                                        // 使用missionParams3存储兵力数量
+                                        success = DiplomacyManager.Instance.PerformRequestTroops(BelongForce, receiverForce, missionParams3);
+                                        break;
+                                    case DiplomacyActionType.Trade:
+                                        success = DiplomacyManager.Instance.PerformTrade(BelongForce, receiverForce);
+                                        break;
+                                    case DiplomacyActionType.Marriage:
+                                        success = DiplomacyManager.Instance.PerformMarriage(BelongForce, receiverForce);
+                                        break;
+                                    case DiplomacyActionType.AllianceRequest:
+                                        success = DiplomacyManager.Instance.PerformAllianceRequest(BelongForce, receiverForce);
+                                        break;
+                                    case DiplomacyActionType.TruceRequest:
+                                        success = DiplomacyManager.Instance.PerformTruceRequest(BelongForce, receiverForce);
+                                        break;
+                                }
+                            }
+                            
+                            // 输出调试信息
+                            #if SANGO_DEBUG
+                            if (success)
+                            {
+                                Sango.Log.Print($"@外交@{BelongForce.Name} 对 {receiverForce.Name} 的{DiplomacyManager.Instance.GetActionName(actionType)}行动成功了！成功率: {successRate}%");
+                            }
+                            else
+                            {
+                                Sango.Log.Print($"@外交@{BelongForce.Name} 对 {receiverForce.Name} 的{DiplomacyManager.Instance.GetActionName(actionType)}行动失败了！成功率: {successRate}%");
+                            }
+                            #endif
+                            
+                            // 完成任务，返回原城市
+                            SetMission(MissionType.PersonReturn, BelongForce.Governor.BelongCity, 1);
+                        }
+                        else
+                        {
+                            // 向目标城市移动
+                            missionCounter--;
+                            if (missionCounter <= 0)
+                            {
+                                // 到达目标城市
+                                ChangeCity(targetCity);
+                                // 重置计数器，准备执行外交行动
+                                missionCounter = 1;
+                            }
+                        }
+                    }
+                    break;
             }
+        }
+        public void SetMission(MissionType missionType, SangoObject missionTarget, int missionCounter, int p1, int p2, int p3)
+        {
+            this.missionType = (int)missionType;
+            this.missionTarget = missionTarget.Id;
+            this.missionCounter = missionCounter;
+            this.missionParams1 = p1;
+            this.missionParams2 = p2;
+            this.missionParams3 = p3;
         }
 
         public void SetMission(MissionType missionType, SangoObject missionTarget, int missionCounter, int p1, int p2)

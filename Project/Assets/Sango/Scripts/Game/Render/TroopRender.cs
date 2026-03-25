@@ -1,4 +1,4 @@
-﻿
+
 using Sango.Game.Render.Model;
 using Sango.Game.Render.UI;
 using Sango.Loader;
@@ -250,6 +250,12 @@ namespace Sango.Game.Render
         public override void SetFlash(bool b)
         {
             TroopModel?.SetFlash(b);
+        }
+
+        public void CastArrow(Vector3 targetPosition)
+        {
+            // 播放射箭特效
+            EffectManager.Instance.PlayEffect("ArrowEffect", MapObject.transform.position);
         }
     }
 }

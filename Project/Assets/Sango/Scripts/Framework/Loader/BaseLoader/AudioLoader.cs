@@ -15,29 +15,35 @@ namespace Sango.Loader
         /// <returns>加载的AudioClip</returns>
         public static AudioClip LoadFromFileSync(string filePath, bool is3D = false)
         {
-            if (!File.Exists(filePath))
+            UnityEngine.Object obj = AssetStore.Instance.CheckAsset<GameObject>(filePath);
+            if (obj != null)
+            {
+                return obj as AudioClip;
+            }
+
+            filePath = Path.FindFile(filePath);
+            if (filePath == null)
             {
                 Debug.LogError($"音频文件不存在: {filePath}");
                 return null;
             }
-
             try
             {
                 // 获取文件扩展名并转换为小写
                 string extension = System.IO.Path.GetExtension(filePath).ToLower();
                 AudioType audioType = GetAudioTypeFromExtension(extension);
-                
+
                 // 使用UnityWebRequest加载音频文件，自动处理解码
                 using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip($"file://{filePath}", audioType))
                 {
                     www.SendWebRequest();
-                    
+
                     // 同步等待加载完成
                     while (!www.isDone)
                     {
                         // 等待加载完成
                     }
-                    
+
                     if (www.result == UnityWebRequest.Result.Success)
                     {
                         AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
@@ -57,10 +63,10 @@ namespace Sango.Loader
             {
                 Debug.LogError($"加载音频文件失败: {ex.Message}");
             }
-            
+
             return null;
         }
-        
+
         /// <summary>
         /// 根据文件扩展名获取AudioType
         /// </summary>
@@ -125,10 +131,10 @@ namespace Sango.Loader
                 // 获取文件扩展名并转换为小写
                 string extension = System.IO.Path.GetExtension(filePath).ToLower();
                 AudioType audioType = GetAudioTypeFromExtension(extension);
-                
+
                 // 使用UnityWebRequest异步加载音频文件
                 UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip($"file://{filePath}", audioType);
-                
+
                 // 使用Unity的协程系统处理异步加载
                 if (Game.Game.Instance != null)
                 {
@@ -149,18 +155,18 @@ namespace Sango.Loader
                 callback?.Invoke(null, customData);
             }
         }
-        
+
         /// <summary>
         /// 协程加载音频文件
         /// </summary>
         private static IEnumerator LoadAudioCoroutine(UnityWebRequest www, string filePath, OnObjectLoaded callback, bool is3D, object customData)
         {
             yield return www.SendWebRequest();
-            
+
             HandleWebRequestResult(www, filePath, callback, is3D, customData);
             www.Dispose();
         }
-        
+
         /// <summary>
         /// 处理WebRequest结果
         /// </summary>
@@ -172,7 +178,7 @@ namespace Sango.Loader
                 if (audioClip != null)
                 {
                     audioClip.name = System.IO.Path.GetFileNameWithoutExtension(filePath);
-                    
+
                     // 将结果放入队列处理
                     LoadData loadData = new LoadData();
                     loadData.rsObject = audioClip;
@@ -181,11 +187,11 @@ namespace Sango.Loader
                     return;
                 }
             }
-                    else
-                    {
-                        Debug.LogError($"异步加载音频文件失败: {www.error}");
-                    }
-            
+            else
+            {
+                Debug.LogError($"异步加载音频文件失败: {www.error}");
+            }
+
             callback?.Invoke(null, customData);
         }
     }

@@ -20,6 +20,9 @@ namespace Sango.Game
         [JsonProperty] public int goldCost;
         [JsonProperty] public int techPointCost;
         [JsonProperty] public int counter;
+        /// <summary>
+        /// 前置科技
+        /// </summary>
         [JsonProperty] public int needTech;
         [JsonProperty] public JArray effects;
         [JsonProperty] public int col;

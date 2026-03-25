@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
@@ -116,6 +116,16 @@ namespace Sango.Game
         /// </summary>
         [JsonProperty] public JArray skillEffects;
 
+        /// <summary>
+        /// 技能视觉效果类型
+        /// </summary>
+        [JsonProperty] public string visualType;
+
+        /// <summary>
+        /// 技能时间轴数据
+        /// </summary>
+        [JsonProperty] public JObject timelineData;
+
         ////从攻击位置反找一个施法位置
         //public void GetSpellCells(Cell atkCell, List<Cell> cells)
         //{
@@ -226,6 +236,149 @@ namespace Sango.Game
                                     return;
                                 }
                                 spell.Spiral(radius, (cell) => { if (cell.moveAble) cells.Add(cell); });
+                            }
+                            else
+                                Sango.Log.Error("技能命中配置不正确!!");
+                        }
+                        break;
+                    // 6
+                    case SkillAttackOffsetType.Fan:
+                        {
+                            if (atkOffsetPoint.Count > 2)
+                            {
+                                int radius = atkOffsetPoint[1];
+                                int angle = atkOffsetPoint[2]; // 扇形角度
+                                if (radius <= 0)
+                                {
+                                    cells.Add(spell);
+                                    return;
+                                }
+                                // 计算扇形范围
+                                int dir = atker.cell.Cub.DirectionTo(spell.Cub);
+                                int startDir = (dir - angle / 60 + 6) % 6;
+                                int endDir = (dir + angle / 60) % 6;
+                                for (int r = 1; r <= radius; r++)
+                                {
+                                    for (int d = startDir; d != endDir; d = (d + 1) % 6)
+                                    {
+                                        Cell cell = spell.OffsetCell(d, r);
+                                        if (cell != null && cell.moveAble)
+                                            cells.Add(cell);
+                                    }
+                                }
+                            }
+                            else
+                                Sango.Log.Error("技能命中配置不正确!!");
+                        }
+                        break;
+                    // 7
+                    case SkillAttackOffsetType.Rectangle:
+                        {
+                            if (atkOffsetPoint.Count > 2)
+                            {
+                                int width = atkOffsetPoint[1];
+                                int length = atkOffsetPoint[2];
+                                if (width <= 0 || length <= 0)
+                                {
+                                    cells.Add(spell);
+                                    return;
+                                }
+                                // 计算矩形范围
+                                int dir = atker.cell.Cub.DirectionTo(spell.Cub);
+                                for (int l = 0; l < length; l++)
+                                {
+                                    Cell currentCell = spell.OffsetCell(dir, l);
+                                    if (currentCell == null)
+                                        break;
+                                    for (int w = -width / 2; w <= width / 2; w++)
+                                    {
+                                        int perpDir = (dir + 1) % 6;
+                                        Cell cell = currentCell.OffsetCell(perpDir, w);
+                                        if (cell != null && cell.moveAble)
+                                            cells.Add(cell);
+                                    }
+                                }
+                            }
+                            else
+                                Sango.Log.Error("技能命中配置不正确!!");
+                        }
+                        break;
+                    // 8
+                    case SkillAttackOffsetType.Cross:
+                        {
+                            if (atkOffsetPoint.Count > 1)
+                            {
+                                int length = atkOffsetPoint[1];
+                                if (length <= 0)
+                                {
+                                    cells.Add(spell);
+                                    return;
+                                }
+                                // 计算十字形范围
+                                cells.Add(spell);
+                                for (int d = 0; d < 6; d++)
+                                {
+                                    for (int l = 1; l <= length; l++)
+                                    {
+                                        Cell cell = spell.OffsetCell(d, l);
+                                        if (cell != null && cell.moveAble)
+                                            cells.Add(cell);
+                                        else
+                                            break;
+                                    }
+                                }
+                            }
+                            else
+                                Sango.Log.Error("技能命中配置不正确!!");
+                        }
+                        break;
+                    // 9
+                    case SkillAttackOffsetType.Square:
+                        {
+                            if (atkOffsetPoint.Count > 1)
+                            {
+                                int size = atkOffsetPoint[1];
+                                if (size <= 0)
+                                {
+                                    cells.Add(spell);
+                                    return;
+                                }
+                                // 计算方形范围
+                                for (int x = -size; x <= size; x++)
+                                {
+                                    for (int y = -size; y <= size; y++)
+                                    {
+                                        Cell cell = spell.OffsetCell(x, y);
+                                        if (cell != null && cell.moveAble)
+                                            cells.Add(cell);
+                                    }
+                                }
+                            }
+                            else
+                                Sango.Log.Error("技能命中配置不正确!!");
+                        }
+                        break;
+                    // 10
+                    case SkillAttackOffsetType.Diamond:
+                        {
+                            if (atkOffsetPoint.Count > 1)
+                            {
+                                int radius = atkOffsetPoint[1];
+                                if (radius <= 0)
+                                {
+                                    cells.Add(spell);
+                                    return;
+                                }
+                                // 计算菱形范围
+                                for (int r = 0; r <= radius; r++)
+                                {
+                                    for (int d = 0; d < 6; d++)
+                                    {
+                                        Cell cell = spell.OffsetCell(d, r);
+                                        if (cell != null && cell.moveAble)
+                                            cells.Add(cell);
+                                    }
+                                }
                             }
                             else
                                 Sango.Log.Error("技能命中配置不正确!!");

@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json.Linq;
+using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
 namespace Sango.Game
@@ -10,7 +10,7 @@ namespace Sango.Game
     /// values : 回合数集合[]
     /// weight : 回合数命中的权重[]
     /// </summary>
-    public class Burn : SkillEffect
+    public class SetFire : SkillEffect
     {
         Condition condition;
         int probability;

@@ -1,4 +1,4 @@
-﻿using Sango.Tools;
+using Sango.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -716,54 +716,44 @@ namespace Sango.Game
         public static bool AIBuildIntriore(City city, Scenario scenario)
         {
             if (city.IsInteriorBuildFull())
-                return true;
+                return false; // 返回false表示没有建设
 
-            if (city.freePersons.Count <= 0)
-                return true;
+            if (city.freePersons.Count < 1) // 至少需要1个武将进行建设
+                return false;
 
+            if (city.gold < 500) // 至少需要500金
+                return false;
+
+            // 根据城市类型选择建筑模板
+            int templateId = 0;
             if (city.IsBorderCity)
             {
-                if (city.portList.Count > 0)
-                {
-                    AIBuildingTemplate(3, city, scenario);
-
-                }
-                else
-                {
-                    AIBuildingTemplate(1, city, scenario);
-                }
+                templateId = city.portList.Count > 0 ? 3 : 1;
             }
             else
             {
-                if (city.portList.Count > 0)
-                {
-                    AIBuildingTemplate(2, city, scenario);
-
-                }
-                else
-                {
-                    AIBuildingTemplate(0, city, scenario);
-                }
+                templateId = city.portList.Count > 0 ? 2 : 0;
             }
 
-            return true;
+            // 执行建设
+            return AIBuildingTemplate(templateId, city, scenario);
         }
 
         // 进是确定有空槽位和空闲武将才能执行
         public static bool AIBuildingTemplate(int templateId, City city, Scenario scenario)
         {
             if (city.gold < 500)
-                return true;
+                return false;
 
-            if (city.freePersons.Count <= 0)
-                return true;
+            if (city.freePersons.Count < 1)
+                return false;
 
             Dictionary<int, int> buildingCountMap = new Dictionary<int, int>();
             foreach (Building building in city.allBuildings)
             {
                 if (buildingCountMap.ContainsKey(building.BuildingType.kind))
                 {
-                    buildingCountMap[building.BuildingType.kind] = buildingCountMap[building.BuildingType.kind] + 1;
+                    buildingCountMap[building.BuildingType.kind]++;
                 }
                 else
                 {
@@ -780,17 +770,13 @@ namespace Sango.Game
                 int buildKindId = i < building_list.Length ? building_list[i] : 0;
                 if (buildKindId > 0)
                 {
-                    if (buildingCountMap.TryGetValue(buildKindId, out int num))
+                    if (buildingCountMap.TryGetValue(buildKindId, out int num) && num > 0)
                     {
-                        if (num > 0)
-                        {
-                            buildingCountMap[buildKindId] = num - 1;
-                            buildingFlag[i] = buildKindId;
-                        }
+                        buildingCountMap[buildKindId] = num - 1;
+                        buildingFlag[i] = buildKindId;
                     }
                 }
             }
-
 
             // 再排除不确定的建筑
             for (int i = 0; i < city.InteriorCellCount; i++)
@@ -801,10 +787,9 @@ namespace Sango.Game
                     bool findAny = false;
                     foreach (int buildKindId in buildingCountMap.Keys)
                     {
-                        int num = buildingCountMap[buildKindId];
-                        if (num > 0)
+                        if (buildingCountMap[buildKindId] > 0)
                         {
-                            buildingCountMap[buildKindId] = num - 1;
+                            buildingCountMap[buildKindId]--;
                             buildingFlag[i] = buildKindId;
                             findAny = true;
                             break;
@@ -818,8 +803,7 @@ namespace Sango.Game
             // 修建未入坑的
             for (int i = 0; i < city.InteriorCellCount; i++)
             {
-                int exsistId = buildingFlag[i];
-                if (exsistId > 0)
+                if (buildingFlag[i] > 0)
                     continue;
 
                 int buildKindId = i < building_list.Length ? building_list[i] : 0;
@@ -830,37 +814,37 @@ namespace Sango.Game
                 }
 
                 if (city.gold < buildingType.cost)
-                    return true;
+                    return false;
 
                 Cell bestPlace = buildingType.GetBestPlace(city);
                 if (bestPlace == null)
-                    return true;
+                    return false;
 
                 Person[] people = ForceAI.CounsellorRecommendBuild(city.freePersons, buildingType);
-                if (people != null)
+                if (people != null && people.Length > 0)
                 {
                     int buildAbility = GameUtility.Method_PersonBuildAbility(people);
                     int turnCount = buildingType.durabilityLimit % buildAbility == 0 ? 0 : 1;
                     int buildCount = Math.Min(Scenario.Cur.Variables.BuildMaxTurn, buildingType.durabilityLimit / buildAbility + turnCount);
                     city.JobBuildBuilding(bestPlace, people, buildingType, buildCount);
-                    return true;
+                    return true; // 成功建设
                 }
             }
 
-            return true;
+            return false; // 没有建设
         }
 
         public static bool AIBuildingLevelUp(City city, Scenario scenario)
         {
             if (city.gold < 500)
-                return true;
+                return false;
 
-            if (city.freePersons.Count <= 0)
-                return true;
+            if (city.freePersons.Count < 1)
+                return false;
 
             // 需要全部建造完毕
             if (!city.IsInteriorBuildFull())
-                return true;
+                return false;
 
             for (int i = 0; i < city.allBuildings.Count; ++i)
             {
@@ -870,10 +854,10 @@ namespace Sango.Game
                     BuildingType nextBuildingType = scenario.GetObject<BuildingType>(building.BuildingType.nextId);
                     int cost = nextBuildingType.cost;
                     if (city.gold < cost)
-                        return true;
+                        return false;
 
                     Person[] people = ForceAI.CounsellorRecommendBuild(city.freePersons, nextBuildingType);
-                    if (people != null)
+                    if (people != null && people.Length > 0)
                     {
                         int buildAbility = GameUtility.Method_PersonBuildAbility(people);
                         int turnCount = nextBuildingType.durabilityLimit % buildAbility == 0 ? 0 : 1;
@@ -881,12 +865,12 @@ namespace Sango.Game
                         if (buildCount <= 6)
                         {
                             city.JobUpgradeBuilding(building, people, nextBuildingType, buildCount);
+                            return true; // 成功升级
                         }
-                        return true;
                     }
                 }
             }
-            return true;
+            return false; // 没有升级
         }
 
         public static bool AIRecruitTroop(City city, Scenario scenario)
@@ -962,9 +946,27 @@ namespace Sango.Game
             return false;
         }
 
+        /// <summary>
+        /// 获取势力的AI个性
+        /// </summary>
+        private static ForceAI.AIPersonalityType GetAIPersonality(City city)
+        {
+            if (city.BelongForce != null)
+            {
+                return ForceAI.GetAIPersonality(city.BelongForce);
+            }
+            return ForceAI.AIPersonalityType.Balanced;
+        }
+
         public static bool AICanAttack(City city, Scenario scenario)
         {
-            if (city.troops < 10000)
+            // 获取AI个性
+            ForceAI.AIPersonalityType personality = GetAIPersonality(city);
+
+            // 根据AI个性调整兵力要求
+            int minTroops = personality == ForceAI.AIPersonalityType.Aggressive ? 8000 : 
+                           personality == ForceAI.AIPersonalityType.Defensive ? 12000 : 10000;
+            if (city.troops < minTroops)
                 return false;
 
             if (city.morale < 60 || city.security < 50)
@@ -973,26 +975,11 @@ namespace Sango.Game
             if (city.freePersons.Count < 2)
                 return false;
 
-            //if (city.durability < city.DurabilityLimit)
-            //    return false;
-
             if (!city.IsBorderCity)
                 return false;
 
             if (city.IsEnemiesRound(15))
                 return false;
-
-            // 兵装检查
-            //if (city.itemStore.TotalNumber < Math.Min(20000, city.troops * 3 / 2))
-            //    return false;
-
-            //int cityTroopNeedFood = (int)(scenario.Variables.baseFoodCostInCity * (city.troops - 20000) * 9);
-            //int troopNeedFood = (int)(20000 * 20 * scenario.Variables.baseFoodCostInTroop);
-            //int needFood = troopNeedFood + cityTroopNeedFood;
-
-            //// 粮食检查
-            //if (city.food <= needFood)
-            //    return false;
 
             List<City> enemiesCities = new List<City>();
             city.ForeachNeighborCities(x =>
@@ -1004,7 +991,10 @@ namespace Sango.Game
             if (enemiesCities.Count == 0)
                 return false;
 
-            if (GameRandom.Chance(70))
+            // 根据AI个性调整攻击概率
+            int attackChance = personality == ForceAI.AIPersonalityType.Aggressive ? 50 : 
+                              personality == ForceAI.AIPersonalityType.Defensive ? 80 : 70;
+            if (GameRandom.Chance(attackChance))
                 return false;
 
             return true;

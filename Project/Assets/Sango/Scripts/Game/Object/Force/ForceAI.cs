@@ -1,11 +1,55 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 
 namespace Sango.Game
 {
     public class ForceAI
     {
+        /// <summary>
+        /// AI个性类型
+        /// </summary>
+        public enum AIPersonalityType
+        {
+            Aggressive,    // 侵略型
+            Defensive,     // 防御型
+            Diplomatic,    // 外交型
+            Economic,      // 经济型
+            Balanced       // 平衡型
+        }
+        
+        /// <summary>
+        /// 获取势力的AI个性
+        /// </summary>
+        public static AIPersonalityType GetAIPersonality(Force force)
+        {
+            // 基于势力领袖的性格决定AI个性
+            if (force.Governor != null && force.Governor.personality != null)
+            {
+                // 基于性格特征计算AI个性
+                int warScore = force.Governor.personality.warTendencyAdd;
+                int defenseScore = force.Governor.personality.defenseTendencyAdd;
+                int diplomacyScore = force.Governor.personality.diplomacyTendencyAdd;
+                int economicScore = force.Governor.personality.economicTendencyAdd;
+                
+                // 找出最高得分的个性类型
+                int maxScore = Math.Max(Math.Max(warScore, defenseScore), Math.Max(diplomacyScore, economicScore));
+                
+                if (maxScore == warScore)
+                    return AIPersonalityType.Aggressive;
+                else if (maxScore == defenseScore)
+                    return AIPersonalityType.Defensive;
+                else if (maxScore == diplomacyScore)
+                    return AIPersonalityType.Diplomatic;
+                else if (maxScore == economicScore)
+                    return AIPersonalityType.Economic;
+                else
+                    return AIPersonalityType.Balanced;
+            }
+            return AIPersonalityType.Balanced;
+        }
+
         /// <summary>
         /// AI外交
         /// </summary>
@@ -18,66 +62,257 @@ namespace Sango.Game
             if (centerCity.freePersons.Count == 0)
                 return true;
 
-            if (centerCity.gold < 3000)
-                return true;
+            // 获取AI个性
+            AIPersonalityType personality = GetAIPersonality(force);
 
-            // 找到
+            // 优先处理停战请求
             foreach (Force neighbor in force.NeighborForceList)
             {
-                if (neighbor.IsAlliance(force)) continue;
+                if (force.IsAlliance(neighbor)) continue;
+
+                int relation = scenario.GetRelation(force, neighbor);
+                if (relation < -500)
+                {
+                    // 考虑停战
+                    if (centerCity.gold >= 2000)
+                    {
+                        // 防御型AI更倾向于停战
+                        int chance = personality == AIPersonalityType.Defensive ? 20 : 10;
+                        if (GameRandom.Chance(chance))
+                        {
+                            // 计算附加金钱价值，关系越差，投入越多
+                            int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Truce, personality);
+                            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, null, additionalValue);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            // 处理结盟
+            foreach (Force neighbor in force.NeighborForceList)
+            {
+                if (force.IsAlliance(neighbor)) continue;
+
+                int relation = scenario.GetRelation(force, neighbor);
+                if (relation >= 1000)
+                {
+                    // 考虑结盟
+                    if (centerCity.gold >= 3000)
+                    {
+                        // 外交型AI更倾向于结盟
+                        int chance = personality == AIPersonalityType.Diplomatic ? 30 : 20;
+                        if (GameRandom.Chance(chance))
+                        {
+                            // 计算附加金钱价值，关系越好，投入越多
+                            int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Alliance, personality);
+                            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Alliance, force, neighbor, null, additionalValue);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            // 处理通商
+            foreach (Force neighbor in force.NeighborForceList)
+            {
+                if (force.IsAlliance(neighbor)) continue;
+
+                int relation = scenario.GetRelation(force, neighbor);
+                if (relation >= 0)
+                {
+                    // 考虑通商
+                    // 经济型AI更倾向于通商
+                    int chance = personality == AIPersonalityType.Economic ? 25 : 15;
+                    if (GameRandom.Chance(chance))
+                    {
+                        // 计算附加金钱价值，促进通商成功
+                        int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Trade, personality);
+                        DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Trade, force, neighbor, null, additionalValue);
+                        return true;
+                    }
+                }
+            }
+
+            // 处理和亲
+            foreach (Force neighbor in force.NeighborForceList)
+            {
+                if (force.IsAlliance(neighbor)) continue;
+
+                int relation = scenario.GetRelation(force, neighbor);
+                if (relation >= 800)
+                {
+                    // 考虑和亲
+                    if (centerCity.gold >= 5000)
+                    {
+                        // 外交型AI更倾向于和亲
+                        int chance = personality == AIPersonalityType.Diplomatic ? 15 : 10;
+                        if (GameRandom.Chance(chance))
+                        {
+                            // 计算附加金钱价值，和亲需要较高投入
+                            int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Marriage, personality);
+                            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Marriage, force, neighbor, null, additionalValue);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            // 处理送礼
+            foreach (Force neighbor in force.NeighborForceList)
+            {
+                if (force.IsAlliance(neighbor)) continue;
+
+                int relation = scenario.GetRelation(force, neighbor);
+                if (relation < 500 && centerCity.gold >= 1000)
+                {
+                    // 考虑送礼
+                    // 外交型AI更倾向于送礼
+                    int chance = personality == AIPersonalityType.Diplomatic ? 35 : 25;
+                    if (GameRandom.Chance(chance))
+                    {
+                        int giftValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.SendGift, personality);
+                        if (centerCity.gold >= giftValue)
+                        {
+                            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, neighbor, null, giftValue);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            // 敌人的敌人就是朋友
+            foreach (Force neighbor in force.NeighborForceList)
+            {
+                if (force.IsAlliance(neighbor)) continue;
 
                 int neighborRelation = scenario.GetRelation(neighbor, force);
                 if (neighborRelation > 0) continue;
-                // 敌人的敌人 就是朋友
+
                 foreach (Force enemysenemy in neighbor.NeighborForceList)
                 {
                     if (enemysenemy != force && !enemysenemy.IsAlliance(neighbor) && !force.NeighborForceList.Contains(enemysenemy) && !enemysenemy.IsAlliance(force))
                     {
                         int enemysenemy_relation = scenario.GetRelation(enemysenemy, force);
-                        if (enemysenemy_relation > 2000)
+                        if (enemysenemy_relation > 1000)
                         {
                             if (centerCity.gold > 3000)
                             {
-                                // 派遣结盟
-                                if (GameRandom.Chance(enemysenemy_relation, 10000))
+                                // 考虑结盟
+                                // 侵略型AI更倾向于与敌人的敌人结盟
+                                int chance = personality == AIPersonalityType.Aggressive ? enemysenemy_relation * 2 / 100 : enemysenemy_relation / 100;
+                                if (GameRandom.Chance(chance, 100))
                                 {
-                                    centerCity.gold -= 1000;
-                                    Alliance alliance = new Alliance()
-                                    {
-                                        ForceList = new SangoObjectList<Force>(),
-                                        leftCount = 36,
-                                        allianceType = 1,
-                                        IsAlive = true,
-                                    };
-                                    alliance.ForceList.Add(force);
-                                    alliance.ForceList.Add(enemysenemy);
-
-                                    scenario.Add(alliance);
-
-                                    force.AllianceList.Add(alliance);
-                                    enemysenemy.AllianceList.Add(alliance);
-#if SANGO_DEBUG
-                                    Sango.Log.Print($"@外交@{force.Name} 于{scenario.GetDateStr()} 与 {enemysenemy.Name} 达成了12个月的结盟 Id={alliance.Id}!!");
-#endif
+                                    // 计算附加金钱价值
+                                    int additionalValue = CalculateDiplomacyResourceValue(force, enemysenemy, enemysenemy_relation, DiplomacyActionType.AllianceRequest, personality);
+                                    DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.AllianceRequest, force, enemysenemy, null, additionalValue);
+                                    return true;
                                 }
                             }
                         }
-                        else
+                        else if (enemysenemy_relation > 0)
                         {
-                            if (centerCity.gold > 3000)
-                            { // 结交
-                                scenario.AddRelation(enemysenemy, force, 1000);
-                                centerCity.gold -= 1000;
-#if SANGO_DEBUG
-                                Sango.Log.Print($"@外交@{force.Name} 与 {enemysenemy.Name} 亲密接触,关系到达了{scenario.GetRelation(enemysenemy, force)}!!");
-#endif
-                                return true;
+                            if (centerCity.gold > 2000)
+                            {
+                                // 考虑结交
+                                int giftValue = CalculateDiplomacyResourceValue(force, enemysenemy, enemysenemy_relation, DiplomacyActionType.SendGift, personality);
+                                if (centerCity.gold >= giftValue)
+                                {
+                                    DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, enemysenemy, null, giftValue);
+                                    return true;
+                                }
                             }
                         }
                     }
                 }
             }
+
             return true;
+        }
+
+        /// <summary>
+        /// 计算外交资源价值
+        /// </summary>
+        /// <param name="force">发送方势力</param>
+        /// <param name="targetForce">目标势力</param>
+        /// <param name="relation">当前关系值</param>
+        /// <param name="actionType">外交行动类型</param>
+        /// <param name="personality">AI个性</param>
+        /// <returns>资源价值</returns>
+        private static int CalculateDiplomacyResourceValue(Force force, Force targetForce, int relation, DiplomacyActionType actionType, AIPersonalityType personality)
+        {
+            City centerCity = force.Governor.BelongCity;
+            if (centerCity == null) return 0;
+
+            int baseValue = 0;
+            int maxValue = centerCity.gold / 2; // 最多使用一半的资金
+
+            switch (actionType)
+            {
+                case DiplomacyActionType.SendGift:
+                    // 关系越差，送礼价值越高
+                    baseValue = 1000 - (relation / 2);
+                    baseValue = Math.Max(500, Math.Min(baseValue, 3000));
+                    break;
+                case DiplomacyActionType.Truce:
+                    // 停战需要较高投入
+                    baseValue = 2000 - relation;
+                    baseValue = Math.Max(1500, Math.Min(baseValue, 5000));
+                    break;
+                case DiplomacyActionType.Alliance:
+                    // 结盟需要高投入
+                    baseValue = 3000 + (relation / 5);
+                    baseValue = Math.Max(2000, Math.Min(baseValue, 8000));
+                    break;
+                case DiplomacyActionType.Marriage:
+                    // 和亲需要最高投入
+                    baseValue = 5000 + (relation / 3);
+                    baseValue = Math.Max(3000, Math.Min(baseValue, 10000));
+                    break;
+                case DiplomacyActionType.Trade:
+                    // 通商投入适中
+                    baseValue = 1000 + (relation / 10);
+                    baseValue = Math.Max(500, Math.Min(baseValue, 3000));
+                    break;
+                case DiplomacyActionType.AllianceRequest:
+                    // 请求结盟投入适中
+                    baseValue = 2000 + (relation / 5);
+                    baseValue = Math.Max(1500, Math.Min(baseValue, 5000));
+                    break;
+                default:
+                    baseValue = 1000;
+                    break;
+            }
+
+            // 根据AI个性调整投入
+            switch (personality)
+            {
+                case AIPersonalityType.Diplomatic:
+                    // 外交型AI更愿意投入
+                    baseValue = (int)(baseValue * 1.2f);
+                    break;
+                case AIPersonalityType.Economic:
+                    // 经济型AI投入较少
+                    baseValue = (int)(baseValue * 0.8f);
+                    break;
+                case AIPersonalityType.Aggressive:
+                    // 侵略型AI在结盟时投入较多
+                    if (actionType == DiplomacyActionType.Alliance || actionType == DiplomacyActionType.AllianceRequest)
+                    {
+                        baseValue = (int)(baseValue * 1.1f);
+                    }
+                    break;
+                case AIPersonalityType.Defensive:
+                    // 防御型AI在停战时投入较多
+                    if (actionType == DiplomacyActionType.Truce)
+                    {
+                        baseValue = (int)(baseValue * 1.1f);
+                    }
+                    break;
+            }
+
+            // 确保投入不超过最大可用资金
+            return Math.Min(baseValue, maxValue);
         }
 
         /// <summary>
@@ -85,9 +320,189 @@ namespace Sango.Game
         /// </summary>
         public static bool AICaptives(Force force, Scenario scenario)
         {
+            // 处理本势力的俘虏
+            ProcessCaptives(force, scenario);
+            
+            // 处理其他势力的俘虏赎回请求
+            ProcessRansomRequests(force, scenario);
+            
             return true;
-            // 释放或者招降俘虏
-            // 赎回俘虏
+        }
+        
+        private static void ProcessCaptives(Force force, Scenario scenario)
+        {
+            if (force.CaptiveList == null || force.CaptiveList.Count == 0)
+                return;
+            
+            foreach (Person captive in force.CaptiveList)
+            {
+                // 检查是否可以招降
+                if (CanRecruitCaptive(force, captive, scenario))
+                {
+                    // 尝试招降
+                    if (TryRecruitCaptive(force, captive, scenario))
+                        continue;
+                }
+                
+                // 检查是否应该释放
+                if (ShouldReleaseCaptive(force, captive, scenario))
+                {
+                    ReleaseCaptive(force, captive, scenario);
+                }
+            }
+        }
+        
+        private static bool CanRecruitCaptive(Force force, Person captive, Scenario scenario)
+        {
+            // 检查忠诚度
+            if (captive.loyalty > 50)
+                return false;
+            
+            // 检查势力关系
+            int relation = scenario.GetRelation(force, captive.BelongForce);
+            if (relation < -5000)
+                return false;
+            
+            // 检查是否有足够的资金
+            City capital = force.Governor?.BelongCity;
+            if (capital == null || capital.gold < 2000)
+                return false;
+            
+            return true;
+        }
+        
+        private static bool TryRecruitCaptive(Force force, Person captive, Scenario scenario)
+        {
+            int probability = GameFormula.Instance.RecruitPersonProbability(null, captive, force.Id);
+            
+            // 根据势力领袖的性格调整招降概率
+            if (force.Governor != null && force.Governor.personality != null)
+            {
+                probability += force.Governor.personality.recruitCaptiveTendencyAdd * 100;
+            }
+            
+            if (GameRandom.Chance(probability, 10000))
+            {
+                // 招降成功
+                City capital = force.Governor?.BelongCity;
+                if (capital != null)
+                {
+                    // 转移到本势力
+                    captive.BelongForce = force;
+                    captive.BelongCorps = force.Governor.BelongCorps;
+                    captive.BelongCity = capital;
+                    capital.allPersons.Add(captive);
+                    force.CaptiveList.Remove(captive);
+                    
+                    // 消耗资金
+                    int cost = GameRandom.Range(1000, 3000);
+                    capital.gold -= cost;
+                    
+#if SANGO_DEBUG
+                    Sango.Log.Print($"{force.Name}成功招降了{captive.BelongForce?.Name}的{captive.Name}！");
+#endif
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        private static bool ShouldReleaseCaptive(Force force, Person captive, Scenario scenario)
+        {
+            // 检查忠诚度
+            if (captive.loyalty > 80)
+                return true;
+            
+            // 检查势力关系
+            int relation = scenario.GetRelation(force, captive.BelongForce);
+            if (relation > 5000)
+                return true;
+            
+            // 检查是否有足够的粮食
+            City capital = force.Governor?.BelongCity;
+            if (capital != null && capital.food < 10000)
+                return true;
+            
+            // 根据势力领袖的性格调整释放概率
+            int releaseChance = 5;
+            if (force.Governor != null && force.Governor.personality != null)
+            {
+                releaseChance += force.Governor.personality.releaseCaptiveTendencyAdd;
+            }
+            
+            // 随机释放
+            if (GameRandom.Chance(releaseChance))
+                return true;
+            
+            return false;
+        }
+        
+        private static void ReleaseCaptive(Force force, Person captive, Scenario scenario)
+        {
+            // 释放俘虏
+            force.CaptiveList.Remove(captive);
+            
+            // 直接调用Person.Escape方法释放俘虏
+            captive.Escape();
+            
+#if SANGO_DEBUG
+            Sango.Log.Print($"{force.Name}释放了{captive.BelongForce?.Name}的{captive.Name}！");
+#endif
+        }
+        
+        private static void ProcessRansomRequests(Force force, Scenario scenario)
+        {
+            // 检查是否有其他势力的俘虏在本势力
+            if (force.CaptiveList == null || force.CaptiveList.Count == 0)
+                return;
+            
+            foreach (Person captive in force.CaptiveList)
+            {
+                // 检查原势力是否有足够的资金赎回
+                if (captive.BelongForce != null && captive.BelongForce.Governor != null && captive.BelongForce.Governor.BelongCity != null)
+                {
+                    City homeCity = captive.BelongForce.Governor.BelongCity;
+                    int ransom = CalculateRansom(captive);
+                    
+                    if (homeCity.gold >= ransom)
+                    {
+                        // 根据势力领袖的性格调整赎回概率
+                        int ransomChance = 70;
+                        if (force.Governor != null && force.Governor.personality != null)
+                        {
+                            ransomChance += force.Governor.personality.ransomCaptiveTendencyAdd;
+                        }
+                        
+                        // 原势力有足够的资金，考虑接受赎回
+                        if (GameRandom.Chance(ransomChance))
+                        {
+                            // 接受赎回
+                            homeCity.gold -= ransom;
+                            City capital = force.Governor?.BelongCity;
+                            if (capital != null)
+                            {
+                                capital.gold += ransom;
+                            }
+                            
+                            // 释放俘虏
+                            ReleaseCaptive(force, captive, scenario);
+                            
+#if SANGO_DEBUG
+                            Sango.Log.Print($"{captive.BelongForce?.Name}支付了{ransom}金赎回了{captive.Name}！");
+#endif
+                        }
+                    }
+                }
+            }
+        }
+        
+        private static int CalculateRansom(Person captive)
+        {
+            // 根据俘虏的能力计算赎金
+            int baseRansom = 5000;
+            int abilitySum = captive.Command + captive.Strength + captive.Intelligence + captive.Politics + captive.Glamour;
+            int abilityBonus = abilitySum * 10;
+            return baseRansom + abilityBonus;
         }
         /// <summary>
         /// AI-科技研发
@@ -95,111 +510,185 @@ namespace Sango.Game
 
         public static bool AITechniques(Force force, Scenario scenario)
         {
+            // 检查是否有城市可以进行科技研发
+            City capital = force.Governor?.BelongCity;
+            if (capital == null)
+                return true;
+            
+            // 检查是否有空闲武将进行研发
+            if (capital.freePersons.Count == 0)
+                return true;
+            
+            // 检查是否有正在研发的科技
+            if (force.ResearchTechnique > 0)
+                return true;
+            
+            // 选择要研发的科技
+            Technique targetTechnique = SelectTechnique(force, scenario);
+            if (targetTechnique == null)
+                return true;
+            
+            // 选择研发人员
+            Person[] researchers = ForceAI.CounsellorRecommendResearch(capital.freePersons, targetTechnique);
+            if (researchers == null || researchers.Length == 0)
+                return true;
+            
+            // 计算研发成本
+            int[] cost = targetTechnique.GetCost(researchers, capital);
+            if (cost == null)
+                return true;
+            
+            // 检查是否有足够的资金和技巧点
+            if (capital.gold < cost[0] || force.TechniquePoint < cost[1])
+                return true;
+            
+            // 开始研发
+            StartResearch(force, capital, targetTechnique, researchers, scenario);
+            
             return true;
-            //if ((this.ArchitectureCount != 0) && (this.UpgradingTechnique < 0))
-            //{
-            //    if (this.PlanTechnique == null)
-            //    {
-            //        if (this.PreferredTechniqueKinds.Count > 0)
-            //        {
-            //            Dictionary<Technique, float> list = new Dictionary<Technique, float>();
-            //            float preferredTechniqueComplition = this.GetPreferredTechniqueComplition();
-            //            foreach (Technique technique in Session.Current.Scenario.GameCommonData.AllTechniques.Techniques.Values)
-            //            {
-            //                if (!this.IsTechniqueUpgradable(technique))
-            //                {
-            //                    continue;
-            //                }
-            //                if (this.GetTechniqueUsefulness(technique) <= 0) continue;
-
-            //                float weight = 1;
-            //                foreach (KeyValuePair<Condition, float> c in technique.AIConditionWeight)
-            //                {
-            //                    if (c.Key.CheckCondition(this))
-            //                    {
-            //                        weight *= c.Value;
-            //                    }
-            //                }
-
-            //                if (preferredTechniqueComplition < 0.5f)
-            //                {
-            //                    if (this.PreferredTechniqueKinds.IndexOf(technique.Kind) >= 0)
-            //                    {
-            //                        list.Add(technique, weight);
-            //                    }
-            //                }
-            //                else if (preferredTechniqueComplition < 0.75f)
-            //                {
-            //                    if ((this.PreferredTechniqueKinds.IndexOf(technique.Kind) >= 0) || GameObject.Chance(0x19))
-            //                    {
-            //                        list.Add(technique, weight);
-            //                    }
-            //                }
-            //                else if (preferredTechniqueComplition < 1f)
-            //                {
-            //                    if ((this.PreferredTechniqueKinds.IndexOf(technique.Kind) >= 0) || GameObject.Chance(50))
-            //                    {
-            //                        list.Add(technique, weight);
-            //                    }
-            //                }
-            //                else if ((this.PreferredTechniqueKinds.IndexOf(technique.Kind) >= 0) || GameObject.Chance(0x4b))
-            //                {
-            //                    list.Add(technique, weight);
-            //                }
-            //            }
-            //            if (list.Count > 0)
-            //            {
-            //                this.PlanTechnique = GameObject.WeightedRandom(list);
-            //            }
-            //            else
-            //            {
-            //                this.PlanTechnique = this.GetRandomTechnique();
-            //            }
-            //        }
-            //        else
-            //        {
-            //            this.PlanTechnique = this.GetRandomTechnique();
-            //        }
-            //    }
-            //    if (this.PlanTechnique != null)
-            //    {
-            //        if (((this.TechniquePoint + this.TechniquePointForTechnique) >= this.getTechniqueActualPointCost(this.PlanTechnique)) && (this.Reputation >= this.getTechniqueActualReputation(this.PlanTechnique)))
-            //        {
-            //            if (this.ArchitectureCount > 1)
-            //            {
-            //                this.Architectures.PropertyName = "Fund";
-            //                this.Architectures.IsNumber = true;
-            //                this.Architectures.ReSort();
-            //            }
-            //            Architecture a = this.Architectures[0] as Architecture;
-            //            if (a.IsFundEnough)
-            //            {
-            //                this.PlanTechniqueArchitecture = this.Architectures[0] as Architecture;
-            //                if (this.PlanTechniqueArchitecture.Fund >= this.getTechniqueActualFundCost(this.PlanTechnique))
-            //                {
-            //                    this.DepositTechniquePointForTechnique(this.TechniquePointForTechnique);
-            //                    this.UpgradeTechnique(this.PlanTechnique, this.PlanTechniqueArchitecture);
-            //                    this.PlanTechniqueArchitecture = null;
-            //                    this.PlanTechnique = null;
-            //                }
-            //            }
-            //            else
-            //            {
-            //                this.PlanTechniqueArchitecture = null;
-            //                this.PlanTechnique = null;
-            //            }
-            //        }
-            //        else if ((this.Reputation >= this.getTechniqueActualReputation(this.PlanTechnique)) && GameObject.Chance(0x21))
-            //        {
-            //            this.SaveTechniquePointForTechnique(this.getTechniqueActualPointCost(this.PlanTechnique) / this.PlanTechnique.Days);
-            //        }
-            //        else if (GameObject.Chance(10))
-            //        {
-            //            this.PlanTechniqueArchitecture = null;
-            //            this.PlanTechnique = null;
-            //        }
-            //    }
-            //}
+        }
+        
+        private static Technique SelectTechnique(Force force, Scenario scenario)
+        {
+            List<Technique> availableTechniques = new List<Technique>();
+            Dictionary<Technique, float> techniqueWeights = new Dictionary<Technique, float>();
+            
+            // 收集所有可研发的科技
+            foreach (Technique technique in scenario.CommonData.Techniques)
+            {
+                if (IsTechniqueAvailable(force, technique, scenario))
+                {
+                    availableTechniques.Add(technique);
+                    float weight = CalculateTechniqueWeight(force, technique, scenario);
+                    techniqueWeights[technique] = weight;
+                }
+            }
+            
+            if (availableTechniques.Count == 0)
+                return null;
+            
+            // 根据权重选择科技
+            return WeightedRandom(techniqueWeights);
+        }
+        
+        private static bool IsTechniqueAvailable(Force force, Technique technique, Scenario scenario)
+        {
+            // 检查是否已经研发过
+            if (force.HasTechnique(technique.Id))
+                return false;
+            
+            // 检查前置科技
+            if (technique.needTech > 0 && !force.HasTechnique(technique.needTech))
+                return false;
+            
+            return true;
+        }
+        
+        private static float CalculateTechniqueWeight(Force force, Technique technique, Scenario scenario)
+        {
+            float weight = 1.0f;
+            
+            // 基础权重
+            weight += technique.level * 0.1f;
+            
+            // 根据当前局势调整权重
+            if (IsAtWar(force, scenario))
+            {
+                // 战争时期优先军事相关科技
+                weight *= 1.3f;
+            }
+            else
+            {
+                // 和平时期优先经济相关科技
+                weight *= 1.2f;
+            }
+            
+            // 根据城市数量调整权重
+            int cityCount = force.CityCount;
+            if (cityCount > 5)
+            {
+                // 城市多优先管理相关科技
+                weight *= 1.1f;
+            }
+            
+            // 根据势力领袖的性格调整科技研发倾向
+            if (force.Governor != null && force.Governor.personality != null)
+            {
+                weight *= (1.0f + force.Governor.personality.technologyTendencyAdd * 0.01f);
+            }
+            
+            return weight;
+        }
+        
+        private static bool IsAtWar(Force force, Scenario scenario)
+        {
+            foreach (Force otherForce in scenario.forceSet)
+            {
+                if (otherForce != null && otherForce != force)
+                {
+                    int relation = scenario.GetRelation(force, otherForce);
+                    if (relation < -3000)
+                        return true;
+                }
+            }
+            return false;
+        }
+        
+        private static Technique WeightedRandom(Dictionary<Technique, float> weights)
+        {
+            float totalWeight = 0;
+            foreach (float weight in weights.Values)
+            {
+                totalWeight += weight;
+            }
+            
+            float random = GameRandom.Range(0, totalWeight);
+            float current = 0;
+            
+            foreach (KeyValuePair<Technique, float> pair in weights)
+            {
+                current += pair.Value;
+                if (random <= current)
+                {
+                    return pair.Key;
+                }
+            }
+            
+            return weights.Keys.FirstOrDefault();
+        }
+        
+        private static void StartResearch(Force force, City city, Technique technique, Person[] researchers, Scenario scenario)
+        {
+            // 计算研发所需时间和资源
+            int[] cost = technique.GetCost(researchers, city);
+            if (cost == null)
+                return;
+            
+            int researchDays = cost[2];
+            int researchCost = cost[0];
+            int techPointCost = cost[1];
+            
+            // 消耗资金和技巧点
+            city.gold -= researchCost;
+            force.GainTechniquePoint(-techPointCost);
+            
+            // 分配研发任务
+            foreach (Person researcher in researchers)
+            {
+                if (researcher != null)
+                {
+                    city.freePersons.Remove(researcher);
+                    researcher.SetMission(MissionType.PersonResearch, city, researchDays, technique.Id);
+                }
+            }
+            
+            // 记录研发中的科技
+            force.ResearchTechnique = technique.Id;
+            force.ResearchLeftCounter = researchDays;
+            
+#if SANGO_DEBUG
+            Sango.Log.Print($"{force.Name}开始研发科技{technique.Name}，预计需要{researchDays}天！");
+#endif
         }
 
         /// <summary>
@@ -898,6 +1387,23 @@ namespace Sango.Game
             });
         }
 
+        /// <summary>
+        /// 军师外交推荐
+        /// </summary>
+        public static Person[] CounsellorRecommendDiplomacy(List<Person> personList)
+        {
+            return CounsellorRecommend1Person(personList, (ref int[] maxValue, Person check1) =>
+            {
+                // 计算外交能力：政治 + 魅力/2
+                int diplomacyAbility = check1.Politics + check1.Glamour / 2;
+                if (diplomacyAbility > maxValue[0])
+                {
+                    maxValue[0] = diplomacyAbility;
+                    return true;
+                }
+                return false;
+            });
+        }
 
         /// <summary>
         /// 军师研究推荐
@@ -1042,9 +1548,34 @@ namespace Sango.Game
                         return false;
 
                     });
-            }
+                default:
+                    // 默认情况：使用智力作为研发能力
+                    return CounsellorRecommend3Person(personList, p1, p2, (ref int[] maxValue, Person check1, Person check2, Person check3) =>
+                    {
+                        int buildAbility = 0;
+                        if (check1 != null) buildAbility += check1.Intelligence;
+                        if (check2 != null) buildAbility += check2.Intelligence;
+                        if (check3 != null) buildAbility += check3.Intelligence;
 
-            return null;
+                        int c = buildAbility / 70;
+                        if (c > maxValue[0])
+                        {
+                            maxValue[0] = c;
+                            maxValue[1] = buildAbility;
+                            return true;
+                        }
+                        else if (c == maxValue[0])
+                        {
+                            if (buildAbility < maxValue[1])
+                            {
+                                maxValue[1] = buildAbility;
+                                return true;
+                            }
+                        }
+                        return false;
+
+                    });
+            }
         }
 
         /// <summary>
