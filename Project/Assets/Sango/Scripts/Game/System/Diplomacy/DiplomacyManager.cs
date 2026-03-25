@@ -292,7 +292,10 @@ namespace Sango.Game
 
             // 设置外交任务，使用新的重载函数传递参数
             diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue);
-
+            if(receiver.Id == diplomat.BelongForce.Id)
+            {
+                Sango.Log.Error($"@外交@{sender.Name} 对 {receiver.Name} 派遣了使者 {diplomat.Name} 执行{GetActionName(actionType)}行动！");
+            }
             // 将武将从首都的空闲武将列表中移除
             diplomat.BelongCity.freePersons.Remove(diplomat);
 
@@ -343,6 +346,10 @@ namespace Sango.Game
         /// <returns>合适的武将</returns>
         private Person FindSuitableDiplomat(Force force)
         {
+            if(force == null || force.Governor == null || force.Governor.BelongCity == null)
+            {
+                return null;
+            }
             // 使用ForceAI中的外交推荐方法选择合适的武将
             Person[] recommendedDiplomats = ForceAI.CounsellorRecommendDiplomacy(force.Governor.BelongCity.freePersons);
             if (recommendedDiplomats != null && recommendedDiplomats.Length > 0)

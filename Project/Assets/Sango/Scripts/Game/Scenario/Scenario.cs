@@ -101,7 +101,7 @@ namespace Sango.Game
         /// 调试用
         /// </summary>
         internal int PauseTrunCount = -1;
-
+        public int TurnCount => Info.turnCount;
 
         public bool useThreadRun = false;
         Task task;

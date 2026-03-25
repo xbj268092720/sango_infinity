@@ -759,18 +759,25 @@ namespace Sango.Game
                     break;
                 case (int)MissionType.PersonDiplomacy:
                     {
-                        // 检查是否到达目标城市
-                        City targetCity = scenario.citySet.Get(missionTarget);
-                        if (BelongCity == targetCity)
+                        // 向目标城市移动
+                        missionCounter--;
+                        if (missionCounter <= 0)
                         {
+                            // 到达目标城市
+                            //ChangeCity(targetCity);
+                            // 重置计数器，准备执行外交行动
+                            //missionCounter = 1;
+                            // 检查是否到达目标城市
+                            City targetCity = scenario.citySet.Get(missionTarget);
+
                             // 执行外交行动
                             Force receiverForce = scenario.forceSet.Get(missionParams1);
                             DiplomacyActionType actionType = (DiplomacyActionType)missionParams2;
-                            
+
                             // 计算成功率
                             int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(actionType, BelongForce, receiverForce, this, missionParams3);
                             bool success = false;
-                            
+
                             // 根据成功率判断是否执行成功
                             if (GameRandom.Chance(successRate))
                             {
@@ -811,9 +818,9 @@ namespace Sango.Game
                                         break;
                                 }
                             }
-                            
+
                             // 输出调试信息
-                            #if SANGO_DEBUG
+#if SANGO_DEBUG
                             if (success)
                             {
                                 Sango.Log.Print($"@外交@{BelongForce.Name} 对 {receiverForce.Name} 的{DiplomacyManager.Instance.GetActionName(actionType)}行动成功了！成功率: {successRate}%");
@@ -822,22 +829,9 @@ namespace Sango.Game
                             {
                                 Sango.Log.Print($"@外交@{BelongForce.Name} 对 {receiverForce.Name} 的{DiplomacyManager.Instance.GetActionName(actionType)}行动失败了！成功率: {successRate}%");
                             }
-                            #endif
-                            
+#endif
                             // 完成任务，返回原城市
                             SetMission(MissionType.PersonReturn, BelongForce.Governor.BelongCity, 1);
-                        }
-                        else
-                        {
-                            // 向目标城市移动
-                            missionCounter--;
-                            if (missionCounter <= 0)
-                            {
-                                // 到达目标城市
-                                ChangeCity(targetCity);
-                                // 重置计数器，准备执行外交行动
-                                missionCounter = 1;
-                            }
                         }
                     }
                     break;

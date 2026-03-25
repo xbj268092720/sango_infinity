@@ -75,7 +75,8 @@ namespace Sango.Game
 #endif
             // 初始化音效管理器
             AudioManager.Instance.Init();
-            
+            SkillVisualizer.Init();
+
             // 初始化外交管理器
             DiplomacyManager.Instance.Init();
             DiplomacyEventManager.Instance.Init();

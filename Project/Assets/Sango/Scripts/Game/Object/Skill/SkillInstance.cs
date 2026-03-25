@@ -226,7 +226,7 @@ namespace Sango.Game
 
         protected void InitSkillVisualizer()
         {
-            string visualType = skill.visualType ?? "Default";
+            string visualType = skill.visualType ?? (IsRange() ? "Range" : "Default");
             skillVisualizer = SkillVisualizer.Create(visualType);
             if (skillVisualizer != null)
             {
@@ -606,7 +606,7 @@ namespace Sango.Game
         {
             float intensity = 1.0f;
             float duration = 0.5f;
-            
+
             if (timelineEvent.parameters != null)
             {
                 if (timelineEvent.parameters.TryGetValue("intensity", out JToken intensityToken))
@@ -618,7 +618,7 @@ namespace Sango.Game
                     duration = durationToken.Value<float>();
                 }
             }
-            
+
             // 相机抖动逻辑
             // CameraManager.Instance.ShakeCamera(intensity, duration);
         }

@@ -17,6 +17,20 @@ namespace Sango.Game
         public virtual bool AIPrepared { get; set; }
         public virtual bool IsPlayer { get; set; }
 
+        private bool isAlive;
+
+        public override bool IsAlive
+        {
+            get
+            {
+                return isAlive && Governor != null && Governor.BelongCity != null;
+            }
+            set
+            {
+                isAlive = value;
+            }
+        }
+
         public override string Name => Governor?.Name;
         public virtual string ColorName => Governor?.ColorName;
 
@@ -156,6 +170,12 @@ namespace Sango.Game
 
         public override void Init(Scenario scenario)
         {
+            if (Governor == null)
+            {
+                IsAlive = false;
+                return;
+            }
+
             actionList = new List<ActionBase>();
             Techniques.ForEach(x =>
             {
@@ -702,6 +722,12 @@ namespace Sango.Game
 
         public Technique AddTechnique(int techId)
         {
+            if(ResearchTechnique == techId)
+            {
+                ResearchTechnique = 0;
+                ResearchLeftCounter = 0;
+            }
+
             Technique technique = Scenario.Cur.GetObject<Technique>(techId);
             if (technique == null) return null;
             Techniques.Add(technique);

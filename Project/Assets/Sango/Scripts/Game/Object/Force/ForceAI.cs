@@ -18,7 +18,7 @@ namespace Sango.Game
             Economic,      // 经济型
             Balanced       // 平衡型
         }
-        
+
         /// <summary>
         /// 获取势力的AI个性
         /// </summary>
@@ -32,10 +32,10 @@ namespace Sango.Game
                 int defenseScore = force.Governor.personality.defenseTendencyAdd;
                 int diplomacyScore = force.Governor.personality.diplomacyTendencyAdd;
                 int economicScore = force.Governor.personality.economicTendencyAdd;
-                
+
                 // 找出最高得分的个性类型
                 int maxScore = Math.Max(Math.Max(warScore, defenseScore), Math.Max(diplomacyScore, economicScore));
-                
+
                 if (maxScore == warScore)
                     return AIPersonalityType.Aggressive;
                 else if (maxScore == defenseScore)
@@ -86,7 +86,7 @@ namespace Sango.Game
                         {
                             // 计算附加金钱价值，关系越差，投入越多
                             int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Truce, personality);
-                            
+
                             // 计算成功率
                             Person diplomat = FindSuitableDiplomat(force);
                             if (diplomat != null)
@@ -112,7 +112,7 @@ namespace Sango.Game
             {
                 if (force.IsAlliance(neighbor)) continue;
                 if (IsInDiplomacyImmunity(force, neighbor.Id)) continue;
-
+                if (neighbor == force) continue;
                 int relation = scenario.GetRelation(force, neighbor);
                 if (relation >= 1000)
                 {
@@ -125,7 +125,7 @@ namespace Sango.Game
                         {
                             // 计算附加金钱价值，关系越好，投入越多
                             int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Alliance, personality);
-                            
+
                             // 计算成功率
                             Person diplomat = FindSuitableDiplomat(force);
                             if (diplomat != null)
@@ -162,7 +162,7 @@ namespace Sango.Game
                     {
                         // 计算附加金钱价值，促进通商成功
                         int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Trade, personality);
-                        
+
                         // 计算成功率
                         Person diplomat = FindSuitableDiplomat(force);
                         if (diplomat != null)
@@ -200,7 +200,7 @@ namespace Sango.Game
                         {
                             // 计算附加金钱价值，和亲需要较高投入
                             int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Marriage, personality);
-                            
+
                             // 计算成功率
                             Person diplomat = FindSuitableDiplomat(force);
                             if (diplomat != null)
@@ -271,7 +271,7 @@ namespace Sango.Game
                     if (enemysenemy != force && !enemysenemy.IsAlliance(neighbor) && !force.NeighborForceList.Contains(enemysenemy) && !enemysenemy.IsAlliance(force))
                     {
                         if (IsInDiplomacyImmunity(force, enemysenemy.Id)) continue;
-                        
+
                         int enemysenemy_relation = scenario.GetRelation(enemysenemy, force);
                         if (enemysenemy_relation > 1000)
                         {
@@ -284,7 +284,7 @@ namespace Sango.Game
                                 {
                                     // 计算附加金钱价值
                                     int additionalValue = CalculateDiplomacyResourceValue(force, enemysenemy, enemysenemy_relation, DiplomacyActionType.AllianceRequest, personality);
-                                    
+
                                     // 计算成功率
                                     Person diplomat = FindSuitableDiplomat(force);
                                     if (diplomat != null)
@@ -344,11 +344,15 @@ namespace Sango.Game
         private static Person FindSuitableDiplomat(Force force)
         {
             if (force.Governor?.BelongCity == null) return null;
-            
+
             // 使用ForceAI中的外交推荐方法选择合适的武将
             Person[] recommendedDiplomats = CounsellorRecommendDiplomacy(force.Governor.BelongCity.freePersons);
             if (recommendedDiplomats != null && recommendedDiplomats.Length > 0)
             {
+                if (force.Id == recommendedDiplomats[0].BelongForce.Id)
+                {
+                    Sango.Log.Print($"@外交@{force.Name} 啊啊啊 {recommendedDiplomats[0].Name} 行动！");
+                }
                 return recommendedDiplomats[0];
             }
 
@@ -365,7 +369,7 @@ namespace Sango.Game
         {
             if (force.DiplomacyImmunityTime.TryGetValue(targetForceId, out int immunityEndTime))
             {
-                return immunityEndTime > Scenario.Cur?.NowTime ?? 0;
+                return immunityEndTime > (Scenario.Cur?.TurnCount ?? 0);
             }
             return false;
         }
@@ -378,16 +382,16 @@ namespace Sango.Game
         private static void CleanupDiplomacyImmunity(Force force, Scenario scenario)
         {
             if (scenario == null || force.DiplomacyImmunityTime.Count == 0) return;
-            
+
             List<int> expiredForces = new List<int>();
             foreach (var kvp in force.DiplomacyImmunityTime)
             {
-                if (kvp.Value <= scenario.NowTime)
+                if (kvp.Value <= scenario.TurnCount)
                 {
                     expiredForces.Add(kvp.Key);
                 }
             }
-            
+
             foreach (int forceId in expiredForces)
             {
                 force.DiplomacyImmunityTime.Remove(forceId);
@@ -412,21 +416,21 @@ namespace Sango.Game
             {
                 force.DiplomacyFailCount[targetForceId] = 1;
             }
-            
+
             // 如果失败次数超过3次，设置外交免疫时间
             if (force.DiplomacyFailCount[targetForceId] >= 3)
             {
                 // 设置30天的免疫时间
-                force.DiplomacyImmunityTime[targetForceId] = (Scenario.Cur?.NowTime ?? 0) + 30;
+                force.DiplomacyImmunityTime[targetForceId] = (Scenario.Cur?.TurnCount ?? 0) + 30;
                 force.DiplomacyFailCount.Remove(targetForceId);
-                
-                #if SANGO_DEBUG
+
+#if SANGO_DEBUG
                 Force targetForce = Scenario.Cur?.forceSet.Get(targetForceId);
                 if (targetForce != null)
                 {
                     Sango.Log.Print($"@外交@{force.Name} 对 {targetForce.Name} 的外交连续失败3次，进入30天外交免疫期！");
                 }
-                #endif
+#endif
             }
         }
 
@@ -522,65 +526,71 @@ namespace Sango.Game
         {
             // 处理本势力的俘虏
             ProcessCaptives(force, scenario);
-            
+
             // 处理其他势力的俘虏赎回请求
             ProcessRansomRequests(force, scenario);
-            
+
             return true;
         }
-        
+
         private static void ProcessCaptives(Force force, Scenario scenario)
         {
             if (force.CaptiveList == null || force.CaptiveList.Count == 0)
                 return;
-            
-            foreach (Person captive in force.CaptiveList)
+
+            for(int i = 0; i < force.CaptiveList.Count; i++)
+            //foreach (Person captive in force.CaptiveList)
             {
+                Person captive = force.CaptiveList[i];
                 // 检查是否可以招降
                 if (CanRecruitCaptive(force, captive, scenario))
                 {
                     // 尝试招降
                     if (TryRecruitCaptive(force, captive, scenario))
+                    {
+                        i--;
                         continue;
+                    }
                 }
-                
+
                 // 检查是否应该释放
                 if (ShouldReleaseCaptive(force, captive, scenario))
                 {
                     ReleaseCaptive(force, captive, scenario);
+                    i--;
                 }
             }
         }
-        
+
         private static bool CanRecruitCaptive(Force force, Person captive, Scenario scenario)
         {
             // 检查忠诚度
             if (captive.loyalty > 50)
                 return false;
-            
+
             // 检查势力关系
             int relation = scenario.GetRelation(force, captive.BelongForce);
             if (relation < -5000)
                 return false;
-            
+
             // 检查是否有足够的资金
             City capital = force.Governor?.BelongCity;
             if (capital == null || capital.gold < 2000)
                 return false;
-            
+
             return true;
         }
-        
+
         private static bool TryRecruitCaptive(Force force, Person captive, Scenario scenario)
         {
             int probability = GameFormula.Instance.RecruitPersonProbability(null, captive, force.Id);
-            
+
             // 根据势力领袖的性格调整招降概率
             if (force.Governor != null && force.Governor.personality != null)
             {
                 probability += force.Governor.personality.recruitCaptiveTendencyAdd * 100;
             }
-            
+
             if (GameRandom.Chance(probability, 10000))
             {
                 // 招降成功
@@ -593,11 +603,11 @@ namespace Sango.Game
                     captive.BelongCity = capital;
                     capital.allPersons.Add(captive);
                     force.CaptiveList.Remove(captive);
-                    
+
                     // 消耗资金
                     int cost = GameRandom.Range(1000, 3000);
                     capital.gold -= cost;
-                    
+
 #if SANGO_DEBUG
                     Sango.Log.Print($"{force.Name}成功招降了{captive.BelongForce?.Name}的{captive.Name}！");
 #endif
@@ -606,56 +616,56 @@ namespace Sango.Game
             }
             return false;
         }
-        
+
         private static bool ShouldReleaseCaptive(Force force, Person captive, Scenario scenario)
         {
             // 检查忠诚度
             if (captive.loyalty > 80)
                 return true;
-            
+
             // 检查势力关系
             int relation = scenario.GetRelation(force, captive.BelongForce);
             if (relation > 5000)
                 return true;
-            
+
             // 检查是否有足够的粮食
             City capital = force.Governor?.BelongCity;
             if (capital != null && capital.food < 10000)
                 return true;
-            
+
             // 根据势力领袖的性格调整释放概率
             int releaseChance = 5;
             if (force.Governor != null && force.Governor.personality != null)
             {
                 releaseChance += force.Governor.personality.releaseCaptiveTendencyAdd;
             }
-            
+
             // 随机释放
             if (GameRandom.Chance(releaseChance))
                 return true;
-            
+
             return false;
         }
-        
+
         private static void ReleaseCaptive(Force force, Person captive, Scenario scenario)
         {
             // 释放俘虏
             force.CaptiveList.Remove(captive);
-            
+
             // 直接调用Person.Escape方法释放俘虏
             captive.Escape();
-            
+
 #if SANGO_DEBUG
             Sango.Log.Print($"{force.Name}释放了{captive.BelongForce?.Name}的{captive.Name}！");
 #endif
         }
-        
+
         private static void ProcessRansomRequests(Force force, Scenario scenario)
         {
             // 检查是否有其他势力的俘虏在本势力
             if (force.CaptiveList == null || force.CaptiveList.Count == 0)
                 return;
-            
+
             foreach (Person captive in force.CaptiveList)
             {
                 // 检查原势力是否有足够的资金赎回
@@ -663,7 +673,7 @@ namespace Sango.Game
                 {
                     City homeCity = captive.BelongForce.Governor.BelongCity;
                     int ransom = CalculateRansom(captive);
-                    
+
                     if (homeCity.gold >= ransom)
                     {
                         // 根据势力领袖的性格调整赎回概率
@@ -672,7 +682,7 @@ namespace Sango.Game
                         {
                             ransomChance += force.Governor.personality.ransomCaptiveTendencyAdd;
                         }
-                        
+
                         // 原势力有足够的资金，考虑接受赎回
                         if (GameRandom.Chance(ransomChance))
                         {
@@ -683,10 +693,10 @@ namespace Sango.Game
                             {
                                 capital.gold += ransom;
                             }
-                            
+
                             // 释放俘虏
                             ReleaseCaptive(force, captive, scenario);
-                            
+
 #if SANGO_DEBUG
                             Sango.Log.Print($"{captive.BelongForce?.Name}支付了{ransom}金赎回了{captive.Name}！");
 #endif
@@ -695,7 +705,7 @@ namespace Sango.Game
                 }
             }
         }
-        
+
         private static int CalculateRansom(Person captive)
         {
             // 根据俘虏的能力计算赎金
@@ -714,45 +724,45 @@ namespace Sango.Game
             City capital = force.Governor?.BelongCity;
             if (capital == null)
                 return true;
-            
+
             // 检查是否有空闲武将进行研发
             if (capital.freePersons.Count == 0)
                 return true;
-            
+
             // 检查是否有正在研发的科技
             if (force.ResearchTechnique > 0)
                 return true;
-            
+
             // 选择要研发的科技
             Technique targetTechnique = SelectTechnique(force, scenario);
             if (targetTechnique == null)
                 return true;
-            
+
             // 选择研发人员
             Person[] researchers = ForceAI.CounsellorRecommendResearch(capital.freePersons, targetTechnique);
             if (researchers == null || researchers.Length == 0)
                 return true;
-            
+
             // 计算研发成本
             int[] cost = targetTechnique.GetCost(researchers, capital);
             if (cost == null)
                 return true;
-            
+
             // 检查是否有足够的资金和技巧点
             if (capital.gold < cost[0] || force.TechniquePoint < cost[1])
                 return true;
-            
+
             // 开始研发
             StartResearch(force, capital, targetTechnique, researchers, scenario);
-            
+
             return true;
         }
-        
+
         private static Technique SelectTechnique(Force force, Scenario scenario)
         {
             List<Technique> availableTechniques = new List<Technique>();
             Dictionary<Technique, float> techniqueWeights = new Dictionary<Technique, float>();
-            
+
             // 收集所有可研发的科技
             foreach (Technique technique in scenario.CommonData.Techniques)
             {
@@ -763,34 +773,34 @@ namespace Sango.Game
                     techniqueWeights[technique] = weight;
                 }
             }
-            
+
             if (availableTechniques.Count == 0)
                 return null;
-            
+
             // 根据权重选择科技
             return WeightedRandom(techniqueWeights);
         }
-        
+
         private static bool IsTechniqueAvailable(Force force, Technique technique, Scenario scenario)
         {
             // 检查是否已经研发过
             if (force.HasTechnique(technique.Id))
                 return false;
-            
+
             // 检查前置科技
             if (technique.needTech > 0 && !force.HasTechnique(technique.needTech))
                 return false;
-            
+
             return true;
         }
-        
+
         private static float CalculateTechniqueWeight(Force force, Technique technique, Scenario scenario)
         {
             float weight = 1.0f;
-            
+
             // 基础权重
             weight += technique.level * 0.1f;
-            
+
             // 根据当前局势调整权重
             if (IsAtWar(force, scenario))
             {
@@ -802,7 +812,7 @@ namespace Sango.Game
                 // 和平时期优先经济相关科技
                 weight *= 1.2f;
             }
-            
+
             // 根据城市数量调整权重
             int cityCount = force.CityCount;
             if (cityCount > 5)
@@ -810,16 +820,16 @@ namespace Sango.Game
                 // 城市多优先管理相关科技
                 weight *= 1.1f;
             }
-            
+
             // 根据势力领袖的性格调整科技研发倾向
             if (force.Governor != null && force.Governor.personality != null)
             {
                 weight *= (1.0f + force.Governor.personality.technologyTendencyAdd * 0.01f);
             }
-            
+
             return weight;
         }
-        
+
         private static bool IsAtWar(Force force, Scenario scenario)
         {
             foreach (Force otherForce in scenario.forceSet)
@@ -833,7 +843,7 @@ namespace Sango.Game
             }
             return false;
         }
-        
+
         private static Technique WeightedRandom(Dictionary<Technique, float> weights)
         {
             float totalWeight = 0;
@@ -841,10 +851,10 @@ namespace Sango.Game
             {
                 totalWeight += weight;
             }
-            
+
             float random = GameRandom.Range(0, totalWeight);
             float current = 0;
-            
+
             foreach (KeyValuePair<Technique, float> pair in weights)
             {
                 current += pair.Value;
@@ -853,25 +863,25 @@ namespace Sango.Game
                     return pair.Key;
                 }
             }
-            
+
             return weights.Keys.FirstOrDefault();
         }
-        
+
         private static void StartResearch(Force force, City city, Technique technique, Person[] researchers, Scenario scenario)
         {
             // 计算研发所需时间和资源
             int[] cost = technique.GetCost(researchers, city);
             if (cost == null)
                 return;
-            
+
             int researchDays = cost[2];
             int researchCost = cost[0];
             int techPointCost = cost[1];
-            
+
             // 消耗资金和技巧点
             city.gold -= researchCost;
             force.GainTechniquePoint(-techPointCost);
-            
+
             // 分配研发任务
             foreach (Person researcher in researchers)
             {
@@ -881,11 +891,11 @@ namespace Sango.Game
                     researcher.SetMission(MissionType.PersonResearch, city, researchDays, technique.Id);
                 }
             }
-            
+
             // 记录研发中的科技
             force.ResearchTechnique = technique.Id;
             force.ResearchLeftCounter = researchDays;
-            
+
 #if SANGO_DEBUG
             Sango.Log.Print($"{force.Name}开始研发科技{technique.Name}，预计需要{researchDays}天！");
 #endif

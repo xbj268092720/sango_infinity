@@ -252,10 +252,5 @@ namespace Sango.Game.Render
             TroopModel?.SetFlash(b);
         }
 
-        public void CastArrow(Vector3 targetPosition)
-        {
-            // 播放射箭特效
-            EffectManager.Instance.PlayEffect("ArrowEffect", MapObject.transform.position);
-        }
     }
 }
