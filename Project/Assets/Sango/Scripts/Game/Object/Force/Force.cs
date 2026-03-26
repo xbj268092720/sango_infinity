@@ -572,8 +572,13 @@ namespace Sango.Game
                                 if (troopCity != null)
                                 {
                                     // 创建相机移动事件
-                                    CameraMoveEvent cameraMoveEvent = new CameraMoveEvent();
-                                    cameraMoveEvent.targetPosition = new Vector3(troopCity.CenterCell.x, 0, troopCity.CenterCell.y);
+                                    CameraMoveEvent cameraMoveEvent = new CameraMoveEvent()
+                                    {
+                                        targetPosition = troopCity.CenterCell.Position,
+                                        dialogStyle = Render.UI.UIDialog.DialogStyle.ClickPersonSay,
+                                        content = $"{ColorName}大人，\n我军细作传来消息,有敌军正在往我方{targetCity.ColorName}靠近!!。",
+                                        person = Counsellor,
+                                    };
                                     RenderEvent.Instance.Add(cameraMoveEvent);
                                 }
                             }

@@ -679,7 +679,6 @@ namespace Sango.Game
             }
         }
 
-
         public override bool OnYearStart(Scenario scenario)
         {
             OnPersonAgeUpdate(scenario);
@@ -980,7 +979,7 @@ namespace Sango.Game
         public override bool OnForceTurnStart(Scenario scenario)
         {
             //TODO:在野角色随机移动
-            //UpdateMission(scenario);
+            UpdateMission(scenario);
             if (BelongForce != null && IsAlive)
             {
                 BelongForce.GainHegemonyPoint(1);
@@ -993,7 +992,7 @@ namespace Sango.Game
         public override bool OnForceTurnEnd(Scenario scenario)
         {
             //TODO:在野角色随机移动
-            UpdateMission(scenario);
+            //UpdateMission(scenario);
             return base.OnForceTurnEnd(scenario);
         }
 

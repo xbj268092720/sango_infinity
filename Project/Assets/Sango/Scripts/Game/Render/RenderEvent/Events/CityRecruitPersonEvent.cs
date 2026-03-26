@@ -6,6 +6,7 @@ namespace Sango.Game.Render
 {
     public class CityRecruitPersonEvent : RenderEventBase
     {
+        public override bool IsStack => true;
         public Person person;
         public Person target;
         static List<ActionBase> sJobActions = new List<ActionBase>();

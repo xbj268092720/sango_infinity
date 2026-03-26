@@ -4,11 +4,14 @@ namespace Sango.Game.Render
 {
     public class RenderEvent : Singleton<RenderEvent>
     {
-        Queue<IRenderEventBase> eventQueue = new Queue<IRenderEventBase>();
+        List<IRenderEventBase> eventQueue = new List<IRenderEventBase>();
         IRenderEventBase CurEvent { get; set; }
         public void Add(IRenderEventBase renderEvent)
         {
-            eventQueue.Enqueue(renderEvent);
+            if (renderEvent.IsStack)
+                eventQueue.Insert(0, renderEvent);
+            else
+                eventQueue.Add(renderEvent);
         }
 
         public bool Update(Scenario scenario, float deltaTime)
@@ -19,18 +22,19 @@ namespace Sango.Game.Render
                     return false;
 
                 CurEvent.Exit(scenario);
+                eventQueue.Remove(CurEvent);
                 CurEvent = null;
 
                 if (eventQueue.Count > 0)
                 {
-                    CurEvent = eventQueue.Dequeue();
+                    CurEvent = eventQueue[0];
                     CurEvent.Enter(scenario);
                 }
             }
 
             if (eventQueue.Count > 0)
             {
-                CurEvent = eventQueue.Dequeue();
+                CurEvent = eventQueue[0];
                 CurEvent.Enter(scenario);
                 return false;
             }

@@ -850,7 +850,7 @@ namespace Sango.Game
                 for (int j = i + 1; j < forceCount; j++)
                 {
                     Force forceB = forceSet[j];
-                    if (forceB == null || !forceB.IsAlive)
+                    if (forceB == null || !forceB.IsAlive || forceB.IsPlayer)
                         continue;
 
                     // 检查并触发外交事件

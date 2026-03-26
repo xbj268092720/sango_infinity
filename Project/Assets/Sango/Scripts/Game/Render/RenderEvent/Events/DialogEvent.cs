@@ -1,14 +1,9 @@
-using Sango.Render;
-using UnityEngine;
-using Sango.Game.Render.UI;
+﻿using Sango.Game.Render.UI;
 
 namespace Sango.Game.Render
 {
-    public class CameraMoveEvent : RenderEventBase
+    public class DialogEvent : RenderEventBase
     {
-        public Vector3 targetPosition;
-        public float moveDuration = 0.5f;
-        private Vector3 startPosition;
         public override bool IsStack => true;
         public UIDialog.DialogStyle dialogStyle;
         public string content;
@@ -18,9 +13,6 @@ namespace Sango.Game.Render
         UIDialog dialog;
         public override void Enter(Scenario scenario)
         {
-            base.Enter(scenario);
-            startPosition = MapRender.Instance.GetCameraPos();
-            MapRender.Instance.MoveCameraTo(targetPosition, moveDuration);
             dialog = UIDialog.Open(dialogStyle, content, () =>
             {
                 sureAction?.Invoke();
@@ -36,11 +28,5 @@ namespace Sango.Game.Render
                 cancelAction?.Invoke();
             };
         }
-
-        public override void Exit(Scenario scenario) { 
-        
-            MapRender.Instance.MoveCameraTo(startPosition, moveDuration);
-        }
-
     }
 }

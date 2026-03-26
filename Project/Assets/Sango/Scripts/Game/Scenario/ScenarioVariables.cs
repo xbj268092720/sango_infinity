@@ -895,7 +895,7 @@ namespace Sango.Game
         /// <summary>
         /// 军师智力对发现概率的影响系数(万分比)
         /// </summary>
-        [JsonProperty] public int discoverEnemyTroopIntelligenceFactor = 50;
+        [JsonProperty] public int discoverEnemyTroopIntelligenceFactor = 70;
 
         #endregion 敌方部队发现参数
 

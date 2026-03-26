@@ -3,6 +3,7 @@
     public class RenderEventBase : IRenderEventBase
     {
         public virtual bool IsDone { get; set; }
+        public virtual bool IsStack { get; set; }
         public virtual bool IsVisible() => true;
         public virtual bool Update(Scenario scenario, float deltaTime)
         {
