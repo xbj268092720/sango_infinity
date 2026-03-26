@@ -1,3 +1,4 @@
+using Sango.Render;
 using UnityEngine;
 
 namespace Sango.Game.Render
@@ -12,16 +13,13 @@ namespace Sango.Game.Render
         public override void Enter(Scenario scenario)
         {
             base.Enter(scenario);
-            startPosition = Camera.main.transform.position;
+            startPosition = MapRender.Instance.GetCameraPos();
             elapsedTime = 0;
+            MapRender.Instance.MoveCameraTo(targetPosition);
         }
 
         public override bool Update(Scenario scenario, float deltaTime)
         {
-            elapsedTime += deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / moveDuration);
-            Camera.main.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-            IsDone = t >= 1.0f;
             return IsDone;
         }
     }

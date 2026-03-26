@@ -655,7 +655,10 @@ namespace Sango.Render
             mapCamera.MoveCameraTo(pos);
         }
 
-
+        public Vector3 GetCameraPos()
+        {
+            return mapCamera.position;
+        }
 
         public void MoveCameraTo(Vector3 pos, float time)
         {
