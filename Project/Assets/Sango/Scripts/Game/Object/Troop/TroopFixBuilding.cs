@@ -37,11 +37,13 @@ namespace Sango.Game
                         return;
                     }
                 }
-
-                scenario.Map.GetMoveRange(troop, troop.MoveRange);
+                if (troop.MoveRange.Count == 0)
+                {
+                    scenario.Map.GetMoveRange(troop, troop.MoveRange);
 #if SANGO_DEBUG_AI
-                GameAIDebug.Instance.ShowMoveRange(troop.MoveRange, troop);
+                    GameAIDebug.Instance.ShowMoveRange(troop.MoveRange, troop);
 #endif
+                }
                 for (int i = 0; i < 6; i++)
                 {
                     Cell cell = TargetCell.Neighbors[i];

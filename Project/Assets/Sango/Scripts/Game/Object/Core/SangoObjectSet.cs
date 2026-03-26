@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine.UIElements;
+using System.Collections;
 
 namespace Sango.Game
 {
@@ -78,7 +79,7 @@ namespace Sango.Game
                 }
             }
 
-            CheckLength(obj.Id+1);
+            CheckLength(obj.Id + 1);
             objects[obj.Id] = obj;
         }
 
@@ -89,7 +90,7 @@ namespace Sango.Game
 
 
         public override void Remove(T obj)
-        {          
+        {
             SearchingBeginIndex = Math.Min(SearchingBeginIndex, obj.Id);
             objects[obj.Id] = null;
         }
@@ -217,6 +218,11 @@ namespace Sango.Game
                 }
                 return count;
             }
+        }
+
+        public override IEnumerator GetEnumerator()
+        {
+            return objects.GetEnumerator();
         }
     }
 }

@@ -531,10 +531,30 @@ namespace Sango.Game
         public bool rewardOver;
 
         public int Age { get; private set; }
+
+        /// <summary>
+        /// 是否空闲
+        /// </summary>
         public bool IsFree { get { return BelongTroop == null && missionType == (int)MissionType.None; } }
+
+        /// <summary>
+        /// 是否在野
+        /// </summary>
         public bool IsWild { get { return state == (int)PersonStateType.Unemployed; } }
+
+        /// <summary>
+        /// 是否为俘虏
+        /// </summary>
         public bool IsPrisoner { get { return state == (int)PersonStateType.Prisoner; } }
+
+        /// <summary>
+        /// 是否未发现
+        /// </summary>
         public bool Invisible { get { return state == (int)PersonStateType.Invisible; } }
+
+        /// <summary>
+        /// 是否死亡
+        /// </summary>
         public bool IsDead { get { return state == (int)PersonStateType.Dead; } }
 
         public bool IsAlliance(BuildingBase other)
@@ -772,6 +792,13 @@ namespace Sango.Game
 
                             // 执行外交行动
                             Force receiverForce = scenario.forceSet.Get(missionParams1);
+                            if (receiverForce == null)
+                            {
+                                // 完成任务，返回原城市
+                                SetMission(MissionType.PersonReturn, BelongForce.Governor.BelongCity, 1);
+                                return;
+                            }
+
                             DiplomacyActionType actionType = (DiplomacyActionType)missionParams2;
 
                             // 计算成功率
@@ -816,20 +843,63 @@ namespace Sango.Game
                                     case DiplomacyActionType.TruceRequest:
                                         success = DiplomacyManager.Instance.PerformTruceRequest(BelongForce, receiverForce);
                                         break;
+                                    case DiplomacyActionType.Ransom:
+                                        // 使用missionParams3存储赎金
+                                        success = DiplomacyManager.Instance.PerformRansom(BelongForce, receiverForce, missionParams3);
+                                        break;
                                 }
                             }
 
                             // 输出调试信息
-#if SANGO_DEBUG
                             if (success)
                             {
+#if SANGO_DEBUG
                                 Sango.Log.Print($"@外交@{BelongForce.Name} 对 {receiverForce.Name} 的{DiplomacyManager.Instance.GetActionName(actionType)}行动成功了！成功率: {successRate}%");
+#endif
                             }
                             else
                             {
+#if SANGO_DEBUG
                                 Sango.Log.Print($"@外交@{BelongForce.Name} 对 {receiverForce.Name} 的{DiplomacyManager.Instance.GetActionName(actionType)}行动失败了！成功率: {successRate}%");
-                            }
 #endif
+                                // 外交失败减少关系
+                                int relationDecrease = 0;
+                                switch (actionType)
+                                {
+                                    case DiplomacyActionType.Alliance:
+                                    case DiplomacyActionType.AllianceRequest:
+                                        relationDecrease = 50;
+                                        break;
+                                    case DiplomacyActionType.Truce:
+                                    case DiplomacyActionType.TruceRequest:
+                                        relationDecrease = 30;
+                                        break;
+                                    case DiplomacyActionType.RequestTechnique:
+                                        relationDecrease = 100;
+                                        break;
+                                    case DiplomacyActionType.RequestTroops:
+                                        relationDecrease = 150;
+                                        break;
+                                    case DiplomacyActionType.Trade:
+                                        relationDecrease = 40;
+                                        break;
+                                    case DiplomacyActionType.Marriage:
+                                        relationDecrease = 80;
+                                        break;
+                                    case DiplomacyActionType.Ransom:
+                                        relationDecrease = 60;
+                                        break;
+                                    default:
+                                        relationDecrease = 20;
+                                        break;
+                                }
+
+                                DiplomacyManager.Instance.ReduceRelation(BelongForce, receiverForce, relationDecrease);
+
+#if SANGO_DEBUG
+                                Sango.Log.Print($"@外交@{BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
+#endif
+                            }
                             // 完成任务，返回原城市
                             SetMission(MissionType.PersonReturn, BelongForce.Governor.BelongCity, 1);
                         }

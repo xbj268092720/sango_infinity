@@ -127,6 +127,12 @@ namespace Sango.Game
         /// </summary>
         [JsonProperty] public SkillTimeline timeline;
 
+        /// <summary>
+        /// 技能时间轴实例
+        /// 负责处理具体的时间控制逻辑
+        /// </summary>
+        private SkillTimelineInstance timelineInstance;
+
         protected List<SkillEffect> effects;
         protected SkillVisualizer skillVisualizer;
         public int tempCriticalFactor;
@@ -135,12 +141,7 @@ namespace Sango.Game
         SkillCriticalMethod skillCriticalMethod;
 
         // 时间轴事件处理相关
-        private int lastProcessedEventIndex = -1;
         private List<Cell> tempTimelineCellList = new List<Cell>();
-        private Troop tempTimelineTroop;
-        private Cell tempTimelineSpellCell;
-        private int tempTimelineCriticalFactor;
-        private System.Action tempTimelineAction;
 
         protected void InitSkillEffects()
         {
@@ -208,6 +209,7 @@ namespace Sango.Game
             InitSkillEffects();
             InitSkillVisualizer();
             InitTimeline();
+            InitTimelineInstance();
             skillCriticalMethod = SkillCriticalMethod.Create(criticalMethod);
             skillSuccessMethod = SkillSuccessMethod.Create(successMethod);
 
@@ -220,7 +222,18 @@ namespace Sango.Game
             {
                 timeline = new SkillTimeline();
                 timeline.Init(skill.timelineData);
-                timeline.SortEvents();
+            }
+        }
+
+        /// <summary>
+        /// 初始化时间轴实例
+        /// </summary>
+        protected void InitTimelineInstance()
+        {
+            if (timeline != null)
+            {
+                timelineInstance = new SkillTimelineInstance();
+                timelineInstance.Init(timeline, this);
             }
         }
 
@@ -457,19 +470,21 @@ namespace Sango.Game
             if (time <= 0f)
             {
                 troop.Render.FaceTo(spellCell.Position);
-                lastProcessedEventIndex = -1;
-                tempTimelineTroop = troop;
-                tempTimelineSpellCell = spellCell;
-                tempTimelineAction = action;
                 tempTimelineCellList.Clear();
                 GetAttackCells(troop, spellCell, tempTimelineCellList);
+                
+                // 重置时间轴实例
+                if (timelineInstance != null)
+                {
+                    timelineInstance.Reset();
+                }
             }
 
-            // 使用时间轴处理技能表现
-            if (timeline != null)
+            // 使用时间轴实例处理技能表现
+            if (timelineInstance != null)
             {
-                ProcessTimelineEvents(troop, spellCell, time);
-                if (time > timeline.duration)
+                bool isComplete = timelineInstance.ProcessEvents(troop, spellCell, time, action);
+                if (isComplete)
                 {
                     troop.Render.SetAniShow(0);
                     return true;
@@ -492,135 +507,6 @@ namespace Sango.Game
                 }
             }
             return false;
-        }
-
-        private void ProcessTimelineEvents(Troop troop, Cell spellCell, float time)
-        {
-            if (timeline == null || timeline.events == null)
-                return;
-
-            for (int i = lastProcessedEventIndex + 1; i < timeline.events.Count; i++)
-            {
-                SkillTimelineEvent timelineEvent = timeline.events[i];
-                if (time >= timelineEvent.time)
-                {
-                    ProcessTimelineEvent(troop, spellCell, timelineEvent);
-                    lastProcessedEventIndex = i;
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        private void ProcessTimelineEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
-        {
-            switch (timelineEvent.GetEventType())
-            {
-                case SkillTimelineEventType.PlayAnimation:
-                    ProcessPlayAnimationEvent(troop, timelineEvent);
-                    break;
-                case SkillTimelineEventType.PlayEffect:
-                    ProcessPlayEffectEvent(troop, spellCell, timelineEvent);
-                    break;
-                case SkillTimelineEventType.PlaySound:
-                    ProcessPlaySoundEvent(timelineEvent);
-                    break;
-                case SkillTimelineEventType.ExecuteDamage:
-                    ProcessExecuteDamageEvent(troop, spellCell, timelineEvent);
-                    break;
-                case SkillTimelineEventType.ExecuteOffset:
-                    ProcessExecuteOffsetEvent(troop, spellCell, timelineEvent);
-                    break;
-                case SkillTimelineEventType.ExecuteEffect:
-                    ProcessExecuteEffectEvent(troop, spellCell, timelineEvent);
-                    break;
-                case SkillTimelineEventType.ShowText:
-                    ProcessShowTextEvent(troop, spellCell, timelineEvent);
-                    break;
-                case SkillTimelineEventType.CameraShake:
-                    ProcessCameraShakeEvent(timelineEvent);
-                    break;
-            }
-        }
-
-        private void ProcessPlayAnimationEvent(Troop troop, SkillTimelineEvent timelineEvent)
-        {
-            if (timelineEvent.parameters != null && timelineEvent.parameters.TryGetValue("animationName", out JToken animationNameToken))
-            {
-                string animationName = animationNameToken.Value<string>();
-                // 播放动画逻辑
-                // troop.Render.PlayAnimation(animationName);
-            }
-        }
-
-        private void ProcessPlayEffectEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
-        {
-            // 播放特效逻辑
-            PlaySkillVisual(troop, spellCell, tempTimelineCellList);
-        }
-
-        private void ProcessPlaySoundEvent(SkillTimelineEvent timelineEvent)
-        {
-            if (timelineEvent.parameters != null && timelineEvent.parameters.TryGetValue("soundName", out JToken soundNameToken))
-            {
-                string soundName = soundNameToken.Value<string>();
-                // 播放音效逻辑
-                // AudioManager.Instance.PlaySound(soundName);
-            }
-        }
-
-        private void ProcessExecuteDamageEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
-        {
-            // 执行伤害逻辑
-            tempTimelineCriticalFactor = CheckCritical(troop, spellCell);
-            Action(troop, spellCell, tempTimelineCriticalFactor);
-            tempTimelineAction?.Invoke();
-        }
-
-        private void ProcessExecuteOffsetEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
-        {
-            // 执行位移逻辑
-            Troop targetTroop = spellCell.troop;
-            DoOffset(troop, targetTroop, 0);
-        }
-
-        private void ProcessExecuteEffectEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
-        {
-            // 执行效果逻辑
-            DoEffect(troop, spellCell, tempTimelineCellList);
-        }
-
-        private void ProcessShowTextEvent(Troop troop, Cell spellCell, SkillTimelineEvent timelineEvent)
-        {
-            if (timelineEvent.parameters != null && timelineEvent.parameters.TryGetValue("text", out JToken textToken))
-            {
-                string text = textToken.Value<string>();
-                // 显示文本逻辑
-                // UIManager.Instance.ShowSkillText(text, spellCell.Position);
-            }
-        }
-
-        private void ProcessCameraShakeEvent(SkillTimelineEvent timelineEvent)
-        {
-            float intensity = 1.0f;
-            float duration = 0.5f;
-
-            if (timelineEvent.parameters != null)
-            {
-                if (timelineEvent.parameters.TryGetValue("intensity", out JToken intensityToken))
-                {
-                    intensity = intensityToken.Value<float>();
-                }
-                if (timelineEvent.parameters.TryGetValue("duration", out JToken durationToken))
-                {
-                    duration = durationToken.Value<float>();
-                }
-            }
-
-            // 相机抖动逻辑
-            // CameraManager.Instance.ShakeCamera(intensity, duration);
         }
 
         List<Cell> tempCellList = new List<Cell>();

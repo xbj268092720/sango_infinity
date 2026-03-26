@@ -378,6 +378,527 @@ namespace Sango.Game
         /// </summary>
         [JsonProperty] public int pathfindingSafeCount = 100000;
 
+        #region 外交系统参数
+
+        /// <summary>
+        /// 外交关系阈值 - 结盟
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceRelationThreshold = 2000;
+
+        /// <summary>
+        /// 外交关系阈值 - 停战
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRelationThreshold = -1000;
+
+        /// <summary>
+        /// 外交关系阈值 - 请求技术
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTechniqueRelationThreshold = 1000;
+
+        /// <summary>
+        /// 外交关系阈值 - 请求兵力
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTroopsRelationThreshold = 1500;
+
+        /// <summary>
+        /// 外交关系阈值 - 通商
+        /// </summary>
+        [JsonProperty] public int diplomacyTradeRelationThreshold = -500;
+
+        /// <summary>
+        /// 外交关系阈值 - 和亲
+        /// </summary>
+        [JsonProperty] public int diplomacyMarriageRelationThreshold = 1500;
+
+        /// <summary>
+        /// 外交关系阈值 - 请求结盟
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceRequestRelationThreshold = 1500;
+
+        /// <summary>
+        /// 外交关系阈值 - 请求停战
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRequestRelationThreshold = -1500;
+
+        /// <summary>
+        /// 使者能力加成上限
+        /// </summary>
+        [JsonProperty] public int diplomacyAbilityBonusMax = 20;
+
+        /// <summary>
+        /// 资源价值加成上限
+        /// </summary>
+        [JsonProperty] public int diplomacyResourceBonusMax = 30;
+
+        /// <summary>
+        /// 资源价值加成系数
+        /// </summary>
+        [JsonProperty] public int diplomacyResourceBonusFactor = 100;
+
+        /// <summary>
+        /// 结盟关系增加
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceRelationIncrease = 500;
+
+        /// <summary>
+        /// 停战关系增加
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRelationIncrease = 300;
+
+        /// <summary>
+        /// 宣战关系减少
+        /// </summary>
+        [JsonProperty] public int diplomacyDeclareWarRelationDecrease = 1000;
+
+        /// <summary>
+        /// 送礼关系增加比例
+        /// </summary>
+        [JsonProperty] public int diplomacySendGiftRelationFactor = 10;
+
+        /// <summary>
+        /// 请求技术关系减少
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTechniqueRelationDecrease = 200;
+
+        /// <summary>
+        /// 请求兵力关系减少
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTroopsRelationDecrease = 300;
+
+        /// <summary>
+        /// 通商关系增加
+        /// </summary>
+        [JsonProperty] public int diplomacyTradeRelationIncrease = 100;
+
+        /// <summary>
+        /// 通商黄金收入增加
+        /// </summary>
+        [JsonProperty] public int diplomacyTradeGoldIncrease = 50;
+
+        /// <summary>
+        /// 和亲关系增加
+        /// </summary>
+        [JsonProperty] public int diplomacyMarriageRelationIncrease = 500;
+
+        /// <summary>
+        /// 和亲额外关系增加
+        /// </summary>
+        [JsonProperty] public int diplomacyMarriageExtraRelationIncrease = 200;
+
+        /// <summary>
+        /// 赎回俘虏关系增加比例
+        /// </summary>
+        [JsonProperty] public int diplomacyRansomRelationFactor = 20;
+
+        /// <summary>
+        /// 请求结盟关系增加
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceRequestRelationIncrease = 50;
+
+        /// <summary>
+        /// 请求停战关系增加
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRequestRelationIncrease = 30;
+
+        /// <summary>
+        /// 撕毁同盟关系减少
+        /// </summary>
+        [JsonProperty] public int diplomacyBreakAllianceRelationDecrease = 500;
+
+        /// <summary>
+        /// 撕毁停战关系减少
+        /// </summary>
+        [JsonProperty] public int diplomacyBreakTruceRelationDecrease = 300;
+
+        /// <summary>
+        /// 撕毁通商关系减少
+        /// </summary>
+        [JsonProperty] public int diplomacyBreakTradeRelationDecrease = 200;
+
+        /// <summary>
+        /// 同盟持续时间
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceDuration = 36;
+
+        /// <summary>
+        /// 停战持续时间
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceDuration = 18;
+
+        /// <summary>
+        /// 通商持续时间
+        /// </summary>
+        [JsonProperty] public int diplomacyTradeDuration = 24;
+
+        /// <summary>
+        /// 每月同盟关系增加
+        /// </summary>
+        [JsonProperty] public int diplomacyMonthlyAllianceRelationIncrease = 50;
+
+        /// <summary>
+        /// 每月普通关系减少
+        /// </summary>
+        [JsonProperty] public int diplomacyMonthlyNormalRelationDecrease = 100;
+
+        /// <summary>
+        /// 外交成功率 - 结盟基础成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceBaseSuccessRate = 50;
+
+        /// <summary>
+        /// 外交成功率 - 结盟关系系数
+        /// </summary>
+        [JsonProperty] public float diplomacyAllianceRelationFactor = 50;
+
+        /// <summary>
+        /// 外交成功率 - 结盟最大成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceMaxSuccessRate = 90;
+
+        /// <summary>
+        /// 外交成功率 - 结盟最低成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceMinSuccessRate = 10;
+
+        /// <summary>
+        /// 外交成功率 - 停战基础成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceBaseSuccessRate = 40;
+
+        /// <summary>
+        /// 外交成功率 - 停战关系系数
+        /// </summary>
+        [JsonProperty] public float diplomacyTruceRelationFactor = 37.5f;
+
+        /// <summary>
+        /// 外交成功率 - 停战最大成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceMaxSuccessRate = 80;
+
+        /// <summary>
+        /// 外交成功率 - 停战最低成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceMinSuccessRate = 10;
+
+        /// <summary>
+        /// 外交成功率 - 请求技术基础成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTechniqueBaseSuccessRate = 30;
+
+        /// <summary>
+        /// 外交成功率 - 请求技术关系系数
+        /// </summary>
+        [JsonProperty] public float diplomacyRequestTechniqueRelationFactor = 47.06f;
+
+        /// <summary>
+        /// 外交成功率 - 请求技术最大成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTechniqueMaxSuccessRate = 85;
+
+        /// <summary>
+        /// 外交成功率 - 请求技术最低成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTechniqueMinSuccessRate = 10;
+
+        /// <summary>
+        /// 外交成功率 - 请求兵力基础成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTroopsBaseSuccessRate = 20;
+
+        /// <summary>
+        /// 外交成功率 - 请求兵力关系系数
+        /// </summary>
+        [JsonProperty] public float diplomacyRequestTroopsRelationFactor = 43.75f;
+
+        /// <summary>
+        /// 外交成功率 - 请求兵力最大成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTroopsMaxSuccessRate = 80;
+
+        /// <summary>
+        /// 外交成功率 - 请求兵力最低成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyRequestTroopsMinSuccessRate = 5;
+
+        /// <summary>
+        /// 外交成功率 - 通商基础成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyTradeBaseSuccessRate = 50;
+
+        /// <summary>
+        /// 外交成功率 - 通商关系系数
+        /// </summary>
+        [JsonProperty] public float diplomacyTradeRelationFactor = 55.56f;
+
+        /// <summary>
+        /// 外交成功率 - 通商最大成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyTradeMaxSuccessRate = 95;
+
+        /// <summary>
+        /// 外交成功率 - 通商最低成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyTradeMinSuccessRate = 10;
+
+        /// <summary>
+        /// 外交成功率 - 和亲基础成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyMarriageBaseSuccessRate = 40;
+
+        /// <summary>
+        /// 外交成功率 - 和亲关系系数
+        /// </summary>
+        [JsonProperty] public float diplomacyMarriageRelationFactor = 36.84f;
+
+        /// <summary>
+        /// 外交成功率 - 和亲最大成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyMarriageMaxSuccessRate = 95;
+
+        /// <summary>
+        /// 外交成功率 - 和亲最低成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyMarriageMinSuccessRate = 10;
+
+        /// <summary>
+        /// 外交成功率 - 请求结盟基础成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceRequestBaseSuccessRate = 30;
+
+        /// <summary>
+        /// 外交成功率 - 请求结盟关系系数
+        /// </summary>
+        [JsonProperty] public float diplomacyAllianceRequestRelationFactor = 41.18f;
+
+        /// <summary>
+        /// 外交成功率 - 请求结盟最大成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceRequestMaxSuccessRate = 85;
+
+        /// <summary>
+        /// 外交成功率 - 请求结盟最低成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceRequestMinSuccessRate = 10;
+
+        /// <summary>
+        /// 外交成功率 - 请求停战基础成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRequestBaseSuccessRate = 20;
+
+        /// <summary>
+        /// 外交成功率 - 请求停战关系系数
+        /// </summary>
+        [JsonProperty] public float diplomacyTruceRequestRelationFactor = 40f;
+
+        /// <summary>
+        /// 外交成功率 - 请求停战最大成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRequestMaxSuccessRate = 75;
+
+        /// <summary>
+        /// 外交成功率 - 请求停战最低成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRequestMinSuccessRate = 5;
+
+        /// <summary>
+        /// 外交成功率 - 赎回俘虏基础成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyRansomBaseSuccessRate = 30;
+
+        /// <summary>
+        /// 外交成功率 - 赎回俘虏关系系数
+        /// </summary>
+        [JsonProperty] public float diplomacyRansomSuccessRelationFactor = 40f;
+
+        /// <summary>
+        /// 外交成功率 - 赎回俘虏最大成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyRansomMaxSuccessRate = 90;
+
+        /// <summary>
+        /// 外交成功率 - 赎回俘虏最低成功率
+        /// </summary>
+        [JsonProperty] public int diplomacyRansomMinSuccessRate = 10;
+
+        /// <summary>
+        /// 外交成功率 - 请求结盟关系阈值
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceRequestSuccessRelationThreshold = 800;
+
+        /// <summary>
+        /// 外交成功率 - 请求停战关系阈值
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRequestSuccessRelationThreshold = -800;
+
+        /// <summary>
+        /// 外交成功率 - 请求结盟随机概率分母
+        /// </summary>
+        [JsonProperty] public int diplomacyAllianceRequestChanceDenominator = 2000;
+
+        /// <summary>
+        /// 外交成功率 - 请求停战随机概率分母
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRequestChanceDenominator = 1500;
+
+        /// <summary>
+        /// 外交成功率 - 请求停战随机概率偏移
+        /// </summary>
+        [JsonProperty] public int diplomacyTruceRequestChanceOffset = 1000;
+
+        #endregion 外交系统参数
+
+        #region 招募系统参数
+
+        /// <summary>
+        /// 招募系统 - 基础相性值
+        /// </summary>
+        [JsonProperty] public int recruitBaseCompatibility = 25;
+
+        /// <summary>
+        /// 招募系统 - 在野武将忠诚度基础值
+        /// </summary>
+        [JsonProperty] public int recruitWildLoyaltyBase = 60;
+
+        /// <summary>
+        /// 招募系统 - 忠诚度难度系数
+        /// </summary>
+        [JsonProperty] public int recruitLoyaltyDifficultyFactor = 5;
+
+        /// <summary>
+        /// 招募系统 - 默认义理ID
+        /// </summary>
+        [JsonProperty] public int recruitDefaultArgumentationId = 3;
+
+        /// <summary>
+        /// 招募系统 - 基础成功率
+        /// </summary>
+        [JsonProperty] public int recruitBaseSuccessRate = 45;
+
+        /// <summary>
+        /// 招募系统 - 相性影响系数分子
+        /// </summary>
+        [JsonProperty] public int recruitCompatibilityFactorNumerator = 3;
+
+        /// <summary>
+        /// 招募系统 - 相性影响系数分母
+        /// </summary>
+        [JsonProperty] public int recruitCompatibilityFactorDenominator = 2;
+
+        /// <summary>
+        /// 招募系统 - 忠诚度影响基础值
+        /// </summary>
+        [JsonProperty] public int recruitLoyaltyInfluenceBase = 18;
+
+        /// <summary>
+        /// 招募系统 - 忠诚度影响系数分子
+        /// </summary>
+        [JsonProperty] public int recruitLoyaltyInfluenceNumerator = 5;
+
+        /// <summary>
+        /// 招募系统 - 忠诚度影响系数分母
+        /// </summary>
+        [JsonProperty] public int recruitLoyaltyInfluenceDenominator = 100;
+
+        /// <summary>
+        /// 招募系统 - 魅力最低值
+        /// </summary>
+        [JsonProperty] public int recruitMinGlamour = 30;
+
+        /// <summary>
+        /// 招募系统 - 魅力影响系数分子
+        /// </summary>
+        [JsonProperty] public int recruitGlamourFactorNumerator = 3;
+
+        /// <summary>
+        /// 招募系统 - 魅力影响系数分母
+        /// </summary>
+        [JsonProperty] public int recruitGlamourFactorDenominator = 5;
+
+        /// <summary>
+        /// 招募系统 - 亲爱武将影响值
+        /// </summary>
+        [JsonProperty] public int recruitLikePersonInfluence = 15;
+
+        /// <summary>
+        /// 招募系统 - 亲子关系影响值
+        /// </summary>
+        [JsonProperty] public int recruitParentChildInfluence = 15;
+
+        /// <summary>
+        /// 招募系统 - 厌恶武将影响值
+        /// </summary>
+        [JsonProperty] public int recruitHatePersonInfluence = 15;
+
+        /// <summary>
+        /// 招募系统 - 俘虏影响值
+        /// </summary>
+        [JsonProperty] public int recruitPrisonerInfluence = 15;
+
+        /// <summary>
+        /// 招募系统 - 随机影响最大值
+        /// </summary>
+        [JsonProperty] public int recruitRandomMax = 5;
+
+        /// <summary>
+        /// 招募系统 - 君主魅力影响系数
+        /// </summary>
+        [JsonProperty] public int recruitGovernorGlamourFactor = 5;
+
+        /// <summary>
+        /// 招募系统 - 第一次发现加成
+        /// </summary>
+        [JsonProperty] public int recruitFirstDiscoveryBonus = 15;
+
+        /// <summary>
+        /// 招募系统 - 基础义理值
+        /// </summary>
+        [JsonProperty] public int recruitBaseGiri = 10;
+
+        /// <summary>
+        /// 招募系统 - 义理最大值
+        /// </summary>
+        [JsonProperty] public int recruitMaxGiri = 15;
+
+        /// <summary>
+        /// 招募系统 - 义理忠诚度影响系数
+        /// </summary>
+        [JsonProperty] public int recruitGiriLoyaltyFactor = 2;
+
+        #endregion 招募系统参数
+
+        #region 逃跑系统参数
+
+        /// <summary>
+        /// 逃跑系统 - 城市中逃跑概率减少值
+        /// </summary>
+        [JsonProperty] public int escapeCityReduction = 200;
+
+        /// <summary>
+        /// 逃跑系统 - 部队中逃跑概率增加值
+        /// </summary>
+        [JsonProperty] public int escapeTroopIncrease = 500;
+
+        /// <summary>
+        /// 逃跑系统 - 最大逃跑概率
+        /// </summary>
+        [JsonProperty] public int escapeMaxProbability = 3000;
+
+        #endregion 逃跑系统参数
+
+        #region 敌方部队发现参数
+
+        /// <summary>
+        /// 发现敌方新建部队的基础概率(万分比)
+        /// </summary>
+        [JsonProperty] public int discoverEnemyTroopBaseProbability = 3000;
+
+        /// <summary>
+        /// 军师智力对发现概率的影响系数(万分比)
+        /// </summary>
+        [JsonProperty] public int discoverEnemyTroopIntelligenceFactor = 50;
+
+        #endregion 敌方部队发现参数
+
         public float DifficultyDamageFactor
         {
             get

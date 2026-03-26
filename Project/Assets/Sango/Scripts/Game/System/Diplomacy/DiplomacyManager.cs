@@ -20,6 +20,9 @@ namespace Sango.Game
         public void Init()
         {
             _forceRelations = new Dictionary<string, ForceRelation>();
+            
+            // 注册每月开始事件
+            GameEvent.OnMonthStart += HandleMonthlyRelationChanges;
         }
 
         /// <summary>
@@ -140,29 +143,32 @@ namespace Sango.Game
                 return false;
 
             int relation = GetRelation(sender, receiver);
+            ScenarioVariables variables = Scenario.Cur.Variables;
 
             switch (actionType)
             {
                 case DiplomacyActionType.Alliance:
-                    return relation >= 2000 && !sender.IsAlliance(receiver);
+                    return relation >= variables.diplomacyAllianceRelationThreshold && !sender.HasActiveAgreement(receiver);
                 case DiplomacyActionType.Truce:
-                    return relation >= -1000 && !sender.IsAlliance(receiver);
+                    return relation >= variables.diplomacyTruceRelationThreshold && !sender.HasActiveAgreement(receiver);
                 case DiplomacyActionType.DeclareWar:
-                    return !sender.IsAlliance(receiver);
+                    return !sender.HasActiveAgreement(receiver);
                 case DiplomacyActionType.SendGift:
                     return true;
                 case DiplomacyActionType.RequestTechnique:
-                    return relation >= 1000;
+                    return relation >= variables.diplomacyRequestTechniqueRelationThreshold;
                 case DiplomacyActionType.RequestTroops:
-                    return relation >= 1500;
+                    return relation >= variables.diplomacyRequestTroopsRelationThreshold;
                 case DiplomacyActionType.Trade:
-                    return relation >= -500;
+                    return relation >= variables.diplomacyTradeRelationThreshold && !sender.HasActiveAgreement(receiver);
                 case DiplomacyActionType.Marriage:
-                    return relation >= 1500;
+                    return relation >= variables.diplomacyMarriageRelationThreshold;
                 case DiplomacyActionType.AllianceRequest:
-                    return relation >= 1500 && !sender.IsAlliance(receiver);
+                    return relation >= variables.diplomacyAllianceRequestRelationThreshold && !sender.HasActiveAgreement(receiver);
                 case DiplomacyActionType.TruceRequest:
-                    return relation >= -1500 && !sender.IsAlliance(receiver);
+                    return relation >= variables.diplomacyTruceRequestRelationThreshold && !sender.HasActiveAgreement(receiver);
+                case DiplomacyActionType.Ransom:
+                    return true; // 赎回俘虏总是可以尝试
                 default:
                     return false;
             }
@@ -184,16 +190,17 @@ namespace Sango.Game
 
             int relation = GetRelation(sender, receiver);
             int baseSuccessRate = 0;
+            ScenarioVariables variables = Scenario.Cur.Variables;
 
             switch (actionType)
             {
                 case DiplomacyActionType.Alliance:
                     // 关系值越高，成功率越高，最高90%
-                    baseSuccessRate = (int)Mathf.Clamp(50 + (relation - 2000) / 50, 10, 90);
+                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyAllianceBaseSuccessRate + (relation - variables.diplomacyAllianceRelationThreshold) / variables.diplomacyAllianceRelationFactor, variables.diplomacyAllianceMinSuccessRate, variables.diplomacyAllianceMaxSuccessRate);
                     break;
                 case DiplomacyActionType.Truce:
                     // 关系值越高，成功率越高，最高80%
-                    baseSuccessRate = (int)Mathf.Clamp(40 + (relation + 1000) / 37.5f, 10, 80);
+                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyTruceBaseSuccessRate + (relation - variables.diplomacyTruceRelationThreshold) / variables.diplomacyTruceRelationFactor, variables.diplomacyTruceMinSuccessRate, variables.diplomacyTruceMaxSuccessRate);
                     break;
                 case DiplomacyActionType.DeclareWar:
                     // 宣战总是成功
@@ -203,27 +210,31 @@ namespace Sango.Game
                     return 100;
                 case DiplomacyActionType.RequestTechnique:
                     // 关系值越高，成功率越高，最高85%
-                    baseSuccessRate = (int)Mathf.Clamp(30 + (relation - 1000) / 47.06f, 10, 85);
+                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyRequestTechniqueBaseSuccessRate + (relation - variables.diplomacyRequestTechniqueRelationThreshold) / variables.diplomacyRequestTechniqueRelationFactor, variables.diplomacyRequestTechniqueMinSuccessRate, variables.diplomacyRequestTechniqueMaxSuccessRate);
                     break;
                 case DiplomacyActionType.RequestTroops:
                     // 关系值越高，成功率越高，最高80%
-                    baseSuccessRate = (int)Mathf.Clamp(20 + (relation - 1500) / 43.75f, 5, 80);
+                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyRequestTroopsBaseSuccessRate + (relation - variables.diplomacyRequestTroopsRelationThreshold) / variables.diplomacyRequestTroopsRelationFactor, variables.diplomacyRequestTroopsMinSuccessRate, variables.diplomacyRequestTroopsMaxSuccessRate);
                     break;
                 case DiplomacyActionType.Trade:
                     // 关系值越高，成功率越高，最高95%
-                    baseSuccessRate = (int)Mathf.Clamp(50 + (relation + 500) / 55.56f, 10, 95);
+                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyTradeBaseSuccessRate + (relation - variables.diplomacyTradeRelationThreshold) / variables.diplomacyTradeRelationFactor, variables.diplomacyTradeMinSuccessRate, variables.diplomacyTradeMaxSuccessRate);
                     break;
                 case DiplomacyActionType.Marriage:
                     // 关系值越高，成功率越高，最高95%
-                    baseSuccessRate = (int)Mathf.Clamp(40 + (relation - 1500) / 36.84f, 10, 95);
+                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyMarriageBaseSuccessRate + (relation - variables.diplomacyMarriageRelationThreshold) / variables.diplomacyMarriageRelationFactor, variables.diplomacyMarriageMinSuccessRate, variables.diplomacyMarriageMaxSuccessRate);
                     break;
                 case DiplomacyActionType.AllianceRequest:
                     // 关系值越高，成功率越高，最高85%
-                    baseSuccessRate = (int)Mathf.Clamp(30 + (relation - 1500) / 41.18f, 10, 85);
+                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyAllianceRequestBaseSuccessRate + (relation - variables.diplomacyAllianceRequestRelationThreshold) / variables.diplomacyAllianceRequestRelationFactor, variables.diplomacyAllianceRequestMinSuccessRate, variables.diplomacyAllianceRequestMaxSuccessRate);
                     break;
                 case DiplomacyActionType.TruceRequest:
                     // 关系值越高，成功率越高，最高75%
-                    baseSuccessRate = (int)Mathf.Clamp(20 + (relation + 1500) / 40f, 5, 75);
+                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyTruceRequestBaseSuccessRate + (relation - variables.diplomacyTruceRequestRelationThreshold) / variables.diplomacyTruceRequestRelationFactor, variables.diplomacyTruceRequestMinSuccessRate, variables.diplomacyTruceRequestMaxSuccessRate);
+                    break;
+                case DiplomacyActionType.Ransom:
+                    // 关系值越高，成功率越高，最高90%
+                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyRansomBaseSuccessRate + (relation + 1000) / variables.diplomacyRansomSuccessRelationFactor, variables.diplomacyRansomMinSuccessRate, variables.diplomacyRansomMaxSuccessRate);
                     break;
                 default:
                     return 0;
@@ -233,14 +244,14 @@ namespace Sango.Game
             if (diplomat != null)
             {
                 int diplomacyAbility = diplomat.Politics + diplomat.Glamour / 2;
-                int abilityBonus = Mathf.Min(diplomacyAbility / 10, 20);
+                int abilityBonus = Mathf.Min(diplomacyAbility / 10, Scenario.Cur.Variables.diplomacyAbilityBonusMax);
                 baseSuccessRate += abilityBonus;
             }
 
             // 金钱和道具价值加成
             if (resourceValue > 0)
             {
-                int resourceBonus = Mathf.Min(resourceValue / 100, 30); // 每100金增加1%成功率，最高30%
+                int resourceBonus = Mathf.Min(resourceValue / Scenario.Cur.Variables.diplomacyResourceBonusFactor, Scenario.Cur.Variables.diplomacyResourceBonusMax);
                 baseSuccessRate += resourceBonus;
             }
 
@@ -334,6 +345,8 @@ namespace Sango.Game
                     return "请求结盟";
                 case DiplomacyActionType.TruceRequest:
                     return "请求停战";
+                case DiplomacyActionType.Ransom:
+                    return "赎回俘虏";
                 default:
                     return "未知行动";
             }
@@ -369,15 +382,17 @@ namespace Sango.Game
         public bool PerformAlliance(Force forceA, Force forceB)
         {
             // 检查是否已经结盟
-            if (forceA.IsAlliance(forceB))
+            if (forceA.CheckAlliance(forceB, AllianceType.Alliance) != null)
                 return false;
+
+            ScenarioVariables variables = Scenario.Cur.Variables;
 
             // 创建联盟
             Alliance alliance = new Alliance()
             {
                 ForceList = new SangoObjectList<Force>(),
-                leftCount = 36, // 12个月
-                allianceType = 1,
+                leftCount = variables.diplomacyAllianceDuration, // 12个月
+                allianceType = AllianceType.Alliance,
                 IsAlive = true
             };
 
@@ -392,11 +407,14 @@ namespace Sango.Game
             forceB.AllianceList.Add(alliance);
 
             // 增加关系
-            AddRelation(forceA, forceB, 500);
+            AddRelation(forceA, forceB, variables.diplomacyAllianceRelationIncrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{forceA.Name} 与 {forceB.Name} 达成了12个月的结盟 Id={alliance.Id}!!");
+            Sango.Log.Print($"@外交@{forceA.Name} 与 {forceB.Name} 达成了{variables.diplomacyAllianceDuration / 3}个月的结盟 Id={alliance.Id}!!");
 #endif
+
+            // 触发事件
+            GameEvent.OnDiplomacyAlliance?.Invoke(forceA, forceB, true);
 
             return true;
         }
@@ -409,12 +427,18 @@ namespace Sango.Game
         /// <returns>是否成功</returns>
         public bool PerformTruce(Force forceA, Force forceB)
         {
+            // 检查是否已经有停战协议
+            if (forceA.CheckAlliance(forceB, AllianceType.Truce) != null)
+                return false;
+
+            ScenarioVariables variables = Scenario.Cur.Variables;
+
             // 创建停战协议
             Alliance truce = new Alliance()
             {
                 ForceList = new SangoObjectList<Force>(),
-                leftCount = 18, // 6个月
-                allianceType = 2, // 停战类型
+                leftCount = variables.diplomacyTruceDuration, // 6个月
+                allianceType = AllianceType.Truce, // 停战类型
                 IsAlive = true
             };
 
@@ -429,11 +453,14 @@ namespace Sango.Game
             forceB.AllianceList.Add(truce);
 
             // 增加关系
-            AddRelation(forceA, forceB, 300);
+            AddRelation(forceA, forceB, variables.diplomacyTruceRelationIncrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{forceA.Name} 与 {forceB.Name} 达成了6个月的停战协议!!");
+            Sango.Log.Print($"@外交@{forceA.Name} 与 {forceB.Name} 达成了{variables.diplomacyTruceDuration / 3}个月的停战协议!!");
 #endif
+
+            // 触发事件
+            GameEvent.OnDiplomacyTruce?.Invoke(forceA, forceB, true);
 
             return true;
         }
@@ -456,11 +483,14 @@ namespace Sango.Game
             }
 
             // 减少关系
-            ReduceRelation(forceA, forceB, 1000);
+            ReduceRelation(forceA, forceB, Scenario.Cur.Variables.diplomacyDeclareWarRelationDecrease);
 
 #if SANGO_DEBUG
             Sango.Log.Print($"@外交@{forceA.Name} 向 {forceB.Name} 宣战!!");
 #endif
+
+            // 触发事件
+            GameEvent.OnDiplomacyDeclareWar?.Invoke(forceA, forceB, true);
 
             return true;
         }
@@ -482,7 +512,7 @@ namespace Sango.Game
             sender.Governor.BelongCity.gold -= giftValue;
 
             // 计算关系增加量
-            int relationIncrease = giftValue / 10; // 每10金增加1点关系
+            int relationIncrease = giftValue / Scenario.Cur.Variables.diplomacySendGiftRelationFactor; // 每10金增加1点关系
 
             // 增加关系
             AddRelation(sender, receiver, relationIncrease);
@@ -490,6 +520,9 @@ namespace Sango.Game
 #if SANGO_DEBUG
             Sango.Log.Print($"@外交@{sender.Name} 向 {receiver.Name} 赠送了 {giftValue} 金，关系增加了 {relationIncrease}!!");
 #endif
+
+            // 触发事件
+            GameEvent.OnDiplomacySendGift?.Invoke(sender, receiver, giftValue, true);
 
             return true;
         }
@@ -515,12 +548,15 @@ namespace Sango.Game
             sender.AddTechnique(techId);
 
             // 减少关系
-            ReduceRelation(sender, receiver, 200);
+            ReduceRelation(sender, receiver, Scenario.Cur.Variables.diplomacyRequestTechniqueRelationDecrease);
 
 #if SANGO_DEBUG
             Technique tech = Scenario.Cur.GetObject<Technique>(techId);
             Sango.Log.Print($"@外交@{sender.Name} 从 {receiver.Name} 处学到了技术 {tech?.Name}!!");
 #endif
+
+            // 触发事件
+            GameEvent.OnDiplomacyRequestTechnique?.Invoke(sender, receiver, techId, true);
 
             return true;
         }
@@ -563,11 +599,14 @@ namespace Sango.Game
             }
 
             // 减少关系
-            ReduceRelation(sender, receiver, 300);
+            ReduceRelation(sender, receiver, Scenario.Cur.Variables.diplomacyRequestTroopsRelationDecrease);
 
 #if SANGO_DEBUG
             Sango.Log.Print($"@外交@{receiver.Name} 向 {sender.Name} 提供了 {troopCount} 兵力!!");
 #endif
+
+            // 触发事件
+            GameEvent.OnDiplomacyRequestTroops?.Invoke(sender, receiver, troopCount, true);
 
             return true;
         }
@@ -589,16 +628,44 @@ namespace Sango.Game
             if (senderCityCount == 0 || receiverCityCount == 0)
                 return false;
 
+            // 检查是否已经有协议
+            if (sender.HasActiveAgreement(receiver))
+                return false;
+
+            ScenarioVariables variables = Scenario.Cur.Variables;
+
+            // 创建通商协议
+            Alliance tradeAlliance = new Alliance()
+            {
+                ForceList = new SangoObjectList<Force>(),
+                leftCount = variables.diplomacyTradeDuration, // 8个月
+                allianceType = AllianceType.Trade, // 通商类型
+                IsAlive = true
+            };
+
+            tradeAlliance.ForceList.Add(sender);
+            tradeAlliance.ForceList.Add(receiver);
+
+            // 添加到场景
+            Scenario.Cur.Add(tradeAlliance);
+
+            // 添加到势力的联盟列表
+            sender.AllianceList.Add(tradeAlliance);
+            receiver.AllianceList.Add(tradeAlliance);
+
             // 增加双方的黄金收入
-            sender.ForEachCity(city => city.baseGainGold += 50);
-            receiver.ForEachCity(city => city.baseGainGold += 50);
+            sender.ForEachCity(city => city.baseGainGold += variables.diplomacyTradeGoldIncrease);
+            receiver.ForEachCity(city => city.baseGainGold += variables.diplomacyTradeGoldIncrease);
 
             // 增加关系
-            AddRelation(sender, receiver, 100);
+            AddRelation(sender, receiver, variables.diplomacyTradeRelationIncrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{sender.Name} 与 {receiver.Name} 达成了通商协议，双方城市的黄金收入增加了!!");
+            Sango.Log.Print($"@外交@{sender.Name} 与 {receiver.Name} 达成了{variables.diplomacyTradeDuration / 3}个月的通商协议，双方城市的黄金收入增加了!!");
 #endif
+
+            // 触发事件
+            GameEvent.OnDiplomacyTrade?.Invoke(sender, receiver, true);
 
             return true;
         }
@@ -611,19 +678,119 @@ namespace Sango.Game
         /// <returns>是否成功</returns>
         public bool PerformMarriage(Force sender, Force receiver)
         {
+            ScenarioVariables variables = Scenario.Cur.Variables;
+
             // 增加关系
-            AddRelation(sender, receiver, 500);
+            AddRelation(sender, receiver, variables.diplomacyMarriageRelationIncrease);
 
             // 提高双方的同盟概率
             if (!sender.IsAlliance(receiver))
             {
                 // 和亲后更容易结盟
-                AddRelation(sender, receiver, 200);
+                AddRelation(sender, receiver, variables.diplomacyMarriageExtraRelationIncrease);
             }
 
 #if SANGO_DEBUG
             Sango.Log.Print($"@外交@{sender.Name} 与 {receiver.Name} 达成了和亲，关系大幅提升!!");
 #endif
+
+            // 触发事件
+            GameEvent.OnDiplomacyMarriage?.Invoke(sender, receiver, true);
+
+            return true;
+        }
+
+        /// <summary>
+        /// 执行赎回俘虏
+        /// </summary>
+        /// <param name="sender">发送方</param>
+        /// <param name="receiver">接收方</param>
+        /// <param name="ransomValue">赎金</param>
+        /// <returns>是否成功</returns>
+        public bool PerformRansom(Force sender, Force receiver, int ransomValue)
+        {
+            // 检查发送方是否有足够的资金
+            if (sender.Governor?.BelongCity?.gold < ransomValue)
+                return false;
+
+            // 检查接收方是否有来自发送方的俘虏
+            bool hasCaptive = false;
+            
+            // 检查城市中的俘虏
+            receiver.ForEachCity(city => {
+                foreach (Person person in city.captiveList)
+                {
+                    if (person.IsPrisoner && person.BelongForce?.Id == sender.Id)
+                    {
+                        hasCaptive = true;
+                        return;
+                    }
+                }
+            });
+            
+            // 检查部队中的俘虏
+            if (!hasCaptive)
+            {
+                receiver.ForEachTroop(troop => {
+                    foreach (Person person in troop.captiveList)
+                    {
+                        if (person.IsPrisoner && person.BelongForce?.Id == sender.Id)
+                        {
+                            hasCaptive = true;
+                            return;
+                        }
+                    }
+                });
+            }
+
+            if (!hasCaptive)
+                return false;
+
+            // 扣除资金
+            sender.Governor.BelongCity.gold -= ransomValue;
+
+            // 释放城市中的俘虏
+            receiver.ForEachCity(city => {
+                List<Person> captivesToRelease = new List<Person>();
+                foreach (Person person in city.captiveList)
+                {
+                    if (person.IsPrisoner && person.BelongForce?.Id == sender.Id)
+                    {
+                        captivesToRelease.Add(person);
+                    }
+                }
+                foreach (Person captive in captivesToRelease)
+                {
+                    captive.Escape();
+                }
+            });
+            
+            // 释放部队中的俘虏
+            receiver.ForEachTroop(troop => {
+                List<Person> captivesToRelease = new List<Person>();
+                foreach (Person person in troop.captiveList)
+                {
+                    if (person.IsPrisoner && person.BelongForce?.Id == sender.Id)
+                    {
+                        captivesToRelease.Add(person);
+                    }
+                }
+                foreach (Person captive in captivesToRelease)
+                {
+                    captive.Escape();
+                }
+            });
+
+            // 增加关系
+            int relationIncrease = ransomValue / Scenario.Cur.Variables.diplomacyRansomRelationFactor; // 每20金增加1点关系
+            AddRelation(sender, receiver, relationIncrease);
+
+#if SANGO_DEBUG
+            Sango.Log.Print($"@外交@{sender.Name} 向 {receiver.Name} 支付了 {ransomValue} 金赎回了俘虏，关系增加了 {relationIncrease}!!");
+#endif
+
+            // 触发事件
+            GameEvent.OnDiplomacyRansom?.Invoke(sender, receiver, ransomValue, true);
 
             return true;
         }
@@ -638,23 +805,33 @@ namespace Sango.Game
         {
             // 检查关系是否足够
             int relation = GetRelation(sender, receiver);
-            if (relation < 800)
+            ScenarioVariables variables = Scenario.Cur.Variables;
+            if (relation < variables.diplomacyAllianceRequestSuccessRelationThreshold)
+                return false;
+
+            // 检查是否已经有协议
+            if (sender.HasActiveAgreement(receiver))
                 return false;
 
             // 有一定概率成功
-            if (GameRandom.Chance(relation, 2000))
+            if (GameRandom.Chance(relation, variables.diplomacyAllianceRequestChanceDenominator))
             {
-                return PerformAlliance(sender, receiver);
+                bool success = PerformAlliance(sender, receiver);
+                // 触发事件
+                GameEvent.OnDiplomacyAllianceRequest?.Invoke(sender, receiver, success);
+                return success;
             }
             else
             {
                 // 失败但关系略有提升
-                AddRelation(sender, receiver, 50);
+                AddRelation(sender, receiver, variables.diplomacyAllianceRequestRelationIncrease);
                 
 #if SANGO_DEBUG
                 Sango.Log.Print($"@外交@{sender.Name} 请求与 {receiver.Name} 结盟，但被拒绝了，不过关系有所改善!!");
 #endif
 
+                // 触发事件
+                GameEvent.OnDiplomacyAllianceRequest?.Invoke(sender, receiver, false);
                 return false;
             }
         }
@@ -669,24 +846,143 @@ namespace Sango.Game
         {
             // 检查关系是否足够
             int relation = GetRelation(sender, receiver);
-            if (relation < -800)
+            ScenarioVariables variables = Scenario.Cur.Variables;
+            if (relation < variables.diplomacyTruceRequestSuccessRelationThreshold)
+                return false;
+
+            // 检查是否已经有协议
+            if (sender.HasActiveAgreement(receiver))
                 return false;
 
             // 有一定概率成功
-            if (GameRandom.Chance(relation + 1000, 1500))
+            if (GameRandom.Chance(relation + variables.diplomacyTruceRequestChanceOffset, variables.diplomacyTruceRequestChanceDenominator))
             {
-                return PerformTruce(sender, receiver);
+                bool success = PerformTruce(sender, receiver);
+                // 触发事件
+                GameEvent.OnDiplomacyTruceRequest?.Invoke(sender, receiver, success);
+                return success;
             }
             else
             {
                 // 失败但关系略有提升
-                AddRelation(sender, receiver, 30);
+                AddRelation(sender, receiver, variables.diplomacyTruceRequestRelationIncrease);
                 
 #if SANGO_DEBUG
                 Sango.Log.Print($"@外交@{sender.Name} 请求与 {receiver.Name} 停战，但被拒绝了，不过关系有所改善!!");
 #endif
 
+                // 触发事件
+                GameEvent.OnDiplomacyTruceRequest?.Invoke(sender, receiver, false);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 撕毁条约
+        /// </summary>
+        /// <param name="forceA">势力A</param>
+        /// <param name="forceB">势力B</param>
+        /// <returns>是否成功</returns>
+        public bool BreakAlliance(Force forceA, Force forceB)
+        {
+            // 检查是否有同盟或停战协议
+            Alliance alliance = forceA.CheckAlliance(forceB);
+            if (alliance == null)
+                return false;
+
+            // 标记条约为无效
+            alliance.IsAlive = false;
+            
+            // 从双方的同盟列表中移除
+            forceA.AllianceList.Remove(alliance);
+            forceB.AllianceList.Remove(alliance);
+
+            ScenarioVariables variables = Scenario.Cur.Variables;
+
+            // 如果是通商协议，还原黄金收入
+            if (alliance.allianceType == AllianceType.Trade)
+            {
+                forceA.ForEachCity(city => city.baseGainGold -= variables.diplomacyTradeGoldIncrease);
+                forceB.ForEachCity(city => city.baseGainGold -= variables.diplomacyTradeGoldIncrease);
+            }
+
+            // 减少关系
+            int relationDecrease = 0;
+            switch (alliance.allianceType)
+            {
+                case AllianceType.Alliance: // 同盟
+                    relationDecrease = variables.diplomacyBreakAllianceRelationDecrease;
+                    break;
+                case AllianceType.Truce: // 停战
+                    relationDecrease = variables.diplomacyBreakTruceRelationDecrease;
+                    break;
+                case AllianceType.Trade: // 通商
+                    relationDecrease = variables.diplomacyBreakTradeRelationDecrease;
+                    break;
+            }
+            ReduceRelation(forceA, forceB, relationDecrease);
+
+#if SANGO_DEBUG
+            string treatyType = alliance.allianceType == AllianceType.Alliance ? "同盟" : (alliance.allianceType == AllianceType.Truce ? "停战协议" : "通商协议");
+            Sango.Log.Print($"@外交@{forceA.Name} 撕毁了与 {forceB.Name} 的{treatyType}，关系减少了 {relationDecrease}！");
+#endif
+
+            // 触发事件
+            GameEvent.OnDiplomacyBreakAlliance?.Invoke(forceA, forceB, true);
+
+            return true;
+        }
+
+        /// <summary>
+        /// 处理每月关系变化
+        /// </summary>
+        /// <param name="scenario">场景</param>
+        private void HandleMonthlyRelationChanges(Scenario scenario)
+        {
+            if (scenario == null || scenario.forceSet.Count < 2)
+                return;
+
+            int forceCount = scenario.forceSet.Count;
+            ScenarioVariables variables = scenario.Variables;
+            
+            for (int i = 0; i < forceCount; ++i)
+            {
+                Force forceA = scenario.forceSet[i];
+                if (forceA == null || !forceA.IsAlive)
+                    continue;
+
+                for (int j = i + 1; j < forceCount; ++j)
+                {
+                    Force forceB = scenario.forceSet[j];
+                    if (forceB == null || !forceB.IsAlive)
+                        continue;
+
+                    // 检查是否有同盟或停战协议
+                    bool hasAlliance = forceA.IsAlliance(forceB);
+                    
+                    // 关系变化概率
+                    int chance = variables.relationChangeChance;
+                    
+                    // 同盟关系变化概率降低，且变化值为正
+                    if (hasAlliance)
+                    {
+                        chance = chance / 2;
+                        if (GameRandom.Chance(chance))
+                        {
+                            // 同盟关系缓慢增长
+                            AddRelation(forceA, forceB, variables.diplomacyMonthlyAllianceRelationIncrease);
+                        }
+                    }
+                    else
+                    {
+                        // 普通关系有一定概率下降
+                        if (GameRandom.Chance(chance))
+                        {
+                            // 关系自然衰减
+                            ReduceRelation(forceA, forceB, variables.diplomacyMonthlyNormalRelationDecrease);
+                        }
+                    }
+                }
             }
         }
     }
@@ -705,6 +1001,7 @@ namespace Sango.Game
         Trade = 7,           // 通商
         Marriage = 8,        // 和亲
         AllianceRequest = 9,  // 请求结盟
-        TruceRequest = 10     // 请求停战
+        TruceRequest = 10,    // 请求停战
+        Ransom = 11           // 赎回俘虏
     }
 }

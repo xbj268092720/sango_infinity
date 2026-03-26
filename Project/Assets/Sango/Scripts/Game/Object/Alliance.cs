@@ -1,8 +1,27 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using System.Text;
 
 namespace Sango.Game
 {
+    /// <summary>
+    /// 联盟类型
+    /// </summary>
+    public enum AllianceType
+    {
+        /// <summary>
+        /// 同盟
+        /// </summary>
+        Alliance = 1,
+        /// <summary>
+        /// 停战协议
+        /// </summary>
+        Truce = 2,
+        /// <summary>
+        /// 通商协议
+        /// </summary>
+        Trade = 3
+    }
+
     [JsonObject(MemberSerialization.OptIn)]
     public class Alliance : SangoObject
     {
@@ -15,7 +34,7 @@ namespace Sango.Game
         public SangoObjectList<Force> ForceList = new SangoObjectList<Force>();
 
         [JsonProperty] public int leftCount;
-        [JsonProperty] public int allianceType;
+        [JsonProperty] public AllianceType allianceType;
 
         public bool Contains(Force force)
         {
@@ -38,11 +57,17 @@ namespace Sango.Game
                     stringBuilder.Append(" ");
 #endif
                     force.AllianceList.Remove(this);
+                    
+                    // 如果是通商协议，还原黄金收入
+                    if (allianceType == AllianceType.Trade)
+                    {
+                        force.ForEachCity(city => city.baseGainGold -= 50);
+                    }
                 }
 
 #if SANGO_DEBUG
-
-                Sango.Log.Print($"@外交@{stringBuilder.ToString()} 同盟 {Id} 于{scenario.GetDateStr()} 与 结束!!");
+                string allianceTypeStr = allianceType == AllianceType.Alliance ? "同盟" : (allianceType == AllianceType.Truce ? "停战协议" : "通商协议");
+                Sango.Log.Print($"@外交@{stringBuilder.ToString()} 的{allianceTypeStr} {Id} 于{scenario.GetDateStr()} 结束!!");
 #endif
 
             }

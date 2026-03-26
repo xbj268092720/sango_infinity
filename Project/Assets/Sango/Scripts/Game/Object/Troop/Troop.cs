@@ -87,6 +87,11 @@ namespace Sango.Game
         /// 当前兵力
         /// </summary>
         [JsonProperty] public int troops;
+        
+        /// <summary>
+        /// 出征回合
+        /// </summary>
+        [JsonProperty] public int liveDays;
 
         public int MaxTroops { get; set; }
         public bool IsFull => troops >= MaxTroops;
@@ -337,6 +342,7 @@ namespace Sango.Game
         public int foodCost = 0;
 
         public List<ActionBase> actionList;
+        public List<Cell> MoveRange = new List<Cell>(256);
 
         public override void Init(Scenario scenario)
         {
@@ -396,8 +402,12 @@ namespace Sango.Game
             return foodCost;
         }
 
+        public bool IsNewTroop => liveDays == 0;
+
         public override bool OnForceTurnStart(Scenario scenario)
         {
+            liveDays++;
+            MoveRange.Clear();
             ActionOver = false;
             AIFinished = false;
             AIPrepared = false;
@@ -1001,7 +1011,6 @@ namespace Sango.Game
         }
 
         internal static List<Cell> tempCellList = new List<Cell>(256);
-        internal static List<Cell> tempMoveRange = new List<Cell>(256);
         internal static List<TroopMoveEvent> tempMoveEventList = new List<TroopMoveEvent>(32);
         internal static List<Cell> spellRangeCells = new List<Cell>(256);
         internal bool isMoving = false;
@@ -1388,12 +1397,14 @@ namespace Sango.Game
 
                 if (tryToDest != null)
                 {
-                    List<Cell> temp = new List<Cell>();
-                    map.GetMoveRange(this, temp);
-                    PriorityQueue<Cell> nearnestCellInMoveRange = new PriorityQueue<Cell>();
-                    for (int i = 0; i < temp.Count; i++)
+                    if (MoveRange.Count == 0)
                     {
-                        Cell cell = temp[i];
+                        map.GetMoveRange(this, MoveRange);
+                    }
+                    PriorityQueue<Cell> nearnestCellInMoveRange = new PriorityQueue<Cell>();
+                    for (int i = 0; i < MoveRange.Count; i++)
+                    {
+                        Cell cell = MoveRange[i];
                         if (cell.IsEmpty())
                         {
                             nearnestCellInMoveRange.Push(cell, map.Distance(cell, tryToDest));
@@ -1422,14 +1433,13 @@ namespace Sango.Game
                 tempCellList.Clear();
                 tryToDest = null;
 
-                tempMoveRange.Clear();
-
                 // 先检查移动范围内是否可达目标
                 Map map = Scenario.Cur.Map;
-                map.GetMoveRange(this, tempMoveRange);
-                for (int i = 1; i < tempMoveRange.Count; ++i)
+                if (MoveRange.Count == 0)
+                    map.GetMoveRange(this, MoveRange);
+                for (int i = 1; i < MoveRange.Count; ++i)
                 {
-                    Cell cell = tempMoveRange[i];
+                    Cell cell = MoveRange[i];
                     if (cell.building == city)
                     {
                         tryToDest = cell;
@@ -1470,9 +1480,9 @@ namespace Sango.Game
                         //List<Cell> temp = new List<Cell>();
                         //map.GetMoveRange(this, temp);
                         PriorityQueue<Cell> nearnestCellInMoveRange = new PriorityQueue<Cell>();
-                        for (int i = 0; i < tempMoveRange.Count; i++)
+                        for (int i = 0; i < MoveRange.Count; i++)
                         {
-                            Cell cell = tempMoveRange[i];
+                            Cell cell = MoveRange[i];
                             if (cell.IsEmpty())
                             {
                                 nearnestCellInMoveRange.Push(cell, map.Distance(cell, tryToDest));
@@ -1699,9 +1709,12 @@ namespace Sango.Game
 
         }
 
-        public List<Cell> MoveRange = new List<Cell>();
+
         public void SetMission(MissionType missionType, int missionTarget)
         {
+#if SANGO_DEBUG
+            Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 任务变更:{missionType} -> {missionTarget}!!");
+#endif
             this.missionType = (int)missionType;
             this.missionTarget = missionTarget;
         }

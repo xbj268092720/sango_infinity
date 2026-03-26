@@ -4,6 +4,7 @@ using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
 using TKNewtonsoft.Json.Serialization;
 using Sango.Game.Action;
+using Sango.Game.Render;
 using UnityEngine;
 using System.Linq;
 
@@ -147,6 +148,7 @@ namespace Sango.Game
         public int techniqueMaxRow = 0;
         public List<ItemType> createdItemTypes = new List<ItemType>();
 
+        public bool IsEnemy(Force force) { return IsEnemy(this, force); }
         public int PersonCount { get; set; }
         public int CityCount { get; set; }
         public int CityBaseCount { get; set; }
@@ -243,6 +245,28 @@ namespace Sango.Game
             for (int i = 0; i < AllianceList.Count; ++i)
             {
                 Alliance alliance = AllianceList[i];
+                if (alliance.Contains(other) && alliance.allianceType == AllianceType.Alliance)
+                    return true;
+            }
+            return false;
+        }
+
+        public bool HasActiveTradeAgreement(Force other)
+        {
+            for (int i = 0; i < AllianceList.Count; ++i)
+            {
+                Alliance alliance = AllianceList[i];
+                if (alliance.Contains(other) && alliance.allianceType == AllianceType.Trade)
+                    return true;
+            }
+            return false;
+        }
+
+        public bool HasActiveAgreement(Force other)
+        {
+            for (int i = 0; i < AllianceList.Count; ++i)
+            {
+                Alliance alliance = AllianceList[i];
                 if (alliance.Contains(other))
                     return true;
             }
@@ -255,6 +279,17 @@ namespace Sango.Game
             {
                 Alliance alliance = AllianceList[i];
                 if (alliance.Contains(other))
+                    return alliance;
+            }
+            return null;
+        }
+
+        public Alliance CheckAlliance(Force other, AllianceType allianceType)
+        {
+            for (int i = 0; i < AllianceList.Count; ++i)
+            {
+                Alliance alliance = AllianceList[i];
+                if (alliance.Contains(other) && alliance.allianceType == allianceType)
                     return alliance;
             }
             return null;
@@ -508,6 +543,45 @@ namespace Sango.Game
                     c.OnForceTurnStart(scenario);
                 }
             }
+
+            // 检查敌方新建部队是否有占领我方城池的任务
+            if (IsPlayer)
+            {
+                foreach (Troop troop in scenario.troopsSet)
+                {
+                    if (troop != null && troop.IsAlive && troop.BelongForce != this && troop.IsNewTroop && troop.missionType == (int)MissionType.TroopOccupyCity)
+                    {
+                        // 检查任务目标是否为我方城池
+                        var targetCity = scenario.GetObject<City>(troop.missionTarget);
+                        if (targetCity != null && targetCity.BelongForce == this)
+                        {
+                            // 根据军师智力计算发现概率
+                            int baseProbability = scenario.Variables.discoverEnemyTroopBaseProbability;
+                            int intelligenceFactor = 0;
+                            if (Counsellor != null)
+                            {
+                                intelligenceFactor = Counsellor.Intelligence * scenario.Variables.discoverEnemyTroopIntelligenceFactor;
+                            }
+                            int totalProbability = baseProbability + intelligenceFactor;
+                            
+                            // 概率命中后生成相机移动事件
+                            if (GameRandom.Chance(totalProbability, 10000))
+                            {
+                                // 获取部队所属城市的位置
+                                var troopCity = troop.BelongCity;
+                                if (troopCity != null)
+                                {
+                                    // 创建相机移动事件
+                                    CameraMoveEvent cameraMoveEvent = new CameraMoveEvent();
+                                    cameraMoveEvent.targetPosition = new Vector3(troopCity.CenterCell.x, 0, troopCity.CenterCell.y);
+                                    RenderEvent.Instance.Add(cameraMoveEvent);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             UpdateValidCreatedItemTypes();
 
             return base.OnForceTurnStart(scenario);

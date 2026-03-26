@@ -161,6 +161,11 @@ namespace Sango.Game
         /// 伏兵计略暴击率加成
         /// </summary>
         [JsonProperty] public byte ambushCriticalAdd;
+
+        /// <summary>
+        /// 对于每种地形的防御加成值
+        /// </summary>
+        [JsonProperty] public float[] terrainDefenceBonus;
          
 
         public int MoveCost(Cell cell)

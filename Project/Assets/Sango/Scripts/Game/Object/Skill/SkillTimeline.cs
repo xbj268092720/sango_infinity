@@ -8,6 +8,7 @@ namespace Sango.Game
 {
     /// <summary>
     /// 技能时间轴
+    /// 只存储初始化后的参数，由管理器管理
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class SkillTimeline
@@ -44,12 +45,17 @@ namespace Sango.Game
                 {
                     foreach (JToken eventToken in eventsArray)
                     {
-                        SkillTimelineEvent timelineEvent = new SkillTimelineEvent();
-                        timelineEvent.Init(eventToken as JObject);
-                        events.Add(timelineEvent);
+                        SkillTimelineEvent timelineEvent = SkillTimelineEvent.Create(eventToken as JObject);
+                        if (timelineEvent != null)
+                        {
+                            events.Add(timelineEvent);
+                        }
                     }
                 }
             }
+
+            // 按时间顺序排序事件
+            SortEvents();
         }
 
         /// <summary>

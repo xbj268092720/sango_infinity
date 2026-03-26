@@ -1,4 +1,6 @@
-﻿namespace Sango.Game
+using System.Collections.Generic;
+
+namespace Sango.Game
 {
     public class TroopOccupyCity : TroopMissionBehaviour
     {
@@ -21,41 +23,36 @@
             {
                 if (TargetCity == null)
                 {
-                    Troop.missionType = (int)MissionType.TroopReturnCity;
-                    Troop.missionTarget = Troop.BelongCity.Id;
+                    Troop.SetMission(MissionType.TroopReturnCity, Troop.BelongCity.Id);
                 }
                 else if (!TargetCity.IsSameForce(Troop))
                 {
                     // 被友军拿取,保护友军城池,直到消灭敌人
-                    Troop.missionType = (int)MissionType.TroopProtectCity;
-                    Troop.missionTarget = Troop.BelongCity.Id;
+                    Troop.SetMission(MissionType.TroopProtectCity, TargetCity.Id);
                 }
                 else
                 {
-                    Troop.missionType = (int)MissionType.TroopMovetoCity;
+                    Troop.SetMission(MissionType.TroopMovetoCity, TargetCity.Id);
                 }
                 Troop.NeedPrepareMission();
             }
             else
             {
-                //List<Cell> road = troop.BelongCity.GetRoadToNeighbor(TargetCity);
-
-
-
-                //TroopAIUtility.RangeEnemyCell(troop, 3, tempCells, scenario);
-                //if(tempCells.Count > 0)
-                //{
-                //    // 获取目标城市周围的敌人
-                //    priorityActionData = TroopAIUtility.PriorityAction(Troop, tempCells, scenario, SkillAttackPriority);
-                //}
-                //else
-                //{
-                //    priorityActionData = null;
-                //}
-
-                // 获取目标城市周围的敌人
-                priorityActionData = TroopAIUtility.PriorityAction(Troop, TargetCity.CenterCell, scenario, SkillAttackPriority);
-
+                // 检查目标城市周围的敌人
+                List<Cell> enemyCells = new List<Cell>();
+                TroopAIUtility.RangeEnemyCell(troop, 4, enemyCells, scenario);
+                
+                // 根据情况选择不同的策略
+                if (enemyCells.Count > 0)
+                {
+                    // 有敌人，优先攻击威胁大的敌人
+                    priorityActionData = TroopAIUtility.PriorityAction(Troop, TargetCity.CenterCell, scenario, SkillAttackPriority);
+                }
+                else
+                {
+                    // 没有敌人，直接向城市前进
+                    priorityActionData = null;
+                }
             }
         }
 
@@ -78,15 +75,17 @@
                         socer = 5;
                     }
                 }
-                else
+                else 
                 {
+                    // 优先攻击威胁大的敌方部队
+                    if (!target.IsEmpty() && target.troop != null && target.troop.troops > troop.troops * 1.5f)
+                        socer += 30000;
                     if (movetoCell == troop.cell && !troop.TroopType.isRange)
                         socer += 50000;
                 }
             }
             return socer;
         }
-
 
         public override bool DoAI(Troop troop, Scenario scenario)
         {
@@ -109,8 +108,9 @@
             }
             else
             {
-                // 向目标前进
                 return troop.TryCloseTo(TargetCity.CenterCell);
+                // 向目标前进，优先选择安全路径
+                //return TroopAIUtility.MoveToTargetSafely(troop, TargetCity.CenterCell, scenario);
             }
         }
     }

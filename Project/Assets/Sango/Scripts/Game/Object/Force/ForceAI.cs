@@ -68,6 +68,12 @@ namespace Sango.Game
             // 清理过期的外交免疫时间
             CleanupDiplomacyImmunity(force, scenario);
 
+            // 检查是否需要撕毁条约
+            if (CheckBreakAlliance(force, scenario, personality))
+            {
+                return true;
+            }
+
             // 优先处理停战请求
             foreach (Force neighbor in force.NeighborForceList)
             {
@@ -349,10 +355,6 @@ namespace Sango.Game
             Person[] recommendedDiplomats = CounsellorRecommendDiplomacy(force.Governor.BelongCity.freePersons);
             if (recommendedDiplomats != null && recommendedDiplomats.Length > 0)
             {
-                if (force.Id == recommendedDiplomats[0].BelongForce.Id)
-                {
-                    Sango.Log.Print($"@外交@{force.Name} 啊啊啊 {recommendedDiplomats[0].Name} 行动！");
-                }
                 return recommendedDiplomats[0];
             }
 
@@ -416,22 +418,163 @@ namespace Sango.Game
             {
                 force.DiplomacyFailCount[targetForceId] = 1;
             }
-
+            
             // 如果失败次数超过3次，设置外交免疫时间
             if (force.DiplomacyFailCount[targetForceId] >= 3)
             {
                 // 设置30天的免疫时间
                 force.DiplomacyImmunityTime[targetForceId] = (Scenario.Cur?.TurnCount ?? 0) + 30;
                 force.DiplomacyFailCount.Remove(targetForceId);
-
-#if SANGO_DEBUG
+                
+                #if SANGO_DEBUG
                 Force targetForce = Scenario.Cur?.forceSet.Get(targetForceId);
                 if (targetForce != null)
                 {
                     Sango.Log.Print($"@外交@{force.Name} 对 {targetForce.Name} 的外交连续失败3次，进入30天外交免疫期！");
                 }
-#endif
+                #endif
             }
+        }
+
+        /// <summary>
+        /// 检查是否需要撕毁条约
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <param name="scenario">场景</param>
+        /// <param name="personality">AI个性</param>
+        /// <returns>是否执行了撕毁条约</returns>
+        private static bool CheckBreakAlliance(Force force, Scenario scenario, AIPersonalityType personality)
+        {
+            // 检查所有当前的同盟和停战协议
+            List<Alliance> alliancesToBreak = new List<Alliance>();
+            List<Force> targetsToBreak = new List<Force>();
+
+            foreach (Alliance alliance in force.AllianceList)
+            {
+                if (!alliance.IsAlive) continue;
+
+                // 找到同盟中的另一个势力
+                Force otherForce = null;
+                foreach (Force f in alliance.ForceList)
+                {
+                    if (f != force)
+                    {
+                        otherForce = f;
+                        break;
+                    }
+                }
+
+                if (otherForce == null) continue;
+
+                // 检查是否需要撕毁条约
+                if (ShouldBreakAlliance(force, otherForce, alliance, scenario, personality))
+                {
+                    alliancesToBreak.Add(alliance);
+                    targetsToBreak.Add(otherForce);
+                }
+            }
+
+            // 执行撕毁条约
+            for (int i = 0; i < alliancesToBreak.Count; i++)
+            {
+                DiplomacyManager.Instance.BreakAlliance(force, targetsToBreak[i]);
+                return true; // 一次只撕毁一个条约
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 判断是否应该撕毁条约
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <param name="otherForce">另一方势力</param>
+        /// <param name="alliance">条约</param>
+        /// <param name="scenario">场景</param>
+        /// <param name="personality">AI个性</param>
+        /// <returns>是否应该撕毁</returns>
+        private static bool ShouldBreakAlliance(Force force, Force otherForce, Alliance alliance, Scenario scenario, AIPersonalityType personality)
+        {
+            int relation = scenario.GetRelation(force, otherForce);
+
+            // 关系恶化到一定程度
+            if (relation < -500)
+            {
+                // 侵略型AI更倾向于撕毁条约
+                int chance = personality == AIPersonalityType.Aggressive ? 40 : 20;
+                if (GameRandom.Chance(chance))
+                {
+                    return true;
+                }
+            }
+
+            // 对方与自己的敌人结盟
+            foreach (Force enemy in force.NeighborForceList)
+            {
+                if (force.IsEnemy(enemy) && otherForce.IsAlliance(enemy))
+                {
+                    // 侵略型和防御型AI更倾向于撕毁条约
+                    int chance = (personality == AIPersonalityType.Aggressive || personality == AIPersonalityType.Defensive) ? 50 : 30;
+                    if (GameRandom.Chance(chance))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            // 停战协议下，关系恢复到一定程度
+            if (alliance.allianceType == AllianceType.Truce && relation > 500)
+            {
+                // 侵略型AI更倾向于撕毁停战协议
+                int chance = personality == AIPersonalityType.Aggressive ? 30 : 15;
+                if (GameRandom.Chance(chance))
+                {
+                    return true;
+                }
+            }
+
+            // 经济型AI在对方经济实力过强时可能撕毁条约
+            if (personality == AIPersonalityType.Economic)
+            {
+                int otherForcePower = CalculateForcePower(otherForce);
+                int selfPower = CalculateForcePower(force);
+                if (otherForcePower > selfPower * 1.5f)
+                {
+                    if (GameRandom.Chance(25))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 计算势力实力
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <returns>势力实力值</returns>
+        private static int CalculateForcePower(Force force)
+        {
+            int power = 0;
+
+            // 城市数量
+            int cityCount = 0;
+            force.ForEachCity(city => cityCount++);
+            power += cityCount * 1000;
+
+            // 兵力
+            int totalTroops = 0;
+            force.ForEachCity(city => totalTroops += city.troops);
+            power += totalTroops;
+
+            // 金钱
+            int totalGold = 0;
+            force.ForEachCity(city => totalGold += city.gold);
+            power += totalGold / 10;
+
+            return power;
         }
 
         /// <summary>
@@ -583,7 +726,7 @@ namespace Sango.Game
 
         private static bool TryRecruitCaptive(Force force, Person captive, Scenario scenario)
         {
-            int probability = GameFormula.Instance.RecruitPersonProbability(null, captive, force.Id);
+            int probability = GameFormula.Instance.RecruitPersonProbability(force.Governor, captive, force.Id);
 
             // 根据势力领袖的性格调整招降概率
             if (force.Governor != null && force.Governor.personality != null)
@@ -666,8 +809,11 @@ namespace Sango.Game
             if (force.CaptiveList == null || force.CaptiveList.Count == 0)
                 return;
 
-            foreach (Person captive in force.CaptiveList)
+            for (int i = 0; i < force.CaptiveList.Count; i++)
+            //foreach (Person captive in force.CaptiveList)
             {
+                Person captive = force.CaptiveList[i];
+
                 // 检查原势力是否有足够的资金赎回
                 if (captive.BelongForce != null && captive.BelongForce.Governor != null && captive.BelongForce.Governor.BelongCity != null)
                 {
@@ -696,6 +842,7 @@ namespace Sango.Game
 
                             // 释放俘虏
                             ReleaseCaptive(force, captive, scenario);
+                            i--;
 
 #if SANGO_DEBUG
                             Sango.Log.Print($"{captive.BelongForce?.Name}支付了{ransom}金赎回了{captive.Name}！");

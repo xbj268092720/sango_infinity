@@ -185,6 +185,16 @@ namespace Sango.Game
         public static EventDelegate<Scenario> OnMonthUpdate;
 
         /// <summary>
+        /// 新月开始
+        /// </summary>
+        public static EventDelegate<Scenario> OnMonthStart;
+
+        /// <summary>
+        /// 新月结束
+        /// </summary>
+        public static EventDelegate<Scenario> OnMonthEnd;
+
+        /// <summary>
         /// 新年开始
         /// </summary>
         public static EventDelegate<Scenario> OnYearUpdate;
@@ -497,6 +507,68 @@ namespace Sango.Game
         /// 当武将逃跑时
         /// </summary>
         public static EventDelegate<Person, SangoObject> OnPersonEscape;
+
+        #region Diplomacy
+        /// <summary>
+        /// 执行结盟
+        /// </summary>
+        public static EventDelegate<Force, Force, bool> OnDiplomacyAlliance;
+
+        /// <summary>
+        /// 执行停战
+        /// </summary>
+        public static EventDelegate<Force, Force, bool> OnDiplomacyTruce;
+
+        /// <summary>
+        /// 执行宣战
+        /// </summary>
+        public static EventDelegate<Force, Force, bool> OnDiplomacyDeclareWar;
+
+        /// <summary>
+        /// 执行送礼
+        /// </summary>
+        public static EventDelegate<Force, Force, int, bool> OnDiplomacySendGift;
+
+        /// <summary>
+        /// 执行请求技术
+        /// </summary>
+        public static EventDelegate<Force, Force, int, bool> OnDiplomacyRequestTechnique;
+
+        /// <summary>
+        /// 执行请求兵力
+        /// </summary>
+        public static EventDelegate<Force, Force, int, bool> OnDiplomacyRequestTroops;
+
+        /// <summary>
+        /// 执行通商
+        /// </summary>
+        public static EventDelegate<Force, Force, bool> OnDiplomacyTrade;
+
+        /// <summary>
+        /// 执行和亲
+        /// </summary>
+        public static EventDelegate<Force, Force, bool> OnDiplomacyMarriage;
+
+        /// <summary>
+        /// 执行请求结盟
+        /// </summary>
+        public static EventDelegate<Force, Force, bool> OnDiplomacyAllianceRequest;
+
+        /// <summary>
+        /// 执行请求停战
+        /// </summary>
+        public static EventDelegate<Force, Force, bool> OnDiplomacyTruceRequest;
+
+        /// <summary>
+        /// 撕毁条约
+        /// </summary>
+        public static EventDelegate<Force, Force, bool> OnDiplomacyBreakAlliance;
+
+        /// <summary>
+        /// 执行赎回俘虏
+        /// </summary>
+        public static EventDelegate<Force, Force, int, bool> OnDiplomacyRansom;
+        #endregion Diplomacy
 
         #endregion Game
 

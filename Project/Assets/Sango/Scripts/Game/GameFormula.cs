@@ -1,4 +1,4 @@
-﻿using Sango.Render;
+using Sango.Render;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -186,14 +186,15 @@ namespace Sango.Game
             if (target.BelongForce != null && type != 2)
                 targetGovernor = target.BelongForce.Governor;
 
-            int aishou = 25;
+            ScenarioVariables variables = Scenario.Cur.Variables;
+            int aishou = variables.recruitBaseCompatibility;
             //目标武将在野或是已灭亡势力的俘虏
             if (target.IsWild || type == 2)
             {
-                loyalty = 60 + Scenario.Cur.Variables.difficulty * 5;
+                loyalty = variables.recruitWildLoyaltyBase + Scenario.Cur.Variables.difficulty * variables.recruitLoyaltyDifficultyFactor;
                 if (!target.IsPrisoner)
                     //义理_普通
-                    argumentation = Scenario.Cur.GetObject<Argumentation>(3);
+                    argumentation = Scenario.Cur.GetObject<Argumentation>(variables.recruitDefaultArgumentationId);
             }
             // 获取目标相性与君主的距离
             else
@@ -201,26 +202,26 @@ namespace Sango.Game
                 if (targetGovernor != null)
                     aishou = target.CompatibilityDistance(targetGovernor);
             }
-            int n = 45 + (aishou - target.CompatibilityDistance(actorGovernor)) * 3 / 2;
-            n -= (argumentation.loyaltyAdd + 18) * loyalty * 5 / 100;
-            n += Math.Max(actor.Glamour, 30) * 3 / 5;
-            n -= target.IsLike(targetGovernor) ? 15 : 0;
-            n -= target.IsParentchild(targetGovernor) ? 15 : 0;
-            n += target.IsHate(targetGovernor) ? 15 : 0;
-            n += target.IsPrisoner ? 15 : 0;
-            n += GameRandom.Range(0, Math.Max(0, 5 - argumentation.loyaltyAdd));
-            // 主公魅力影响20%
-            n += actorGovernor.Glamour / 5;
+            int n = variables.recruitBaseSuccessRate + (aishou - target.CompatibilityDistance(actorGovernor)) * variables.recruitCompatibilityFactorNumerator / variables.recruitCompatibilityFactorDenominator;
+            n -= (argumentation.loyaltyAdd + variables.recruitLoyaltyInfluenceBase) * loyalty * variables.recruitLoyaltyInfluenceNumerator / variables.recruitLoyaltyInfluenceDenominator;
+            n += Math.Max(actor.Glamour, variables.recruitMinGlamour) * variables.recruitGlamourFactorNumerator / variables.recruitGlamourFactorDenominator;
+            n -= target.IsLike(targetGovernor) ? variables.recruitLikePersonInfluence : 0;
+            n -= target.IsParentchild(targetGovernor) ? variables.recruitParentChildInfluence : 0;
+            n += target.IsHate(targetGovernor) ? variables.recruitHatePersonInfluence : 0;
+            n += target.IsPrisoner ? variables.recruitPrisonerInfluence : 0;
+            n += GameRandom.Range(0, Math.Max(0, variables.recruitRandomMax - argumentation.loyaltyAdd));
+            // 主公魅力影响
+            n += actorGovernor.Glamour / variables.recruitGovernorGlamourFactor;
             n = Math.Max(n, 0);
 
-            // 第一次发现,成功率+15;
+            // 第一次发现,成功率加成;
             if (type == 3)
-                n += 15;
+                n += variables.recruitFirstDiscoveryBonus;
 
-            int giri = 10;
+            int giri = variables.recruitBaseGiri;
             if (type != 0)
-                giri = Math.Min(15 - argumentation.loyaltyAdd * 2, 10);
-            n = Math.Min(n * giri / 10, 100);
+                giri = Math.Min(variables.recruitMaxGiri - argumentation.loyaltyAdd * variables.recruitGiriLoyaltyFactor, variables.recruitBaseGiri);
+            n = Math.Min(n * giri / variables.recruitBaseGiri, 100);
 
             return n;
         }
@@ -241,9 +242,16 @@ namespace Sango.Game
                 return PersonEscapeProbablility_InCityOverride(person, city, scenario);
             }
 
-            int escapeFactor = scenario.Variables.baseEscapeProbabllity + scenario.Variables.baseEscapeProbablilityAddByTurn * person.missionCounter;
+            ScenarioVariables variables = scenario.Variables;
+            int escapeChance = variables.baseEscapeProbabllity + variables.baseEscapeProbablilityAddByTurn * person.missionCounter;
+
+            // 如果在城市中，逃跑概率减少
+            escapeChance -= variables.escapeCityReduction;
+            if (escapeChance < 0) escapeChance = 0;
+            if (escapeChance > variables.escapeMaxProbability) escapeChance = variables.escapeMaxProbability;
+
             //TODO: 其他影响越狱的概率
-            return escapeFactor;
+            return escapeChance;
         }
         public delegate int PersonEscapeProbablility_InCityCall(Person person, City city, Scenario scenario);
         public static PersonEscapeProbablility_InCityCall PersonEscapeProbablility_InCityOverride;
@@ -261,9 +269,18 @@ namespace Sango.Game
             {
                 return PersonEscapeProbablility_InTroopOverride(person, troop, scenario);
             }
-            int escapeFactor = scenario.Variables.baseEscapeProbabllity + scenario.Variables.baseEscapeProbablilityAddByTurn * person.missionCounter;
+            ScenarioVariables variables = scenario.Variables;
+            int escapeChance = variables.baseEscapeProbabllity + variables.baseEscapeProbablilityAddByTurn * person.missionCounter;
+
+            // 如果在队伍中，逃跑概率增加
+            escapeChance += variables.escapeTroopIncrease; 
+
+            // 确保逃跑概率在合理范围内
+            if (escapeChance < 0) escapeChance = 0;
+            if (escapeChance > variables.escapeMaxProbability) escapeChance = variables.escapeMaxProbability;
+
             //TODO: 其他影响越狱的概率
-            return escapeFactor;
+            return escapeChance;
         }
         public delegate int PersonEscapeProbablility_InTroopCall(Person person, Troop troop, Scenario scenario);
         public static PersonEscapeProbablility_InTroopCall PersonEscapeProbablility_InTroopOverride;

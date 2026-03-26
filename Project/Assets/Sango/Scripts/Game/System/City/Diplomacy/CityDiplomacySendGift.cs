@@ -1,0 +1,76 @@
+using Sango.Game.Render.UI;
+using System.Collections.Generic;
+
+namespace Sango.Game.Player
+{
+    [GameSystem]
+    public class CityDiplomacySendGift : CityBaseSystem
+    {
+        public List<Person> counsellorRecommendList = new List<Person>();
+
+        public CityDiplomacySendGift()
+        {
+            customTitleName = "送礼";
+
+            customMenuName = "外交/送礼";
+            customMenuOrder = 304;
+            windowName = "window_city_diplomacy_send_gift";
+
+        }
+
+        public override bool IsValid
+        {
+            get
+            {
+                return TargetCity.freePersons.Count > 0 && TargetCity.BelongCorps.ActionPoint >= 1 && TargetCity.gold >= 1000;
+            }
+        }
+
+        public override void OnEnter()
+        {
+            counsellorRecommendList.Clear();
+            Person[] recommandList = ForceAI.CounsellorRecommendDiplomacy(TargetCity.freePersons);
+            if (recommandList != null)
+            {
+                for (int i = 0; i < recommandList.Length; i++)
+                {
+                    counsellorRecommendList.Add(recommandList[i]);
+                }
+            }
+
+            personList.Clear();
+            if (counsellorRecommendList.Count > 0)
+                personList.Add(counsellorRecommendList[0]);
+
+            if (customTitleList == null)
+            {
+                customTitleList = new List<ObjectSortTitle>()
+                {
+                    PersonSortFunction.SortByName,
+                    PersonSortFunction.GetSortByContainsInList("军师推荐", counsellorRecommendList),
+                    PersonSortFunction.SortByPolitics,
+                    PersonSortFunction.SortByGlamour,
+                };
+            }
+
+            Window.Instance.Open(windowName);
+        }
+
+        public override void OnDestroy()
+        {
+            UIDialog.Close();
+            Window.Instance.Close(windowName);
+        }
+
+        public override void DoJob()
+        {
+            if (personList.Count <= 0)
+                return;
+
+            // 这里应该调用外交系统的送礼方法
+            // 暂时留空，等待具体实现
+
+            Done();
+        }
+    }
+}

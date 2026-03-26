@@ -83,7 +83,7 @@ namespace Sango.Game
         public Fire Remove(Fire fire) { fireSet.Remove(fire); return fire; }
         public Alliance Remove(Alliance alliance) { allianceSet.Remove(alliance); return alliance; }
 
-        public int[][] cityDistanceMap;
+        public Dictionary<string, List<City>> cityPathMap;
 
         #endregion Data
         public static Scenario Cur { get; private set; }
@@ -651,47 +651,7 @@ namespace Sango.Game
             isThreadPause = false;
         }
         
-        void ClaculateCityDistance()
-        {
-            int cityCount = citySet.Count; 
-            for (int i = 0; i < cityCount; ++i)
-            {
-                int len = 0;
-                List<City> closeList = new List<City>();
-                List<City> checkList = new List<City>();
-                City city = citySet[i];
-                if (city != null)
-                {
-                    checkList.Add(city);
-                    closeList.Add(city);
-                    cityDistanceMap[city.Id][city.Id] = 0;
-                    while (true)
-                    {
-                        len++;
-                        int count = checkList.Count;
-                        for (int m = 0; m < count; ++m)
-                        {
-                            City checker = checkList[m];
-                            for(int n = 0; n < checker.NeighborList.Count; n++)
-                            {
-                                City target = checker.NeighborList[n];
-                                if(!closeList.Contains(target))
-                                {
-                                    cityDistanceMap[city.Id][target.Id] = len;
-                                    cityDistanceMap[target.Id][city.Id] = len;
-                                    closeList.Add(target);
-                                    checkList.Add(target);
-                                }
-                            }
-                        }
-                        checkList.RemoveRange(0, count);
 
-                        if (checkList.Count == 0)
-                            break;
-                    }
-                }
-            }
-        }
 
         // 在Prepare之后
         public override void Init(Scenario scenario)
@@ -705,15 +665,8 @@ namespace Sango.Game
             SeasonType cur_season = GameDefine.SeasonInMonth[Info.month - 1];
             MapRender.Instance.ChangeSeason((int)cur_season);
 
-            // 初始化城市距离信息
-            int cityCount = citySet.Count;
-            cityDistanceMap = new int[cityCount][];
-            for (int i = 0; i < cityCount; i++)
-            {
-                cityDistanceMap[i] = new int[cityCount];
-            }
-
-            ClaculateCityDistance();
+            // 初始化路径缓存
+            cityPathMap = new Dictionary<string, List<City>>();
 
             for (int i = 0; i < prepareList.Count; ++i)
             {
@@ -733,8 +686,8 @@ namespace Sango.Game
                 {
                     for (int j = i + 1; j < forceCount; ++j)
                     {
-                        RelationMap[i][j] = 5000;
-                        RelationMap[j][i] = 5000;
+                        RelationMap[i][j] = 0;
+                        RelationMap[j][i] = 0;
                     }
                 }
             }
@@ -951,60 +904,9 @@ namespace Sango.Game
                     a.OnTurnEnd(this);
             }
 
-            // 处理俘虏逃跑
-            HandlePrisonerEscape();
-
             HasTurnEnded = true;
             Info.turnCount++;
             return true;
-        }
-
-        /// <summary>
-        /// 处理俘虏逃跑
-        /// </summary>
-        private void HandlePrisonerEscape()
-        {
-            // 遍历所有武将
-            for (int i = 1; i < personSet.Count; i++)
-            {
-                Person person = personSet[i];
-                if (person != null && person.IsAlive && person.state == (int)PersonStateType.Prisoner)
-                {
-                    // 计算逃跑概率（最高不超过30%）
-                    int escapeChance = 5; // 基础逃跑概率5%
-                    
-                    // 如果在队伍中，逃跑概率增加
-                    if (person.BelongTroop != null)
-                    {
-                        escapeChance += 5; // 队伍中增加5%
-                    }
-                    // 如果在城市中，逃跑概率减少
-                    else if (person.BelongCity != null)
-                    {
-                        escapeChance -= 2; // 城市中减少2%
-                    }
-                    
-                    // 确保逃跑概率在合理范围内
-                    if (escapeChance < 1) escapeChance = 1;
-                    if (escapeChance > 30) escapeChance = 30;
-                    
-                    // 检查是否逃跑
-                    if (GameRandom.Chance(escapeChance))
-                    {
-                        // 记录逃跑前的位置
-                        SangoObject escapeLocation = person.BelongTroop as SangoObject ?? person.BelongCity as SangoObject;
-                        
-                        // 执行逃跑逻辑
-                        person.Escape();
-                        
-                        // 触发逃跑事件
-                        GameEvent.OnPersonEscape?.Invoke(person, escapeLocation);
-                        
-                        // 记录逃跑事件
-                        Sango.Log.Print($"{person.Name} 成功逃跑了！");
-                    }
-                }
-            }
         }
 
         public bool IncreaseDate()
@@ -1035,6 +937,7 @@ namespace Sango.Game
             if (hasMonth)
             {
                 OnMonthStart(this);
+                GameEvent.OnMonthStart?.Invoke(this);
                 GameEvent.OnMonthUpdate?.Invoke(this);
             }
             OnDayStart(this);
@@ -1043,6 +946,7 @@ namespace Sango.Game
             if (hasMonth)
             {
                 OnMonthEnd(this);
+                GameEvent.OnMonthEnd?.Invoke(this);
             }
             if (hasYear)
             {
@@ -1123,18 +1027,6 @@ namespace Sango.Game
 
         public override bool OnMonthStart(Scenario scenario)
         {
-            int forceCount = forceSet.Count;
-            for (int i = 0; i < forceCount; ++i)
-            {
-                for (int j = i + 1; j < forceCount; ++j)
-                {
-                    if (GameRandom.Chance(scenario.Variables.relationChangeChance))
-                    {
-                        RelationMap[i][j] += scenario.Variables.relationChangePerMonth;
-                        RelationMap[j][i] += scenario.Variables.relationChangePerMonth;
-                    }
-                }
-            }
             for (int i = 0; i < eventReciveList.Count; ++i)
             {
                 eventReciveList[i].ForEach(o => { if (o.IsAlive) o.OnMonthStart(this); });
@@ -1190,7 +1082,95 @@ namespace Sango.Game
         /// <returns></returns>
         public int GetCityDistance(City a, City b)
         {
-            return cityDistanceMap[a.Id][b.Id];
+            // 检查参数
+            if (a == null || b == null)
+                return -1;
+
+            // 检查是否是同一个城市
+            if (a == b)
+                return 0;
+
+            // 使用寻路方法获取距离
+            List<City> path = FindShortestPath(a, b);
+            return path != null ? path.Count - 1 : -1;
+        }
+
+        /// <summary>
+        /// 寻找两个城市之间的最短路径
+        /// </summary>
+        /// <param name="startCity">起始城市</param>
+        /// <param name="endCity">目标城市</param>
+        /// <returns>最短路径的城市列表</returns>
+        public List<City> FindShortestPath(City startCity, City endCity)
+        {
+            // 检查参数
+            if (startCity == null || endCity == null)
+                return null;
+
+            // 检查是否是同一个城市
+            if (startCity == endCity)
+            {
+                return new List<City> { startCity };
+            }
+
+            // 检查缓存中是否已有路径
+            string key = $"{startCity.Id}_{endCity.Id}";
+            if (cityPathMap.ContainsKey(key))
+            {
+                return cityPathMap[key];
+            }
+
+            // 如果缓存中没有，使用BFS算法重新计算路径
+            Dictionary<City, City> parentMap = new Dictionary<City, City>();
+            Queue<City> queue = new Queue<City>();
+            HashSet<City> visited = new HashSet<City>();
+
+            queue.Enqueue(startCity);
+            visited.Add(startCity);
+            parentMap[startCity] = null;
+
+            bool found = false;
+            while (queue.Count > 0)
+            {
+                City current = queue.Dequeue();
+
+                foreach (City neighbor in current.NeighborList)
+                {
+                    if (!visited.Contains(neighbor))
+                    {
+                        queue.Enqueue(neighbor);
+                        visited.Add(neighbor);
+                        parentMap[neighbor] = current;
+
+                        if (neighbor == endCity)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (found)
+                    break;
+            }
+
+            // 如果找到路径，构建路径并缓存
+            if (found)
+            {
+                List<City> path = new List<City>();
+                City current = endCity;
+                while (current != null)
+                {
+                    path.Add(current);
+                    current = parentMap[current];
+                }
+                path.Reverse();
+                cityPathMap[key] = path;
+                return path;
+            }
+
+            // 如果没有找到路径，返回null
+            return null;
         }
 
         public static void Pause()
@@ -1228,15 +1208,29 @@ namespace Sango.Game
 
         public int GetRelation(Force forceA, Force forceB)
         {
+            if (forceA == null || forceB == null || forceA == forceB)
+                return 0;
+
+            // 确保索引有效
+            if (forceA.Id < 0 || forceA.Id >= RelationMap.Length || forceB.Id < 0 || forceB.Id >= RelationMap[0].Length)
+                return 0;
+
             return RelationMap[forceA.Id][forceB.Id];
         }
 
         public void AddRelation(Force forceA, Force forceB, int v)
         {
+            if (forceA == null || forceB == null || forceA == forceB)
+                return;
+
+            // 确保索引有效
+            if (forceA.Id < 0 || forceA.Id >= RelationMap.Length || forceB.Id < 0 || forceB.Id >= RelationMap[0].Length)
+                return;
+
             int r = RelationMap[forceA.Id][forceB.Id] + v;
 
-            if (r < -10000) r = -10000;
-            else if (r > 10000) r = 10000;
+            if (r < -5000) r = -5000;
+            else if (r > 5000) r = 5000;
 
             RelationMap[forceA.Id][forceB.Id] = r;
             RelationMap[forceB.Id][forceA.Id] = r;

@@ -1,4 +1,4 @@
-﻿using Sango.Tools;
+using Sango.Tools;
 using System;
 using System.Collections.Generic;
 
@@ -14,7 +14,6 @@ namespace Sango.Game
         static List<PriorityActionData> higherList = new List<PriorityActionData>(256);
         static WeightList<PriorityActionData> wightList = new WeightList<PriorityActionData>();
         static List<PriorityActionData> checkList = new List<PriorityActionData>();
-        static List<Cell> tempMoveRange = new List<Cell>(256);
         static List<SangoObject> tempTargets = new List<SangoObject>(64);
 
         public class PriorityActionData
@@ -61,7 +60,6 @@ namespace Sango.Game
             troop.MoveRange.Clear();
             prioritySkillAtkMethod = prioritySkillAtkMethod ?? SkillStatusPriority;
             prioritySkillDefMethod = prioritySkillDefMethod ?? SkillDefencePriority;
-            bool needUpdateMoverange = true;
             wightList.Clear();
             checkList.Clear();
             for (int i = 0, count = skill_list.Count; i < count; i++)
@@ -69,10 +67,9 @@ namespace Sango.Game
                 SkillInstance skill = skill_list[i];
                 if (skill.CanBeSpell(troop))
                 {
-                    if (needUpdateMoverange)
+                    if (troop.MoveRange.Count == 0)
                     {
                         scenario.Map.GetMoveRange(troop, troop.MoveRange);
-                        needUpdateMoverange = false;
 #if SANGO_DEBUG_AI
                         GameAIDebug.Instance.ShowMoveRange(troop.MoveRange, troop);
 #endif
@@ -95,7 +92,6 @@ namespace Sango.Game
 
                                     attackCells.Clear();
                                     tempTargets.Clear();
-                                    int atk_priority = 0;
                                     skill.GetAttackCells(troop, spellCell, attackCells);
                                     for (int m = 0; m < attackCells.Count; m++)
                                     {
@@ -186,6 +182,126 @@ namespace Sango.Game
 
             // 现在是给了一个随机优先级行动
             return wightList.RandomGet();
+        }
+        
+        /// <summary>
+        /// 评估格子的安全性
+        /// </summary>
+        /// <param name="troop"></param>
+        /// <param name="cell"></param>
+        /// <param name="scenario"></param>
+        /// <returns></returns>
+        public static int EvaluateCellSafety(Troop troop, Cell cell, Scenario scenario)
+        {
+            int safetyScore = 0;
+            
+            // 检查周围敌人
+            scenario.Map.SpiralAction(cell, 2, (checkCell) =>
+            {
+                if (checkCell.troop != null && troop.IsEnemy(checkCell.troop))
+                {
+                    int distance = cell.Distance(checkCell);
+                    int threat = (100 - distance * 30) * (checkCell.troop.troops / 1000);
+                    safetyScore -= threat;
+                }
+            });
+            
+            // 检查地形加成
+            if (troop.TroopType.terrainDefenceBonus != null && cell.TerrainType != null)
+            {
+                int terrainId = cell.TerrainType.Id;
+                if (terrainId < troop.TroopType.terrainDefenceBonus.Length)
+                {
+                    safetyScore += (int)(troop.TroopType.terrainDefenceBonus[terrainId] * 5);
+                }
+            }
+            
+            return safetyScore;
+        }
+        
+        /// <summary>
+        /// 评估城市防御强度
+        /// </summary>
+        /// <param name="troop"></param>
+        /// <param name="city"></param>
+        /// <param name="scenario"></param>
+        /// <returns></returns>
+        public static int EvaluateCityDefenceStrength(Troop troop, City city, Scenario scenario)
+        {
+            int defenceStrength = 0;
+            
+            // 城市耐久度（降低权重）
+            defenceStrength += city.durability * 2;
+            
+            // 城市驻军（保持合理权重）
+            defenceStrength += city.troops;
+            
+            // 城市建筑防御加成（降低权重）
+            foreach (Building building in city.allBuildings)
+            {
+                if (!building.IsIntorBuilding())
+                    defenceStrength += 100;
+            }
+            
+            // 周围敌方部队（保持合理权重）
+            List<Cell> enemyCells = new List<Cell>();
+            RangeEnemyCell(troop, 3, enemyCells, scenario);
+            foreach (Cell cell in enemyCells)
+            {
+                if (cell.troop != null)
+                    defenceStrength += cell.troop.troops;
+            }
+            
+            return defenceStrength;
+        }
+        
+        /// <summary>
+        /// 安全地移动到目标
+        /// </summary>
+        /// <param name="troop"></param>
+        /// <param name="targetCell"></param>
+        /// <param name="scenario"></param>
+        /// <returns></returns>
+        public static bool MoveToTargetSafely(Troop troop, Cell targetCell, Scenario scenario)
+        {
+            // 确保tempMoveRange已填充
+            if (troop.MoveRange.Count == 0)
+                scenario.Map.GetMoveRange(troop, troop.MoveRange);
+            
+            // 评估移动范围内的格子安全性
+            Cell bestNextCell = null;
+            int bestSafetyScore = int.MinValue;
+            int bestDistance = int.MaxValue;
+            
+            for (int i = 0; i < troop.MoveRange.Count; i++)
+            {
+                Cell moveCell = troop.MoveRange[i];
+                // 跳过当前格子和不可进入的格子
+                if (moveCell == troop.cell || !moveCell.IsEmpty())
+                    continue;
+                
+                // 计算到目标的距离
+                int distance = moveCell.Distance(targetCell);
+                
+                // 评估安全性
+                int safetyScore = EvaluateCellSafety(troop, moveCell, scenario);
+                
+                // 优先选择距离目标近且安全的格子
+                if (safetyScore > bestSafetyScore || (safetyScore == bestSafetyScore && distance < bestDistance))
+                {
+                    bestSafetyScore = safetyScore;
+                    bestDistance = distance;
+                    bestNextCell = moveCell;
+                }
+            }
+            
+            if (bestNextCell != null)
+            {
+                return troop.MoveTo(bestNextCell);
+            }
+            
+            // 如果找不到安全路径，使用默认移动
+            return troop.TryCloseTo(targetCell);
         }
 
         //public static PriorityActionData PriorityAction(Troop troop, List<Cell> enemyCells, Scenario scenario, SkillAttackPriorityCalculateMethod prioritySkillAtkMethod = null, SkillDefencePriorityCalculateMethod prioritySkillDefMethod = null)
