@@ -1,3 +1,10 @@
+/*
+ * 文件名：Game.cs
+ * 描述：游戏核心类，管理游戏的初始化、更新、暂停、恢复和关闭
+ * 创建日期：2026-03-27
+ * 最后修改：2026-03-27
+ */
+
 using Sango.Game.Action;
 using Sango.Mod;
 using Sango.Render;
@@ -9,14 +16,46 @@ using UnityEngine.UI;
 
 namespace Sango.Game
 {
+    /// <summary>
+    /// 游戏核心类，管理游戏的初始化、更新、暂停、恢复和关闭
+    /// </summary>
     public class Game : App<Game>
     {
+        /// <summary>
+        /// UI相机
+        /// </summary>
         public Camera UICamera { get; internal set; }
+
+        /// <summary>
+        /// UI根节点
+        /// </summary>
         public RectTransform UIRoot { get; internal set; }
+
+        /// <summary>
+        /// 根画布
+        /// </summary>
         public Canvas RootCanvas { get; internal set; }
+
+        /// <summary>
+        /// 画布缩放器
+        /// </summary>
         public CanvasScaler CanvasScaler { get; internal set; }
+
+        /// <summary>
+        /// 画布缩放因子
+        /// </summary>
         public float CanvasScalerFactor { get; internal set; }
+
+        /// <summary>
+        /// 初始化状态
+        /// </summary>
         bool inited = false;
+
+        /// <summary>
+        /// 初始化游戏
+        /// </summary>
+        /// <param name="start">启动脚本实例</param>
+        /// <param name="targetPlatform">目标平台</param>
         public override void Init(MonoBehaviour start, Platform.PlatformName targetPlatform)
         {
             inited = false;
@@ -37,6 +76,9 @@ namespace Sango.Game
             StartCoroutine(GameInit());
         }
 
+        /// <summary>
+        /// 关闭游戏
+        /// </summary>
         public override void Shutdown()
         {
             MapRender.Instance.Clear();
@@ -46,6 +88,9 @@ namespace Sango.Game
             GameEvent.OnGameShutdown?.Invoke();
         }
 
+        /// <summary>
+        /// 暂停游戏
+        /// </summary>
         public override void Pause()
         {
 #if SANGO_DEBUG
@@ -54,6 +99,9 @@ namespace Sango.Game
             GameEvent.OnGamePause?.Invoke();
         }
 
+        /// <summary>
+        /// 恢复游戏
+        /// </summary>
         public override void Resume()
         {
 #if SANGO_DEBUG
@@ -62,6 +110,10 @@ namespace Sango.Game
             GameEvent.OnGameResume?.Invoke();
         }
 
+        /// <summary>
+        /// 游戏初始化协程
+        /// </summary>
+        /// <returns>协程迭代器</returns>
         IEnumerator GameInit()
         {
             Window.Instance.Open("window_loading");
@@ -111,6 +163,9 @@ namespace Sango.Game
             //Player.Player.Instance.Init();
         }
 
+        /// <summary>
+        /// 进入地图编辑器
+        /// </summary>
         public void EnterMapEditor()
         {
             Window.Instance.Close("window_start");
@@ -118,17 +173,27 @@ namespace Sango.Game
             MapEditor mapEditor = map.AddComponent<MapEditor>();
         }
 
+        /// <summary>
+        /// 开始新游戏
+        /// </summary>
         public void StartNewGame()
         {
             Window.Instance.Open("window_scenario_select");
             Window.Instance.Close("window_start");
         }
 
+        /// <summary>
+        /// 开始游戏
+        /// </summary>
+        /// <param name="target">场景实例</param>
         public void StartGame(Scenario target)
         {
 
         }
 
+        /// <summary>
+        /// 更新游戏
+        /// </summary>
         public override void Update()
         {
             if(!inited) return;
@@ -145,6 +210,9 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 调试AI
+        /// </summary>
         public static void DebugAI()
         {
             GameAIDebug.Enabled = !GameAIDebug.Enabled;

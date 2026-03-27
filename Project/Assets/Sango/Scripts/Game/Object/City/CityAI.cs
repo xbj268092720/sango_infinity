@@ -9,6 +9,12 @@ namespace Sango.Game
     {
         static internal PriorityQueue<City> priorityQueue = new PriorityQueue<City>();
         public static List<Cell> tempCellList = new List<Cell>();
+        /// <summary>
+        /// AI攻击逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AIAttack(City city, Scenario scenario)
         {
             if (city.BelongForce == null)
@@ -173,6 +179,12 @@ namespace Sango.Game
         }
 
         static int[] recommandSearchingFeatrues = new int[] { 86 };
+        /// <summary>
+        /// AI搜索逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AISearching(City city, Scenario scenario)
         {
             if (city.invisiblePersons.Count > 0 && city.freePersons.Count > 0)
@@ -186,6 +198,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI褒奖武将逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AIRewardPerson(City city, Scenario scenario)
         {
             city.allPersons.ForEach(x =>
@@ -199,6 +217,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI招募武将逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AIRecruitPerson(City city, Scenario scenario)
         {
             if (city.wildPersons.Count > 0 && city.freePersons.Count > 0)
@@ -219,6 +243,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI物资运输逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AITransfrom(City city, Scenario scenario)
         {
             if (city.IsBorderCity) return true;
@@ -300,6 +330,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI向所属城市运输物资逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AITransfromToBelongCity(City city, Scenario scenario)
         {
             if (city.IsEnemiesRound()) return true;
@@ -435,6 +471,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI建造军事建筑逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AIBuildMilitaryBuilding(City city, Scenario scenario)
         {
 
@@ -713,6 +755,12 @@ namespace Sango.Game
             },
         };
 
+        /// <summary>
+        /// AI建造内政建筑逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AIBuildIntriore(City city, Scenario scenario)
         {
             if (city.IsInteriorBuildFull())
@@ -739,7 +787,13 @@ namespace Sango.Game
             return AIBuildingTemplate(templateId, city, scenario);
         }
 
-        // 进是确定有空槽位和空闲武将才能执行
+        /// <summary>
+        /// AI根据模板建造建筑逻辑
+        /// </summary>
+        /// <param name="templateId">模板ID</param>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AIBuildingTemplate(int templateId, City city, Scenario scenario)
         {
             if (city.gold < 500)
@@ -834,6 +888,12 @@ namespace Sango.Game
             return false; // 没有建设
         }
 
+        /// <summary>
+        /// AI升级建筑逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AIBuildingLevelUp(City city, Scenario scenario)
         {
             if (city.gold < 500)
@@ -873,6 +933,12 @@ namespace Sango.Game
             return false; // 没有升级
         }
 
+        /// <summary>
+        /// AI招募士兵逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AIRecruitTroop(City city, Scenario scenario)
         {
             if (city.freePersons.Count <= 2) return true;
@@ -933,6 +999,12 @@ namespace Sango.Game
 
         //}
 
+        /// <summary>
+        /// AI是否可以防御
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否可以防御</returns>
         public static bool AICanDefense(City city, Scenario scenario)
         {
             if (city.IsRoadBlocked())
@@ -958,6 +1030,12 @@ namespace Sango.Game
             return ForceAI.AIPersonalityType.Balanced;
         }
 
+        /// <summary>
+        /// AI是否可以攻击
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否可以攻击</returns>
         public static bool AICanAttack(City city, Scenario scenario)
         {
             // 获取AI个性
@@ -1000,6 +1078,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI内政平衡逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AIIntriorBalance(City city, Scenario scenario)
         {
             if (city.freePersons.Count <= 1) return true;
@@ -1019,6 +1103,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI治安管理逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AISecurity(City city, Scenario scenario)
         {
             if (city.freePersons.Count < 2 || city.gold < 400)
@@ -1037,6 +1127,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI训练士兵逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AITrainTroop(City city, Scenario scenario)
         {
             if (city.freePersons.Count < 2)
@@ -1062,6 +1158,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI生产兵装逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AICreateItems(City city, Scenario scenario)
         {
             if (city.freePersons.Count < 2 || city.gold < 1000)
@@ -1121,6 +1223,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI生产船只逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AICreateBoat(City city, Scenario scenario)
         {
             if (city.portList.Count == 0) return false;
@@ -1152,6 +1260,12 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI生产器械逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否完成</returns>
         public static bool AICreateMachine(City city, Scenario scenario)
         {
             if (city.freePersons.Count < 2 || city.gold < 1500)
@@ -1195,6 +1309,14 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// AI创建部队逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="minTurn">最小回合数</param>
+        /// <param name="isAttack">是否为攻击</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>创建的部队</returns>
         public static Troop AIMakeTroop(City city, int minTurn, bool isAttack, Scenario scenario)
         {
             int minEquipNeed = 5000;
@@ -1304,6 +1426,17 @@ namespace Sango.Game
             city.Render?.UpdateRender();
             return troop;
         }
+        /// <summary>
+        /// AI创建运输部队逻辑
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <param name="target">目标城市</param>
+        /// <param name="troops">兵力</param>
+        /// <param name="gold">金钱</param>
+        /// <param name="food">粮食</param>
+        /// <param name="itemStore">物品库存</param>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>创建的运输部队</returns>
         public static Troop AIMakeTransportTroop(City city, City target, int troops, int gold, int food, ItemStore itemStore, Scenario scenario)
         {
             if (city.freePersons.Count <= 0) return null;

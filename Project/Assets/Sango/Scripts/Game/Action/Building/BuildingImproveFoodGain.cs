@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json.Linq;
+using TKNewtonsoft.Json.Linq;
 using Sango.Game.Tools;
 using System.Collections.Generic;
 
@@ -10,10 +10,26 @@ namespace Sango.Game.Action
     /// </summary>
     public class BuildingImproveFoodGain : BuildingActionBase
     {
+        /// <summary>
+        /// 提升系数（百分比）
+        /// </summary>
         int value;
+
+        /// <summary>
+        /// 有效kind类型合集
+        /// </summary>
         List<int> kinds;
+
+        /// <summary>
+        /// 生效范围 0：该城市全局 1：周围一圈
+        /// </summary>
         int bound;
 
+        /// <summary>
+        /// 初始化建筑粮食产量提升动作
+        /// </summary>
+        /// <param name="p">JSON参数对象</param>
+        /// <param name="sangoObjects">相关的游戏对象</param>
         public override void Init(JObject p, params SangoObject[] sangoObjects)
         {
             base.Init(p, sangoObjects);
@@ -31,11 +47,19 @@ namespace Sango.Game.Action
             }
         }
 
+        /// <summary>
+        /// 清理建筑粮食产量提升动作
+        /// </summary>
         public override void Clear()
         {
             GameEvent.OnBuildingCalculateFoodGain -= OnBuildingCalculateFoodGain;
         }
 
+        /// <summary>
+        /// 计算建筑粮食产量提升
+        /// </summary>
+        /// <param name="buildingBase">建筑基础对象</param>
+        /// <param name="overrideData">覆盖数据对象</param>
         void OnBuildingCalculateFoodGain(BuildingBase buildingBase, OverrideData<int> overrideData)
         {
             if (Force != null && buildingBase.BelongForce != Force) return;

@@ -10,16 +10,37 @@ using System.Linq;
 
 namespace Sango.Game
 {
+    /// <summary>
+    /// 势力类，继承自SangoObject，用于管理游戏中的势力对象
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class Force : SangoObject
     {
+        /// <summary>
+        /// 获取势力的对象类型
+        /// </summary>
         public override SangoObjectType ObjectType { get { return SangoObjectType.Force; } }
+
+        /// <summary>
+        /// 获取或设置AI是否完成
+        /// </summary>
         public virtual bool AIFinished { get; set; }
+
+        /// <summary>
+        /// 获取或设置AI是否准备就绪
+        /// </summary>
         public virtual bool AIPrepared { get; set; }
+
+        /// <summary>
+        /// 获取或设置是否为玩家势力
+        /// </summary>
         public virtual bool IsPlayer { get; set; }
 
         private bool isAlive;
 
+        /// <summary>
+        /// 获取或设置势力是否存活
+        /// </summary>
         public override bool IsAlive
         {
             get
@@ -32,7 +53,14 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 获取势力的名称
+        /// </summary>
         public override string Name => Governor?.Name;
+
+        /// <summary>
+        /// 获取势力的颜色名称
+        /// </summary>
         public virtual string ColorName => Governor?.ColorName;
 
         /// <summary>
@@ -144,18 +172,57 @@ namespace Sango.Game
         /// 国家科技树
         /// </summary>
         public List<ForceTechnique> techniqueTree = new List<ForceTechnique>();
+
+        /// <summary>
+        /// 科技树最大等级
+        /// </summary>
         public int techniqueMaxLevel = 0;
+
+        /// <summary>
+        /// 科技树最大行数
+        /// </summary>
         public int techniqueMaxRow = 0;
+
+        /// <summary>
+        /// 可创建的物品类型列表
+        /// </summary>
         public List<ItemType> createdItemTypes = new List<ItemType>();
 
+        /// <summary>
+        /// 判断是否与另一势力为敌对关系
+        /// </summary>
+        /// <param name="force">另一势力</param>
+        /// <returns>是否为敌对关系</returns>
         public bool IsEnemy(Force force) { return IsEnemy(this, force); }
+
+        /// <summary>
+        /// 势力拥有的武将数量
+        /// </summary>
         public int PersonCount { get; set; }
+
+        /// <summary>
+        /// 势力拥有的城市数量
+        /// </summary>
         public int CityCount { get; set; }
+
+        /// <summary>
+        /// 势力拥有的城寨数量
+        /// </summary>
         public int CityBaseCount { get; set; }
+
+        /// <summary>
+        /// 势力的颜色
+        /// </summary>
         public Color Color => Flag.color;
 
+        /// <summary>
+        /// 当前运行的军团
+        /// </summary>
         public Corps CurRunCorps { get; set; }
 
+        /// <summary>
+        /// 势力的行动列表
+        /// </summary>
         public List<ActionBase> actionList;
 
         /// <summary>
@@ -170,6 +237,10 @@ namespace Sango.Game
         [JsonProperty]
         public Dictionary<int, int> DiplomacyImmunityTime = new Dictionary<int, int>();
 
+        /// <summary>
+        /// 初始化势力
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
         public override void Init(Scenario scenario)
         {
             if (Governor == null)
@@ -188,6 +259,10 @@ namespace Sango.Game
             UpdateValidCreatedItemTypes();
         }
 
+        /// <summary>
+        /// 准备科技列表
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
         void prepareTechniqueList(Scenario scenario)
         {
             techniqueMaxLevel = 0;
@@ -240,6 +315,11 @@ namespace Sango.Game
             });
         }
 
+        /// <summary>
+        /// 判断是否与另一势力为同盟关系
+        /// </summary>
+        /// <param name="other">另一势力</param>
+        /// <returns>是否为同盟关系</returns>
         public bool IsAlliance(Force other)
         {
             for (int i = 0; i < AllianceList.Count; ++i)
@@ -251,6 +331,11 @@ namespace Sango.Game
             return false;
         }
 
+        /// <summary>
+        /// 判断是否与另一势力有贸易协议
+        /// </summary>
+        /// <param name="other">另一势力</param>
+        /// <returns>是否有贸易协议</returns>
         public bool HasActiveTradeAgreement(Force other)
         {
             for (int i = 0; i < AllianceList.Count; ++i)
@@ -262,6 +347,11 @@ namespace Sango.Game
             return false;
         }
 
+        /// <summary>
+        /// 判断是否与另一势力有任何协议
+        /// </summary>
+        /// <param name="other">另一势力</param>
+        /// <returns>是否有任何协议</returns>
         public bool HasActiveAgreement(Force other)
         {
             for (int i = 0; i < AllianceList.Count; ++i)
@@ -273,6 +363,11 @@ namespace Sango.Game
             return false;
         }
 
+        /// <summary>
+        /// 检查与另一势力的联盟关系
+        /// </summary>
+        /// <param name="other">另一势力</param>
+        /// <returns>联盟对象</returns>
         public Alliance CheckAlliance(Force other)
         {
             for (int i = 0; i < AllianceList.Count; ++i)
@@ -284,6 +379,12 @@ namespace Sango.Game
             return null;
         }
 
+        /// <summary>
+        /// 检查与另一势力的特定类型联盟关系
+        /// </summary>
+        /// <param name="other">另一势力</param>
+        /// <param name="allianceType">联盟类型</param>
+        /// <returns>联盟对象</returns>
         public Alliance CheckAlliance(Force other, AllianceType allianceType)
         {
             for (int i = 0; i < AllianceList.Count; ++i)
@@ -346,6 +447,11 @@ namespace Sango.Game
         //    return building;
         //}
 
+        /// <summary>
+        /// 运行势力逻辑
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        /// <returns>是否成功执行</returns>
         public override bool Run(Scenario scenario)
         {
             if (ActionOver)
@@ -373,6 +479,11 @@ namespace Sango.Game
             return true;
         }
 
+        /// <summary>
+        /// 执行AI逻辑
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        /// <returns>是否成功执行</returns>
         public override bool DoAI(Scenario scenario)
         {
             if (AIFinished)
@@ -400,6 +511,11 @@ namespace Sango.Game
         }
 
 
+        /// <summary>
+        /// 执行建筑行为
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        /// <returns>是否成功执行</returns>
         public bool DoBuildingBehaviour(Scenario scenario)
         {
             if (buildingBaseList.Count <= 0)
@@ -430,6 +546,11 @@ namespace Sango.Game
             GameEvent.OnForceAIPrepare?.Invoke(this, scenario);
         }
 
+        /// <summary>
+        /// 势力回合开始时的回调方法
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        /// <returns>是否成功执行</returns>
         public override bool OnForceTurnStart(Scenario scenario)
         {
             buildingBaseList.Clear();
@@ -592,6 +713,11 @@ namespace Sango.Game
             return base.OnForceTurnStart(scenario);
         }
 
+        /// <summary>
+        /// 势力回合结束时的回调方法
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        /// <returns>是否成功执行</returns>
         public override bool OnForceTurnEnd(Scenario scenario)
         {
             for (int i = 0; i < scenario.personSet.Count; ++i)
@@ -642,10 +768,21 @@ namespace Sango.Game
             return base.OnForceTurnEnd(scenario);
         }
 
+        /// <summary>
+        /// 月份开始时的回调方法
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        /// <returns>是否成功执行</returns>
         public override bool OnMonthStart(Scenario scenario)
         {
             return base.OnMonthStart(scenario);
         }
+
+        /// <summary>
+        /// 季节开始时的回调方法
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        /// <returns>是否成功执行</returns>
         public override bool OnSeasonStart(Scenario scenario)
         {
             Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(100);
@@ -677,6 +814,10 @@ namespace Sango.Game
             });
         }
 
+        /// <summary>
+        /// 对所有城寨执行操作
+        /// </summary>
+        /// <param name="action">要执行的操作</param>
         public void ForEachCityBase(System.Action<City> action)
         {
             Scenario scenario = Scenario.Cur;
@@ -690,6 +831,10 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 对所有城市执行操作
+        /// </summary>
+        /// <param name="action">要执行的操作</param>
         public void ForEachCity(System.Action<City> action)
         {
             Scenario scenario = Scenario.Cur;
@@ -703,6 +848,10 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 对所有关卡执行操作
+        /// </summary>
+        /// <param name="action">要执行的操作</param>
         public void ForEachGate(System.Action<City> action)
         {
             Scenario scenario = Scenario.Cur;
@@ -716,6 +865,10 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 对所有港口执行操作
+        /// </summary>
+        /// <param name="action">要执行的操作</param>
         public void ForEachPort(System.Action<City> action)
         {
             Scenario scenario = Scenario.Cur;
@@ -729,6 +882,10 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 对所有武将执行操作
+        /// </summary>
+        /// <param name="action">要执行的操作</param>
         public void ForEachPerson(System.Action<Person> action)
         {
             Scenario scenario = Scenario.Cur;
@@ -742,6 +899,10 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 对所有军团执行操作
+        /// </summary>
+        /// <param name="action">要执行的操作</param>
         public void ForEachCorps(System.Action<Corps> action)
         {
             Scenario scenario = Scenario.Cur;
@@ -755,6 +916,10 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 对所有建筑执行操作
+        /// </summary>
+        /// <param name="action">要执行的操作</param>
         public void ForEachBuilding(System.Action<Building> action)
         {
             Scenario scenario = Scenario.Cur;
@@ -768,6 +933,10 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 对所有部队执行操作
+        /// </summary>
+        /// <param name="action">要执行的操作</param>
         public void ForEachTroop(System.Action<Troop> action)
         {
             Scenario scenario = Scenario.Cur;
@@ -782,23 +951,41 @@ namespace Sango.Game
         }
 
 
+        /// <summary>
+        /// 获得技巧点数
+        /// </summary>
+        /// <param name="value">获得的技巧点数</param>
         public void GainTechniquePoint(int value)
         {
             TechniquePoint += value;
             GameEvent.OnForceGainTechniquePoint?.Invoke(this, value);
         }
 
+        /// <summary>
+        /// 获得霸业点数
+        /// </summary>
+        /// <param name="value">获得的霸业点数</param>
         public void GainHegemonyPoint(int value)
         {
             HegemonyPoint += value;
             GameEvent.OnForceGainHegemonyPoint?.Invoke(this, value);
         }
 
+        /// <summary>
+        /// 检查是否拥有指定科技
+        /// </summary>
+        /// <param name="techId">科技ID</param>
+        /// <returns>是否拥有该科技</returns>
         public bool HasTechnique(int techId)
         {
             return Techniques.Contains(techId);
         }
 
+        /// <summary>
+        /// 添加科技
+        /// </summary>
+        /// <param name="techId">科技ID</param>
+        /// <returns>添加的科技对象</returns>
         public Technique AddTechnique(int techId)
         {
             if(ResearchTechnique == techId)
@@ -814,6 +1001,10 @@ namespace Sango.Game
             return technique;
         }
 
+        /// <summary>
+        /// 更换军师
+        /// </summary>
+        /// <param name="dest">新军师</param>
         public void ChangeCounsellor(Person dest)
         {
             Person old = Counsellor;
@@ -821,6 +1012,9 @@ namespace Sango.Game
             GameEvent.OnForceChangeCounsellor?.Invoke(this, old);
         }
 
+        /// <summary>
+        /// 更新有效的可创建物品类型
+        /// </summary>
         public void UpdateValidCreatedItemTypes()
         {
             createdItemTypes.Clear();

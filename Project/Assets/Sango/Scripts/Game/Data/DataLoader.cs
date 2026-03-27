@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace Sango.Game
 {
+    /// <summary>
+    /// 数据加载器类，用于加载和保存各种类型的数据
+    /// </summary>
     public static class DataLoader
     {
         //internal static readonly System.Type[] ConvertTypes = new System.Type[12]
@@ -108,11 +111,11 @@ namespace Sango.Game
 
         #region 基本数据处理
         /// <summary>
-        /// this is to slow
+        /// 尝试将字符串转换为指定类型
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="node"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">目标类型</typeparam>
+        /// <param name="value">字符串值</param>
+        /// <returns>转换后的值</returns>
         public static T TryParse<T>(string value) where T : IConvertible
         {
             Type tType = typeof(T);
@@ -130,6 +133,12 @@ namespace Sango.Game
 
         #region Xml
 
+        /// <summary>
+        /// 向XML节点添加子节点
+        /// </summary>
+        /// <param name="node">父节点</param>
+        /// <param name="name">子节点名称</param>
+        /// <returns>添加的子节点</returns>
         public static System.Xml.XmlNode AddNode(System.Xml.XmlNode node, string name)
         {
             System.Xml.XmlDocument doc = node.OwnerDocument;
@@ -140,6 +149,13 @@ namespace Sango.Game
             return cotentNode;
         }
 
+        /// <summary>
+        /// 向XML节点添加带值的子节点
+        /// </summary>
+        /// <param name="node">父节点</param>
+        /// <param name="name">子节点名称</param>
+        /// <param name="value">子节点值</param>
+        /// <returns>添加的子节点</returns>
         public static System.Xml.XmlNode AddNode(System.Xml.XmlNode node, string name, string value)
         {
             System.Xml.XmlElement cotentNode = node.OwnerDocument.CreateElement(name);
@@ -150,6 +166,13 @@ namespace Sango.Game
             return cotentNode;
         }
 
+        /// <summary>
+        /// 向XML节点添加带数据对象的子节点
+        /// </summary>
+        /// <param name="node">父节点</param>
+        /// <param name="name">子节点名称</param>
+        /// <param name="value">数据对象</param>
+        /// <returns>添加的子节点</returns>
         public static System.Xml.XmlNode AddNode(System.Xml.XmlNode node, string name, IDataObject value)
         {
             if (value == null) return null;
@@ -488,6 +511,12 @@ namespace Sango.Game
         #endregion List
 
 
+        /// <summary>
+        /// 从XML节点加载数组
+        /// </summary>
+        /// <typeparam name="T">元素类型</typeparam>
+        /// <param name="list">列表对象</param>
+        /// <param name="node">XML节点</param>
         public static void LoadArray<T>(IList<T> list, XmlNode node) where T : IConvertible
         {
             string[] strings = node.InnerText.Split(',');
@@ -497,6 +526,12 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 从XML节点加载数组
+        /// </summary>
+        /// <typeparam name="T">元素类型</typeparam>
+        /// <param name="node">XML节点</param>
+        /// <returns>数组</returns>
         public static T[] LoadArray<T>(XmlNode node) where T : IConvertible
         {
             string[] strings = node.InnerText.Split(',');
@@ -508,6 +543,12 @@ namespace Sango.Game
             return values;
         }
 
+        /// <summary>
+        /// 保存数组到XML节点
+        /// </summary>
+        /// <typeparam name="T">元素类型</typeparam>
+        /// <param name="list">列表对象</param>
+        /// <param name="node">XML节点</param>
         public static void SaveArray<T>(IList<T> list, XmlNode node) where T : IConvertible
         {
             if (list == null) return;
@@ -523,6 +564,12 @@ namespace Sango.Game
             node.InnerText = sb.ToString();
         }
 
+        /// <summary>
+        /// 保存数组到XML节点
+        /// </summary>
+        /// <typeparam name="T">元素类型</typeparam>
+        /// <param name="o">数组</param>
+        /// <param name="node">XML节点</param>
         public static void SaveArray<T>(T[] o, XmlNode node) where T : IConvertible
         {
             if (o == null) return;

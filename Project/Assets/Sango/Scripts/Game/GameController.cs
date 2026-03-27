@@ -1,49 +1,147 @@
-﻿using Sango.Render;
+﻿/*
+ * 文件名：GameController.cs
+ * 描述：游戏控制器类，处理游戏中的输入事件和相机控制
+ * 创建日期：2026-03-27
+ * 最后修改：2026-03-27
+ */
+
+using Sango.Render;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Sango.Game
 {
+    /// <summary>
+    /// 游戏控制器类，处理游戏中的输入事件和相机控制
+    /// </summary>
     public class GameController : Singleton<GameController>
     {
+        /// <summary>
+        /// 是否启用控制器
+        /// </summary>
         public bool Enabled { get; set; }
+
+        /// <summary>
+        /// 是否启用键盘移动
+        /// </summary>
         public bool KeyboardMoveEnabled { get; set; }
+
+        /// <summary>
+        /// 是否启用视角旋转
+        /// </summary>
         public bool RotateViewEnabled { get; set; }
+
+        /// <summary>
+        /// 是否启用拖动移动视角
+        /// </summary>
         public bool DragMoveViewEnabled { get; set; }
+
+        /// <summary>
+        /// 是否启用缩放视角
+        /// </summary>
         public bool ZoomViewEnabled { get; set; }
+
+        /// <summary>
+        /// 是否启用边界移动视角
+        /// </summary>
         public bool BorderMoveViewEnabled { get; set; }
 
+        /// <summary>
+        /// 控制类型枚举
+        /// </summary>
         enum ControlType : byte
         {
+            /// <summary>
+            /// 无控制
+            /// </summary>
             None = 0,
+            /// <summary>
+            /// 移动控制
+            /// </summary>
             Move,
+            /// <summary>
+            /// 旋转控制
+            /// </summary>
             Rotate,
         }
+
+        /// <summary>
+        /// 当前控制类型
+        /// </summary>
         ControlType controlType = ControlType.None;
 
         //public delegate void OnClickCell(Cell cell);
         //public delegate void OnDoubleClickCell(Cell cell);
 
+        /// <summary>
+        /// 单元格进入事件委托
+        /// </summary>
         public delegate void OnCellOverEnter(Cell cell);
+
+        /// <summary>
+        /// 单元格退出事件委托
+        /// </summary>
         public delegate void OnCellOverExit(Cell cell);
+
+        /// <summary>
+        /// 单元格停留事件委托
+        /// </summary>
         public delegate void OnCellOverStay(Cell cell, Vector3 hitPoint, bool isOverUI);
 
+        /// <summary>
+        /// 取消处理事件委托
+        /// </summary>
         public delegate void OnCancelHandle();
+
+        /// <summary>
+        /// 点击处理事件委托
+        /// </summary>
         public delegate void OnClickHandle(Cell cell);
+
         //public delegate void OnKeyDown(KeyCode keyCode);
 
         //public OnClickCell onClickCell;
         //public OnDoubleClickCell onDoubleClickCell;
+
+        /// <summary>
+        /// 单元格进入事件
+        /// </summary>
         public OnCellOverEnter onCellOverEnter;
+
+        /// <summary>
+        /// 单元格退出事件
+        /// </summary>
         public OnCellOverExit onCellOverExit;
+
+        /// <summary>
+        /// 单元格停留事件
+        /// </summary>
         public OnCellOverStay onCellOverStay;
+
+        /// <summary>
+        /// 取消处理事件
+        /// </summary>
         public OnCancelHandle onCancelHandle;
+
+        /// <summary>
+        /// 点击处理事件
+        /// </summary>
         public OnClickHandle onClickHandle;
+
+        /// <summary>
+        /// 右键点击处理事件
+        /// </summary>
         public OnClickHandle onRClickHandle;
 
+        /// <summary>
+        /// 视角平面
+        /// </summary>
         private Plane viewPlane = new Plane(Vector3.up, Vector3.zero);
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public GameController()
         {
             KeyboardMoveEnabled = true;
@@ -53,6 +151,9 @@ namespace Sango.Game
             BorderMoveViewEnabled = true;
         }
 
+        /// <summary>
+        /// 重置控制器设置
+        /// </summary>
         public void Reset()
         {
             KeyboardMoveEnabled = true;
@@ -62,22 +163,61 @@ namespace Sango.Game
             BorderMoveViewEnabled = true;
         }
 
+        /// <summary>
+        /// 检查是否在UI上
+        /// </summary>
+        /// <returns>是否在UI上</returns>
         public bool IsOverUI()
         {
             return (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())/* || FairyGUI.Stage.isTouchOnUI*/;
         }
+
+        /// <summary>
+        /// 检查是否在UI上
+        /// </summary>
+        /// <param name="fingerId">触摸ID</param>
+        /// <returns>是否在UI上</returns>
         public bool IsOverUI(int fingerId)
         {
             return (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(fingerId))/* || FairyGUI.Stage.isTouchOnUI*/;
         }
 
+        /// <summary>
+        /// 鼠标悬停的单元格
+        /// </summary>
         public Cell mouseOverCell;
+
+        /// <summary>
+        /// 触摸开始的单元格
+        /// </summary>
         public Cell touchBeganCell;
+
+        /// <summary>
+        /// 点击位置
+        /// </summary>
         public Vector3 clickPosition;
+
+        /// <summary>
+        /// 射线
+        /// </summary>
         private Ray ray;
+
+        /// <summary>
+        /// 射线命中
+        /// </summary>
         private RaycastHit hit;
+
+        /// <summary>
+        /// 射线投射层
+        /// </summary>
         private int rayCastLayer = LayerMask.GetMask("Map");
 
+        /// <summary>
+        /// 检查鼠标是否在地图单元格上
+        /// </summary>
+        /// <param name="ray">射线</param>
+        /// <param name="hitPoint">命中点</param>
+        /// <returns>单元格</returns>
         public Cell CheckMouseIsOnMapCell(Ray ray, out Vector3 hitPoint)
         {
             if (Physics.Raycast(ray, out hit, 2000, rayCastLayer))
@@ -89,19 +229,51 @@ namespace Sango.Game
             return null;
         }
 
+        /// <summary>
+        /// 检查鼠标是否在地图单元格上
+        /// </summary>
+        /// <param name="mousePosition">鼠标位置</param>
+        /// <param name="hitPoint">命中点</param>
+        /// <returns>单元格</returns>
         public Cell CheckMouseIsOnMapCell(Vector3 mousePosition, out Vector3 hitPoint)
         {
             ray = Camera.main.ScreenPointToRay(mousePosition);
             return CheckMouseIsOnMapCell(ray, out hitPoint);
         }
 
+        /// <summary>
+        /// 触摸位置数组
+        /// </summary>
         private Vector2[] touchPos = new Vector2[2];
+
+        /// <summary>
+        /// 是否正在拖动
+        /// </summary>
         bool isDragMoving = false;
+
+        /// <summary>
+        /// 是否正在旋转
+        /// </summary>
         bool isRotateMoving = false;
+
+        /// <summary>
+        /// 旋转位置
+        /// </summary>
         Vector3 rotatePosition;
+
+        /// <summary>
+        /// 拖动位置
+        /// </summary>
         Vector3 dragPosition;
+
+        /// <summary>
+        /// 世界平面拖动位置
+        /// </summary>
         Vector3 worldPlaneDragPosition;
 
+        /// <summary>
+        /// 处理单元格悬停
+        /// </summary>
         public void HandleOverCell()
         {
             if (Scenario.Cur == null) return;
@@ -125,11 +297,16 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 点击安全距离平方
+        /// </summary>
         float clickSafeSqrDistance = 100;
 
+        /// <summary>
+        /// 处理Windows事件
+        /// </summary>
         public void HandleWindowsEvent()
         {
-
             if (Input.GetMouseButton(0) && !isRotateMoving)
             {
                 if (Input.GetMouseButtonDown(0))
@@ -151,7 +328,6 @@ namespace Sango.Game
                     }
 
                     if (mouseOverCell == null) return;
-
 
                     if (!mouseOverCell.IsEmpty())
                         return;
@@ -283,6 +459,9 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 处理移动事件
+        /// </summary>
         public void HandleMobileEvent()
         {
             if (Input.touchCount == 1)
@@ -455,8 +634,20 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 按键标志数组
+        /// </summary>
         bool[] keyFlags = new bool[4];
+
+        /// <summary>
+        /// 是否有按键按下
+        /// </summary>
         bool hasKey = false;
+
+        /// <summary>
+        /// 键盘移动相机
+        /// </summary>
+        /// <returns>是否有按键按下</returns>
         private bool MoveCameraKeyBoard()
         {
             if (!KeyboardMoveEnabled) return true;
@@ -504,7 +695,14 @@ namespace Sango.Game
             return hasKey;
         }
 
+        /// <summary>
+        /// 边界宽度
+        /// </summary>
         float boderWidth = 10;
+
+        /// <summary>
+        /// 处理边界移动相机
+        /// </summary>
         public void HandleBorderMoveCamera()
         {
 #if UNITY_EDITOR
@@ -559,6 +757,9 @@ namespace Sango.Game
 
         }
 
+        /// <summary>
+        /// 更新
+        /// </summary>
         public void Update()
         {
             GameSystemManager.Instance.Update();
@@ -577,6 +778,9 @@ namespace Sango.Game
 #endif
         }
 
+        /// <summary>
+        /// 点击世界
+        /// </summary>
         public void OnClickWorld()
         {
             if (onClickHandle != null && mouseOverCell != null)
@@ -588,6 +792,9 @@ namespace Sango.Game
                 GameSystemManager.Instance.HandleEvent(CommandEventType.Click, mouseOverCell, clickPosition, false);
         }
 
+        /// <summary>
+        /// 右键点击世界
+        /// </summary>
         public void OnRClickWorld()
         {
             if (onRClickHandle != null && mouseOverCell != null)
@@ -600,6 +807,9 @@ namespace Sango.Game
                 GameSystemManager.Instance.HandleEvent(CommandEventType.RClick, mouseOverCell, clickPosition, false);
         }
 
+        /// <summary>
+        /// 取消操作
+        /// </summary>
         public void OnCancel()
         {
             if (onCancelHandle != null)

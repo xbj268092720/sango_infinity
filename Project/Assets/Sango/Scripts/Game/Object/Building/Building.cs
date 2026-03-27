@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using Sango.Game.Action;
 using Sango.Game.Render;
 using System.Collections.Generic;
@@ -6,43 +6,93 @@ using System.Text;
 
 namespace Sango.Game
 {
+    /// <summary>
+    /// 建筑类，继承自BuildingBase，用于管理游戏中的建筑对象
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class Building : BuildingBase
     {
+        /// <summary>
+        /// 获取建筑的对象类型
+        /// </summary>
         public override SangoObjectType ObjectType { get { return SangoObjectType.Building; } }
 
+        /// <summary>
+        /// 获取建筑的名称
+        /// </summary>
         public override string Name { get { return BuildingType?.Name; } }
 
+        /// <summary>
+        /// 建筑的工人列表
+        /// </summary>
         [JsonConverter(typeof(SangoObjectListIDConverter<Person>))]
         [JsonProperty]
         public SangoObjectList<Person> Workers { get; set; }
 
+        /// <summary>
+        /// 建筑的建造者列表
+        /// </summary>
         [JsonConverter(typeof(SangoObjectListIDConverter<Person>))]
         [JsonProperty]
         public SangoObjectList<Person> Builder { get; set; }
 
+        /// <summary>
+        /// 剩余建造或升级的回合数
+        /// </summary>
         [JsonProperty]
         public int LeftCounter { get; set; }
 
+        /// <summary>
+        /// 生产物品的ID
+        /// </summary>
         [JsonProperty]
         public int ProductItemId { get; set; }
 
+        /// <summary>
+        /// 累积的产品数量
+        /// </summary>
         [JsonProperty]
         public int AccumulatedProduct { get; set; }
 
+        /// <summary>
+        /// 累积的食物数量
+        /// </summary>
         [JsonProperty]
         public int AccumulatedFood { get; set; }
 
+        /// <summary>
+        /// 累积的金币数量
+        /// </summary>
         [JsonProperty]
         public int AccumulatedGold { get; set; }
 
+        /// <summary>
+        /// 累积的人口数量
+        /// </summary>
         [JsonProperty]
         public int AccumulatedPopulation { get; set; }
 
+        /// <summary>
+        /// 地格收获的总食物数量
+        /// </summary>
         public int cellHarvestTotalFood = 0;
+
+        /// <summary>
+        /// 地格收获的总金币数量
+        /// </summary>
         public int cellHarvestTotalGold = 0;
+
+        /// <summary>
+        /// 建筑的行动列表
+        /// </summary>
         public List<ActionBase> actionList;
 
+        /// <summary>
+        /// 比较两个建筑对象
+        /// </summary>
+        /// <param name="a">第一个建筑对象</param>
+        /// <param name="b">第二个建筑对象</param>
+        /// <returns>比较结果，按名称排序</returns>
         public static int Compare(Building a, Building b)
         {
             if (a != null && b != null)
@@ -59,18 +109,29 @@ namespace Sango.Game
             return 0;
         }
 
+        /// <summary>
+        /// 场景准备时的回调方法
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
         public override void OnScenarioPrepare(Scenario scenario)
         {
             base.OnScenarioPrepare(scenario);
             //Init(scenario);
         }
 
+        /// <summary>
+        /// 准备渲染时的回调方法
+        /// </summary>
         public override void OnPrepareRender()
         {
             if (Render == null)
                 Render = new BuildingRender(this);
         }
 
+        /// <summary>
+        /// 初始化建筑
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
         public override void Init(Scenario scenario)
         {
             BelongCity?.OnBuildingCreate(this);
@@ -93,6 +154,11 @@ namespace Sango.Game
             OnPrepareRender();
         }
 
+        /// <summary>
+        /// 势力回合开始时的回调方法
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        /// <returns>是否成功执行</returns>
         public override bool OnForceTurnStart(Scenario scenario)
         {
             ActionOver = false;
@@ -162,12 +228,21 @@ namespace Sango.Game
             return base.OnForceTurnStart(scenario);
         }
 
+        /// <summary>
+        /// 势力回合结束时的回调方法
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        /// <returns>是否成功执行</returns>
         public override bool OnForceTurnEnd(Scenario scenario)
         {
             GameEvent.OnBuildingTurnEnd?.Invoke(this, scenario);
             return base.OnForceTurnEnd(scenario);
         }
 
+        /// <summary>
+        /// 建筑完成时的回调方法
+        /// </summary>
+        /// <param name="builder">建造者</param>
         public override void OnComplate(SangoObject builder)
         {
             Troop atk = builder as Troop;
@@ -204,6 +279,9 @@ namespace Sango.Game
 
         }
 
+        /// <summary>
+        /// 建筑建造完成时的回调方法
+        /// </summary>
         public virtual void OnBuildComplate()
         {
             Scenario scenario = Scenario.Cur;
@@ -238,6 +316,9 @@ namespace Sango.Game
             Builder = null;
         }
 
+        /// <summary>
+        /// 建筑升级完成时的回调方法
+        /// </summary>
         public void OnUpgradeComplate()
         {
             Scenario scenario = Scenario.Cur;
@@ -276,6 +357,10 @@ namespace Sango.Game
             Builder = null;
         }
 
+        /// <summary>
+        /// 改变建筑所属的城市
+        /// </summary>
+        /// <param name="dest">目标城市</param>
         public void ChangeCity(City dest)
         {
             if (!isComplate)
@@ -293,6 +378,11 @@ namespace Sango.Game
             Render?.UpdateRender();
         }
 
+        /// <summary>
+        /// 改变建筑所属的军团
+        /// </summary>
+        /// <param name="corps">目标军团</param>
+        /// <returns>之前所属的军团</returns>
         public Corps ChangeCorps(Corps corps)
         {
             Corps last = null;
@@ -317,6 +407,9 @@ namespace Sango.Game
             return last;
         }
 
+        /// <summary>
+        /// 清理建筑资源
+        /// </summary>
         public override void Clear()
         {
             if (actionList != null)
@@ -369,16 +462,29 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 获取技能方法可用的部队数量
+        /// </summary>
+        /// <returns>可用的部队数量</returns>
         public override int GetSkillMethodAvaliabledTroops()
         {
             return 4000 + 4000 * durability / DurabilityLimit;
         }
+
+        /// <summary>
+        /// 建筑被摧毁时的回调方法
+        /// </summary>
+        /// <param name="atk">攻击者</param>
         public override void OnFall(SangoObject atk)
         {
             BelongCity?.OnBuildingDestroy(this);
             Clear();
         }
 
+        /// <summary>
+        /// 移除工人
+        /// </summary>
+        /// <param name="person">要移除的工人</param>
         public void RemoveWorker(Person person)
         {
             if (Workers == null) return;
@@ -389,6 +495,9 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 移除所有工人
+        /// </summary>
         public void RemoveAllWorkers()
         {
             if (Workers == null) return;
@@ -399,6 +508,10 @@ namespace Sango.Game
             Workers.Clear();
         }
 
+        /// <summary>
+        /// 添加工人
+        /// </summary>
+        /// <param name="person">要添加的工人</param>
         public void AddWorker(Person person)
         {
             if (Workers == null) Workers = new SangoObjectList<Person>();
@@ -413,6 +526,11 @@ namespace Sango.Game
             person.workingBuilding = this;
         }
 
+        /// <summary>
+        /// 获取指定索引的工人
+        /// </summary>
+        /// <param name="index">工人索引</param>
+        /// <returns>工人对象</returns>
         public Person GetWorker(int index)
         {
             if (Workers == null || index >= Workers.Count) return null;

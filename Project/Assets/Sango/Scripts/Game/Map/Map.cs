@@ -9,25 +9,59 @@ using UnityEngine;
 
 namespace Sango.Game
 {
+    /// <summary>
+    /// 地图类，管理游戏地图的加载、创建和路径查找等功能
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class Map
     {
+        /// <summary>
+        /// 地图宽度
+        /// </summary>
         [JsonProperty] public int Width { get; internal set; }
+        /// <summary>
+        /// 地图高度
+        /// </summary>
         [JsonProperty] public int Height { get; internal set; }
+        /// <summary>
+        /// 网格大小
+        /// </summary>
         [JsonProperty] public float GridSize { get; internal set; }
+        /// <summary>
+        /// 地图名称
+        /// </summary>
         [JsonProperty] public string Name { get; internal set; }
+        /// <summary>
+        /// 内容目录
+        /// </summary>
         [JsonProperty] public string ContentDir { get; internal set; }
+        /// <summary>
+        /// 单元格集合
+        /// </summary>
         [JsonProperty] public CellSet CellSet { get; internal set; }
 
+        /// <summary>
+        /// 六边形世界
+        /// </summary>
         public HexWorld HexWorld { get; internal set; }
+        /// <summary>
+        /// 文件名
+        /// </summary>
         public string FileName { get; internal set; }
 
+        /// <summary>
+        /// 清空地图数据
+        /// </summary>
         public void Clear()
         {
             CellSet.Clear();
             CellSet = null;
         }
 
+        /// <summary>
+        /// 加载地图
+        /// </summary>
+        /// <param name="scenario">场景对象</param>
         public void Load(Scenario scenario)
         {
             string mapName = scenario.Info.mapType;
@@ -70,11 +104,21 @@ namespace Sango.Game
                 fs.Dispose();
             }
         }
+        /// <summary>
+        /// 初始化地图
+        /// </summary>
+        /// <param name="scenario">场景对象</param>
         public void Init(Scenario scenario)
         {
             CellSet.Init(this);
         }
 
+        /// <summary>
+        /// 创建地图
+        /// </summary>
+        /// <param name="w">宽度</param>
+        /// <param name="h">高度</param>
+        /// <param name="gridSize">网格大小</param>
         public void Create(int w, int h, float gridSize)
         {
             Width = w;
@@ -84,24 +128,51 @@ namespace Sango.Game
             GridSize = gridSize;
             HexWorld = new Hexagon.HexWorld(new Hexagon.Point(gridSize, gridSize), new Hexagon.Point(0, 0));
         }
+        /// <summary>
+        /// 根据坐标获取单元格
+        /// </summary>
+        /// <param name="x">X坐标</param>
+        /// <param name="y">Y坐标</param>
+        /// <returns>单元格对象</returns>
         public Cell GetCell(int x, int y)
         {
             return CellSet.GetCell(x, y);
         }
+        /// <summary>
+        /// 根据立方体坐标获取单元格
+        /// </summary>
+        /// <param name="cub">立方体坐标</param>
+        /// <returns>单元格对象</returns>
         public Cell GetCell(Hexagon.Hex cub)
         {
             Coord coords = Coord.OffsetFromCube(cub);
             return CellSet.GetCell(coords.col, coords.row);
         }
+        /// <summary>
+        /// 根据位置获取单元格
+        /// </summary>
+        /// <param name="position">位置</param>
+        /// <returns>单元格对象</returns>
         public Cell GetCell(UnityEngine.Vector3 position)
         {
             Vector2Int coords = HexWorld.PositionToCoords(position);
             return CellSet.GetCell(coords.x, coords.y);
         }
+        /// <summary>
+        /// 获取单元格的邻居
+        /// </summary>
+        /// <param name="cell">单元格</param>
+        /// <param name="dir">方向</param>
+        /// <returns>邻居单元格</returns>
         public Cell GetNeighbor(Cell cell, int dir)
         {
             return cell.Neighbors[dir];
         }
+        /// <summary>
+        /// 获取单元格的所有邻居
+        /// </summary>
+        /// <param name="cell">单元格</param>
+        /// <param name="neighborList">邻居列表</param>
         public void GetNeighbors(Cell cell, List<Cell> neighborList)
         {
             for (int i = 0; i < 6; i++)
@@ -111,14 +182,31 @@ namespace Sango.Game
                     neighborList.Add(c);
             }
         }
+        /// <summary>
+        /// 坐标转换为位置
+        /// </summary>
+        /// <param name="x">X坐标</param>
+        /// <param name="y">Y坐标</param>
+        /// <returns>位置</returns>
         public Vector3 Coords2Position(int x, int y)
         {
             return HexWorld.CoordsToPosition(x, y);
         }
+        /// <summary>
+        /// 位置转换为坐标
+        /// </summary>
+        /// <param name="position">位置</param>
+        /// <returns>坐标</returns>
         public Vector2Int Position2Coords(Vector3 position)
         {
             return HexWorld.PositionToCoords(position);
         }
+        /// <summary>
+        /// 检查是否在势力范围
+        /// </summary>
+        /// <param name="troops">部队</param>
+        /// <param name="cell">单元格</param>
+        /// <returns>是否在势力范围</returns>
         public bool IsZOC(Troop troops, Cell cell)
         {
             if (cell.building != null && !cell.building.IsEnemy(troops))
@@ -136,26 +224,68 @@ namespace Sango.Game
             }
             return false;
         }
+        /// <summary>
+        /// 计算两个立方体坐标之间的距离
+        /// </summary>
+        /// <param name="start">起始立方体坐标</param>
+        /// <param name="end">结束立方体坐标</param>
+        /// <returns>距离</returns>
         public int Distance(Hexagon.Hex start, Hexagon.Hex end)
         {
             return start.Distance(end);
         }
+        /// <summary>
+        /// 计算两个单元格之间的距离
+        /// </summary>
+        /// <param name="start">起始单元格</param>
+        /// <param name="end">结束单元格</param>
+        /// <returns>距离</returns>
         public int Distance(Cell start, Cell end)
         {
             return start.Cub.Distance(end.Cub);
         }
+        /// <summary>
+        /// 计算两个坐标之间的距离
+        /// </summary>
+        /// <param name="ax">起始X坐标</param>
+        /// <param name="ay">起始Y坐标</param>
+        /// <param name="bx">结束X坐标</param>
+        /// <param name="by">结束Y坐标</param>
+        /// <returns>距离</returns>
         public int Distance(int ax, int ay, int bx, int by)
         {
             return Distance(Coord.OffsetToCube(ax, ay), Coord.OffsetToCube(bx, by));
         }
+        /// <summary>
+        /// 获取环形区域的单元格
+        /// </summary>
+        /// <param name="x">X坐标</param>
+        /// <param name="y">Y坐标</param>
+        /// <param name="radius">半径</param>
+        /// <param name="cellList">单元格列表</param>
+        /// <param name="checkMoveAble">是否检查可移动性</param>
         public void GetRing(int x, int y, int radius, List<Cell> cellList, bool checkMoveAble = false)
         {
             GetRing(Coord.OffsetToCube(x, y), radius, cellList, checkMoveAble);
         }
+        /// <summary>
+        /// 获取环形区域的单元格
+        /// </summary>
+        /// <param name="start">起始单元格</param>
+        /// <param name="radius">半径</param>
+        /// <param name="cellList">单元格列表</param>
+        /// <param name="checkMoveAble">是否检查可移动性</param>
         public void GetRing(Cell start, int radius, List<Cell> cellList, bool checkMoveAble = false)
         {
             GetRing(start.Cub, radius, cellList, checkMoveAble);
         }
+        /// <summary>
+        /// 获取环形区域的单元格
+        /// </summary>
+        /// <param name="cub">立方体坐标</param>
+        /// <param name="radius">半径</param>
+        /// <param name="cellList">单元格列表</param>
+        /// <param name="checkMoveAble">是否检查可移动性</param>
         public void GetRing(Hexagon.Hex cub, int radius, List<Cell> cellList, bool checkMoveAble = false)
         {
             cub.Ring(radius, (c =>
@@ -169,6 +299,13 @@ namespace Sango.Game
             }));
         }
 
+        /// <summary>
+        /// 对环形区域的单元格执行操作
+        /// </summary>
+        /// <param name="start">起始单元格</param>
+        /// <param name="radius">半径</param>
+        /// <param name="action">操作</param>
+        /// <param name="startDir">起始方向</param>
         public void RingAction(Cell start, int radius, Action<Cell> action, int startDir = 4)
         {
             if (radius == 0)
@@ -210,6 +347,13 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 对螺旋区域的单元格执行操作
+        /// </summary>
+        /// <param name="start">起始单元格</param>
+        /// <param name="radius">半径</param>
+        /// <param name="action">操作</param>
+        /// <param name="startDir">起始方向</param>
         public void SpiralAction(Cell start, int radius, Action<Cell> action, int startDir = 4)
         {
             action?.Invoke(start);
@@ -219,10 +363,22 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 获取螺旋区域的单元格
+        /// </summary>
+        /// <param name="start">起始单元格</param>
+        /// <param name="radius">半径</param>
+        /// <param name="cellList">单元格列表</param>
         public void GetSpiral(Cell start, int radius, List<Cell> cellList)
         {
             GetSpiral(start.Cub, radius, cellList);
         }
+        /// <summary>
+        /// 获取螺旋区域的单元格
+        /// </summary>
+        /// <param name="cub">立方体坐标</param>
+        /// <param name="radius">半径</param>
+        /// <param name="cellList">单元格列表</param>
         public void GetSpiral(Hexagon.Hex cub, int radius, List<Cell> cellList)
         {
             cub.Spiral(radius, (c =>
@@ -233,6 +389,13 @@ namespace Sango.Game
             }));
         }
 
+        /// <summary>
+        /// 获取螺旋区域的单元格
+        /// </summary>
+        /// <param name="x">X坐标</param>
+        /// <param name="y">Y坐标</param>
+        /// <param name="radius">半径</param>
+        /// <param name="cellList">单元格列表</param>
         public void GetSpiral(int x, int y, int radius, List<Cell> cellList)
         {
             Hexagon.Hex cub = Hexagon.Coord.OffsetToCube(x, y);
@@ -376,18 +539,47 @@ namespace Sango.Game
             });
         }
 
+        /// <summary>
+        /// 单元格检查委托
+        /// </summary>
+        /// <param name="checkCell">要检查的单元格</param>
+        /// <returns>是否通过检查</returns>
         public delegate bool CellCheck(Cell checkCell);
+        /// <summary>
+        /// 关闭列表
+        /// </summary>
         List<Cell> closeList = new List<Cell>();
+        /// <summary>
+        /// 开放列表
+        /// </summary>
         List<Cell> openList = new List<Cell>();
         //PriorityQueue<Cell> frontier = new PriorityQueue<Cell>();
 
 
+        /// <summary>
+        /// 优先队列
+        /// </summary>
         System.Collections.Generic.PriorityQueue<Cell, int> frontier = new PriorityQueue<Cell, int>(new LowPriorit());
+        /// <summary>
+        /// 路径来源字典
+        /// </summary>
         Dictionary<Cell, Cell> came_from = new Dictionary<Cell, Cell>();
+        /// <summary>
+        /// 成本字典
+        /// </summary>
         Dictionary<Cell, Cell> cost_so_far = new Dictionary<Cell, Cell>();
 
+        /// <summary>
+        /// 低优先级比较器
+        /// </summary>
         public class LowPriorit : IComparer<int>
         {
+            /// <summary>
+            /// 比较两个整数
+            /// </summary>
+            /// <param name="x">第一个整数</param>
+            /// <param name="y">第二个整数</param>
+            /// <returns>比较结果</returns>
             public int Compare(int x, int y)
             {
                 return x.CompareTo(y);
@@ -395,9 +587,18 @@ namespace Sango.Game
         }
 
 
+        /// <summary>
+        /// 单元格临时信息
+        /// </summary>
         class cellTempInfo
         {
+            /// <summary>
+            /// 成本
+            /// </summary>
             public int cost;
+            /// <summary>
+            /// 是否在势力范围
+            /// </summary>
             public bool isZOC;
         }
 
@@ -503,6 +704,13 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 获取指定范围内的螺旋路径
+        /// </summary>
+        /// <param name="start">起始单元格</param>
+        /// <param name="startLen">起始长度</param>
+        /// <param name="endLen">结束长度</param>
+        /// <param name="cellList">路径单元格列表</param>
         public void GetDirectSpiral(Cell start, int startLen, int endLen, List<Cell> cellList)
         {
             cost_so_far.Clear();
@@ -631,6 +839,12 @@ namespace Sango.Game
             }
         }
 
+        /// <summary>
+        /// 获取无阻挡的移动路径
+        /// </summary>
+        /// <param name="troops">部队</param>
+        /// <param name="dest">目标单元格</param>
+        /// <param name="cellList">路径单元格列表</param>
         public void GetDirectNoBlockMovePath(Troop troops, Cell dest, List<Cell> cellList)
         {
             GetDirectMovePath(troops, dest, cellList, (next) =>

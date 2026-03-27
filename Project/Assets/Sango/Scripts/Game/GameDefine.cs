@@ -1,17 +1,43 @@
-﻿namespace Sango.Game
+/*
+ * 文件名：GameDefine.cs
+ * 描述：游戏定义类，包含游戏中使用的枚举和常量
+ * 创建日期：2026-03-27
+ * 最后修改：2026-03-27
+ */
+
+namespace Sango.Game
 {
+    /// <summary>
+    /// 季节类型枚举
+    /// </summary>
     public enum SeasonType : int
     {
+        /// <summary>
+        /// 秋季
+        /// </summary>
         Autumn = 0,
+        /// <summary>
+        /// 春季
+        /// </summary>
         Spring = 1,
+        /// <summary>
+        /// 夏季
+        /// </summary>
         Summer = 2,
+        /// <summary>
+        /// 冬季
+        /// </summary>
         Winter = 3,
     }
 
-
+    /// <summary>
+    /// 游戏定义类，包含游戏中使用的常量和静态数据
+    /// </summary>
     public class GameDefine
     {
-        //--- 每个月对应的季节
+        /// <summary>
+        /// 每个月对应的季节
+        /// </summary>
         public static SeasonType[] SeasonInMonth = {
             SeasonType.Spring,
             SeasonType.Spring,
@@ -27,57 +53,103 @@
             SeasonType.Winter,
             };
 
+        /// <summary>
+        /// 季节名称
+        /// </summary>
         public static string[] seasonName = { "秋", "春", "夏", "冬" };
 
+        /// <summary>
+        /// 白色文本颜色
+        /// </summary>
         public static UnityEngine.Color whiteText = new UnityEngine.Color(0.862745f, 0.862745f, 0.862745f);
 
+        /// <summary>
+        /// 圆圈符号
+        /// </summary>
         public static string o = "○";
+        /// <summary>
+        /// 叉号符号
+        /// </summary>
         public static string x = "×";
     }
 
-
     /// <summary>
-    /// 对象枚举类型：武将性别（男、女）
+    /// 性别枚举
     /// </summary>
     public enum Sex : int
     {
-        //男
+        /// <summary>
+        /// 男性
+        /// </summary>
         Male = 0,
-        //女
+        /// <summary>
+        /// 女性
+        /// </summary>
         Female = 1
     }
 
     /// <summary>
-    /// 对象枚举类型：武将适性级别（C、B、A、S、SS、SSR）
+    /// 适性级别枚举
     /// </summary>
     public enum LevelString : int
     {
+        /// <summary>
+        /// C级
+        /// </summary>
         Ｃ = 0,
+        /// <summary>
+        /// B级
+        /// </summary>
         Ｂ,
+        /// <summary>
+        /// A级
+        /// </summary>
         Ａ,
+        /// <summary>
+        /// S级
+        /// </summary>
         Ｓ,
+        /// <summary>
+        /// SS级
+        /// </summary>
         ＳＳ,
+        /// <summary>
+        /// SSS级
+        /// </summary>
         ＳＳＳ,
+        /// <summary>
+        /// SSR级
+        /// </summary>
         ＳＳR,
     }
 
-
-
     /// <summary>
-    /// 对象枚举类型：宝物类型
+    /// 宝物类型枚举
     /// </summary>
     public enum TreasureType : int
     {
-        //-@马
+        /// <summary>
+        /// 马
+        /// </summary>
         horse = 0,
-        //-@武器
+        /// <summary>
+        /// 武器
+        /// </summary>
         Weapon = 1,
-        //-@书
+        /// <summary>
+        /// 书
+        /// </summary>
         Book = 2,
     }
 
+    /// <summary>
+    /// 城市工作类型枚举
+    /// </summary>
     public enum CityJobType : int
     {
+        /// <summary>
+        /// 默认
+        /// </summary>
         Default = 0,
 
         /// <summary>
@@ -180,17 +252,44 @@
         /// </summary>
         Reward = 20,
 
+        /// <summary>
+        /// 最大工作数量
+        /// </summary>
         MaxJobCount
     }
 
+    /// <summary>
+    /// 信息类型枚举
+    /// </summary>
     public enum InfoType : int
     {
+        /// <summary>
+        /// 资金
+        /// </summary>
         Gold = 0,
+        /// <summary>
+        /// 枪
+        /// </summary>
         Spear,
+        /// <summary>
+        /// 士兵
+        /// </summary>
         Troop,
+        /// <summary>
+        /// 剑
+        /// </summary>
         Sword,
+        /// <summary>
+        /// 弩
+        /// </summary>
         CrossBow,
+        /// <summary>
+        /// 粮食
+        /// </summary>
         Food,
+        /// <summary>
+        /// 马
+        /// </summary>
         Horse,
         /// <summary>
         /// 冲车
@@ -211,10 +310,25 @@
         /// 投石车
         /// </summary>
         Catapult,
+        /// <summary>
+        /// 船
+        /// </summary>
         Boat,
+        /// <summary>
+        /// 大船
+        /// </summary>
         BigBoat,
+        /// <summary>
+        /// 士气
+        /// </summary>
         Morale,
+        /// <summary>
+        /// 耐久
+        /// </summary>
         Durability,
+        /// <summary>
+        /// 治安
+        /// </summary>
         Security
     }
 
