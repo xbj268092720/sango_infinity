@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Sango.Game.Player;
 
 namespace Sango.Game
 {
@@ -14,13 +15,27 @@ namespace Sango.Game
         private List<DiplomacyEvent> _diplomacyEvents;
 
         /// <summary>
+        /// 当前季度的事件触发次数
+        /// </summary>
+        private int _eventTriggerCount;
+
+        /// <summary>
+        /// 当前季度标识符
+        /// </summary>
+        private int _currentQuarter;
+
+        /// <summary>
         /// 初始化外交事件管理器
         /// </summary>
         public void Init()
         {
             _diplomacyEvents = new List<DiplomacyEvent>();
+            // 初始化事件计数器
+            _eventTriggerCount = 0;
             // 初始化默认外交事件
             InitDefaultEvents();
+            // 注册季节更新事件监听
+            GameEvent.OnSeasonUpdate += OnSeasonUpdate;
         }
 
         /// <summary>
@@ -41,6 +56,12 @@ namespace Sango.Game
                 {
                     // 增加关系
                     DiplomacyManager.Instance.AddRelation(sender, receiver, 50);
+                    // 添加玩家消息
+                    string message = $"{receiver.ColorName}派遣使者访问{sender.ColorName}，带来了友好的问候，关系增加了50点！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{receiver.Name} 的使者访问了 {sender.Name}，关系增加了50点！");
 #endif
@@ -59,6 +80,12 @@ namespace Sango.Game
                 {
                     // 减少关系
                     DiplomacyManager.Instance.ReduceRelation(sender, receiver, 100);
+                    // 添加玩家消息
+                    string message = $"{sender.ColorName}与{receiver.ColorName}在边境发生了冲突，关系减少了100点！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 在边境发生了冲突，关系减少了100点！");
 #endif
@@ -76,7 +103,16 @@ namespace Sango.Game
                 Effect = (sender, receiver) =>
                 {
                     // 尝试通商
-                    DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Trade, sender, receiver);
+                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Trade, sender, receiver);
+                    // 添加玩家消息
+                    if (success)
+                    {
+                        string message = $"{receiver.ColorName}向{sender.ColorName}提出了贸易合作的提议，双方达成了通商协议！";
+                        if (sender.Governor?.BelongCity != null)
+                        {
+                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        }
+                    }
                 }
             });
 
@@ -91,7 +127,13 @@ namespace Sango.Game
                 Effect = (sender, receiver) =>
                 {
                     // 尝试结盟
-                    DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.AllianceRequest, receiver, sender);
+                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.AllianceRequest, receiver, sender);
+                    // 添加玩家消息
+                    string message = $"{receiver.ColorName}邀请{sender.ColorName}结成同盟！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
                 }
             });
 
@@ -106,7 +148,13 @@ namespace Sango.Game
                 Effect = (sender, receiver) =>
                 {
                     // 尝试停战
-                    DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.TruceRequest, receiver, sender);
+                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.TruceRequest, receiver, sender);
+                    // 添加玩家消息
+                    string message = $"{receiver.ColorName}请求与{sender.ColorName}停战！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
                 }
             });
 
@@ -129,6 +177,12 @@ namespace Sango.Game
                         {
                             sender.AddTechnique(tech.Id);
                             DiplomacyManager.Instance.ReduceRelation(sender, receiver, 100);
+                            // 添加玩家消息
+                            string message = $"{sender.ColorName}与{receiver.ColorName}进行了技术交流，{sender.ColorName}获得了技术{tech.Name}！";
+                            if (sender.Governor?.BelongCity != null)
+                            {
+                                PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            }
 #if SANGO_DEBUG
                             Sango.Log.Print($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了技术交流，{sender.Name} 获得了技术 {tech.Name}！");
 #endif
@@ -149,7 +203,13 @@ namespace Sango.Game
                 {
                     // 尝试请求兵力
                     int troopCount = Random.Range(1000, 5000);
-                    DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.RequestTroops, receiver, sender, null, troopCount);
+                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.RequestTroops, receiver, sender, null, troopCount);
+                    // 添加玩家消息
+                    string message = $"{receiver.ColorName}请求{sender.ColorName}提供军事援助，请求兵力{troopCount}！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
                 }
             });
 
@@ -164,7 +224,16 @@ namespace Sango.Game
                 Effect = (sender, receiver) =>
                 {
                     // 尝试和亲
-                    DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Marriage, sender, receiver);
+                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Marriage, sender, receiver);
+                    // 添加玩家消息
+                    if (success)
+                    {
+                        string message = $"{sender.ColorName}与{receiver.ColorName}达成了和亲，关系得到了加强！";
+                        if (sender.Governor?.BelongCity != null)
+                        {
+                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        }
+                    }
                 }
             });
 
@@ -180,6 +249,12 @@ namespace Sango.Game
                 {
                     // 减少关系
                     DiplomacyManager.Instance.ReduceRelation(sender, receiver, 150);
+                    // 添加玩家消息
+                    string message = $"{sender.ColorName}与{receiver.ColorName}发生了领土争端，关系减少了150点！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 发生了领土争端，关系减少了150点！");
 #endif
@@ -198,6 +273,12 @@ namespace Sango.Game
                 {
                     // 增加关系
                     DiplomacyManager.Instance.AddRelation(sender, receiver, 100);
+                    // 添加玩家消息
+                    string message = $"{sender.ColorName}与{receiver.ColorName}发现了共同的敌人，关系增加了100点！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 发现了共同的敌人，关系增加了100点！");
 #endif
@@ -217,6 +298,12 @@ namespace Sango.Game
                 {
                     // 增加关系
                     DiplomacyManager.Instance.AddRelation(sender, receiver, 80);
+                    // 添加玩家消息
+                    string message = $"{sender.ColorName}与{receiver.ColorName}进行了文化交流，促进了相互了解，关系增加了80点！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
                     // 有一定概率获得技术
                     if (GameRandom.Chance(20) && receiver.Techniques.Count > 0)
                     {
@@ -225,6 +312,12 @@ namespace Sango.Game
                         if (tech != null && !sender.HasTechnique(tech.Id))
                         {
                             sender.AddTechnique(tech.Id);
+                            // 添加玩家消息
+                            string techMessage = $"{sender.ColorName}与{receiver.ColorName}进行了文化交流，{sender.ColorName}获得了技术{tech.Name}！";
+                            if (sender.Governor?.BelongCity != null)
+                            {
+                                PlayerMessage.AddTextMessage(techMessage, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            }
 #if SANGO_DEBUG
                             Sango.Log.Print($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了文化交流，{sender.Name} 获得了技术 {tech.Name}！");
 #endif
@@ -248,6 +341,12 @@ namespace Sango.Game
                 {
                     // 减少关系
                     DiplomacyManager.Instance.ReduceRelation(sender, receiver, 200);
+                    // 添加玩家消息
+                    string message = $"{sender.ColorName}的使者被{receiver.ColorName}扣留，引发外交危机，关系减少了200点！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 的使者被 {receiver.Name} 扣留，关系减少了200点！");
 #endif
@@ -274,6 +373,12 @@ namespace Sango.Game
                     if (receiver.Governor?.BelongCity != null)
                     {
                         receiver.Governor.BelongCity.gold += 1000;
+                    }
+                    // 添加玩家消息
+                    string message = $"{sender.ColorName}与{receiver.ColorName}共同举办了庆典，增进了友谊，关系增加了100点，双方各获得了1000金！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 共同举办了庆典，关系增加了100点，双方各获得了1000金！");
@@ -302,6 +407,12 @@ namespace Sango.Game
                     {
                         receiver.Governor.BelongCity.gold += 500;
                     }
+                    // 添加玩家消息
+                    string message = $"{sender.ColorName}与{receiver.ColorName}在边境开展了贸易活动，促进了经济发展，关系增加了60点，双方各获得了500金！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 在边境开展了贸易活动，关系增加了60点，双方各获得了500金！");
 #endif
@@ -321,6 +432,12 @@ namespace Sango.Game
                     // 减少关系
                     DiplomacyManager.Instance.ReduceRelation(sender, receiver, 150);
                     // 增加双方的军事紧张度
+                    // 添加玩家消息
+                    string message = $"{receiver.ColorName}在边境集结军队，对{sender.ColorName}构成威胁，关系减少了150点！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{receiver.Name} 在边境集结军队，对 {sender.Name} 构成威胁，关系减少了150点！");
 #endif
@@ -347,9 +464,24 @@ namespace Sango.Game
                         if (tech != null && !sender.HasTechnique(tech.Id))
                         {
                             sender.AddTechnique(tech.Id);
+                            // 添加玩家消息
+                            string message = $"{receiver.ColorName}向{sender.ColorName}提供了技术援助，{sender.ColorName}获得了技术{tech.Name}，关系增加了80点！";
+                            if (sender.Governor?.BelongCity != null)
+                            {
+                                PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            }
 #if SANGO_DEBUG
                             Sango.Log.Print($"@外交事件@{receiver.Name} 向 {sender.Name} 提供了技术援助，{sender.Name} 获得了技术 {tech.Name}！");
 #endif
+                        }
+                    }
+                    else
+                    {
+                        // 添加玩家消息
+                        string message = $"{receiver.ColorName}向{sender.ColorName}提供了技术援助，关系增加了80点！";
+                        if (sender.Governor?.BelongCity != null)
+                        {
+                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
                         }
                     }
                 }
@@ -372,9 +504,24 @@ namespace Sango.Game
                     {
                         int aidAmount = Random.Range(1000, 3000);
                         sender.Governor.BelongCity.gold += aidAmount;
+                        // 添加玩家消息
+                        string message = $"{receiver.ColorName}向{sender.ColorName}提供了{aidAmount}金的经济援助，帮助{sender.ColorName}度过难关，关系增加了100点！";
+                        if (sender.Governor?.BelongCity != null)
+                        {
+                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        }
 #if SANGO_DEBUG
                         Sango.Log.Print($"@外交事件@{receiver.Name} 向 {sender.Name} 提供了 {aidAmount} 金的经济援助，关系增加了100点！");
 #endif
+                    }
+                    else
+                    {
+                        // 添加玩家消息
+                        string message = $"{receiver.ColorName}向{sender.ColorName}提供了经济援助，关系增加了100点！";
+                        if (sender.Governor?.BelongCity != null)
+                        {
+                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        }
                     }
                 }
             });
@@ -391,6 +538,12 @@ namespace Sango.Game
                 {
                     // 减少关系
                     DiplomacyManager.Instance.ReduceRelation(sender, receiver, 180);
+                    // 添加玩家消息
+                    string message = $"{sender.ColorName}发现{receiver.ColorName}在其领土上进行间谍活动，关系减少了180点！";
+                    if (sender.Governor?.BelongCity != null)
+                    {
+                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                    }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 发现 {receiver.Name} 在其领土上进行间谍活动，关系减少了180点！");
 #endif
@@ -420,10 +573,22 @@ namespace Sango.Game
                     {
                         // 触发事件
                         e.Effect(forceA, forceB);
+                        // 增加事件计数器
+                        _eventTriggerCount++;
                         break;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 季节更新事件处理
+        /// </summary>
+        /// <param name="scenario">游戏场景</param>
+        private void OnSeasonUpdate(Scenario scenario)
+        {
+            // 季节更新时重置事件计数器
+            _eventTriggerCount = 0;
         }
 
         /// <summary>
@@ -432,6 +597,10 @@ namespace Sango.Game
         /// <param name="scenario">游戏场景</param>
         public void CheckEventsForAllForces(Scenario scenario)
         {
+            // 检查是否已经达到本季度事件触发上限
+            if (_eventTriggerCount >= 3)
+                return;
+            
             // 遍历所有势力对
             for (int i = 0; i < scenario.forceSet.Count; i++)
             {
@@ -445,6 +614,10 @@ namespace Sango.Game
 
                     // 检查并触发事件
                     CheckAndTriggerEvents(forceA, forceB);
+                    
+                    // 检查是否已经达到本季度事件触发上限
+                    if (_eventTriggerCount >= 3)
+                        return;
                 }
             }
         }

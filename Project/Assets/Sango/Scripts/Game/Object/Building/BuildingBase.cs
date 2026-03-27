@@ -98,6 +98,11 @@ namespace Sango.Game
         public bool IsPlayer => BelongForce?.IsPlayer ?? false;
 
         /// <summary>
+        /// 获取是否为当前的玩家势力
+        /// </summary>
+        public bool IsCurPlayer => BelongForce?.IsCurPlayer ?? false;
+
+        /// <summary>
         /// 作用范围
         /// </summary>
         public List<Cell> effectCells;// = new List<Cell>();

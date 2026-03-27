@@ -267,8 +267,9 @@ namespace Sango.Game
         /// <param name="receiver">接收方势力</param>
         /// <param name="diplomat">执行外交的武将</param>
         /// <param name="param">行动参数</param>
+        /// <param name="captiveId">俘虏ID（仅用于赎回俘虏）</param>
         /// <returns>行动是否成功</returns>
-        public bool PerformDiplomacyAction(DiplomacyActionType actionType, Force sender, Force receiver, Person diplomat = null, object param = null)
+        public bool PerformDiplomacyAction(DiplomacyActionType actionType, Force sender, Force receiver, Person diplomat = null, object param = null, int captiveId = 0)
         {
             if (!CanPerformDiplomacyAction(actionType, sender, receiver))
                 return false;
@@ -302,7 +303,15 @@ namespace Sango.Game
                 distance = 1;
 
             // 设置外交任务，使用新的重载函数传递参数
-            diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue);
+            if (actionType == DiplomacyActionType.Ransom)
+            {
+                // 对于赎回俘虏，传递俘虏ID
+                diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue, captiveId);
+            }
+            else
+            {
+                diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue);
+            }
             if(receiver.Id == diplomat.BelongForce.Id)
             {
                 Sango.Log.Error($"@外交@{sender.Name} 对 {receiver.Name} 派遣了使者 {diplomat.Name} 执行{GetActionName(actionType)}行动！");
@@ -706,93 +715,109 @@ namespace Sango.Game
         /// <param name="sender">发送方</param>
         /// <param name="receiver">接收方</param>
         /// <param name="ransomValue">赎金</param>
+        /// <param name="captiveId">俘虏ID</param>
         /// <returns>是否成功</returns>
-        public bool PerformRansom(Force sender, Force receiver, int ransomValue)
+        public bool PerformRansom(Force sender, Force receiver, int ransomValue, int captiveId)
         {
             // 检查发送方是否有足够的资金
             if (sender.Governor?.BelongCity?.gold < ransomValue)
                 return false;
 
-            // 检查接收方是否有来自发送方的俘虏
-            bool hasCaptive = false;
-            
+            // 查找指定的俘虏
+            Person captive = null;
+            City captiveCity = null;
+            Troop captiveTroop = null;
+
             // 检查城市中的俘虏
             receiver.ForEachCity(city => {
                 foreach (Person person in city.captiveList)
                 {
-                    if (person.IsPrisoner && person.BelongForce?.Id == sender.Id)
+                    if (person.IsPrisoner && person.BelongForce?.Id == sender.Id && person.Id == captiveId)
                     {
-                        hasCaptive = true;
+                        captive = person;
+                        captiveCity = city;
                         return;
                     }
                 }
             });
             
             // 检查部队中的俘虏
-            if (!hasCaptive)
+            if (captive == null)
             {
                 receiver.ForEachTroop(troop => {
                     foreach (Person person in troop.captiveList)
                     {
-                        if (person.IsPrisoner && person.BelongForce?.Id == sender.Id)
+                        if (person.IsPrisoner && person.BelongForce?.Id == sender.Id && person.Id == captiveId)
                         {
-                            hasCaptive = true;
+                            captive = person;
+                            captiveTroop = troop;
                             return;
                         }
                     }
                 });
             }
 
-            if (!hasCaptive)
+            if (captive == null)
                 return false;
 
             // 扣除资金
             sender.Governor.BelongCity.gold -= ransomValue;
 
-            // 释放城市中的俘虏
-            receiver.ForEachCity(city => {
-                List<Person> captivesToRelease = new List<Person>();
-                foreach (Person person in city.captiveList)
-                {
-                    if (person.IsPrisoner && person.BelongForce?.Id == sender.Id)
-                    {
-                        captivesToRelease.Add(person);
-                    }
-                }
-                foreach (Person captive in captivesToRelease)
-                {
-                    captive.Escape();
-                }
-            });
-            
-            // 释放部队中的俘虏
-            receiver.ForEachTroop(troop => {
-                List<Person> captivesToRelease = new List<Person>();
-                foreach (Person person in troop.captiveList)
-                {
-                    if (person.IsPrisoner && person.BelongForce?.Id == sender.Id)
-                    {
-                        captivesToRelease.Add(person);
-                    }
-                }
-                foreach (Person captive in captivesToRelease)
-                {
-                    captive.Escape();
-                }
-            });
+            // 释放俘虏
+            if (captiveCity != null)
+            {
+                captiveCity.captiveList.Remove(captive);
+            }
+            else if (captiveTroop != null)
+            {
+                captiveTroop.captiveList.Remove(captive);
+            }
+            captive.Escape(EscapeType.Released, receiver);
 
             // 增加关系
             int relationIncrease = ransomValue / Scenario.Cur.Variables.diplomacyRansomRelationFactor; // 每20金增加1点关系
             AddRelation(sender, receiver, relationIncrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{sender.Name} 向 {receiver.Name} 支付了 {ransomValue} 金赎回了俘虏，关系增加了 {relationIncrease}!!");
+            Sango.Log.Print($"@外交@{sender.Name} 向 {receiver.Name} 支付了 {ransomValue} 金赎回了俘虏 {captive.Name}，关系增加了 {relationIncrease}!!");
 #endif
 
             // 触发事件
             GameEvent.OnDiplomacyRansom?.Invoke(sender, receiver, ransomValue, true);
 
             return true;
+        }
+
+        /// <summary>
+        /// 计算赎回俘虏的额外费用
+        /// </summary>
+        /// <param name="captive">俘虏</param>
+        /// <returns>额外费用</returns>
+        public int CalculateRansomExtraCost(Person captive)
+        {
+            if (captive == null)
+                return 0;
+
+            ScenarioVariables variables = Scenario.Cur.Variables;
+            int extraCost = 0;
+
+            // 基于等级的额外费用
+            extraCost += captive.Level.Id * variables.diplomacyRansomLevelCostFactor;
+
+            // 基于功绩的额外费用
+            extraCost += captive.merit / variables.diplomacyRansomMeritCostFactor;
+
+            // 基于官职的额外费用
+            if (captive.Official != null)
+            {
+                extraCost += captive.Official.level * variables.diplomacyRansomOfficialCostFactor;
+            }
+
+            // 基于属性的额外费用（统率、武力、智力、政治、魅力的平均值）
+            int avgAttribute = (captive.Command + captive.Strength + captive.Intelligence + captive.Politics + captive.Glamour) / 5;
+            extraCost += avgAttribute * variables.diplomacyRansomAttributeCostFactor;
+
+            return extraCost;
         }
 
         /// <summary>

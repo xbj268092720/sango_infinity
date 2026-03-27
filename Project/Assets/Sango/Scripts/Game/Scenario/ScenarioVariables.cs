@@ -721,6 +721,26 @@ namespace Sango.Game
         [JsonProperty] public int diplomacyRansomMinSuccessRate = 10;
 
         /// <summary>
+        /// 赎回俘虏费用 - 等级费用因子
+        /// </summary>
+        [JsonProperty] public int diplomacyRansomLevelCostFactor = 100;
+
+        /// <summary>
+        /// 赎回俘虏费用 - 功绩费用因子
+        /// </summary>
+        [JsonProperty] public int diplomacyRansomMeritCostFactor = 10;
+
+        /// <summary>
+        /// 赎回俘虏费用 - 官职费用因子
+        /// </summary>
+        [JsonProperty] public int diplomacyRansomOfficialCostFactor = 500;
+
+        /// <summary>
+        /// 赎回俘虏费用 - 属性费用因子
+        /// </summary>
+        [JsonProperty] public int diplomacyRansomAttributeCostFactor = 20;
+
+        /// <summary>
         /// 外交成功率 - 请求结盟关系阈值
         /// </summary>
         [JsonProperty] public int diplomacyAllianceRequestSuccessRelationThreshold = 800;

@@ -50,6 +50,17 @@ namespace Sango
             }
         }
 
+        public void Recycle(T obj, Transform parent)
+        {
+            if (instance_list.Contains(obj))
+            {
+                instance_list.Remove(obj);
+                pool_list.Add(obj);
+                obj.transform.SetParent(parent, false);
+                obj.gameObject.SetActive(false);
+            }
+        }
+
         public void Reset()
         {
             pool_list.AddRange(instance_list);

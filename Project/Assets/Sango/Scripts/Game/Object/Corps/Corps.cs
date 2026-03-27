@@ -10,6 +10,10 @@ namespace Sango.Game
     {
         public override SangoObjectType ObjectType { get { return SangoObjectType.Corps; } }
         public virtual bool IsPlayer => BelongForce?.IsPlayer ?? false;
+        /// <summary>
+        /// 获取是否为当前的玩家势力
+        /// </summary>
+        public bool IsCurPlayer => BelongForce?.IsCurPlayer ?? false;
 
         public virtual bool AIFinished { get; set; }
         public virtual bool AIPrepared { get; set; }

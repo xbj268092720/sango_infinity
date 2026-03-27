@@ -252,6 +252,26 @@ namespace Sango.Game
         /// 势力更换军师
         /// </summary>
         public static EventDelegate<Force, Person> OnForceChangeCounsellor;
+        
+        /// <summary>
+        /// 发现敌方部队
+        /// </summary>
+        public static EventDelegate<Force, City, Troop, Person> OnDiscoverEnemyTroop;
+        
+        /// <summary>
+        /// 建筑建造完成
+        /// </summary>
+        public static EventDelegate<Building, SangoObjectList<Person>> OnBuildingComplete;
+        
+        /// <summary>
+        /// 建筑升级完成
+        /// </summary>
+        public static EventDelegate<Building, SangoObjectList<Person>> OnBuildingUpgradeComplete;
+
+        /// <summary>
+        /// 武将转移成功
+        /// </summary>
+        public static EventDelegate<Person, City, City> OnPersonChangeCityComplete;
 
         #endregion Force
 
@@ -507,6 +527,36 @@ namespace Sango.Game
         /// 当武将逃跑时
         /// </summary>
         public static EventDelegate<Person, SangoObject> OnPersonEscape;
+
+        /// <summary>
+        /// 当俘虏被释放时
+        /// </summary>
+        public static EventDelegate<Person, Force> OnPersonRelease;
+
+        /// <summary>
+        /// 当俘虏被斩杀时
+        /// </summary>
+        public static EventDelegate<Person, Force> OnPersonExecute;
+
+        /// <summary>
+        /// 当武将被俘虏时
+        /// </summary>
+        public static EventDelegate<Person, Troop> OnPersonCaptured;
+
+        /// <summary>
+        /// 当单挑开始时
+        /// </summary>
+        public static EventDelegate<DuelSystem> OnDuelStart;
+
+        /// <summary>
+        /// 当单挑结束时
+        /// </summary>
+        public static EventDelegate<DuelSystem, DuelResult> OnDuelEnd;
+
+        /// <summary>
+        /// 当需要选择决策时
+        /// </summary>
+        public static EventDelegate<DuelSystem> OnDuelDecisionRequired;
 
         #region Diplomacy
         /// <summary>

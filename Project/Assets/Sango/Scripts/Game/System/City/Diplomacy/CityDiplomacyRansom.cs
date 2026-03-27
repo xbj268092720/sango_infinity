@@ -77,7 +77,9 @@ namespace Sango.Game.Player
             {
                 // 假设赎金为1000金
                 int ransomValue = 1000;
-                DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Ransom, sender, receiver, diplomat, ransomValue);
+                // 这里需要获取具体的俘虏ID，暂时使用0，实际应该从UI或其他地方获取
+                int captiveId = 0;
+                DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Ransom, sender, receiver, diplomat, ransomValue, captiveId);
             }
 
             Done();

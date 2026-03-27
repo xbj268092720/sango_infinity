@@ -1,4 +1,4 @@
-﻿using Sango.Game.Render;
+using Sango.Game.Render;
 using Sango.Game.Render.UI;
 
 namespace Sango.Game
@@ -140,7 +140,9 @@ namespace Sango.Game
         public void ReleaseTarget()
         {
             result = 2;
-            target.Escape();
+            Force releaseForce = atker?.BelongForce ?? fallCity?.BelongForce;
+            target.Escape(EscapeType.Released);
+            GameEvent.OnPersonRelease?.Invoke(target, releaseForce);
             Done();
             doneAction?.Invoke(this);
         }
@@ -149,7 +151,9 @@ namespace Sango.Game
         public void KillTarget()
         {
             result = 3;
+            Force executeForce = atker?.BelongForce ?? fallCity?.BelongForce;
             target.Dead();
+            GameEvent.OnPersonExecute?.Invoke(target, executeForce);
             Done();
             doneAction?.Invoke(this);
         }

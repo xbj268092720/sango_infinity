@@ -1062,7 +1062,7 @@ namespace Sango.Game
                 Person person = captiveList[i];
                 if (GameRandom.Chance(GameFormula.Instance.PersonEscapeProbablility_InCity(person, this, scenario), 10000))
                 {
-                    person.Escape();
+                    person.Escape(EscapeType.Escape);
 #if SANGO_DEBUG
                     Sango.Log.Print($"{person.Name}逃跑!");
 #endif
@@ -1370,12 +1370,12 @@ namespace Sango.Game
             }
 
             // 城倒,俘虏逃
-            for (int i = 0; i < this.captiveList.Count; i++)
-            {
-                Person person = this.captiveList[i];
-                person.Escape();
-            }
-            this.captiveList.Clear();
+            //for (int i = 0; i < this.captiveList.Count; i++)
+            //{
+            //    Person person = this.captiveList[i];
+            //    person.Escape(EscapeType.Released);
+            //}
+            //this.captiveList.Clear();
 
             // 白城
             if (BelongCorps == null)
@@ -1595,15 +1595,19 @@ namespace Sango.Game
 #if SANGO_DEBUG
             Sango.Log.Print($"[{person.BelongForce.Name}]{person.Name}回到[{BelongForce.Name}]<{Name}>");
 #endif
+            GameEvent.OnPersonChangeCityComplete?.Invoke(person, person.BelongCity, this);
         }
 
         /// <summary>
         /// 武将转换结束时的处理
         /// </summary>
         /// <param name="person">转换的武将</param>
-        public void OnPersonTransformEnd(Person person)
+        public void OnPersonTransformEnd(Person person, City from)
         {
-
+#if SANGO_DEBUG
+            Sango.Log.Print($"[{person.BelongForce.Name}]{person.Name}到达[{BelongForce.Name}]<{Name}>");
+#endif
+            GameEvent.OnPersonChangeCityComplete?.Invoke(person, from, this);
         }
 
         /// <summary>

@@ -39,14 +39,15 @@ namespace Sango.Game
         }
 
         /// <summary>
-        /// 执行外交行动
+        /// 执行外交行动（重载，用于赎回俘虏）
         /// </summary>
         /// <param name="actionType">外交行动类型</param>
         /// <param name="receiver">接收方势力</param>
         /// <param name="diplomat">执行外交的武将</param>
         /// <param name="param">行动参数</param>
+        /// <param name="captiveId">俘虏ID</param>
         /// <returns>行动是否成功</returns>
-        public bool PerformDiplomacyAction(DiplomacyActionType actionType, Force receiver, Person diplomat = null, object param = null)
+        public bool PerformDiplomacyAction(DiplomacyActionType actionType, Force receiver, Person diplomat = null, object param = null, int captiveId = 0)
         {
             // 获取当前势力
             Force sender = Scenario.Cur.CurRunForce;
@@ -54,7 +55,7 @@ namespace Sango.Game
                 return false;
 
             // 执行外交行动
-            return DiplomacyManager.Instance.PerformDiplomacyAction(actionType, sender, receiver, diplomat, param);
+            return DiplomacyManager.Instance.PerformDiplomacyAction(actionType, sender, receiver, diplomat, param, captiveId);
         }
 
         /// <summary>

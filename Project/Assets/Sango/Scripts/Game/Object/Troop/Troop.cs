@@ -87,7 +87,7 @@ namespace Sango.Game
         /// 当前兵力
         /// </summary>
         [JsonProperty] public int troops;
-        
+
         /// <summary>
         /// 出征回合
         /// </summary>
@@ -163,6 +163,8 @@ namespace Sango.Game
         }
         private bool _actionOver;
         public System.Action overAction;
+        public bool IsPlayer => BelongForce?.IsPlayer ?? false;
+        public bool IsCurPlayer => BelongForce?.IsCurPlayer ?? false;
 
         /// <summary>
         /// 当前任务类型
@@ -469,7 +471,7 @@ namespace Sango.Game
                 Person person = captiveList[i];
                 if (GameRandom.Chance(GameFormula.Instance.PersonEscapeProbablility_InTroop(person, this, scenario), 10000))
                 {
-                    person.Escape();
+                    person.Escape(EscapeType.Escape);
                     GameEvent.OnPersonEscape?.Invoke(person, this);
                 }
             }
@@ -679,6 +681,21 @@ namespace Sango.Game
         public bool IsHelepolis => LandTroopType.IsHelepolis();
         public bool IsFight => LandTroopType.isFight;
         public bool IsRange => LandTroopType.isRange;
+
+        /// <summary>
+        /// 发起单挑
+        /// </summary>
+        /// <param name="targetTroop">目标部队</param>
+        /// <returns>是否成功发起单挑</returns>
+        public bool StartDuel(Troop targetTroop)
+        {
+            if (targetTroop == null || !IsEnemy(targetTroop))
+            {
+                return false;
+            }
+
+            return DuelManager.Instance.StartDuel(this, targetTroop);
+        }
 
         public int GetAttackBackFactor(SkillInstance skill, int distance)
         {
@@ -1605,7 +1622,7 @@ namespace Sango.Game
             {
                 captiveList.ForEach(x =>
                 {
-                    x.Escape();
+                    x.Escape(EscapeType.TroopDestroyed);
                 });
                 captiveList = null;
             }

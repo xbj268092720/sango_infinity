@@ -173,9 +173,10 @@ namespace Sango.Game
                     durability = BuildingType.durabilityLimit;
                     isComplate = true;
                     //CalculateHarvest();
-                    SangoObjectList<Person> builder = Builder;
-                    OnBuildComplate();
-                    BelongCity.OnBuildingComplete(this, builder);
+            SangoObjectList<Person> builder = Builder;
+            OnBuildComplate();
+            BelongCity.OnBuildingComplete(this, builder);
+            GameEvent.OnBuildingComplete?.Invoke(this, builder);
                 }
                 if (LeftCounter > 0)
                     LeftCounter--;
@@ -194,6 +195,7 @@ namespace Sango.Game
                     SangoObjectList<Person> builder = Builder;
                     OnUpgradeComplate();
                     BelongCity.OnBuildingUpgradeComplete(this, builder);
+                    GameEvent.OnBuildingUpgradeComplete?.Invoke(this, builder);
                 }
             }
             else

@@ -5,6 +5,29 @@ using System.Collections.Generic;
 
 namespace Sango.Game
 {
+    /// <summary>
+    /// 逃出方式枚举
+    /// </summary>
+    public enum EscapeType
+    {
+        /// <summary>
+        /// 无
+        /// </summary>
+        None,
+        /// <summary>
+        /// 逃跑
+        /// </summary>
+        Escape,
+        /// <summary>
+        /// 被释放
+        /// </summary>
+        Released,
+        /// <summary>
+        /// 部队灭亡
+        /// </summary>
+        TroopDestroyed
+    }
+
     [JsonObject(MemberSerialization.OptIn)]
     public class Person : SangoObject
     {
@@ -20,7 +43,10 @@ namespace Sango.Game
         public Force BelongForce { get; set; }
 
         public bool IsPlayer => BelongForce?.IsPlayer ?? false;
-
+        /// <summary>
+        /// 获取是否为当前的玩家势力
+        /// </summary>
+        public bool IsCurPlayer => BelongForce?.IsCurPlayer ?? false;
 
         /// <summary>
         /// 所属军团
@@ -522,6 +548,7 @@ namespace Sango.Game
         [JsonProperty] public int missionParams1;
         [JsonProperty] public int missionParams2;
         [JsonProperty] public int missionParams3;
+        [JsonProperty] public int missionParams4;
 
         /// <summary>
         /// 在当前城市的停留回合数
@@ -716,7 +743,8 @@ namespace Sango.Game
                         if (missionCounter <= 0)
                         {
                             ClearMission();
-                            BelongCity.OnPersonTransformEnd(this);
+                            City from = scenario.citySet.Get(missionTarget);
+                            BelongCity.OnPersonTransformEnd(this, from);
                         }
                     }
                     break;
@@ -843,8 +871,8 @@ namespace Sango.Game
                                         success = DiplomacyManager.Instance.PerformTruceRequest(BelongForce, receiverForce);
                                         break;
                                     case DiplomacyActionType.Ransom:
-                                        // 使用missionParams3存储赎金
-                                        success = DiplomacyManager.Instance.PerformRansom(BelongForce, receiverForce, missionParams3);
+                                        // 使用missionParams3存储赎金，missionParams4存储俘虏ID
+                                        success = DiplomacyManager.Instance.PerformRansom(BelongForce, receiverForce, missionParams3, missionParams4);
                                         break;
                                 }
                             }
@@ -906,6 +934,17 @@ namespace Sango.Game
                     break;
             }
         }
+        public void SetMission(MissionType missionType, SangoObject missionTarget, int missionCounter, int p1, int p2, int p3, int p4)
+        {
+            this.missionType = (int)missionType;
+            this.missionTarget = missionTarget.Id;
+            this.missionCounter = missionCounter;
+            this.missionParams1 = p1;
+            this.missionParams2 = p2;
+            this.missionParams3 = p3;
+            this.missionParams4 = p4;
+        }
+
         public void SetMission(MissionType missionType, SangoObject missionTarget, int missionCounter, int p1, int p2, int p3)
         {
             this.missionType = (int)missionType;
@@ -914,6 +953,7 @@ namespace Sango.Game
             this.missionParams1 = p1;
             this.missionParams2 = p2;
             this.missionParams3 = p3;
+            this.missionParams4 = 0;
         }
 
         public void SetMission(MissionType missionType, SangoObject missionTarget, int missionCounter, int p1, int p2)
@@ -923,6 +963,8 @@ namespace Sango.Game
             this.missionCounter = missionCounter;
             this.missionParams1 = p1;
             this.missionParams2 = p2;
+            this.missionParams3 = 0;
+            this.missionParams4 = 0;
         }
 
         public void SetMission(MissionType missionType, SangoObject missionTarget, int missionCounter, int p1)
@@ -931,6 +973,9 @@ namespace Sango.Game
             this.missionTarget = missionTarget.Id;
             this.missionCounter = missionCounter;
             this.missionParams1 = p1;
+            this.missionParams2 = 0;
+            this.missionParams3 = 0;
+            this.missionParams4 = 0;
         }
 
         public void SetMission(MissionType missionType, SangoObject missionTarget, int missionCounter)
@@ -938,6 +983,10 @@ namespace Sango.Game
             this.missionType = (int)missionType;
             this.missionTarget = missionTarget.Id;
             this.missionCounter = missionCounter;
+            this.missionParams1 = 0;
+            this.missionParams2 = 0;
+            this.missionParams3 = 0;
+            this.missionParams4 = 0;
         }
 
         public void ClearMission()
@@ -945,6 +994,10 @@ namespace Sango.Game
             this.missionType = 0;
             this.missionTarget = 0;
             this.missionCounter = 0;
+            this.missionParams1 = 0;
+            this.missionParams2 = 0;
+            this.missionParams3 = 0;
+            this.missionParams4 = 0;
         }
 
         public override bool OnTurnStart(Scenario scenario)
@@ -1062,8 +1115,8 @@ namespace Sango.Game
                 }
 
                 BelongTroop?.OnPersonChangeCity(this, last, city);
-            }
-            return last;
+        }
+        return last;
         }
 
         public bool JobRecruitPerson(Person person, City targetCity, int type)
@@ -1200,7 +1253,7 @@ namespace Sango.Game
             return this;
         }
 
-        public Person Escape()
+        public Person Escape(EscapeType escapeType = EscapeType.None, SangoObject sangoObject = null)
         {
             // 有归属的武将
             if (BelongForce != null && BelongForce.IsAlive)
@@ -1234,6 +1287,23 @@ namespace Sango.Game
                     BelongCity.wildPersons.Add(this);
                 }
             }
+            
+            // 根据逃出方式触发对应的事件
+            if (escapeType == EscapeType.Escape)
+            {
+                GameEvent.OnPersonEscape?.Invoke(this, BelongCity);
+            }
+            else if (escapeType == EscapeType.Released)
+            {
+                // 被释放的逻辑已经在PersonRecruit.ReleaseTarget中处理
+                GameEvent.OnPersonRelease?.Invoke(this, sangoObject as Force);
+            }
+            else if (escapeType == EscapeType.TroopDestroyed)
+            {
+                // 部队灭亡的情况可以在这里处理
+                GameEvent.OnPersonEscape?.Invoke(this, BelongCity);
+            }
+
             return this;
         }
 

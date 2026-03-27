@@ -796,7 +796,7 @@ namespace Sango.Game
             force.CaptiveList.Remove(captive);
 
             // 直接调用Person.Escape方法释放俘虏
-            captive.Escape();
+            captive.Escape(EscapeType.Released, force);
 
 #if SANGO_DEBUG
             Sango.Log.Print($"{force.Name}释放了{captive.BelongForce?.Name}的{captive.Name}！");

@@ -36,6 +36,11 @@ namespace Sango.Game
         /// </summary>
         public virtual bool IsPlayer { get; set; }
 
+        /// <summary>
+        /// 获取是否为当前的玩家势力
+        /// </summary>
+        public bool IsCurPlayer => IsPlayer && this == Scenario.Cur.CurRunForce;
+
         private bool isAlive;
 
         /// <summary>
@@ -701,6 +706,9 @@ namespace Sango.Game
                                         person = Counsellor,
                                     };
                                     RenderEvent.Instance.Add(cameraMoveEvent);
+                                    
+                                    // 触发发现敌方部队事件
+                                    GameEvent.OnDiscoverEnemyTroop?.Invoke(this, targetCity, troop, Counsellor);
                                 }
                             }
                         }

@@ -10,6 +10,7 @@ using Sango.Mod;
 using Sango.Render;
 using Sango.Tools;
 using Sango.Manager;
+using Sango.Game.Debate;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -73,6 +74,7 @@ namespace Sango.Game
             ModManager.Instance.Init();
             GameLanguage.Instance.Init("cn");
             GameSystemManager.Instance.Init();
+            DebateManager.Instance.Init();
             StartCoroutine(GameInit());
         }
 
@@ -201,6 +203,8 @@ namespace Sango.Game
             base.Update();
             // 更新音效管理器
             AudioManager.Instance.Update();
+            // 更新舌战管理器
+            DebateManager.Instance.Update(Time.deltaTime);
             Scenario scenario = Scenario.Cur;
             if (scenario != null)
             {
