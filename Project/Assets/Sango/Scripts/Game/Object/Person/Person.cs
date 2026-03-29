@@ -739,6 +739,23 @@ namespace Sango.Game
                     break;
                 case (int)MissionType.PersonTransform:
                     {
+                        City dest = scenario.citySet.Get(missionTarget);
+                        if (!dest.IsSameForce(BelongCity))
+                        {
+                            SetMission(MissionType.PersonReturn, BelongCity, 100);
+                            return;
+                        }
+
+                        // 找到最短移动路径
+                        List<City> path = Scenario.Cur.FindShortestPath(CurrentCity, dest);
+
+                        if(path == null || path.Count == 0)
+                        {
+
+                            return;
+                        }
+                        City next = path[0];
+
                         missionCounter--;
                         if (missionCounter <= 0)
                         {
@@ -1003,7 +1020,7 @@ namespace Sango.Game
         public override bool OnTurnStart(Scenario scenario)
         {
             // 在野武将移动逻辑
-            if (IsWild && BelongCity != null)
+            if (IsWild)
             {
                 stayTurnCount++;
                 if (stayTurnCount > 5 && GameRandom.Chance(10)) // 10%概率
@@ -1017,7 +1034,8 @@ namespace Sango.Game
                         if (targetCity != null)
                         {
                             // 移动到新城市
-                            ChangeCity(targetCity);
+                            ChangeCurrentCity(targetCity);
+
                             // 重置停留时间
                             stayTurnCount = 0;
 #if SANGO_DEBUG
@@ -1052,10 +1070,10 @@ namespace Sango.Game
 
         public void TransformToCity(City dest)
         {
-            dest.allPersons.Add(this);
-            SetMission(MissionType.PersonTransform, BelongCity, Math.Max(1, BelongCity.Distance(dest)));
-            BelongCity?.Remove(this);
-            BelongCity = dest;
+            //dest.allPersons.Add(this);
+            SetMission(MissionType.PersonTransform, dest, 100);
+            //BelongCity?.Remove(this);
+            //BelongCity = dest;
             ActionOver = true;
 #if SANGO_DEBUG
             Sango.Log.Print($"*{BelongForce?.Name}的{Name}从{BelongCity.Name}向{dest.Name}转移*");
@@ -1077,6 +1095,11 @@ namespace Sango.Game
             return last;
         }
 
+        /// <summary>
+        /// 改变所属城市
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
         public City ChangeCity(City city)
         {
             City last = null;
@@ -1084,7 +1107,7 @@ namespace Sango.Game
             {
                 last = BelongCity;
 #if SANGO_DEBUG
-                Sango.Log.Print($"*{BelongForce?.Name}的{Name}从{BelongCity.Name}向{city.Name}转移* 移动完成!!");
+                Sango.Log.Print($"*{BelongForce?.Name}的{Name} 改变所属城市 {BelongCity.Name} => {city.Name}转移");
 #endif
                 if (!IsWild)
                 {
@@ -1115,8 +1138,37 @@ namespace Sango.Game
                 }
 
                 BelongTroop?.OnPersonChangeCity(this, last, city);
+            }
+            return last;
         }
-        return last;
+
+        /// <summary>
+        /// 改变所在城市
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public City ChangeCurrentCity(City city)
+        {
+            City last = CurrentCity;
+            CurrentCity = city;
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{BelongForce?.Name}的{Name} 改变所在城市 {last.Name} -> {city.Name}");
+#endif
+            if (IsWild)
+            {
+                last.wildPersons.Remove(this);
+                CurrentCity.wildPersons.Add(this);
+            }
+            else
+            {
+                if (last != BelongCity)
+                    last.otherPersons.Remove(this);
+                if (CurrentCity != BelongCity)
+                    CurrentCity.otherPersons.Add(this);
+            }
+
+            GameEvent.OnPersonChangCurrentCity?.Invoke(this, city, last);
+            return last;
         }
 
         public bool JobRecruitPerson(Person person, City targetCity, int type)
@@ -1241,6 +1293,9 @@ namespace Sango.Game
             state = (int)PersonStateType.Prisoner;
             city.captiveList.Add(this);
             this.BelongForce.CaptiveList.Add(this);
+#if SANGO_DEBUG
+            Sango.Log.Print($"@人才@[{Name}]被<{city.BelongForce.Name}>俘虏至{city.Name}");
+#endif
             return this;
         }
 
@@ -1250,11 +1305,16 @@ namespace Sango.Game
             state = (int)PersonStateType.Prisoner;
             troop.captiveList.Add(this);
             this.BelongForce.CaptiveList.Add(this);
+#if SANGO_DEBUG
+            Sango.Log.Print($"@人才@[{Name}]被<{troop.BelongForce.Name}>俘虏至{troop.Name}");
+#endif
             return this;
         }
 
         public Person Escape(EscapeType escapeType = EscapeType.None, SangoObject sangoObject = null)
         {
+
+
             // 有归属的武将
             if (BelongForce != null && BelongForce.IsAlive)
             {
@@ -1287,19 +1347,28 @@ namespace Sango.Game
                     BelongCity.wildPersons.Add(this);
                 }
             }
-            
+
             // 根据逃出方式触发对应的事件
             if (escapeType == EscapeType.Escape)
             {
+#if SANGO_DEBUG
+                Sango.Log.Print($"@人才@[{Name}]逃亡!");
+#endif
                 GameEvent.OnPersonEscape?.Invoke(this, BelongCity);
             }
             else if (escapeType == EscapeType.Released)
             {
+#if SANGO_DEBUG
+                Sango.Log.Print($"@人才@[{Name}]被释放!");
+#endif
                 // 被释放的逻辑已经在PersonRecruit.ReleaseTarget中处理
                 GameEvent.OnPersonRelease?.Invoke(this, sangoObject as Force);
             }
             else if (escapeType == EscapeType.TroopDestroyed)
             {
+#if SANGO_DEBUG
+                Sango.Log.Print($"@人才@[{Name}]逃亡!");
+#endif
                 // 部队灭亡的情况可以在这里处理
                 GameEvent.OnPersonEscape?.Invoke(this, BelongCity);
             }
@@ -1374,7 +1443,7 @@ namespace Sango.Game
         public int CompatibilityDistance(Person other)
         {
             if (other == null) return 0;
-            return Math.Abs(compatibility - (other.compatibility));
+            return System.Math.Abs(compatibility - (other.compatibility));
         }
 
         public bool IsLike(Person other)

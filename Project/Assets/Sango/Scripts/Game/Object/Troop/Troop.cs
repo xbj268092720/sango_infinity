@@ -419,7 +419,7 @@ namespace Sango.Game
                 // 伤兵直接抛弃
                 woundedTroops = 0;
                 // 减少士气
-                morale = (int)Math.Ceiling(morale * 0.5f);
+                morale = (int)System.Math.Ceiling(morale * 0.5f);
                 if (morale < 0)
                     morale = 0;
                 if (troops < 500)
@@ -430,7 +430,7 @@ namespace Sango.Game
                 else
                 {
                     // 每回合死亡当前兵力的30%;
-                    int damage = (int)Math.Ceiling(troops * 0.3f);
+                    int damage = (int)System.Math.Ceiling(troops * 0.3f);
                     troops -= damage;
                 }
             }
@@ -471,6 +471,8 @@ namespace Sango.Game
                 Person person = captiveList[i];
                 if (GameRandom.Chance(GameFormula.Instance.PersonEscapeProbablility_InTroop(person, this, scenario), 10000))
                 {
+                    BelongForce.CaptiveList.Remove(person);
+                    captiveList.Remove(person);
                     person.Escape(EscapeType.Escape);
                     GameEvent.OnPersonEscape?.Invoke(person, this);
                 }
@@ -519,13 +521,13 @@ namespace Sango.Game
             // 计算能力,能力取最大
             ForEachPerson((p) =>
             {
-                Command = Math.Max(Command, p.Command);
-                Strength = Math.Max(Strength, p.Strength);
-                Intelligence = Math.Max(Intelligence, p.Intelligence);
-                Politics = Math.Max(Politics, p.Politics);
-                Glamour = Math.Max(Glamour, p.Glamour);
-                LandTroopTypeLv = Math.Max(LandTroopTypeLv, CheckTroopTypeLevel(LandTroopType, p));
-                WaterTroopTypeLv = Math.Max(WaterTroopTypeLv, p.WaterLv);
+                Command = System.Math.Max(Command, p.Command);
+                Strength = System.Math.Max(Strength, p.Strength);
+                Intelligence = System.Math.Max(Intelligence, p.Intelligence);
+                Politics = System.Math.Max(Politics, p.Politics);
+                Glamour = System.Math.Max(Glamour, p.Glamour);
+                LandTroopTypeLv = System.Math.Max(LandTroopTypeLv, CheckTroopTypeLevel(LandTroopType, p));
+                WaterTroopTypeLv = System.Math.Max(WaterTroopTypeLv, p.WaterLv);
             });
 
             List<SkillInstance> skillInstances = new List<SkillInstance>();
@@ -744,20 +746,20 @@ namespace Sango.Game
             int damage = (int)(
                 (
 
-                (Math.Pow(atkBounds * Variables.fight_base_damage, 0.5) + Math.Max(0, (int)((Math.Pow(attacker.Attack, 2) - Math.Pow(Math.Max(40, target.Defence), 2)) / 300)) +
-                Math.Max(0, (attacker.troops - target.troops) / Variables.fight_base_troops_need) + 50)
+                (System.Math.Pow(atkBounds * Variables.fight_base_damage, 0.5) + System.Math.Max(0, (int)((System.Math.Pow(attacker.Attack, 2) - System.Math.Pow(System.Math.Max(40, target.Defence), 2)) / 300)) +
+                System.Math.Max(0, (attacker.troops - target.troops) / Variables.fight_base_troops_need) + 50)
 
                 * 10 * ((int)(
 
-                (((int)(attacker.troops * 0.01) + 300) * Math.Pow((attacker.Attack + 50), 2)) /
-                (((int)(attacker.troops * 0.01) + 300) * Math.Pow((attacker.Attack + 50), 2) * 0.01 +
-                ((int)(target.troops * 0.01) + 300) * Math.Pow((target.Defence + 50), 2) * 0.01)
+                (((int)(attacker.troops * 0.01) + 300) * System.Math.Pow((attacker.Attack + 50), 2)) /
+                (((int)(attacker.troops * 0.01) + 300) * System.Math.Pow((attacker.Attack + 50), 2) * 0.01 +
+                ((int)(target.troops * 0.01) + 300) * System.Math.Pow((target.Defence + 50), 2) * 0.01)
 
                 - 50)
 
                 + 50)
-                // 原有基础上优化Math.Max(1, attacker.troops / 4),1兵打出15伤害同于实际测试
-                * Math.Min(Math.Pow(Math.Max(1, attacker.troops / 4), 0.5), 40)
+                // 原有基础上优化System.Math.Max(1, attacker.troops / 4),1兵打出15伤害同于实际测试
+                * System.Math.Min(System.Math.Pow(System.Math.Max(1, attacker.troops / 4), 0.5), 40)
 
                 * Variables.fight_damage_magic_number /* * 太鼓台系数*/
 
@@ -768,7 +770,7 @@ namespace Sango.Game
                 * CalculateRestrainBoost(attacker, target)
 
                 // 额外增益 (科技系数等)
-                * Math.Max(0, (1 + attacker.DamageTroopExtraFactor))
+                * System.Math.Max(0, (1 + attacker.DamageTroopExtraFactor))
 
                 // 难度系数,仅对玩家生效
                 * difficultyDamageFactor
@@ -793,9 +795,9 @@ namespace Sango.Game
 
             if (attacker.IsHelepolis)
             {
-                int damage = (int)(attacker.troops / 25 + Math.Pow(attacker.troops, 0.5f) + Math.Min(Math.Pow(attacker.troops, 0.5f), 40) * attacker.Attack * Math.Pow((1f / 1500f), 0.5f) * (1 + (float)skill.atkDurability / 25f) * buildingType.damageBounds
+                int damage = (int)(attacker.troops / 25 + System.Math.Pow(attacker.troops, 0.5f) + System.Math.Min(System.Math.Pow(attacker.troops, 0.5f), 40) * attacker.Attack * System.Math.Pow((1f / 1500f), 0.5f) * (1 + (float)skill.atkDurability / 25f) * buildingType.damageBounds
                // 额外增益 (科技系数等)
-               * Math.Max(0, (1 + attacker.DamageBuildingExtraFactor))
+               * System.Math.Max(0, (1 + attacker.DamageBuildingExtraFactor))
                * attack_troops_type.durabilityDmg / 100
                // 难度系数,仅对玩家生效
                * difficultyDamageFactor
@@ -804,9 +806,9 @@ namespace Sango.Game
             }
             else
             {
-                int damage = (int)(Math.Pow(attacker.troops, 0.5f) * attacker.Attack * Math.Pow((1f / 1500f), 0.5f) * (1 + (float)skill.atkDurability / 25f) * buildingType.damageBounds
+                int damage = (int)(System.Math.Pow(attacker.troops, 0.5f) * attacker.Attack * System.Math.Pow((1f / 1500f), 0.5f) * (1 + (float)skill.atkDurability / 25f) * buildingType.damageBounds
                 // 额外增益 (科技系数等)
-                * Math.Max(0, (1 + attacker.DamageBuildingExtraFactor))
+                * System.Math.Max(0, (1 + attacker.DamageBuildingExtraFactor))
                 * attack_troops_type.durabilityDmg / 100
                 // 难度系数,仅对玩家生效
                 * difficultyDamageFactor
@@ -835,20 +837,20 @@ namespace Sango.Game
             int damage = (int)(
                 (
 
-                (Math.Pow(atkBounds * Variables.fight_base_damage, 0.5) + Math.Max(0, (int)((Math.Pow(attacker.Attack, 2) - Math.Pow(Math.Max(40, target.GetDefence()), 2)) / 300)) +
-                Math.Max(0, (attacker.troops - target.troops) / Variables.fight_base_troops_need) + 50)
+                (System.Math.Pow(atkBounds * Variables.fight_base_damage, 0.5) + System.Math.Max(0, (int)((System.Math.Pow(attacker.Attack, 2) - System.Math.Pow(System.Math.Max(40, target.GetDefence()), 2)) / 300)) +
+                System.Math.Max(0, (attacker.troops - target.troops) / Variables.fight_base_troops_need) + 50)
 
                 * 10 * ((int)(
 
-                (((int)(attacker.troops * 0.01) + 300) * Math.Pow((attacker.Attack + 50), 2)) /
-                (((int)(attacker.troops * 0.01) + 300) * Math.Pow((attacker.Attack + 50), 2) * 0.01 +
-                ((int)(target.troops * 0.01) + 300) * Math.Pow((target.GetDefence() + 50), 2) * 0.01)
+                (((int)(attacker.troops * 0.01) + 300) * System.Math.Pow((attacker.Attack + 50), 2)) /
+                (((int)(attacker.troops * 0.01) + 300) * System.Math.Pow((attacker.Attack + 50), 2) * 0.01 +
+                ((int)(target.troops * 0.01) + 300) * System.Math.Pow((target.GetDefence() + 50), 2) * 0.01)
 
                 - 50)
 
                 + 50)
-                // 原有基础上优化Math.Max(1, attacker.troops / 4),1兵打出15伤害同于实际测试
-                * Math.Min(Math.Pow(Math.Max(1, attacker.troops / 4), 0.5), 40)
+                // 原有基础上优化System.Math.Max(1, attacker.troops / 4),1兵打出15伤害同于实际测试
+                * System.Math.Min(System.Math.Pow(System.Math.Max(1, attacker.troops / 4), 0.5), 40)
 
                 * Variables.fight_damage_magic_number /* * 太鼓台系数*/
 
@@ -859,7 +861,7 @@ namespace Sango.Game
                 )
 
                 // 额外增益 (科技系数等)
-                * Math.Max(0, (1 + attacker.DamageTroopExtraFactor))
+                * System.Math.Max(0, (1 + attacker.DamageTroopExtraFactor))
 
                 // 难度系数,仅对玩家生效
                 * difficultyDamageFactor
@@ -889,20 +891,20 @@ namespace Sango.Game
             int damage = (int)(
                  (
 
-                 (Math.Max(0, (int)((Math.Pow(base_atk, 2) - Math.Pow(Math.Max(40, target.Defence), 2)) / 300)) +
-                 Math.Max(0, (base_troops - target.troops) / Variables.fight_base_troops_need) + 50)
+                 (System.Math.Max(0, (int)((System.Math.Pow(base_atk, 2) - System.Math.Pow(System.Math.Max(40, target.Defence), 2)) / 300)) +
+                 System.Math.Max(0, (base_troops - target.troops) / Variables.fight_base_troops_need) + 50)
 
                  * 10 * ((int)(
 
-                 (((int)(base_troops * 0.01) + 300) * Math.Pow((base_atk + 50), 2)) /
-                 (((int)(base_troops * 0.01) + 300) * Math.Pow((base_atk + 50), 2) * 0.01 +
-                 ((int)(target.troops * 0.01) + 300) * Math.Pow((target.Defence + 50), 2) * 0.01)
+                 (((int)(base_troops * 0.01) + 300) * System.Math.Pow((base_atk + 50), 2)) /
+                 (((int)(base_troops * 0.01) + 300) * System.Math.Pow((base_atk + 50), 2) * 0.01 +
+                 ((int)(target.troops * 0.01) + 300) * System.Math.Pow((target.Defence + 50), 2) * 0.01)
 
                  - 50)
 
                  + 50)
 
-                 * Math.Min(Math.Pow(Math.Max(1, base_troops / 4), 0.5), 40)
+                 * System.Math.Min(System.Math.Pow(System.Math.Max(1, base_troops / 4), 0.5), 40)
 
                  * Variables.fight_damage_magic_number /* * 太鼓台系数*/
 
@@ -914,7 +916,7 @@ namespace Sango.Game
                 * difficultyDamageFactor
 
                  // 额外增益 (科技系数等)
-                 //* Math.Max(0, (1 + attacker.DamageTroopExtraFactor))
+                 //* System.Math.Max(0, (1 + attacker.DamageTroopExtraFactor))
                  /* * 难度系数*/);
 
             return damage;
@@ -936,20 +938,20 @@ namespace Sango.Game
             int damage = (int)(
                  (
 
-                 (Math.Max(0, (int)((Math.Pow(base_atk, 2) - Math.Pow(Math.Max(40, target.Defence), 2)) / 300)) +
-                 Math.Max(0, (base_troops - target.troops) / Variables.fight_base_troops_need) + 50)
+                 (System.Math.Max(0, (int)((System.Math.Pow(base_atk, 2) - System.Math.Pow(System.Math.Max(40, target.Defence), 2)) / 300)) +
+                 System.Math.Max(0, (base_troops - target.troops) / Variables.fight_base_troops_need) + 50)
 
                  * 10 * ((int)(
 
-                 (((int)(base_troops * 0.01) + 300) * Math.Pow((base_atk + 50), 2)) /
-                 (((int)(base_troops * 0.01) + 300) * Math.Pow((base_atk + 50), 2) * 0.01 +
-                 ((int)(target.troops * 0.01) + 300) * Math.Pow((target.Defence + 50), 2) * 0.01)
+                 (((int)(base_troops * 0.01) + 300) * System.Math.Pow((base_atk + 50), 2)) /
+                 (((int)(base_troops * 0.01) + 300) * System.Math.Pow((base_atk + 50), 2) * 0.01 +
+                 ((int)(target.troops * 0.01) + 300) * System.Math.Pow((target.Defence + 50), 2) * 0.01)
 
                  - 50)
 
                  + 50)
 
-                 * Math.Min(Math.Pow(Math.Max(1, base_troops / 4), 0.5), 40)
+                 * System.Math.Min(System.Math.Pow(System.Math.Max(1, base_troops / 4), 0.5), 40)
 
                  * Variables.fight_damage_magic_number /* * 太鼓台系数*/
 
@@ -961,7 +963,7 @@ namespace Sango.Game
                 * difficultyDamageFactor
 
                  // 额外增益 (科技系数等)
-                 //* Math.Max(0, (1 + attacker.DamageTroopExtraFactor))
+                 //* System.Math.Max(0, (1 + attacker.DamageTroopExtraFactor))
                  /* * 难度系数*/);
 
             return damage;
@@ -1184,8 +1186,8 @@ namespace Sango.Game
             troops = troops + num;
             if (num < 0)
             {
-                int absNum = Math.Abs(num);
-                woundedTroops += (int)Math.Ceiling(absNum * 0.14f);
+                int absNum = System.Math.Abs(num);
+                woundedTroops += (int)System.Math.Ceiling(absNum * 0.14f);
                 int _foodCost = (int)System.Math.Ceiling(Scenario.Cur.Variables.baseFoodCostInTroop * absNum * TroopType.foodCostFactor) / 2;
                 int divFood = 0;
                 // 有概率保留部分
@@ -1622,6 +1624,7 @@ namespace Sango.Game
             {
                 captiveList.ForEach(x =>
                 {
+                    BelongForce.CaptiveList.Remove(x);
                     x.Escape(EscapeType.TroopDestroyed);
                 });
                 captiveList = null;
@@ -1810,7 +1813,7 @@ namespace Sango.Game
             // 永不退缩
             //if ((morale <= 5 && GameRandom.Changce(60)) ||
             //    (troops < 500 && GameRandom.Changce(80)) ||
-            //    food < (int)System.Math.Ceiling(scenario.Variables.baseFoodCostInTroop * (troops + woundedTroops) * TroopType.foodCostFactor) * 3 && GameRandom.Changce(80)
+            //    food < (int)System.System.Math.Ceiling(scenario.Variables.baseFoodCostInTroop * (troops + woundedTroops) * TroopType.foodCostFactor) * 3 && GameRandom.Changce(80)
             //    )
             //{
             //    missionType = (int)MissionType.ReturnCity;

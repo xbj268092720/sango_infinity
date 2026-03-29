@@ -24,6 +24,10 @@ namespace Sango.Game
         /// </summary>
         public int terrainState;
         /// <summary>
+        /// 天气类型 (待实现)
+        /// </summary>
+        public int weatherType;
+        /// <summary>
         /// 区域ID
         /// </summary>
         public int areaId;

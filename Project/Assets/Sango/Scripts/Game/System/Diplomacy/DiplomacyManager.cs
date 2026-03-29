@@ -520,8 +520,8 @@ namespace Sango.Game
             // 扣除资金
             sender.Governor.BelongCity.gold -= giftValue;
 
-            // 计算关系增加量
-            int relationIncrease = giftValue / Scenario.Cur.Variables.diplomacySendGiftRelationFactor; // 每10金增加1点关系
+            // 计算关系增加量（考虑多种因素）
+            int relationIncrease = CalculateDynamicRelationIncrease(sender, receiver, giftValue);
 
             // 增加关系
             AddRelation(sender, receiver, relationIncrease);
@@ -534,6 +534,108 @@ namespace Sango.Game
             GameEvent.OnDiplomacySendGift?.Invoke(sender, receiver, giftValue, true);
 
             return true;
+        }
+
+        /// <summary>
+        /// 动态计算送礼的关系增加量
+        /// 考虑因素：对象势力的金钱、势力对比、主公喜好、性格等
+        /// </summary>
+        /// <param name="sender">发送方势力</param>
+        /// <param name="receiver">接收方势力</param>
+        /// <param name="giftValue">礼物价值</param>
+        /// <returns>关系增加量</returns>
+        private int CalculateDynamicRelationIncrease(Force sender, Force receiver, int giftValue)
+        {
+            ScenarioVariables variables = Scenario.Cur.Variables;
+            
+            // 基础关系增加量（每10金增加1点关系）
+            int baseIncrease = giftValue / variables.diplomacySendGiftRelationFactor;
+            
+            // 计算各种因素的修正系数
+            float factor = 1.0f;
+            
+            // 1. 对象势力的金钱因素：越穷的势力越看重礼物
+            int receiverTotalGold = 0;
+            receiver.ForEachCity(city =>
+            {
+                receiverTotalGold += city.gold;
+            });
+            
+            // 如果接收方很穷，增加礼物效果
+            if (receiverTotalGold < 5000)
+            {
+                factor += (5000 - receiverTotalGold) / 10000.0f; // 最多增加0.5倍效果
+            }
+            // 如果接收方很富，减少礼物效果
+            else if (receiverTotalGold > 50000)
+            {
+                factor -= (receiverTotalGold - 50000) / 200000.0f; // 最多减少0.25倍效果
+                factor = Mathf.Max(factor, 0.75f); // 最低保持0.75倍效果
+            }
+            
+            // 2. 势力对比因素：弱小势力向强大势力送礼效果更好
+            int senderPower = sender.FightPower > 0 ? sender.FightPower : 1;
+            int receiverPower = receiver.FightPower > 0 ? receiver.FightPower : 1;
+            float powerRatio = (float)senderPower / receiverPower;
+            
+            // 当发送方势力较弱时，增加礼物效果
+            if (powerRatio < 0.5f)
+            {
+                factor += (0.5f - powerRatio) * 0.4f; // 最多增加0.2倍效果
+            }
+            // 当发送方势力较强时，减少礼物效果
+            else if (powerRatio > 2.0f)
+            {
+                factor -= (powerRatio - 2.0f) * 0.1f; // 最多减少0.2倍效果
+                factor = Mathf.Max(factor, 0.8f); // 最低保持0.8倍效果
+            }
+            
+            // 3. 主公喜好和性格因素
+            if (receiver.Governor != null)
+            {
+                Person governor = receiver.Governor;
+                
+                // 性格影响：使用Personality类中的送礼效果加成参数
+                if (governor.personality != null)
+                {
+                    // 获取性格的送礼效果加成（百分比）
+                    int giftEffectBonus = governor.personality.giftEffectAdd;
+                    // 将百分比转换为系数（例如：10表示+10%，即0.1）
+                    float bonusFactor = giftEffectBonus / 100.0f;
+                    factor += bonusFactor;
+                }
+                
+                // 相性影响：相性好的话效果更好
+                if (sender.Governor != null)
+                {
+                    int compatibilityDiff = System.Math.Abs(sender.Governor.compatibility - governor.compatibility);
+                    if (compatibilityDiff < 30)
+                    {
+                        factor += (30 - compatibilityDiff) / 300.0f; // 最多增加0.1倍效果
+                    }
+                }
+                
+                // 政治属性影响：政治高的主公更看重外交
+                factor += governor.Politics / 1000.0f; // 最多增加0.1倍效果
+            }
+            
+            // 4. 关系基础影响：关系越差，送礼效果越好
+            int currentRelation = GetRelation(sender, receiver);
+            if (currentRelation < 0)
+            {
+                factor += Mathf.Abs(currentRelation) / 2000.0f; // 最多增加0.5倍效果
+            }
+            else if (currentRelation > 1000)
+            {
+                factor -= currentRelation / 4000.0f; // 最多减少0.25倍效果
+                factor = Mathf.Max(factor, 0.75f); // 最低保持0.75倍效果
+            }
+            
+            // 计算最终关系增加量
+            int finalIncrease = Mathf.RoundToInt(baseIncrease * factor);
+            
+            // 确保关系增加量至少为1
+            return Mathf.Max(finalIncrease, 1);
         }
 
         /// <summary>
@@ -772,7 +874,9 @@ namespace Sango.Game
             {
                 captiveTroop.captiveList.Remove(captive);
             }
+
             captive.Escape(EscapeType.Released, receiver);
+            receiver.CaptiveList.Remove(captive);
 
             // 增加关系
             int relationIncrease = ransomValue / Scenario.Cur.Variables.diplomacyRansomRelationFactor; // 每20金增加1点关系

@@ -94,16 +94,42 @@ namespace Sango.Game
             Register("or", CraeteHandle<ConditionOr>);
             Register("andList", CraeteHandle<ConditionAndList>);
             Register("orList", CraeteHandle<ConditionOrList>);
+            Register("DistanceCheck", CraeteHandle<DistanceCheck>);
 
             // Troop
             Register("TroopAttributeCompare", CraeteHandle<TroopAttributeCompare>);
+            Register("TroopStatusCheck", CraeteHandle<TroopStatusCheck>);
+            Register("TroopStrengthCheck", CraeteHandle<TroopStrengthCheck>);
+            Register("TroopMoraleCheck", CraeteHandle<TroopMoraleCheck>);
 
             // Skill
             Register("SkillIsCritical", CraeteHandle<SkillIsCritical>);
             Register("SkillIsNormalSkill", CraeteHandle<SkillIsNormalSkill>);
             Register("SkillIsStrategySkill", CraeteHandle<SkillIsStrategySkill>);
-            
 
+            // Person
+            Register("PersonAttributeCompare", CraeteHandle<PersonAttributeCompare>);
+            Register("PersonLoyaltyCheck", CraeteHandle<PersonLoyaltyCheck>);
+            Register("PersonLevelCheck", CraeteHandle<PersonLevelCheck>);
+
+            // Terrain
+            Register("TerrainCheck", CraeteHandle<TerrainCheck>);
+
+            // Weather
+            Register("WeatherCheck", CraeteHandle<WeatherCheck>);
+
+            // Faction
+            Register("FactionCheck", CraeteHandle<FactionCheck>);
+
+            // Resource
+            Register("ResourceCheck", CraeteHandle<ResourceCheck>);
+
+            // City
+            Register("CityAttributeCheck", CraeteHandle<CityAttributeCheck>);
+            Register("CityPopulationCheck", CraeteHandle<CityPopulationCheck>);
+
+            // Time
+            Register("TimeCheck", CraeteHandle<TimeCheck>);
         }
     }
 }

@@ -150,7 +150,7 @@ namespace Sango.Game.Player
             GameEvent.OnDiscoverEnemyTroop += OnDiscoverEnemyTroop;
             GameEvent.OnBuildingComplete += OnBuildingComplete;
             GameEvent.OnBuildingUpgradeComplete += OnBuildingUpgradeComplete;
-            GameEvent.OnPersonChangeCityComplete += OnPersonChangeCityComplete;
+            GameEvent.OnPersonChangeBelongCity += OnPersonChangeCityComplete;
             GameEvent.OnCityFall += OnCityFall;
             GameEvent.OnPersonEscape += OnPersonEscape;
             GameEvent.OnPersonRelease += OnPersonRelease;
@@ -171,7 +171,7 @@ namespace Sango.Game.Player
             GameEvent.OnDiscoverEnemyTroop -= OnDiscoverEnemyTroop;
             GameEvent.OnBuildingComplete -= OnBuildingComplete;
             GameEvent.OnBuildingUpgradeComplete -= OnBuildingUpgradeComplete;
-            GameEvent.OnPersonChangeCityComplete -= OnPersonChangeCityComplete;
+            GameEvent.OnPersonChangeBelongCity -= OnPersonChangeCityComplete;
             GameEvent.OnCityFall -= OnCityFall;
             GameEvent.OnPersonEscape -= OnPersonEscape;
             GameEvent.OnPersonRelease -= OnPersonRelease;
@@ -271,6 +271,10 @@ namespace Sango.Game.Player
                 message.month = scenario.Info.month;
                 message.day = scenario.Info.day;
                 newDay = false;
+            }
+            else
+            {
+                message.year = 0;
             }
 
             // 添加消息到列表并触发回调

@@ -36,6 +36,7 @@ namespace Sango.Game
             InitDefaultEvents();
             // 注册季节更新事件监听
             GameEvent.OnSeasonUpdate += OnSeasonUpdate;
+            GameEvent.OnForceTurnStart += OnForceTurnStart;
         }
 
         /// <summary>
@@ -574,7 +575,7 @@ namespace Sango.Game
                         // 触发事件
                         e.Effect(forceA, forceB);
                         // 增加事件计数器
-                        _eventTriggerCount++;
+                        _eventTriggerCount--;
                         break;
                     }
                 }
@@ -588,37 +589,46 @@ namespace Sango.Game
         private void OnSeasonUpdate(Scenario scenario)
         {
             // 季节更新时重置事件计数器
-            _eventTriggerCount = 0;
+            _eventTriggerCount = GameRandom.Range(0, 5);
+        }
+
+        /// <summary>
+        /// 在势力回合开始时检查外交事件
+        /// </summary>
+        /// <param name="force"></param>
+        /// <param name="scenario"></param>
+        private void OnForceTurnStart(Force force, Scenario scenario)
+        {
+            CheckEventsForForces(force, scenario);
         }
 
         /// <summary>
         /// 为所有势力检查外交事件
         /// </summary>
         /// <param name="scenario">游戏场景</param>
-        public void CheckEventsForAllForces(Scenario scenario)
+        public void CheckEventsForForces(Force force, Scenario scenario)
         {
             // 检查是否已经达到本季度事件触发上限
-            if (_eventTriggerCount >= 3)
+            if (_eventTriggerCount <= 0)
                 return;
-            
+
+            Force forceA = force;
+            if (forceA == null || !forceA.IsAlive) return;
+
             // 遍历所有势力对
-            for (int i = 0; i < scenario.forceSet.Count; i++)
+            int forceCount = scenario.forceSet.Count; 
+            for (int i = 0; i < forceCount; i++)
             {
-                Force forceA = scenario.forceSet[i];
-                if (!forceA.IsAlive) continue;
+                Force forceB = scenario.forceSet[i];
+                if (forceB == null || !forceB.IsAlive || forceB.IsPlayer)
+                    continue;
 
-                for (int j = i + 1; j < scenario.forceSet.Count; j++)
-                {
-                    Force forceB = scenario.forceSet[j];
-                    if (!forceB.IsAlive) continue;
-
-                    // 检查并触发事件
-                    CheckAndTriggerEvents(forceA, forceB);
+                // 检查并触发事件
+                CheckAndTriggerEvents(forceA, forceB);
                     
-                    // 检查是否已经达到本季度事件触发上限
-                    if (_eventTriggerCount >= 3)
-                        return;
-                }
+                // 检查是否已经达到本季度事件触发上限
+                if (_eventTriggerCount <= 0)
+                    return;
             }
         }
     }

@@ -168,6 +168,7 @@ namespace Sango.Game.Render.UI
             AddNumberItem("结盟关系增加", variables.diplomacyAllianceRelationIncrease, -1000, 1000, (v) => { variables.diplomacyAllianceRelationIncrease = v; });
             AddNumberItem("停战关系增加", variables.diplomacyTruceRelationIncrease, -1000, 1000, (v) => { variables.diplomacyTruceRelationIncrease = v; });
             AddNumberItem("宣战关系减少", variables.diplomacyDeclareWarRelationDecrease, -1000, 1000, (v) => { variables.diplomacyDeclareWarRelationDecrease = v; });
+            AddNumberItem("送礼金额", variables.diplomacySendGiftAmount, 100, 10000, (v) => { variables.diplomacySendGiftAmount = v; });
             AddNumberItem("送礼关系增加比例", variables.diplomacySendGiftRelationFactor, 1, 100, (v) => { variables.diplomacySendGiftRelationFactor = v; });
             AddNumberItem("请求技术关系减少", variables.diplomacyRequestTechniqueRelationDecrease, -1000, 1000, (v) => { variables.diplomacyRequestTechniqueRelationDecrease = v; });
             AddNumberItem("请求兵力关系减少", variables.diplomacyRequestTroopsRelationDecrease, -1000, 1000, (v) => { variables.diplomacyRequestTroopsRelationDecrease = v; });

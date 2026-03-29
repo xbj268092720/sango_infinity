@@ -34,7 +34,7 @@ namespace Sango.Game
                 int economicScore = force.Governor.personality.economicTendencyAdd;
 
                 // 找出最高得分的个性类型
-                int maxScore = Math.Max(Math.Max(warScore, defenseScore), Math.Max(diplomacyScore, economicScore));
+                int maxScore = System.Math.Max(System.Math.Max(warScore, defenseScore), System.Math.Max(diplomacyScore, economicScore));
 
                 if (maxScore == warScore)
                     return AIPersonalityType.Aggressive;
@@ -597,34 +597,33 @@ namespace Sango.Game
             switch (actionType)
             {
                 case DiplomacyActionType.SendGift:
-                    // 关系越差，送礼价值越高
-                    baseValue = 1000 - (relation / 2);
-                    baseValue = Math.Max(500, Math.Min(baseValue, 3000));
+                    // 使用配置的送礼金额
+                    baseValue = Scenario.Cur.Variables.diplomacySendGiftAmount;
                     break;
                 case DiplomacyActionType.Truce:
                     // 停战需要较高投入
                     baseValue = 2000 - relation;
-                    baseValue = Math.Max(1500, Math.Min(baseValue, 5000));
+                    baseValue = System.Math.Max(1500, System.Math.Min(baseValue, 5000));
                     break;
                 case DiplomacyActionType.Alliance:
                     // 结盟需要高投入
                     baseValue = 3000 + (relation / 5);
-                    baseValue = Math.Max(2000, Math.Min(baseValue, 8000));
+                    baseValue = System.Math.Max(2000, System.Math.Min(baseValue, 8000));
                     break;
                 case DiplomacyActionType.Marriage:
                     // 和亲需要最高投入
                     baseValue = 5000 + (relation / 3);
-                    baseValue = Math.Max(3000, Math.Min(baseValue, 10000));
+                    baseValue = System.Math.Max(3000, System.Math.Min(baseValue, 10000));
                     break;
                 case DiplomacyActionType.Trade:
                     // 通商投入适中
                     baseValue = 1000 + (relation / 10);
-                    baseValue = Math.Max(500, Math.Min(baseValue, 3000));
+                    baseValue = System.Math.Max(500, System.Math.Min(baseValue, 3000));
                     break;
                 case DiplomacyActionType.AllianceRequest:
                     // 请求结盟投入适中
                     baseValue = 2000 + (relation / 5);
-                    baseValue = Math.Max(1500, Math.Min(baseValue, 5000));
+                    baseValue = System.Math.Max(1500, System.Math.Min(baseValue, 5000));
                     break;
                 default:
                     baseValue = 1000;
@@ -659,7 +658,7 @@ namespace Sango.Game
             }
 
             // 确保投入不超过最大可用资金
-            return Math.Min(baseValue, maxValue);
+            return System.Math.Min(baseValue, maxValue);
         }
 
         /// <summary>
@@ -794,6 +793,12 @@ namespace Sango.Game
         {
             // 释放俘虏
             force.CaptiveList.Remove(captive);
+
+            // 检查城市中的俘虏
+            if (captive.BelongTroop != null)
+                captive.BelongTroop.captiveList.Remove(captive);
+            else
+                captive.BelongCity.captiveList.Remove(captive);
 
             // 直接调用Person.Escape方法释放俘虏
             captive.Escape(EscapeType.Released, force);
@@ -1337,7 +1342,7 @@ namespace Sango.Game
             {
                 int buildAbility = GameUtility.Method_PersonBuildAbility(check1, check2, check3);
                 int turnCount = buildingType.durabilityLimit % buildAbility == 0 ? 0 : 1;
-                int buildCount = Math.Min(Scenario.Cur.Variables.BuildMaxTurn, buildingType.durabilityLimit / buildAbility + turnCount);
+                int buildCount = System.Math.Min(Scenario.Cur.Variables.BuildMaxTurn, buildingType.durabilityLimit / buildAbility + turnCount);
 
                 if (buildCount < maxBuildTurn[1])
                 {
@@ -1543,10 +1548,10 @@ namespace Sango.Game
                         checkPersons[destSlot] = person;
                         list.RemoveAt(i);
                         person1 = person;
-                        v_int = Math.Max(v_int, person1.Intelligence);
-                        v_stength = Math.Max(v_stength, person1.Strength);
-                        v_command = Math.Max(v_command, person1.Command);
-                        level = Math.Max(level, Troop.CheckTroopTypeLevel(troopType, person1));
+                        v_int = System.Math.Max(v_int, person1.Intelligence);
+                        v_stength = System.Math.Max(v_stength, person1.Strength);
+                        v_command = System.Math.Max(v_command, person1.Command);
+                        level = System.Math.Max(level, Troop.CheckTroopTypeLevel(troopType, person1));
                         destSlot++;
                         break;
                     }
@@ -1590,10 +1595,10 @@ namespace Sango.Game
                                 {
                                     checkPersons[destSlot] = person;
                                     person1 = person;
-                                    v_int = Math.Max(v_int, person1.Intelligence);
-                                    v_stength = Math.Max(v_stength, person1.Strength);
-                                    v_command = Math.Max(v_command, person1.Command);
-                                    level = Math.Max(level, Troop.CheckTroopTypeLevel(troopType, person1));
+                                    v_int = System.Math.Max(v_int, person1.Intelligence);
+                                    v_stength = System.Math.Max(v_stength, person1.Strength);
+                                    v_command = System.Math.Max(v_command, person1.Command);
+                                    level = System.Math.Max(level, Troop.CheckTroopTypeLevel(troopType, person1));
                                     break;
                                 }
                             }
@@ -1631,9 +1636,9 @@ namespace Sango.Game
             if (level < templevel)
             {
                 list.RemoveAt(0);
-                v_int = Math.Max(v_int, person1.Intelligence);
-                v_stength = Math.Max(v_stength, person1.Strength);
-                v_command = Math.Max(v_command, person1.Command);
+                v_int = System.Math.Max(v_int, person1.Intelligence);
+                v_stength = System.Math.Max(v_stength, person1.Strength);
+                v_command = System.Math.Max(v_command, person1.Command);
                 checkPersons[destSlot] = person1;
                 destSlot++;
             }
@@ -1654,9 +1659,9 @@ namespace Sango.Game
                         {
                             checkPersons[destSlot] = person;
                             destSlot++;
-                            v_int = Math.Max(v_int, person.Intelligence);
-                            v_stength = Math.Max(v_stength, person.Strength);
-                            v_command = Math.Max(v_command, person.Command);
+                            v_int = System.Math.Max(v_int, person.Intelligence);
+                            v_stength = System.Math.Max(v_stength, person.Strength);
+                            v_command = System.Math.Max(v_command, person.Command);
                             list.RemoveAt(i);
                             break;
                         }
@@ -1672,9 +1677,9 @@ namespace Sango.Game
                         {
                             checkPersons[destSlot] = person;
                             destSlot++;
-                            v_int = Math.Max(v_int, person.Intelligence);
-                            v_stength = Math.Max(v_stength, person.Strength);
-                            v_command = Math.Max(v_command, person.Command);
+                            v_int = System.Math.Max(v_int, person.Intelligence);
+                            v_stength = System.Math.Max(v_stength, person.Strength);
+                            v_command = System.Math.Max(v_command, person.Command);
                             list.RemoveAt(i);
                             break;
                         }
@@ -1693,9 +1698,9 @@ namespace Sango.Game
                         if (person.Intelligence >= 80 && (checkLvl < level && level >= 3 || checkLvl <= level && level < 3))
                         {
                             checkPersons[destSlot] = person;
-                            v_int = Math.Max(v_int, person.Intelligence);
-                            v_stength = Math.Max(v_stength, person.Strength);
-                            v_command = Math.Max(v_command, person.Command);
+                            v_int = System.Math.Max(v_int, person.Intelligence);
+                            v_stength = System.Math.Max(v_stength, person.Strength);
+                            v_command = System.Math.Max(v_command, person.Command);
                             destSlot++;
                             list.RemoveAt(i);
                             break;

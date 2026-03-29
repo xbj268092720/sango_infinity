@@ -825,8 +825,7 @@ namespace Sango.Game
                     a.OnTurnStart(this);
             }
 
-            // 检查并触发外交事件
-            CheckDiplomacyEvents();
+            GameEvent.OnTurnStart?.Invoke(this);
 
             allianceSet.RemoveAll(a => !a.IsAlive);
 
@@ -834,30 +833,6 @@ namespace Sango.Game
             return true;
         }
 
-        /// <summary>
-        /// 检查并触发外交事件
-        /// </summary>
-        private void CheckDiplomacyEvents()
-        {
-            // 遍历所有势力对，检查外交事件
-            int forceCount = forceSet.Count;
-            for (int i = 0; i < forceCount; i++)
-            {
-                Force forceA = forceSet[i];
-                if (forceA == null || !forceA.IsAlive)
-                    continue;
-
-                for (int j = i + 1; j < forceCount; j++)
-                {
-                    Force forceB = forceSet[j];
-                    if (forceB == null || !forceB.IsAlive || forceB.IsPlayer)
-                        continue;
-
-                    // 检查并触发外交事件
-                    DiplomacyEventManager.Instance.CheckAndTriggerEvents(forceA, forceB);
-                }
-            }
-        }
         public bool RunForces()
         {
             // 处理当前势力的逻辑
@@ -905,6 +880,7 @@ namespace Sango.Game
             }
 
             HasTurnEnded = true;
+            GameEvent.OnTurnEnd?.Invoke(this);
             Info.turnCount++;
             return true;
         }

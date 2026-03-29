@@ -451,6 +451,11 @@ namespace Sango.Game
         [JsonProperty] public int diplomacyDeclareWarRelationDecrease = 1000;
 
         /// <summary>
+        /// 送礼金额
+        /// </summary>
+        [JsonProperty] public int diplomacySendGiftAmount = 1000;
+
+        /// <summary>
         /// 送礼关系增加比例
         /// </summary>
         [JsonProperty] public int diplomacySendGiftRelationFactor = 10;

@@ -297,9 +297,9 @@ namespace Sango.Game.Render.UI
                 return;
 
             UpdateSuccessRateDisplay(DiplomacyActionType.SendGift);
-            // 这里可以弹出一个输入框，让玩家输入礼物价值
-            // 暂时使用默认值1000
-            bool success = _diplomacySystem.PerformDiplomacyAction(DiplomacyActionType.SendGift, _selectedForce, _selectedDiplomat, 1000);
+            // 使用配置的送礼金额
+            int giftAmount = Scenario.Cur.Variables.diplomacySendGiftAmount;
+            bool success = _diplomacySystem.PerformDiplomacyAction(DiplomacyActionType.SendGift, _selectedForce, _selectedDiplomat, giftAmount);
             UpdateActionResult(success, "送礼");
         }
 

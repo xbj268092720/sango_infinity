@@ -92,5 +92,10 @@ namespace Sango.Game
         /// </summary>
         public int ransomCaptiveTendencyAdd;
 
+        /// <summary>
+        /// 送礼效果加成（百分比）
+        /// </summary>
+        public int giftEffectAdd;
+
     }
 }

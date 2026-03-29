@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -106,7 +106,7 @@ namespace Sango.Game
                 而军师的智力≤60的时候，军师参数反而小于了没有军师的1，这时候，不要军师就对了，反正一个60智力的军师，说话能靠谱才怪了。
              */
 
-            int governorAdd = (int)(40 * (0.65f + 0.025f * Math.Max(0, (int)(Math.Max((float)BelongForce.Governor.Command, (float)BelongForce.Governor.Glamour) / 5.0f) - 6)));
+            int governorAdd = (int)(40 * (0.65f + 0.025f * System.Math.Max(0, (int)(System.Math.Max((float)BelongForce.Governor.Command, (float)BelongForce.Governor.Glamour) / 5.0f) - 6)));
             int personAdd = 0;
             List<City> cities = new List<City>();
             int cityCount = 0;
@@ -120,13 +120,13 @@ namespace Sango.Game
                 if (c.BelongCorps == this)
                     cities.Add(c);
             });
-            int cityAdd = Math.Min(50, 10 * (cityCount - 1));
+            int cityAdd = System.Math.Min(50, 10 * (cityCount - 1));
 
             cities.Sort((a, b) => -a.allPersons.Count.CompareTo(b.allPersons.Count));
             for (int i = 0; i < 6; i++)
             {
                 if (i < cities.Count)
-                    personAdd = personAdd + Math.Min(10, cities[i].allPersons.Count);
+                    personAdd = personAdd + System.Math.Min(10, cities[i].allPersons.Count);
             }
 
             float counsellorFactor = 1.0f;
@@ -135,8 +135,8 @@ namespace Sango.Game
 
             //TODO: 建筑影响， 特技影响
 
-            ActionPoint = Math.Min(Scenario.Cur.Variables.ActionPointLimit, ActionPoint + (int)((governorAdd + personAdd + cityAdd) * counsellorFactor * scenario.Variables.ActionPointFactor));
-            ActionPoint = Math.Max(0, ActionPoint);
+            ActionPoint = System.Math.Min(Scenario.Cur.Variables.ActionPointLimit, ActionPoint + (int)((governorAdd + personAdd + cityAdd) * counsellorFactor * scenario.Variables.ActionPointFactor));
+            ActionPoint = System.Math.Max(0, ActionPoint);
 
 
             if (IsPlayer && BelongForce == Scenario.Cur.CurRunForce)

@@ -333,14 +333,21 @@ namespace Sango.Game
         /// 空闲人员列表
         /// </summary>
         public List<Person> freePersons = new List<Person>();
+
         /// <summary>
-        /// 野生人员列表
+        /// 在野人员列表
         /// </summary>
         public List<Person> wildPersons = new List<Person>();
+
         /// <summary>
         /// 不可见人员列表
         /// </summary>
         public List<Person> invisiblePersons = new List<Person>();
+
+        /// <summary>
+        /// 其他经过人员
+        /// </summary>
+        public List<Person> otherPersons = new List<Person>();
 
         /// <summary>
         /// 空闲人员数量
@@ -1062,6 +1069,8 @@ namespace Sango.Game
                 Person person = captiveList[i];
                 if (GameRandom.Chance(GameFormula.Instance.PersonEscapeProbablility_InCity(person, this, scenario), 10000))
                 {
+                    BelongForce.CaptiveList.Remove(person);
+                    captiveList.Remove(person);
                     person.Escape(EscapeType.Escape);
 #if SANGO_DEBUG
                     Sango.Log.Print($"{person.Name}逃跑!");
@@ -1069,6 +1078,7 @@ namespace Sango.Game
                     GameEvent.OnPersonEscape?.Invoke(person, this);
                 }
             }
+
             GameEvent.OnCityTurnEnd?.Invoke(this, scenario);
 
             if (Leader == null || Leader.BelongCity != this)
@@ -1595,7 +1605,7 @@ namespace Sango.Game
 #if SANGO_DEBUG
             Sango.Log.Print($"[{person.BelongForce.Name}]{person.Name}回到[{BelongForce.Name}]<{Name}>");
 #endif
-            GameEvent.OnPersonChangeCityComplete?.Invoke(person, person.BelongCity, this);
+            GameEvent.OnPersonChangeBelongCity?.Invoke(person, person.BelongCity, this);
         }
 
         /// <summary>
@@ -1607,7 +1617,7 @@ namespace Sango.Game
 #if SANGO_DEBUG
             Sango.Log.Print($"[{person.BelongForce.Name}]{person.Name}到达[{BelongForce.Name}]<{Name}>");
 #endif
-            GameEvent.OnPersonChangeCityComplete?.Invoke(person, from, this);
+            GameEvent.OnPersonChangeBelongCity?.Invoke(person, from, this);
         }
 
         /// <summary>

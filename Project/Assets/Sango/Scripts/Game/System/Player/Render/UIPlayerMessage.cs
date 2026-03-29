@@ -315,8 +315,14 @@ namespace Sango.Game.Render.UI
         void UpdateTextView()
         {
             textMessageScrollRect.totalCount = playerMessage.textMessages.Count;
-            textMessageScrollRect.RefillCells(0);
+            textMessageScrollRect.RefillCellsFromEnd(0);
             needUpdateTextView = false;
+            //Invoke("ToEndTextView", 0.01f);
+        }
+
+        void ToEndTextView()
+        {
+            textMessageScrollRect.ScrollToCell(textMessageScrollRect.totalCount - 1, 99999);
         }
 
         /// <summary>
@@ -337,8 +343,14 @@ namespace Sango.Game.Render.UI
         void UpdatePersonView()
         {
             personMessageScrollRect.totalCount = playerMessage.personMessages.Count;
-            textMessageScrollRect.RefillCells();
+            textMessageScrollRect.RefillCellsFromEnd();
             needUpdatePersonView = false;
+            //Invoke("ToEndPersonView", 0.01f);
+        }
+
+        void ToEndPersonView()
+        {
+            personMessageScrollRect.ScrollToCell(textMessageScrollRect.totalCount - 1, 99999);
         }
 
         /// <summary>

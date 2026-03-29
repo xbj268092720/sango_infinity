@@ -268,11 +268,6 @@ namespace Sango.Game
         /// </summary>
         public static EventDelegate<Building, SangoObjectList<Person>> OnBuildingUpgradeComplete;
 
-        /// <summary>
-        /// 武将转移成功
-        /// </summary>
-        public static EventDelegate<Person, City, City> OnPersonChangeCityComplete;
-
         #endregion Force
 
 
@@ -542,6 +537,16 @@ namespace Sango.Game
         /// 当武将被俘虏时
         /// </summary>
         public static EventDelegate<Person, Troop> OnPersonCaptured;
+
+        /// <summary>
+        /// 武将转移成功
+        /// </summary>
+        public static EventDelegate<Person, City, City> OnPersonChangeBelongCity;
+
+        /// <summary>
+        /// 武将改变所在城市
+        /// </summary>
+        public static EventDelegate<Person, City, City> OnPersonChangCurrentCity;
 
         /// <summary>
         /// 当单挑开始时
