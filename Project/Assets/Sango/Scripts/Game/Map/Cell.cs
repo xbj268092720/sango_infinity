@@ -104,6 +104,11 @@ namespace Sango.Game
         public bool IsInterior => HasGridState(Sango.Render.MapGrid.GridState.Interior);
 
         /// <summary>
+        /// 是否是水块
+        /// </summary>
+        public bool IsWater => TerrainType.isWater;
+
+        /// <summary>
         /// 默认构造函数
         /// </summary>
         public Cell()

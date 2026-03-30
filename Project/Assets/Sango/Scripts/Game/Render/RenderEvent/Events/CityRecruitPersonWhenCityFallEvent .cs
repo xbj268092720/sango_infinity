@@ -28,12 +28,13 @@ namespace Sango.Game.Render
 #if SANGO_DEBUG
                         Sango.Log.Print($"{person.Name} 加入了 {atk.BelongForce} 势力!!!");
 #endif
-                        targetCity.allPersons.Add(person);
+
                         person.ChangeCorps(atk.BelongCorps);
                         captiveList.RemoveAt(i);
                     }
                     else
                     {
+                        targetCity.allPersons.Remove(person);
                         // TODO: 释放,斩杀
                         person.BeCaptive(targetCity);
                     }

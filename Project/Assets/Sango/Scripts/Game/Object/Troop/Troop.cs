@@ -652,8 +652,12 @@ namespace Sango.Game
 
         public int MoveCost(Cell cell)
         {
-            return TroopType.MoveCost(cell);
+            if (cell.IsWater)
+                return WaterTroopType.MoveCost(cell);
+            else
+                return LandTroopType.MoveCost(cell);
         }
+
         public bool IsAlliance(BuildingBase other)
         {
             return IsAlliance(BelongForce, other.BelongForce);
@@ -1569,6 +1573,7 @@ namespace Sango.Game
                 {
                     city.captiveList.Add(p);
                     p.ChangeCurrentCity(city);
+                    p.BelongTroop = null;
                 });
             }
             captiveList.Clear();

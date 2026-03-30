@@ -551,14 +551,13 @@ namespace Sango.Game
             personSortFunc = (a, b) => SangoObject.Compare(a.BelongCity, b.BelongCity),
         };
 
-//  未补全剧本
-//        public static SortTitle SortByCurrentCity = new SortTitle()
-//        {
-//            name = "所在",
-//            width = 60,
-//            valueGetCall = x => x.CurrentCity?.Name ?? "",
-//            personSortFunc = (a, b) => SangoObject.Compare(a.CurrentCity, b.CurrentCity),
-//        };
+        public static SortTitle SortByCurrentCity = new SortTitle()
+        {
+            name = "所在",
+            width = 60,
+            valueGetCall = x => x.CurrentCity?.Name ?? "",
+            personSortFunc = (a, b) => SangoObject.Compare(a.CurrentCity, b.CurrentCity),
+        };
 
         public static SortTitle SortByDescription = new SortTitle()
         {

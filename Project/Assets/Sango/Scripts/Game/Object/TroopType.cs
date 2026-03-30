@@ -115,7 +115,7 @@ namespace Sango.Game
         /// <summary>
         /// 对于每种地形的移动消耗值
         /// </summary>
-        [JsonProperty] public byte[] extraMoveCost;
+        [JsonProperty] public int[] moveCost;
 
         /// <summary>
         /// 可组建条件(兵符,特定城市等)
@@ -170,11 +170,14 @@ namespace Sango.Game
 
         public int MoveCost(Cell cell)
         {
-            int cost = cell.TerrainType.baseCost;
-            int terrainId = cell.TerrainType.Id;
-            if (extraMoveCost != null && terrainId < extraMoveCost.Length)
-                return cost + extraMoveCost[terrainId];
-            return cost;
+#if SANGO_DEBUG
+            if (cell.terrainType < 0 || cell.terrainType >= moveCost.Length)
+            {
+                Sango.Log.Error($"地形移动数据不存在!! => {cell.terrainType}");
+                return 99;
+            }
+#endif
+            return moveCost[cell.terrainType];
         }
 
 

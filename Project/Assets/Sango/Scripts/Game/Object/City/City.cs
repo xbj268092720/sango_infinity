@@ -1491,9 +1491,6 @@ namespace Sango.Game
             for (int i = allPersons.Count - 1; i >= 0; --i)
             {
                 Person person = allPersons[i];
-                if (escapeCity != null)
-                    person.ChangeCity(escapeCity);
-
                 // 没有执行任务的才能被捕获,暂时不能抓捕主公
                 if (person.IsFree && person != person.BelongForce.Governor && GameRandom.Chance(cacaptureChangce))
                 {
@@ -1503,6 +1500,7 @@ namespace Sango.Game
                 {
                     if (escapeCity != null)
                     {
+                        person.ChangeCity(escapeCity);
                         if (person.BelongTroop == null)
                             person.SetMission(MissionType.PersonReturn, person.BelongCity);
                     }
@@ -1513,7 +1511,6 @@ namespace Sango.Game
                     }
                 }
             }
-            allPersons.Clear();
 
             //处理建筑
             for (int i = allBuildings.Count - 1; i >= 0; i--)

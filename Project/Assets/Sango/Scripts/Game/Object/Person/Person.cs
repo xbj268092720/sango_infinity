@@ -1221,8 +1221,8 @@ namespace Sango.Game
                 state = (int)PersonStateType.Normal;
                 if (BelongTroop != null)
                 {
-                    BelongTroop.RemoveCaptive(this);
                     ChangeCurrentCity(BelongTroop.CurrentCity);
+                    BelongTroop.RemoveCaptive(this);
                     BelongTroop = null;
                 }
                 else

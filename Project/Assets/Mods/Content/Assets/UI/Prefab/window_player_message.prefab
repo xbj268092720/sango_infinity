@@ -250,7 +250,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 226, y: 388.9298}
+  m_AnchoredPosition: {x: 226, y: 132.1}
   m_SizeDelta: {x: 452, y: 122}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4041353777931609466
@@ -2216,7 +2216,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   root: {fileID: 1669558747372089657}
   textMessageItem: {fileID: 8529281838748744000}
-  textMessageItem_big: {fileID: 0}
   personMessageItem: {fileID: 5647248516939465462}
   textMessageScrollRect: {fileID: 2387570209231818776}
   personMessageScrollRect: {fileID: 1242388286447574339}
