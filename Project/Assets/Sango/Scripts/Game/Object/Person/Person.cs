@@ -636,9 +636,9 @@ namespace Sango.Game
                 {
                     BelongTroop.captiveList.Add(this);
                 }
-                else if (BelongCity != null)
+                else if (CurrentCity != null)
                 {
-                    BelongCity.captiveList.Add(this);
+                    CurrentCity.captiveList.Add(this);
                 }
             }
             else
@@ -679,12 +679,6 @@ namespace Sango.Game
             if (Father != null)
                 Father.sonList.Add(this);
 
-            //else if (this.missionType == (int)MissionType.PersonBuild)
-            //{
-            //    Building building = scenario.buildingSet.Get(missionTarget);
-            //    building.Builder = this;
-            //}
-
             OnPersonAgeUpdate(scenario);
         }
 
@@ -712,6 +706,34 @@ namespace Sango.Game
             return base.OnYearStart(scenario);
         }
 
+        public bool DoMove(City dest, Scenario scenario)
+        {
+            City target = dest.BelongCity == null ? dest : dest.BelongCity;
+            City currentCity = CurrentCity.BelongCity == null ? CurrentCity : CurrentCity.BelongCity;
+
+            if (target == currentCity)
+            {
+                return true;
+            }
+
+            // 找到最短移动路径
+            List<City> path = scenario.FindShortestPath(currentCity, target);
+            if (path == null || path.Count <= 1)
+            {
+                ClearMission();
+                return true;
+            }
+
+            City next = path[1];
+            ChangeCurrentCity(next);
+            if (next == dest)
+            {
+                ClearMission();
+                return true;
+            }
+            return false;
+        }
+
         public void UpdateMission(Scenario scenario)
         {
             if (missionType == 0) return;
@@ -723,68 +745,56 @@ namespace Sango.Game
                         City dest = scenario.citySet.Get(missionTarget);
                         if (!this.IsSameForce(dest))
                         {
-                            SetMission(MissionType.PersonReturn, BelongForce.Governor.BelongCity, 1);
+                            ChangeCity(BelongForce.Governor.BelongCity);
+                            SetMission(MissionType.PersonReturn, BelongForce.Governor.BelongCity);
                             return;
                         }
-                        else
+
+                        if (DoMove(dest, scenario))
                         {
-                            missionCounter--;
-                            if (missionCounter <= 0)
-                            {
-                                ClearMission();
-                                dest.OnPersonReturnCity(this);
-                            }
+                            ClearMission();
+                            dest.OnPersonReturnCity(this);
                         }
                     }
                     break;
                 case (int)MissionType.PersonTransform:
                     {
+                        // 如果目标城市已经不属于我方,则返回所属城市
                         City dest = scenario.citySet.Get(missionTarget);
-                        if (!dest.IsSameForce(BelongCity))
+                        if (!this.IsSameForce(dest))
                         {
-                            SetMission(MissionType.PersonReturn, BelongCity, 100);
+                            SetMission(MissionType.PersonReturn, BelongCity);
                             return;
                         }
 
-                        // 找到最短移动路径
-                        List<City> path = Scenario.Cur.FindShortestPath(CurrentCity, dest);
-
-                        if(path == null || path.Count == 0)
+                        if (DoMove(dest, scenario))
                         {
-
-                            return;
-                        }
-                        City next = path[0];
-
-                        missionCounter--;
-                        if (missionCounter <= 0)
-                        {
-                            ClearMission();
-                            City from = scenario.citySet.Get(missionTarget);
-                            BelongCity.OnPersonTransformEnd(this, from);
+                            City belong = BelongCity;
+                            ChangeCity(dest);
+                            BelongCity.OnPersonTransformEnd(this, belong);
                         }
                     }
                     break;
                 case (int)MissionType.PersonRecruitPerson:
                     {
-                        Person dest = scenario.personSet.Get(missionTarget);
+                        Person dest_person = scenario.personSet.Get(missionTarget);
+                        City dest = scenario.citySet.Get(missionParams1);
                         if (BelongCorps != null && this.IsSameForce(dest))
                         {
-                            SetMission(MissionType.PersonReturn, BelongCity, 1);
+                            // 已经有人招募成功
+                            SetMission(MissionType.PersonReturn, BelongCity);
+                            return;
                         }
-                        else
+
+                        if (DoMove(dest, scenario))
                         {
-                            missionCounter--;
-                            if (missionCounter <= 0)
+                            CityRecruitPersonEvent te = new CityRecruitPersonEvent()
                             {
-                                CityRecruitPersonEvent te = new CityRecruitPersonEvent()
-                                {
-                                    person = this,
-                                    target = dest,
-                                };
-                                RenderEvent.Instance.Add(te);
-                                SetMission(MissionType.PersonReturn, BelongCity, 1);
-                            }
+                                person = this,
+                                target = dest_person,
+                            };
+                            RenderEvent.Instance.Add(te);
+                            SetMission(MissionType.PersonReturn, BelongCity);
                         }
                     }
                     break;
@@ -823,129 +833,23 @@ namespace Sango.Game
                     break;
                 case (int)MissionType.PersonDiplomacy:
                     {
-                        // 向目标城市移动
-                        missionCounter--;
-                        if (missionCounter <= 0)
+                        City targetCity = scenario.citySet.Get(missionTarget);
+                        if (DoMove(targetCity, scenario))
                         {
-                            // 到达目标城市
-                            //ChangeCity(targetCity);
-                            // 重置计数器，准备执行外交行动
-                            //missionCounter = 1;
-                            // 检查是否到达目标城市
-                            City targetCity = scenario.citySet.Get(missionTarget);
-
                             // 执行外交行动
                             Force receiverForce = scenario.forceSet.Get(missionParams1);
-                            if (receiverForce == null)
+                            if (receiverForce == null || !receiverForce.IsAlive || receiverForce.Governor.BelongCity != targetCity)
                             {
                                 // 完成任务，返回原城市
-                                SetMission(MissionType.PersonReturn, BelongForce.Governor.BelongCity, 1);
+                                SetMission(MissionType.PersonReturn, BelongCity);
                                 return;
                             }
 
                             DiplomacyActionType actionType = (DiplomacyActionType)missionParams2;
+                            DiplomacyManager.Instance.DoPersonDiplomacyAction(this, actionType, receiverForce, missionParams3, missionParams4);
 
-                            // 计算成功率
-                            int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(actionType, BelongForce, receiverForce, this, missionParams3);
-                            bool success = false;
-
-                            // 根据成功率判断是否执行成功
-                            if (GameRandom.Chance(successRate))
-                            {
-                                switch (actionType)
-                                {
-                                    case DiplomacyActionType.Alliance:
-                                        success = DiplomacyManager.Instance.PerformAlliance(BelongForce, receiverForce);
-                                        break;
-                                    case DiplomacyActionType.Truce:
-                                        success = DiplomacyManager.Instance.PerformTruce(BelongForce, receiverForce);
-                                        break;
-                                    case DiplomacyActionType.DeclareWar:
-                                        success = DiplomacyManager.Instance.PerformDeclareWar(BelongForce, receiverForce);
-                                        break;
-                                    case DiplomacyActionType.SendGift:
-                                        // 使用missionParams3存储礼物价值
-                                        success = DiplomacyManager.Instance.PerformSendGift(BelongForce, receiverForce, missionParams3);
-                                        break;
-                                    case DiplomacyActionType.RequestTechnique:
-                                        // 使用missionParams3存储技术ID
-                                        success = DiplomacyManager.Instance.PerformRequestTechnique(BelongForce, receiverForce, missionParams3);
-                                        break;
-                                    case DiplomacyActionType.RequestTroops:
-                                        // 使用missionParams3存储兵力数量
-                                        success = DiplomacyManager.Instance.PerformRequestTroops(BelongForce, receiverForce, missionParams3);
-                                        break;
-                                    case DiplomacyActionType.Trade:
-                                        success = DiplomacyManager.Instance.PerformTrade(BelongForce, receiverForce);
-                                        break;
-                                    case DiplomacyActionType.Marriage:
-                                        success = DiplomacyManager.Instance.PerformMarriage(BelongForce, receiverForce);
-                                        break;
-                                    case DiplomacyActionType.AllianceRequest:
-                                        success = DiplomacyManager.Instance.PerformAllianceRequest(BelongForce, receiverForce);
-                                        break;
-                                    case DiplomacyActionType.TruceRequest:
-                                        success = DiplomacyManager.Instance.PerformTruceRequest(BelongForce, receiverForce);
-                                        break;
-                                    case DiplomacyActionType.Ransom:
-                                        // 使用missionParams3存储赎金，missionParams4存储俘虏ID
-                                        success = DiplomacyManager.Instance.PerformRansom(BelongForce, receiverForce, missionParams3, missionParams4);
-                                        break;
-                                }
-                            }
-
-                            // 输出调试信息
-                            if (success)
-                            {
-#if SANGO_DEBUG
-                                Sango.Log.Print($"@外交@{BelongForce.Name} 对 {receiverForce.Name} 的{DiplomacyManager.Instance.GetActionName(actionType)}行动成功了！成功率: {successRate}%");
-#endif
-                            }
-                            else
-                            {
-#if SANGO_DEBUG
-                                Sango.Log.Print($"@外交@{BelongForce.Name} 对 {receiverForce.Name} 的{DiplomacyManager.Instance.GetActionName(actionType)}行动失败了！成功率: {successRate}%");
-#endif
-                                // 外交失败减少关系
-                                int relationDecrease = 0;
-                                switch (actionType)
-                                {
-                                    case DiplomacyActionType.Alliance:
-                                    case DiplomacyActionType.AllianceRequest:
-                                        relationDecrease = 50;
-                                        break;
-                                    case DiplomacyActionType.Truce:
-                                    case DiplomacyActionType.TruceRequest:
-                                        relationDecrease = 30;
-                                        break;
-                                    case DiplomacyActionType.RequestTechnique:
-                                        relationDecrease = 100;
-                                        break;
-                                    case DiplomacyActionType.RequestTroops:
-                                        relationDecrease = 150;
-                                        break;
-                                    case DiplomacyActionType.Trade:
-                                        relationDecrease = 40;
-                                        break;
-                                    case DiplomacyActionType.Marriage:
-                                        relationDecrease = 80;
-                                        break;
-                                    case DiplomacyActionType.Ransom:
-                                        relationDecrease = 60;
-                                        break;
-                                    default:
-                                        relationDecrease = 20;
-                                        break;
-                                }
-
-                                DiplomacyManager.Instance.ReduceRelation(BelongForce, receiverForce, relationDecrease);
-
-#if SANGO_DEBUG
-                                Sango.Log.Print($"@外交@{BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
-#endif
-                            }
                             // 完成任务，返回原城市
-                            SetMission(MissionType.PersonReturn, BelongForce.Governor.BelongCity, 1);
+                            SetMission(MissionType.PersonReturn, BelongCity);
                         }
                     }
                     break;
@@ -1000,6 +904,17 @@ namespace Sango.Game
             this.missionType = (int)missionType;
             this.missionTarget = missionTarget.Id;
             this.missionCounter = missionCounter;
+            this.missionParams1 = 0;
+            this.missionParams2 = 0;
+            this.missionParams3 = 0;
+            this.missionParams4 = 0;
+        }
+
+        public void SetMission(MissionType missionType, SangoObject missionTarget)
+        {
+            this.missionType = (int)missionType;
+            this.missionTarget = missionTarget.Id;
+            this.missionCounter = 0;
             this.missionParams1 = 0;
             this.missionParams2 = 0;
             this.missionParams3 = 0;
@@ -1071,7 +986,7 @@ namespace Sango.Game
         public void TransformToCity(City dest)
         {
             //dest.allPersons.Add(this);
-            SetMission(MissionType.PersonTransform, dest, 100);
+            SetMission(MissionType.PersonTransform, dest);
             //BelongCity?.Remove(this);
             //BelongCity = dest;
             ActionOver = true;
@@ -1107,7 +1022,7 @@ namespace Sango.Game
             {
                 last = BelongCity;
 #if SANGO_DEBUG
-                Sango.Log.Print($"*{BelongForce?.Name}的{Name} 改变所属城市 {BelongCity.Name} => {city.Name}转移");
+                Sango.Log.Print($"*{BelongForce?.Name}的{Name} 改变所属城市 {BelongCity.Name} => {city.Name}");
 #endif
                 if (!IsWild)
                 {
@@ -1199,7 +1114,7 @@ namespace Sango.Game
                         personTroop.RemovePerson(person);
                         if (!person.JoinToForce(targetCity))
                         {
-                            person.SetMission(MissionType.PersonReturn, targetCity, 1);
+                            person.SetMission(MissionType.PersonReturn, targetCity);
                         }
                     }
                     personTroop.Render?.UpdateRender();
@@ -1209,7 +1124,7 @@ namespace Sango.Game
                     // 有归属
                     if (!person.JoinToForce(targetCity))
                     {
-                        person.SetMission(MissionType.PersonReturn, targetCity, 1);
+                        person.SetMission(MissionType.PersonReturn, targetCity);
                     }
                 }
                 person.ActionOver = true;
@@ -1268,20 +1183,12 @@ namespace Sango.Game
             Official = Scenario.Cur.CommonData.Officials.Get(0);
             state = (int)PersonStateType.Unemployed;
             // 关卡和港口的武将下野到对应的城池里
-            if (BelongCity.BelongCity != null)
-            {
-                BelongCity.BelongCity.wildPersons.Add(this);
+            BelongCity = CurrentCity.BelongCity == null ? CurrentCity : CurrentCity.BelongCity;
+            CurrentCity = BelongCity;
+            BelongCity.wildPersons.Add(this);
 #if SANGO_DEBUG
-                Sango.Log.Print($"@人才@[{BelongForce.Name}]的<{Name}>下野至{BelongCity.BelongCity.Name}");
+            Sango.Log.Print($"@人才@[{BelongForce.Name}]的<{Name}>下野至{BelongCity.Name}");
 #endif
-            }
-            else
-            {
-                BelongCity.wildPersons.Add(this);
-#if SANGO_DEBUG
-                Sango.Log.Print($"@人才@[{BelongForce.Name}]的<{Name}>下野至{BelongCity.Name}");
-#endif
-            }
             BelongCorps = null;
             BelongForce = null;
             BelongTroop = null;
@@ -1289,10 +1196,8 @@ namespace Sango.Game
 
         public Person BeCaptive(City city)
         {
-            BelongCity.allPersons.Remove(this);
             state = (int)PersonStateType.Prisoner;
-            city.captiveList.Add(this);
-            this.BelongForce.CaptiveList.Add(this);
+            city.AddCaptive(this);
 #if SANGO_DEBUG
             Sango.Log.Print($"@人才@[{Name}]被<{city.BelongForce.Name}>俘虏至{city.Name}");
 #endif
@@ -1301,10 +1206,8 @@ namespace Sango.Game
 
         public Person BeCaptive(Troop troop)
         {
-            BelongCity.allPersons.Remove(this);
             state = (int)PersonStateType.Prisoner;
-            troop.captiveList.Add(this);
-            this.BelongForce.CaptiveList.Add(this);
+            troop.AddCaptive(this);
 #if SANGO_DEBUG
             Sango.Log.Print($"@人才@[{Name}]被<{troop.BelongForce.Name}>俘虏至{troop.Name}");
 #endif
@@ -1313,38 +1216,44 @@ namespace Sango.Game
 
         public Person Escape(EscapeType escapeType = EscapeType.None, SangoObject sangoObject = null)
         {
-
-
-            // 有归属的武将
-            if (BelongForce != null && BelongForce.IsAlive)
+            if (IsPrisoner)
             {
-                City where = BelongCity;
+                state = (int)PersonStateType.Normal;
                 if (BelongTroop != null)
                 {
-                    where = BelongTroop.cell.BelongCity;
+                    BelongTroop.RemoveCaptive(this);
+                    ChangeCurrentCity(BelongTroop.CurrentCity);
+                    BelongTroop = null;
                 }
                 else
                 {
-                    BelongCity.wildPersons.Add(this);
+                    CurrentCity.RemoveCaptive(this);
                 }
-                ChangeCity(BelongForce.Governor.BelongCity);
-                ChangeCorps(BelongForce.Governor.BelongCorps);
-                state = (int)PersonStateType.Normal;
-                SetMission(MissionType.PersonReturn, BelongCity, DistanceDays(where));
+
+                if (BelongForce != null && BelongForce.IsAlive)
+                {
+                    SetMission(MissionType.PersonReturn, BelongCity);
+                }
+                else
+                {
+                    ChangeCity(CurrentCity);
+                }
             }
             else
             {
                 state = (int)PersonStateType.Unemployed;
-                if (BelongCity.allPersons.Contains(this))
-                    BelongCity.allPersons.Remove(this);
+
                 // 下野
                 if (BelongTroop != null)
                 {
-                    BelongTroop.cell.BelongCity.wildPersons.Add(this);
+                    BelongTroop.RemoveCaptive(this);
+                    ChangeCity(BelongTroop.CurrentCity);
+                    BelongTroop = null;
                 }
                 else
                 {
-                    BelongCity.wildPersons.Add(this);
+                    CurrentCity.RemoveCaptive(this);
+                    ChangeCity(CurrentCity);
                 }
             }
 

@@ -114,7 +114,7 @@ namespace Sango.Game
         /// <summary>
         /// 本国被俘虏
         /// </summary>
-        public List<Person> CaptiveList = new List<Person>();
+        public List<Person> BeCaptiveList = new List<Person>();
 
         /// <summary>
         /// 技巧点数

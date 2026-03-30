@@ -477,7 +477,7 @@ namespace Sango.Game
             // 从原势力中移除
             if (general.BelongForce != null)
             {
-                general.BelongForce.CaptiveList.Add(general);
+                general.BelongForce.BeCaptiveList.Add(general);
             }
 
             // 触发俘虏事件

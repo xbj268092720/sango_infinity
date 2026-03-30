@@ -634,6 +634,32 @@ namespace Sango.Game
         /// <returns>添加的武将</returns>
         public Person Add(Person person) { allPersons.Add(person); return person; }
 
+
+        /// <summary>
+        /// 添加囚犯
+        /// </summary>
+        /// <param name="person">要添加的武将</param>
+        /// <returns>添加的武将</returns>
+        public Person AddCaptive(Person person)
+        {
+            captiveList.Add(person);
+            person.BelongForce?.BeCaptiveList.Add(person);
+            person.ChangeCurrentCity(this);
+            return person;
+        }
+
+        /// <summary>
+        /// 添加囚犯
+        /// </summary>
+        /// <param name="person">要添加的武将</param>
+        /// <returns>添加的武将</returns>
+        public Person RemoveCaptive(Person person)
+        {
+            captiveList.Remove(person);
+            person.BelongForce?.BeCaptiveList.Remove(person);
+            return person;
+        }
+
         /// <summary>
         /// 移除武将
         /// </summary>
@@ -703,7 +729,7 @@ namespace Sango.Game
             foreach (Person person in captiveList)
             {
                 if (person.BelongForce != null)
-                    person.BelongForce.CaptiveList.Add(person);
+                    person.BelongForce.BeCaptiveList.Add(person);
             }
         }
 
@@ -1069,8 +1095,6 @@ namespace Sango.Game
                 Person person = captiveList[i];
                 if (GameRandom.Chance(GameFormula.Instance.PersonEscapeProbablility_InCity(person, this, scenario), 10000))
                 {
-                    BelongForce.CaptiveList.Remove(person);
-                    captiveList.Remove(person);
                     person.Escape(EscapeType.Escape);
 #if SANGO_DEBUG
                     Sango.Log.Print($"{person.Name}逃跑!");
@@ -1467,6 +1491,8 @@ namespace Sango.Game
             for (int i = allPersons.Count - 1; i >= 0; --i)
             {
                 Person person = allPersons[i];
+                if (escapeCity != null)
+                    person.ChangeCity(escapeCity);
 
                 // 没有执行任务的才能被捕获,暂时不能抓捕主公
                 if (person.IsFree && person != person.BelongForce.Governor && GameRandom.Chance(cacaptureChangce))
@@ -1477,9 +1503,8 @@ namespace Sango.Game
                 {
                     if (escapeCity != null)
                     {
-                        person.ChangeCity(escapeCity);
                         if (person.BelongTroop == null)
-                            person.SetMission(MissionType.PersonReturn, person.BelongCity, 1);
+                            person.SetMission(MissionType.PersonReturn, person.BelongCity);
                     }
                     else
                     {
@@ -1487,9 +1512,8 @@ namespace Sango.Game
                         person.LeaveToWild();
                     }
                 }
-
-
             }
+            allPersons.Clear();
 
             //处理建筑
             for (int i = allBuildings.Count - 1; i >= 0; i--)
@@ -2657,7 +2681,7 @@ namespace Sango.Game
             }
             else
             {
-                person.SetMission(MissionType.PersonRecruitPerson, dest, Math.Max(1, person.BelongCity.Distance(dest.BelongCity)));
+                person.SetMission(MissionType.PersonRecruitPerson, dest, 100, dest.BelongCity.Id);
                 BelongCorps.ReduceActionPoint(apCost);
                 return false;
             }

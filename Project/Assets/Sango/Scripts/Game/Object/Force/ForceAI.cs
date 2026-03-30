@@ -418,21 +418,21 @@ namespace Sango.Game
             {
                 force.DiplomacyFailCount[targetForceId] = 1;
             }
-            
+
             // 如果失败次数超过3次，设置外交免疫时间
             if (force.DiplomacyFailCount[targetForceId] >= 3)
             {
                 // 设置30天的免疫时间
                 force.DiplomacyImmunityTime[targetForceId] = (Scenario.Cur?.TurnCount ?? 0) + 30;
                 force.DiplomacyFailCount.Remove(targetForceId);
-                
-                #if SANGO_DEBUG
+
+#if SANGO_DEBUG
                 Force targetForce = Scenario.Cur?.forceSet.Get(targetForceId);
                 if (targetForce != null)
                 {
                     Sango.Log.Print($"@外交@{force.Name} 对 {targetForce.Name} 的外交连续失败3次，进入30天外交免疫期！");
                 }
-                #endif
+#endif
             }
         }
 
@@ -670,44 +670,68 @@ namespace Sango.Game
             ProcessCaptives(force, scenario);
 
             // 处理其他势力的俘虏赎回请求
-            ProcessRansomRequests(force, scenario);
+            //ProcessRansomRequests(force, scenario);
 
             return true;
         }
 
+        private static bool ProcessCaptives(Force force, Person captive, Scenario scenario)
+        {
+            // 检查是否可以招降
+            if (CanRecruitCaptive(force, captive, scenario))
+            {
+                // 尝试招降
+                if (TryRecruitCaptive(force, captive, scenario))
+                {
+                    return true;
+                }
+            }
+
+            // 检查是否应该释放
+            if (ShouldReleaseCaptive(force, captive, scenario))
+            {
+                ReleaseCaptive(force, captive, scenario);
+                return true;
+            }
+
+            return false;
+        }
+
         private static void ProcessCaptives(Force force, Scenario scenario)
         {
-            if (force.CaptiveList == null || force.CaptiveList.Count == 0)
-                return;
-
-            for(int i = 0; i < force.CaptiveList.Count; i++)
-            //foreach (Person captive in force.CaptiveList)
+            force.ForEachCity(city =>
             {
-                Person captive = force.CaptiveList[i];
-                // 检查是否可以招降
-                if (CanRecruitCaptive(force, captive, scenario))
+                for (int i = 0; i < city.captiveList.Count; i++)
                 {
-                    // 尝试招降
-                    if (TryRecruitCaptive(force, captive, scenario))
+                    Person captive = city.captiveList[i];
+                    // 检查是否可以招降
+                    if (ProcessCaptives(force, captive, scenario))
                     {
                         i--;
                         continue;
                     }
                 }
+            });
 
-                // 检查是否应该释放
-                if (ShouldReleaseCaptive(force, captive, scenario))
+            force.ForEachTroop(city =>
+            {
+                for (int i = 0; i < city.captiveList.Count; i++)
                 {
-                    ReleaseCaptive(force, captive, scenario);
-                    i--;
+                    Person captive = city.captiveList[i];
+                    // 检查是否可以招降
+                    if (ProcessCaptives(force, captive, scenario))
+                    {
+                        i--;
+                        continue;
+                    }
                 }
-            }
+            });
         }
 
         private static bool CanRecruitCaptive(Force force, Person captive, Scenario scenario)
         {
             // 检查忠诚度
-            if (captive.loyalty > 50)
+            if (captive.loyalty > 70)
                 return false;
 
             // 检查势力关系
@@ -734,27 +758,16 @@ namespace Sango.Game
             }
 
             if (GameRandom.Chance(probability, 10000))
-            {
-                // 招降成功
-                City capital = force.Governor?.BelongCity;
-                if (capital != null)
-                {
-                    // 转移到本势力
-                    captive.BelongForce = force;
-                    captive.BelongCorps = force.Governor.BelongCorps;
-                    captive.BelongCity = capital;
-                    capital.allPersons.Add(captive);
-                    force.CaptiveList.Remove(captive);
-
-                    // 消耗资金
-                    int cost = GameRandom.Range(1000, 3000);
-                    capital.gold -= cost;
-
+            { 
+                captive.CurrentCity.RemoveCaptive(captive);
+                captive.ChangeCorps(force.Governor?.BelongCorps);
+                captive.ChangeCity(force.Governor?.BelongCity);
+                captive.SetMission(MissionType.PersonReturn, captive.BelongCity);
 #if SANGO_DEBUG
-                    Sango.Log.Print($"{force.Name}成功招降了{captive.BelongForce?.Name}的{captive.Name}！");
+                Sango.Log.Print($"{force.Name}成功招降了{captive.BelongForce?.Name}的{captive.Name}！");
 #endif
-                    return true;
-                }
+                return true;
+
             }
             return false;
         }
@@ -762,8 +775,8 @@ namespace Sango.Game
         private static bool ShouldReleaseCaptive(Force force, Person captive, Scenario scenario)
         {
             // 检查忠诚度
-            if (captive.loyalty > 80)
-                return true;
+            //if (captive.loyalty > 100)
+            //    return true;
 
             // 检查势力关系
             int relation = scenario.GetRelation(force, captive.BelongForce);
@@ -771,8 +784,8 @@ namespace Sango.Game
                 return true;
 
             // 检查是否有足够的粮食
-            City capital = force.Governor?.BelongCity;
-            if (capital != null && capital.food < 10000)
+            City capital = captive.CurrentCity;
+            if (capital != null && capital.totalGainGold < capital.GoldCost(scenario))
                 return true;
 
             // 根据势力领袖的性格调整释放概率
@@ -791,15 +804,6 @@ namespace Sango.Game
 
         private static void ReleaseCaptive(Force force, Person captive, Scenario scenario)
         {
-            // 释放俘虏
-            force.CaptiveList.Remove(captive);
-
-            // 检查城市中的俘虏
-            if (captive.BelongTroop != null)
-                captive.BelongTroop.captiveList.Remove(captive);
-            else
-                captive.BelongCity.captiveList.Remove(captive);
-
             // 直接调用Person.Escape方法释放俘虏
             captive.Escape(EscapeType.Released, force);
 
@@ -811,18 +815,17 @@ namespace Sango.Game
         private static void ProcessRansomRequests(Force force, Scenario scenario)
         {
             // 检查是否有其他势力的俘虏在本势力
-            if (force.CaptiveList == null || force.CaptiveList.Count == 0)
+            if (force.BeCaptiveList == null || force.BeCaptiveList.Count == 0)
                 return;
 
-            for (int i = 0; i < force.CaptiveList.Count; i++)
-            //foreach (Person captive in force.CaptiveList)
+            for (int i = 0; i < force.BeCaptiveList.Count; i++)
             {
-                Person captive = force.CaptiveList[i];
+                Person captive = force.BeCaptiveList[i];
 
                 // 检查原势力是否有足够的资金赎回
                 if (captive.BelongForce != null && captive.BelongForce.Governor != null && captive.BelongForce.Governor.BelongCity != null)
                 {
-                    City homeCity = captive.BelongForce.Governor.BelongCity;
+                    City homeCity = captive.BelongCity;
                     int ransom = CalculateRansom(captive);
 
                     if (homeCity.gold >= ransom)

@@ -31,6 +31,11 @@ namespace Sango.Game
         public City BelongCity => Leader?.BelongCity;
 
         /// <summary>
+        /// 所在城池
+        /// </summary>
+        public City CurrentCity => cell.BelongCity.BelongCity == null ? cell.BelongCity : cell.BelongCity.BelongCity;
+
+        /// <summary>
         /// 统领
         /// </summary>
         [JsonConverter(typeof(Id2ObjConverter<Person>))]
@@ -391,7 +396,7 @@ namespace Sango.Game
             foreach (Person person in captiveList)
             {
                 if (person.BelongForce != null)
-                    person.BelongForce.CaptiveList.Add(person);
+                    person.BelongForce.BeCaptiveList.Add(person);
             }
             PrepeareFoodCost();
             //MemberList?.InitCache();// = new SangoObjectList<Person>().FromString(_memberListStr, scenario.personSet);
@@ -471,9 +476,10 @@ namespace Sango.Game
                 Person person = captiveList[i];
                 if (GameRandom.Chance(GameFormula.Instance.PersonEscapeProbablility_InTroop(person, this, scenario), 10000))
                 {
-                    BelongForce.CaptiveList.Remove(person);
-                    captiveList.Remove(person);
                     person.Escape(EscapeType.Escape);
+#if SANGO_DEBUG
+                    Sango.Log.Print($"{person.Name}逃跑!");
+#endif
                     GameEvent.OnPersonEscape?.Invoke(person, this);
                 }
             }
@@ -1228,19 +1234,17 @@ namespace Sango.Game
                 Person person = captiveList[i];
                 if (person.IsWild)
                 {
-                    person.BelongCity = BelongCity;
-                    BelongCity.wildPersons.Add(person);
-                    person.SetMission(MissionType.PersonReturn, BelongCity, 1);
+                    person.ChangeCity(CurrentCity);
+                    person.ChangeCurrentCity(CurrentCity);
                 }
                 else
                 {
-                    person.BelongForce.Governor.BelongCity.allPersons.Add(person);
-                    person.BelongCorps = person.BelongForce.Governor.BelongCorps;
-                    person.BelongCity = person.BelongForce.Governor.BelongCity;
-                    person.BelongCity.allPersons.Add(person);
-                    person.SetMission(MissionType.PersonReturn, person.BelongCity, 1);
+                    person.BelongForce?.BeCaptiveList.Remove(person);
+                    person.ChangeCurrentCity(CurrentCity);
+                    person.SetMission(MissionType.PersonReturn, person.BelongCity);
                 }
             }
+            captiveList.Clear();
         }
 
         public int GetTroopsNum()
@@ -1564,8 +1568,10 @@ namespace Sango.Game
                 captiveList.ForEach(p =>
                 {
                     city.captiveList.Add(p);
+                    p.ChangeCurrentCity(city);
                 });
             }
+            captiveList.Clear();
             captiveList = null;
 
             // 返还兵装
@@ -1600,7 +1606,7 @@ namespace Sango.Game
                 // 运输武将返回所属城市
                 ForEachPerson((person) =>
                 {
-                    person.SetMission(MissionType.PersonReturn, person.BelongCity, 1);
+                    person.SetMission(MissionType.PersonReturn, person.BelongCity);
                 });
             }
             else
@@ -1624,7 +1630,6 @@ namespace Sango.Game
             {
                 captiveList.ForEach(x =>
                 {
-                    BelongForce.CaptiveList.Remove(x);
                     x.Escape(EscapeType.TroopDestroyed);
                 });
                 captiveList = null;
@@ -1717,7 +1722,7 @@ namespace Sango.Game
             ForEachMember(mem =>
             {
                 RemovePerson(mem, true);
-                mem.SetMission(MissionType.PersonReturn, mem.BelongCity, 1);
+                mem.SetMission(MissionType.PersonReturn, mem.BelongCity);
                 mem.ActionOver = true;
             });
             CalculateAttribute(Scenario.Cur);
@@ -1854,6 +1859,32 @@ namespace Sango.Game
                 }
             }
             return 0;
+        }
+
+        /// <summary>
+        /// 添加囚犯
+        /// </summary>
+        /// <param name="person">要添加的武将</param>
+        /// <returns>添加的武将</returns>
+        public Person AddCaptive(Person person)
+        {
+            captiveList.Add(person);
+            person.BelongForce?.BeCaptiveList.Add(person);
+            person.BelongTroop = this;
+            return person;
+        }
+
+        /// <summary>
+        /// 添加囚犯
+        /// </summary>
+        /// <param name="person">要添加的武将</param>
+        /// <returns>添加的武将</returns>
+        public Person RemoveCaptive(Person person)
+        {
+            captiveList.Remove(person);
+            person.BelongForce?.BeCaptiveList.Remove(person);
+            person.BelongTroop = null;
+            return person;
         }
     }
 }
