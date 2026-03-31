@@ -171,13 +171,13 @@ namespace Sango.Game
         public int MoveCost(Cell cell)
         {
 #if SANGO_DEBUG
-            if (cell.terrainType < 0 || cell.terrainType >= moveCost.Length)
+            if (cell.TerrainType == null || cell.TerrainType.Id < 0 || cell.TerrainType.Id >= moveCost.Length)
             {
-                Sango.Log.Error($"地形移动数据不存在!! => {cell.terrainType}");
+                Sango.Log.Error($"地形移动数据不存在!! => {cell.TerrainType?.Id ?? -1}");
                 return 99;
             }
 #endif
-            return moveCost[cell.terrainType];
+            return moveCost[cell.TerrainType.Id];
         }
 
 

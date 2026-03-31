@@ -15,18 +15,17 @@ namespace Sango.Game
         /// 坐标
         /// </summary>
         public Vector2Int coords;
-        /// <summary>
-        /// 地形类型
-        /// </summary>
-        public int terrainType;
+
         /// <summary>
         /// 地形状态
         /// </summary>
         public int terrainState;
+
         /// <summary>
         /// 天气类型 (待实现)
         /// </summary>
         public int weatherType;
+
         /// <summary>
         /// 区域ID
         /// </summary>
@@ -140,7 +139,7 @@ namespace Sango.Game
         /// <param name="y">Y坐标</param>
         public Cell(byte terrainTypeId, uint status, ushort x, ushort y)
         {
-            terrainType = terrainTypeId;
+            //terrainType = terrainTypeId;
             coords = new Vector2Int()
             {
                 x = x,

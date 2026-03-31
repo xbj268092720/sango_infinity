@@ -3505,53 +3505,53 @@ namespace Sango.Game
             UpdateActiveTroopTypes();
             UpdateFightPower();
 
-            if (IsBorderCity)
-            {
+            //if (IsBorderCity)
+            //{
 
-                AICommandList.Add(CityAI.AIAttack);
-                AICommandList.Add(CityAI.AITradeFood);
-                //AICommandList.Add(CityAI.AISecurity);
+            //    AICommandList.Add(CityAI.AIAttack);
+            //    AICommandList.Add(CityAI.AITradeFood);
+            //    //AICommandList.Add(CityAI.AISecurity);
 
-                //if (troops < 20000)
-                //{
-                //    AICommandList.Add(CityAI.AIRecruitTroop);
-                //    AICommandList.Add(CityAI.AIIntrior);
-                //}
-                //else
-                //{
-                //    if (scenario.Info.day == 10)
-                //    {
-                //        AICommandList.Add(CityAI.AIRecruitTroop);
-                //        AICommandList.Add(CityAI.AICreateItems);
-                //        AICommandList.Add(CityAI.AIIntrior);
-                //    }
-                //    else if (scenario.Info.day == 20)
-                //    {
-                //        AICommandList.Add(CityAI.AIIntrior);
-                //        AICommandList.Add(CityAI.AIRecruitTroop);
-                //        AICommandList.Add(CityAI.AICreateItems);
-                //    }
-                //    else
-                //    {
-                //        AICommandList.Add(CityAI.AICreateItems);
-                //        AICommandList.Add(CityAI.AIRecruitTroop);
-                //        AICommandList.Add(CityAI.AIIntrior);
-                //    }
-                //}
-                AICommandList.Add(CityAI.AIIntrior);
-            }
-            else
-            {
-                //AICommandList.Add(CityAI.AISecurity);
-                AICommandList.Add(CityAI.AITradeFood);
-                // 物资输送
-                AICommandList.Add(CityAI.AITransfrom);
-                //if (troops < itemStore.TotalNumber)
-                //    AICommandList.Add(CityAI.AIRecruitTroop);
-                //else
-                //    AICommandList.Add(CityAI.AICreateItems);
-                AICommandList.Add(CityAI.AIIntrior);
-            }
+            //    //if (troops < 20000)
+            //    //{
+            //    //    AICommandList.Add(CityAI.AIRecruitTroop);
+            //    //    AICommandList.Add(CityAI.AIIntrior);
+            //    //}
+            //    //else
+            //    //{
+            //    //    if (scenario.Info.day == 10)
+            //    //    {
+            //    //        AICommandList.Add(CityAI.AIRecruitTroop);
+            //    //        AICommandList.Add(CityAI.AICreateItems);
+            //    //        AICommandList.Add(CityAI.AIIntrior);
+            //    //    }
+            //    //    else if (scenario.Info.day == 20)
+            //    //    {
+            //    //        AICommandList.Add(CityAI.AIIntrior);
+            //    //        AICommandList.Add(CityAI.AIRecruitTroop);
+            //    //        AICommandList.Add(CityAI.AICreateItems);
+            //    //    }
+            //    //    else
+            //    //    {
+            //    //        AICommandList.Add(CityAI.AICreateItems);
+            //    //        AICommandList.Add(CityAI.AIRecruitTroop);
+            //    //        AICommandList.Add(CityAI.AIIntrior);
+            //    //    }
+            //    //}
+            //    AICommandList.Add(CityAI.AIIntrior);
+            //}
+            //else
+            //{
+            //    //AICommandList.Add(CityAI.AISecurity);
+            //    AICommandList.Add(CityAI.AITradeFood);
+            //    // 物资输送
+            //    AICommandList.Add(CityAI.AITransfrom);
+            //    //if (troops < itemStore.TotalNumber)
+            //    //    AICommandList.Add(CityAI.AIRecruitTroop);
+            //    //else
+            //    //    AICommandList.Add(CityAI.AICreateItems);
+            //    AICommandList.Add(CityAI.AIIntrior);
+            //}
 
             GameEvent.OnCityAIPrepare?.Invoke(this, scenario);
         }

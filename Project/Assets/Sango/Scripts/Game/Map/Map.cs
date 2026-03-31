@@ -497,18 +497,21 @@ namespace Sango.Game
         /// <param name="troops"></param>
         /// <param name="dest"></param>
         /// <param name="cellList"></param>
-        public void GetMovePath(Troop troops, Cell dest, List<Cell> cellList)
+        public void GetMovePath(Troop troop, Cell dest, List<Cell> cellList)
         {
-            Cell c = dest;
-            while (c != null)
+            //Cell c = dest;
+            //while (c != null)
+            //{
+            //    cellList.Insert(0, c);
+            //    if (came_from.TryGetValue(c, out Cell parent))
+            //        c = parent;
+            //    else
+            //        c = null;
+            //}
+            GetDirectPath(troop.cell, dest, cellList, (next) =>
             {
-                cellList.Insert(0, c);
-                if (came_from.TryGetValue(c, out Cell parent))
-                    c = parent;
-                else
-                    c = null;
-            }
-            //GetMinCostMovePath(troops, dest, cellList);
+                return next.CanMove(troop) && next.CanPassThrough(troop);
+            });
         }
 
         //PriorityQueue<Cell> priorityClosest = new PriorityQueue<Cell>();

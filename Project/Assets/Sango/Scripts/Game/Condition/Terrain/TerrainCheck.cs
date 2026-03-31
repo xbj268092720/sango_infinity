@@ -46,11 +46,11 @@ namespace Sango.Game
             
             if (checkTarget == "self" && troop != null && troop.cell != null)
             {
-                return troop.cell.terrainType == terrainType;
+                return troop.cell.TerrainType.Id == terrainType;
             }
             else if (checkTarget == "target" && target != null && target.cell != null)
             {
-                return target.cell.terrainType == terrainType;
+                return target.cell.TerrainType.Id == terrainType;
             }
             
             return false;
@@ -67,11 +67,11 @@ namespace Sango.Game
         {
             if (checkTarget == "self" && troop != null && troop.cell != null)
             {
-                return troop.cell.terrainType == terrainType;
+                return troop.cell.TerrainType.Id == terrainType;
             }
             else if (checkTarget == "target" && target != null && target.cell != null)
             {
-                return target.cell.terrainType == terrainType;
+                return target.cell.TerrainType.Id == terrainType;
             }
             
             return false;
@@ -89,11 +89,11 @@ namespace Sango.Game
         {
             if (checkTarget == "self" && troop != null && troop.cell != null)
             {
-                return troop.cell.terrainType == terrainType;
+                return troop.cell.TerrainType.Id == terrainType;
             }
             else if (checkTarget == "target" && spellCell != null)
             {
-                return spellCell.terrainType == terrainType;
+                return spellCell.TerrainType.Id == terrainType;
             }
             
             return false;

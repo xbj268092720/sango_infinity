@@ -83,6 +83,8 @@ namespace Sango.Game
                 AICommandList.Add(CityAI.AITradeFood);
                 AICommandList.Add(CityAI.AISecurity);
                 AICommandList.Add(CityAI.AITrainTroop);
+                AICommandList.Add(CityAI.AIRewardPerson);
+                AICommandList.Add(CityAI.AIRecruitPerson);
 
                 if (city.troops < 20000)
                 {
@@ -113,10 +115,15 @@ namespace Sango.Game
             }
             else
             {
-                AICommandList.Add(CityAI.AISecurity);
-                AICommandList.Add(CityAI.AITradeFood);
                 // 物资输送
                 AICommandList.Add(CityAI.AITransfrom);
+
+                AICommandList.Add(CityAI.AISecurity);
+                AICommandList.Add(CityAI.AITradeFood);
+                AICommandList.Add(CityAI.AITrainTroop);
+                AICommandList.Add(CityAI.AIRewardPerson);
+                AICommandList.Add(CityAI.AIRecruitPerson);
+                
                 if (city.troops < city.itemStore.TotalNumber)
                     AICommandList.Add(CityAI.AIRecruitTroop);
                 else
