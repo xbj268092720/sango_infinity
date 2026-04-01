@@ -10,11 +10,15 @@ namespace Sango.Game.Render.UI
     public class UIStart : UGUIWindow
     {
         public Text version;
+        public GameObject mapEditorBtn;
 
         private void Start()
         {
             version.text = $"版本: {Application.version}";
             AudioManager.Instance.PlayBgm("Assets/Sound/2238.ogg");
+#if UNITY_ANDORID && !UNITY_EDITOR
+            mapEditorBtn.SetActive(false);
+#endif
         }
 
         public void OnNewGame()
