@@ -58,6 +58,12 @@ namespace Sango.Game.Render.UI
             AddNumberItem("属性成长上限", variables.MaxAttributeGet, 0, 100, (v) => { variables.MaxAttributeGet = (byte)v; });
             AddToggleItem("人口系统开关", variables.populationEnable, (v) => { variables.populationEnable = v; });
             AddNumberItem("基础人口增长率", variables.populationIncreaseBaseFactor, 0, 1, (v) => { variables.populationIncreaseBaseFactor = v; });
+            AddNumberItem("人口上限基础值", variables.populationLimitBase, 0, 100000, (v) => { variables.populationLimitBase = v; });
+            AddNumberItem("每级城市人口上限增加值", variables.populationLimitPerLevel, 0, 10000, (v) => { variables.populationLimitPerLevel = v; });
+            AddNumberItem("基础兵役比例", variables.baseTroopPopulationRatio, 0, 1, (v) => { variables.baseTroopPopulationRatio = v; });
+            AddNumberItem("最大兵役比例", variables.maxTroopPopulationRatio, 0, 1, (v) => { variables.maxTroopPopulationRatio = v; });
+            AddNumberItem("人口对粮食消耗的影响系数", variables.populationFoodCostFactor, 0, 0.01f, (v) => { variables.populationFoodCostFactor = v; });
+            AddNumberItem("人口对金钱收入的影响系数", variables.populationGoldIncomeFactor, 0, 0.01f, (v) => { variables.populationGoldIncomeFactor = v; });
             AddNumberItem("队伍粮食基础消耗率", variables.baseFoodCostInTroop, 0, 100, (v) => { variables.baseFoodCostInTroop = v; });
             AddNumberItem("城池中粮食基础消耗率", variables.baseFoodCostInCity, 0, 100, (v) => { variables.baseFoodCostInCity = v; });
             AddNumberItem("城池缺粮后每回合逃跑的士兵比例", variables.runawayWhenCityFoodNotEnough, 0, 1, (v) => { variables.runawayWhenCityFoodNotEnough = v; });

@@ -172,6 +172,36 @@ namespace Sango.Game
         [JsonProperty] public float populationIncreaseBaseFactor = 0.0113f;
 
         /// <summary>
+        /// 人口上限基础值
+        /// </summary>
+        [JsonProperty] public int populationLimitBase = 10000;
+
+        /// <summary>
+        /// 每级城市人口上限增加值
+        /// </summary>
+        [JsonProperty] public int populationLimitPerLevel = 5000;
+
+        /// <summary>
+        /// 基础兵役比例
+        /// </summary>
+        [JsonProperty] public float baseTroopPopulationRatio = 0.3f;
+
+        /// <summary>
+        /// 最大兵役比例
+        /// </summary>
+        [JsonProperty] public float maxTroopPopulationRatio = 0.6f;
+
+        /// <summary>
+        /// 人口对粮食消耗的影响系数
+        /// </summary>
+        [JsonProperty] public float populationFoodCostFactor = 0.001f;
+
+        /// <summary>
+        /// 人口对金钱收入的影响系数
+        /// </summary>
+        [JsonProperty] public float populationGoldIncomeFactor = 0.0005f;
+
+        /// <summary>
         /// 队伍粮食基础消耗率 1粮养10兵每回合
         /// </summary>
         [JsonProperty] public float baseFoodCostInTroop = 0.1f;

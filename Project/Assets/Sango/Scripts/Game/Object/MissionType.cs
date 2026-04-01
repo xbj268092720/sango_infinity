@@ -16,7 +16,7 @@ namespace Sango.Game
         TroopBuildBuilding,
         TroopFixBuilding,
         TroopTransformGoodsToCity,
-
+        TroopStay,
 
         PersonBuild,
         PersonCreateBoat,

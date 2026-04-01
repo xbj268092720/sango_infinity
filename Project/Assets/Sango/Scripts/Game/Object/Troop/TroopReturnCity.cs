@@ -22,9 +22,17 @@ namespace Sango.Game
             // 任务完成后,如果城池被友军拿取则回到创建城池,否则将进入己方目标城池
             if (IsMissionComplete)
             {
-                Troop.missionTarget = Troop.BelongCity.Id;
-                TargetCity = Troop.BelongCity;
-                Troop.NeedPrepareMission();
+                if(TargetCity.IsEnemy(troop))
+                {
+                    Troop.SetMission(MissionType.TroopOccupyCity, TargetCity.Id);
+                    Troop.NeedPrepareMission();
+                }
+                else
+                {
+                    Troop.SetMission(MissionType.TroopStay, 0);
+                    Sango.Log.Error($"{troop.Name} 发呆!!");
+                    Troop.NeedPrepareMission();
+                }
             }
             else
             {

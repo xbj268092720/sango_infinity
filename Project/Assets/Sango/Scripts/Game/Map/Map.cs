@@ -510,7 +510,7 @@ namespace Sango.Game
             //}
             GetDirectPath(troop.cell, dest, cellList, (next) =>
             {
-                return next.CanMove(troop) && next.CanPassThrough(troop);
+                return next.CanMove(troop) && next.CanPassThrough(troop) && troop.MoveRange.Contains(next);
             });
         }
 

@@ -28,14 +28,12 @@ namespace Sango.Game
                 if (TargetCity.IsEnemy(troop))
                 {
                     // 如果城池失守,不返回,直接死战,避免过长的寻路导致性能问题
-                    Troop.missionType = (int)MissionType.TroopOccupyCity;
-                    Troop.missionTarget = TargetCity.Id;
+                    Troop.SetMission(MissionType.TroopOccupyCity, TargetCity.Id);
                     Troop.NeedPrepareMission();
                 }
                 else
                 {
-                    Troop.missionType = (int)MissionType.TroopReturnCity;
-                    Troop.missionTarget = Troop.BelongCity.Id;
+                    Troop.SetMission(MissionType.TroopReturnCity, Troop.BelongCity.Id);
                     Troop.NeedPrepareMission();
                 }
             }
@@ -48,8 +46,8 @@ namespace Sango.Game
                     nearestEnemy = TargetCity.GetNearestEnemy(troop.cell);
                     if (nearestEnemy == null)
                     {
-                        Troop.missionType = (int)MissionType.TroopReturnCity;
-                        Troop.missionTarget = Troop.BelongCity.Id;
+                        Troop.SetMission(MissionType.TroopReturnCity, Troop.BelongCity.Id);
+
                         isNoEnemyAlive = true;
                         Troop.NeedPrepareMission();
                     }

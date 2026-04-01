@@ -8,6 +8,7 @@ namespace Sango.Game.Render
     {
         public List<Person> captiveList;
         public City targetCity;
+        public City escapeCity;
         public Troop atk;
         public int recruitType;
         public override void Enter(Scenario scenario)
@@ -28,14 +29,21 @@ namespace Sango.Game.Render
 #if SANGO_DEBUG
                         Sango.Log.Print($"{person.Name} 加入了 {atk.BelongForce} 势力!!!");
 #endif
-
-                        person.ChangeCorps(atk.BelongCorps);
                         captiveList.RemoveAt(i);
                     }
                     else
                     {
-                        targetCity.allPersons.Remove(person);
-                        // TODO: 释放,斩杀
+                        person.BelongCity.RemovePerson(person);
+                        if (recruitType == 2)
+                        {
+                            person.BelongCorps = null;
+                            person.BelongForce = null;
+                        }
+                        else
+                        {
+                            escapeCity.AddPerson(person);
+                            person.ChangeBelongCity(escapeCity);
+                        }
                         person.BeCaptive(targetCity);
                     }
                 }

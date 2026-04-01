@@ -142,7 +142,22 @@ namespace Sango.Game
         /// <summary>
         /// 身分
         /// </summary>
-        [JsonProperty] public int state;
+        [JsonProperty]
+#if SANGO_DEBUG
+
+        public int state
+        {
+            get { return _state; }
+            set
+            {
+                _state = value;
+                Sango.Log.Print($"{Name}改变状态=> {PersonSortFunction.SortByState.GetValueStr(this)}");
+            }
+        }
+        private int _state;
+#else
+        public int state;
+#endif
 
         /// <summary>
         /// 性格
@@ -562,7 +577,7 @@ namespace Sango.Game
         /// <summary>
         /// 是否空闲
         /// </summary>
-        public bool IsFree { get { return BelongTroop == null && missionType == (int)MissionType.None; } }
+        public bool IsFree { get { return BelongTroop == null && missionType == (int)MissionType.None && !IsPrisoner && !IsDead; } }
 
         /// <summary>
         /// 是否在野
@@ -656,7 +671,7 @@ namespace Sango.Game
                     }
                     else
                     {
-                        BelongCity.Add(this);
+                        BelongCity.allPersons.Add(this);
                         if (state == (int)PersonStateType.Leader)
                         {
                             BelongCity.Leader = this;
@@ -754,24 +769,6 @@ namespace Sango.Game
                         {
                             ClearMission();
                             dest.OnPersonReturnCity(this);
-                        }
-                    }
-                    break;
-                case (int)MissionType.PersonTransform:
-                    {
-                        // 如果目标城市已经不属于我方,则返回所属城市
-                        City dest = scenario.citySet.Get(missionTarget);
-                        if (!this.IsSameForce(dest))
-                        {
-                            SetMission(MissionType.PersonReturn, BelongCity);
-                            return;
-                        }
-
-                        if (DoMove(dest, scenario))
-                        {
-                            City belong = BelongCity;
-                            ChangeCity(dest);
-                            BelongCity.OnPersonTransformEnd(this, belong);
                         }
                     }
                     break;
@@ -944,12 +941,15 @@ namespace Sango.Game
                     SangoObjectList<City> neighborCities = BelongCity.NeighborList;
                     if (neighborCities.Count > 0)
                     {
-                        int randomIndex = GameRandom.Random(0, neighborCities.Count - 1);
+                        int randomIndex = GameRandom.Range(neighborCities.Count);
                         City targetCity = neighborCities[randomIndex];
                         if (targetCity != null)
                         {
+                            CurrentCity.RemoveWildPerson(this);
                             // 移动到新城市
                             ChangeCurrentCity(targetCity);
+                            targetCity.AddWildPerson(this);
+                            BelongCity = targetCity;
 
                             // 重置停留时间
                             stayTurnCount = 0;
@@ -985,10 +985,10 @@ namespace Sango.Game
 
         public void TransformToCity(City dest)
         {
-            //dest.allPersons.Add(this);
-            SetMission(MissionType.PersonTransform, dest);
-            //BelongCity?.Remove(this);
-            //BelongCity = dest;
+            BelongCity.RemovePerson(this);
+            ChangeBelongCity(dest);
+            dest.AddPerson(this);
+            SetMission(MissionType.PersonReturn, dest);
             ActionOver = true;
 #if SANGO_DEBUG
             Sango.Log.Print($"*{BelongForce?.Name}的{Name}从{BelongCity.Name}向{dest.Name}转移*");
@@ -1026,20 +1026,13 @@ namespace Sango.Game
 #endif
                 if (!IsWild)
                 {
-                    if (BelongCity.allPersons.Contains(this))
-                        BelongCity.allPersons.Remove(this);
-
-                    city.allPersons.Add(this);
+                    BelongCity.RemovePerson(this);
+                    city.AddPerson(this);
                     BelongCity = city;
                     if (BelongCorps != city.BelongCorps)
-                    {
                         BelongCorps = city.BelongCorps;
-                        if (BelongForce != city.BelongForce)
-                        {
-                            BelongForce = city.BelongForce;
-                        }
-                    }
-
+                    if (BelongForce != city.BelongForce)
+                        BelongForce = city.BelongForce;
                     if (!IsGovernor)
                     {
                         SetStateNormal();
@@ -1047,8 +1040,8 @@ namespace Sango.Game
                 }
                 else
                 {
-                    BelongCity.wildPersons.Remove(this);
-                    city.wildPersons.Add(this);
+                    BelongCity.RemoveWildPerson(this);
+                    city.AddWildPerson(this);
                     BelongCity = city;
                 }
 
@@ -1069,65 +1062,42 @@ namespace Sango.Game
 #if SANGO_DEBUG
             Sango.Log.Print($"*{BelongForce?.Name}的{Name} 改变所在城市 {last.Name} -> {city.Name}");
 #endif
-            if (IsWild)
-            {
-                last.wildPersons.Remove(this);
-                CurrentCity.wildPersons.Add(this);
-            }
-            else
-            {
-                if (last != BelongCity)
-                    last.otherPersons.Remove(this);
-                if (CurrentCity != BelongCity)
-                    CurrentCity.otherPersons.Add(this);
-            }
-
             GameEvent.OnPersonChangCurrentCity?.Invoke(this, city, last);
             return last;
         }
+
+        /// <summary>
+        /// 改变所属城市
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public City ChangeBelongCity(City city)
+        {
+            City last = BelongCity;
+            BelongCity = city;
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{BelongForce?.Name}的{Name} 改变所属城市 {last.Name} -> {city.Name}");
+#endif
+            if (BelongCorps != city.BelongCorps)
+                BelongCorps = city.BelongCorps;
+            if (BelongForce != city.BelongForce)
+                BelongForce = city.BelongForce;
+            GameEvent.OnPersonChangeBelongCity?.Invoke(this, city, last);
+            return last;
+        }
+
 
         public bool JobRecruitPerson(Person person, City targetCity, int type)
         {
             int probability = GameFormula.Instance.RecruitPersonProbability(this, person, type);
 #if SANGO_DEBUG
-            Sango.Log.Print($"[{BelongForce.Name}]<{Name}>招募 -> {person.Name} 成功率:{probability}");
+            Sango.Log.Print($"[{BelongForce.Name}]<{Name}>登庸 -> {person.Name} 成功率:{probability}");
 #endif
             //TODO: 招募成功概率计算
             bool success = GameRandom.Chance(probability);
             if (success)
             {
-#if SANGO_DEBUG
-                Sango.Log.Print($"[{BelongForce.Name}]<{Name}>招募成功, {person.Name}加入了势力{BelongForce.Name}");
-#endif
-                person.loyalty = 80;
-                // 如果在部队里,如果是主将则带部队加入,如果为副将则退出部队
-                Troop personTroop = person.BelongTroop;
-                if (personTroop != null)
-                {
-                    if (person == personTroop.Leader)
-                    {
-                        personTroop.JoinToForce(targetCity);
-                        personTroop.ActionOver = true;
-                    }
-                    else
-                    {
-                        personTroop.RemovePerson(person);
-                        if (!person.JoinToForce(targetCity))
-                        {
-                            person.SetMission(MissionType.PersonReturn, targetCity);
-                        }
-                    }
-                    personTroop.Render?.UpdateRender();
-                }
-                else
-                {
-                    // 有归属
-                    if (!person.JoinToForce(targetCity))
-                    {
-                        person.SetMission(MissionType.PersonReturn, targetCity);
-                    }
-                }
-                person.ActionOver = true;
+                person.BeRecruit(this, targetCity);
             }
             ScenarioVariables variables = Scenario.Cur.Variables;
             int jobId = (int)CityJobType.RecruitPerson;
@@ -1144,31 +1114,80 @@ namespace Sango.Game
             return JobRecruitPerson(person, BelongCity, type);
         }
 
+        public void BeRecruit(Person person, City targetCity)
+        {
+#if SANGO_DEBUG
+            Sango.Log.Print($"[{person.BelongForce.Name}]<{person.Name}>登庸成功, {Name}加入了势力{person.BelongForce.Name}");
+#endif
+            loyalty = 80;
+            if (IsPrisoner)
+            {
+                // 囚犯从监牢中移除
+                if (BelongTroop != null)
+                    BelongTroop.RemoveCaptive(this);
+                else
+                    CurrentCity.RemoveCaptive(this);
+                state = (int)PersonStateType.Normal;
+                if (!JoinToForce(targetCity))
+                {
+                    SetMission(MissionType.PersonReturn, targetCity);
+                }
+            }
+            else
+            {
+                if (IsWild)
+                    CurrentCity.RemoveWildPerson(this);
+                else if (Invisible)
+                    CurrentCity.RemoveInvisiblePerson(this);
+                else
+                    BelongCity?.RemovePerson(this);
+
+                // 部队中
+                if (BelongTroop != null)
+                {
+                    Troop troop = BelongTroop;
+                    // 部队主将
+                    if (this == BelongTroop.Leader)
+                    {
+                        BelongTroop.JoinToForce(targetCity);
+                        BelongTroop.ActionOver = true;
+                    }
+                    else
+                    {
+                        BelongTroop.RemovePerson(this);
+                        ChangeCurrentCity(troop.CurrentCity);
+                        if (!JoinToForce(targetCity))
+                        {
+                            SetMission(MissionType.PersonReturn, targetCity);
+                        }
+                    }
+                    troop.Render?.UpdateRender();
+                }
+                else
+                {
+                    // 有归属
+                    if (!JoinToForce(targetCity))
+                    {
+                        SetMission(MissionType.PersonReturn, targetCity);
+                    }
+                }
+            }
+            ActionOver = true;
+        }
+
         /// <summary>
         /// 加入某个势力,需要指定一个城市
         /// </summary>
         /// <param name="city"></param>
         public bool JoinToForce(City city)
         {
-            // 先从原有势力移除
-            if (BelongCorps != null)
-            {
-                BelongCity.allPersons.Remove(this);
-            }
-            else
-            {
-                if (BelongCity != null)
-                    BelongCity.wildPersons.Remove(this);
-            }
-
-            bool isSameCity = BelongCity == city;
-            BelongCity = city; ;
+            bool isSameCity = CurrentCity == city;
+            BelongCity = city;
             BelongCorps = city.BelongCorps;
             BelongForce = city.BelongForce;
             Official = Scenario.Cur.CommonData.Officials.Get(0);
             state = (int)PersonStateType.Normal;
-            BelongCity.allPersons.Add(this);
-
+            BelongCity.AddPerson(this);
             return isSameCity;
         }
 
@@ -1179,16 +1198,28 @@ namespace Sango.Game
         {
             workingBuilding = null;
             loyalty = 0;
-            BelongCity.allPersons.Remove(this);
+            BelongCity.RemovePerson(this);
             Official = Scenario.Cur.CommonData.Officials.Get(0);
-            state = (int)PersonStateType.Unemployed;
-            // 关卡和港口的武将下野到对应的城池里
-            BelongCity = CurrentCity.BelongCity == null ? CurrentCity : CurrentCity.BelongCity;
-            CurrentCity = BelongCity;
-            BelongCity.wildPersons.Add(this);
+            if (IsPrisoner)
+            {
+                BelongCity = CurrentCity;
 #if SANGO_DEBUG
-            Sango.Log.Print($"@人才@[{BelongForce.Name}]的<{Name}>下野至{BelongCity.Name}");
+                Sango.Log.Print($"@人才@<{Name}>失去势力,进入囚犯下野状态");
 #endif
+            }
+            else
+            {
+                state = (int)PersonStateType.Unemployed;
+                // 关卡和港口的武将下野到对应的城池里
+                BelongCity = CurrentCity.BelongCity == null ? CurrentCity : CurrentCity.BelongCity;
+                CurrentCity = BelongCity;
+                BelongCity.wildPersons.Add(this);
+
+#if SANGO_DEBUG
+                Sango.Log.Print($"@人才@[{BelongForce.Name}]的<{Name}>下野至{BelongCity.Name}");
+#endif
+            }
+
             BelongCorps = null;
             BelongForce = null;
             BelongTroop = null;
@@ -1196,7 +1227,7 @@ namespace Sango.Game
 
         public Person BeCaptive(City city)
         {
-            state = (int)PersonStateType.Prisoner;
+            Official = Scenario.Cur.CommonData.Officials.Get(0);
             city.AddCaptive(this);
 #if SANGO_DEBUG
             Sango.Log.Print($"@人才@[{Name}]被<{city.BelongForce.Name}>俘虏至{city.Name}");
@@ -1206,7 +1237,7 @@ namespace Sango.Game
 
         public Person BeCaptive(Troop troop)
         {
-            state = (int)PersonStateType.Prisoner;
+            Official = Scenario.Cur.CommonData.Officials.Get(0);
             troop.AddCaptive(this);
 #if SANGO_DEBUG
             Sango.Log.Print($"@人才@[{Name}]被<{troop.BelongForce.Name}>俘虏至{troop.Name}");
@@ -1216,45 +1247,34 @@ namespace Sango.Game
 
         public Person Escape(EscapeType escapeType = EscapeType.None, SangoObject sangoObject = null)
         {
-            if (IsPrisoner)
+            if (!IsPrisoner)
+            {
+#if SANGO_DEBUG
+                Sango.Log.Error($"不是囚犯,无法逃跑!");
+#endif
+                return this;
+            }
+
+            if (BelongTroop != null)
+            {
+                ChangeCurrentCity(BelongTroop.CurrentCity);
+                BelongTroop.RemoveCaptive(this);
+                BelongTroop = null;
+            }
+            else
+            {
+                CurrentCity.RemoveCaptive(this);
+            }
+
+            if (BelongForce != null && BelongForce.IsAlive)
             {
                 state = (int)PersonStateType.Normal;
-                if (BelongTroop != null)
-                {
-                    ChangeCurrentCity(BelongTroop.CurrentCity);
-                    BelongTroop.RemoveCaptive(this);
-                    BelongTroop = null;
-                }
-                else
-                {
-                    CurrentCity.RemoveCaptive(this);
-                }
-
-                if (BelongForce != null && BelongForce.IsAlive)
-                {
-                    SetMission(MissionType.PersonReturn, BelongCity);
-                }
-                else
-                {
-                    ChangeCity(CurrentCity);
-                }
+                SetMission(MissionType.PersonReturn, BelongCity);
             }
             else
             {
                 state = (int)PersonStateType.Unemployed;
-
-                // 下野
-                if (BelongTroop != null)
-                {
-                    BelongTroop.RemoveCaptive(this);
-                    ChangeCity(BelongTroop.CurrentCity);
-                    BelongTroop = null;
-                }
-                else
-                {
-                    CurrentCity.RemoveCaptive(this);
-                    ChangeCity(CurrentCity);
-                }
+                ChangeCity(CurrentCity);
             }
 
             // 根据逃出方式触发对应的事件

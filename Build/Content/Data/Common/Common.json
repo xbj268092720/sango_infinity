@@ -121,8 +121,8 @@
       "needTech": 0,
       "durabilityLimit": 0,
       "atkBack": 50,
-      "atk": 0,
-      "atkRange": 3,
+      "atk": 10,
+      "atkRange": 4,
       "damageBounds": 0.7,
       "jobId": 21,
       "goldGain": 600,
@@ -144,8 +144,8 @@
       "needTech": 0,
       "durabilityLimit": 0,
       "atkBack": 40,
-      "atk": 0,
-      "atkRange": 3,
+      "atk": 10,
+      "atkRange": 4,
       "damageBounds": 0.6,
       "jobId": 21,
       "goldGain": 300,
@@ -167,8 +167,8 @@
       "needTech": 0,
       "durabilityLimit": 0,
       "atkBack": 40,
-      "atk": 0,
-      "atkRange": 3,
+      "atk": 10,
+      "atkRange": 4,
       "damageBounds": 0.8,
       "jobId": 21,
       "goldGain": 300,
@@ -190,9 +190,10 @@
       "needTech": 0,
       "durabilityLimit": 1500,
       "atkBack": 20,
-      "atk": 0,
-      "atkRange": 0,
+      "atk": 5,
+      "atkRange": 1,
       "damageBounds": 1.0,
+      "workerLimit": 1,
       "jobId": 21,
       "cost": 600,
       "radius": 0,
@@ -203,7 +204,21 @@
       "icon": "4846-8/4846-8_12",
       "model": "Assets/Model/Prefab/4308.prefab",
       "modelCreate": "Assets/Model/Prefab/4298.prefab",
-      "modelBroken": "Assets/Model/Prefab/4298.prefab"
+      "modelBroken": "Assets/Model/Prefab/4298.prefab",
+      "actionEntities": [
+        {
+          "class": "BuildingImproveTroopDefence",
+          "value": 10,
+          "bound": 2,
+          "tartgetType": 0
+        },
+        {
+          "class": "BuildingImproveTroopFoodCost",
+          "value": -40,
+          "bound": 2,
+          "tartgetType": 0
+        }
+      ]
     },
     "5": {
       "Id": 5,
@@ -215,9 +230,10 @@
       "needTech": 26,
       "durabilityLimit": 2000,
       "atkBack": 30,
-      "atk": 0,
-      "atkRange": 0,
+      "atk": 5,
+      "atkRange": 1,
       "damageBounds": 0.85,
+      "workerLimit": 1,
       "jobId": 21,
       "cost": 900,
       "radius": 0,
@@ -228,7 +244,21 @@
       "icon": "4846-8/4846-8_13",
       "model": "Assets/Model/Prefab/4308.prefab",
       "modelCreate": "Assets/Model/Prefab/4298.prefab",
-      "modelBroken": "Assets/Model/Prefab/4298.prefab"
+      "modelBroken": "Assets/Model/Prefab/4298.prefab",
+      "actionEntities": [
+        {
+          "class": "BuildingImproveTroopDefence",
+          "value": 15,
+          "bound": 2,
+          "tartgetType": 0
+        },
+        {
+          "class": "BuildingImproveTroopFoodCost",
+          "value": -50,
+          "bound": 2,
+          "tartgetType": 0
+        }
+      ]
     },
     "6": {
       "Id": 6,
@@ -240,8 +270,8 @@
       "needTech": 27,
       "durabilityLimit": 2500,
       "atkBack": 40,
-      "atk": 0,
-      "atkRange": 0,
+      "atk": 5,
+      "atkRange": 1,
       "damageBounds": 0.7,
       "workerLimit": 1,
       "jobId": 21,
@@ -254,7 +284,21 @@
       "icon": "4846-8/4846-8_14",
       "model": "Assets/Model/Prefab/4308.prefab",
       "modelCreate": "Assets/Model/Prefab/4298.prefab",
-      "modelBroken": "Assets/Model/Prefab/4298.prefab"
+      "modelBroken": "Assets/Model/Prefab/4298.prefab",
+      "actionEntities": [
+        {
+          "class": "BuildingImproveTroopDefence",
+          "value": 20,
+          "bound": 2,
+          "tartgetType": 0
+        },
+        {
+          "class": "BuildingImproveTroopFoodCost",
+          "value": -60,
+          "bound": 2,
+          "tartgetType": 0
+        }
+      ]
     },
     "7": {
       "Id": 7,
@@ -6068,7 +6112,82 @@
       "isRange": true,
       "spellRanges": [
         1
-      ]
+      ],
+      "skillEffects": [
+        {
+          "class": "RemoveBuffById",
+          "values": [
+            1,
+            2
+          ],
+          "probability": 10000
+        },
+        {
+          "class": "RecureWoundedTroops",
+          "probability": 10000,
+          "values": [
+            20,
+            30
+          ],
+          "weight": [
+            70,
+            30
+          ],
+          "condition": {
+            "class": "SkillIsCritical",
+            "result": 1
+          }
+        }
+      ],
+      "canDamageTroop": true,
+      "canDamageMachine": true,
+      "canDamageBoat": true,
+      "canDamageBuilding": false,
+      "canDamageTeam": false,
+      "canSpellToCell": false,
+      "onlySpellToTeam": true
+    },
+    "27": {
+      "Id": 27,
+      "Name": "伏兵",
+      "kind": 3,
+      "costEnergy": 10,
+      "successRate": 0,
+      "successMethod": "AmbushSuccessMethod",
+      "criticalMethod": "AmbushCriticalMethod",
+      "needAblilityLevel": 0,
+      "isRange": true,
+      "spellRanges": [
+        1
+      ],
+      "canDamageTroop": true,
+      "canDamageMachine": true,
+      "canDamageBoat": true,
+      "canDamageBuilding": false,
+      "canDamageTeam": false,
+      "canSpellToCell": false,
+      "onlySpellToTeam": false
+    },
+    "28": {
+      "Id": 28,
+      "Name": "内讧",
+      "kind": 3,
+      "costEnergy": 20,
+      "successRate": 0,
+      "successMethod": "InfightingSuccessMethod",
+      "criticalMethod": "InfightingCriticalMethod",
+      "needAblilityLevel": 0,
+      "isRange": true,
+      "spellRanges": [
+        1
+      ],
+      "canDamageTroop": true,
+      "canDamageMachine": true,
+      "canDamageBoat": true,
+      "canDamageBuilding": false,
+      "canDamageTeam": false,
+      "canSpellToCell": false,
+      "onlySpellToTeam": false
     }
   },
   "States": {

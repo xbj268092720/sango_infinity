@@ -66,6 +66,21 @@ namespace Sango.Game
         Port = 3,
 
         /// <summary>
+        /// 阵
+        /// </summary>
+        Camp = 4,
+
+        /// <summary>
+        /// 砦
+        /// </summary>
+        Camp_2 = 5,
+
+        /// <summary>
+        /// 城塞
+        /// </summary>
+        Camp_3 = 6,
+
+        /// <summary>
         /// 箭楼
         /// </summary>
         ArrowTower = 7,

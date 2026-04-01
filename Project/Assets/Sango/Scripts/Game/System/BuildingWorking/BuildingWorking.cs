@@ -1,4 +1,4 @@
-﻿using Sango.Game.Render;
+using Sango.Game.Render;
 using Sango.Game.Render.UI;
 using System.Collections.Generic;
 using UnityEngine;
@@ -588,6 +588,12 @@ namespace Sango.Game
                 building.AccumulatedFood = 0;
             });
 
+            // 人口对粮食收入的影响
+            if (scenario.Variables.populationEnable)
+            {
+                totalValue += (int)(city.population * scenario.Variables.populationFoodCostFactor * 0.5f);
+            }
+
             //totalValue = GameRandom.Random(totalValue, 0.05f);
             city.AddFood(totalValue);
 #if SANGO_DEBUG
@@ -620,6 +626,12 @@ namespace Sango.Game
                     building.AccumulatedGold = 0;
                 }
             });
+
+            // 人口对金钱收入的影响
+            if (scenario.Variables.populationEnable)
+            {
+                totalValue += (int)(city.population * scenario.Variables.populationGoldIncomeFactor);
+            }
 
             //Sango.Log.Error($"all: t:{totalValue}");
             //totalFoodt = GameRandom.Random(totalFood, 0.05f);

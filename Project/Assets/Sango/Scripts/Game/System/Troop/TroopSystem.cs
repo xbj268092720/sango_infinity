@@ -28,7 +28,6 @@ namespace Sango.Game.Player
             }
         }
 
-        public List<Cell> moveRange = new List<Cell>();
         public List<Cell> movePath = new List<Cell>();
 
         public Troop TargetTroop { get; set; }
@@ -48,8 +47,8 @@ namespace Sango.Game.Player
         {
             TargetTroop.Render?.SetFlash(true);
 
-            moveRange.Clear();
-            Scenario.Cur.Map.GetMoveRange(TargetTroop, moveRange);
+            TargetTroop.MoveRange.Clear();
+            Scenario.Cur.Map.GetMoveRange(TargetTroop, TargetTroop.MoveRange);
             OnBack(null);
 
         }
@@ -90,9 +89,9 @@ namespace Sango.Game.Player
         public void ShowMoveRange()
         {
             MapRender mapRender = MapRender.Instance;
-            for (int i = 0, count = moveRange.Count; i < count; ++i)
+            for (int i = 0, count = TargetTroop.MoveRange.Count; i < count; ++i)
             {
-                Cell cell = moveRange[i];
+                Cell cell = TargetTroop.MoveRange[i];
                 mapRender.SetGridMaskColor(cell.x, cell.y, Color.green);
             }
             mapRender.EndSetGridMask();
@@ -100,11 +99,11 @@ namespace Sango.Game.Player
 
         public void ClearShowMoveRange()
         {
-            if (moveRange.Count == 0) return;
+            if (TargetTroop.MoveRange.Count == 0) return;
             MapRender mapRender = MapRender.Instance;
-            for (int i = 0, count = moveRange.Count; i < count; ++i)
+            for (int i = 0, count = TargetTroop.MoveRange.Count; i < count; ++i)
             {
-                Cell cell = moveRange[i];
+                Cell cell = TargetTroop.MoveRange[i];
                 mapRender.SetGridMaskColor(cell.x, cell.y, Color.black);
             }
             mapRender.EndSetGridMask();
@@ -147,7 +146,7 @@ namespace Sango.Game.Player
                     {
                         if (isOverUI) return;
 
-                        if (!moveRange.Contains(cell))
+                        if (!TargetTroop.MoveRange.Contains(cell))
                         {
                             GameSystem.GetSystem<TroopInteractiveDialog>().Start(TargetTroop, cell, clickPosition);
                             return;

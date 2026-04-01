@@ -22,7 +22,7 @@ namespace Sango.Game.Player
         public TroopActionBuild()
         {
             customMenuName = "建造";
-            customMenuOrder = 30;
+            customMenuOrder = 1;
         }
 
         void InitCanBuildingTypes()

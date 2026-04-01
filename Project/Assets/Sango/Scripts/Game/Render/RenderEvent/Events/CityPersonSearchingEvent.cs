@@ -29,6 +29,12 @@ namespace Sango.Game.Render
                 return;
             }
 
+            if(target == null)
+            {
+                IsDone = true;
+                return;
+            }
+
             if (!city.BelongCorps.IsPlayer)
             {
                 person.JobRecruitPerson(target, 3);

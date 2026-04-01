@@ -187,7 +187,7 @@ namespace Sango.Game
         /// <returns>是否完成</returns>
         public static bool AISearching(City city, Scenario scenario)
         {
-            if (city.invisiblePersons.Count > 0 && city.freePersons.Count > 0)
+            if ((city.invisiblePersons.Count > 0 && city.freePersons.Count > 0 && GameRandom.Chance(30)) || GameRandom.Chance(10))
             {
                 Person[] recommandList = ForceAI.CounsellorRecommendSearching(city.freePersons, city, recommandSearchingFeatrues);
                 if (recommandList != null && recommandList.Length > 0)
@@ -206,14 +206,16 @@ namespace Sango.Game
         /// <returns>是否完成</returns>
         public static bool AIRewardPerson(City city, Scenario scenario)
         {
-            city.allPersons.ForEach(x =>
+            if (GameRandom.Chance(50))
             {
-                if (x.IsFree && city.gold > 500 && x.loyalty < 90)
+                city.allPersons.ForEach(x =>
                 {
-                    city.JobRewardPerson(x);
-                }
-            });
-
+                    if (x.IsFree && city.gold > 500 && x.loyalty < 90)
+                    {
+                        city.JobRewardPerson(x);
+                    }
+                });
+            }
             return true;
         }
 
@@ -316,8 +318,6 @@ namespace Sango.Game
                 city.food -= food;
                 troop.food = food;
             }
-            troop.missionType = (int)MissionType.TroopTransformGoodsToCity;
-            troop.missionTarget = target.Id;
             troop.Member1 = null;
             troop.Member2 = null;
             troop.itemStore = city.itemStore.Split(part);
@@ -327,6 +327,7 @@ namespace Sango.Game
 #if SANGO_DEBUG
             Sango.Log.Print($"{scenario.GetDateStr()}{city.BelongForce.Name}势力在{city.Name}由{troop.Leader.Name}率领运输队出城 向{target.BelongForce?.Name}的{target.Name}运输物资!");
 #endif
+            troop.SetMission(MissionType.TroopTransformGoodsToCity, target.Id);
             return true;
         }
 
@@ -342,7 +343,7 @@ namespace Sango.Game
 
             if (city.BelongCity == null) return true;
 
-            if(city.food > city.FoodLimit * 95 / 100 && city.gold > city.GoldLimit * 95 / 100) return true;
+            if (city.food > city.FoodLimit * 95 / 100 && city.gold > city.GoldLimit * 95 / 100) return true;
 
             // 寻找最近的附属城市
             City target = city.GetNearnestForceCity();
@@ -556,7 +557,9 @@ namespace Sango.Game
             }
             if (alreadyBuild) return true;
 
-            BuildingType buildingType = scenario.GetObject<BuildingType>((int)BuildingKindType.ArrowTower);
+            int[] buildTypes = new int[2] { (int)BuildingKindType.ArrowTower, (int)BuildingKindType.Camp };
+
+            BuildingType buildingType = scenario.GetObject<BuildingType>(buildTypes[GameRandom.Range(2)]);
 
             TroopType troopType = scenario.GetObject<TroopType>(1);
 
@@ -591,13 +594,13 @@ namespace Sango.Game
             troop.food = food;
             troop.gold = carrayGold;
             troop.missionType = (int)MissionType.TroopBuildBuilding;
-            troop.missionTarget = buildingType.Id;
             troop.missionTargetCell = dest;
             if (builders.Length > 1) troop.Member1 = builders[1];
             if (builders.Length > 2) troop.Member1 = builders[2];
             city.Render?.UpdateRender();
             troop = city.EnsureTroop(troop, scenario);
             city.CurActiveTroop = troop;
+            troop.SetMission(MissionType.TroopBuildBuilding, buildingType.Id);
             return true;
         }
 
@@ -1042,7 +1045,7 @@ namespace Sango.Game
             ForceAI.AIPersonalityType personality = GetAIPersonality(city);
 
             // 根据AI个性调整兵力要求
-            int minTroops = personality == ForceAI.AIPersonalityType.Aggressive ? 8000 : 
+            int minTroops = personality == ForceAI.AIPersonalityType.Aggressive ? 8000 :
                            personality == ForceAI.AIPersonalityType.Defensive ? 12000 : 10000;
             if (city.troops < minTroops)
                 return false;
@@ -1070,7 +1073,7 @@ namespace Sango.Game
                 return false;
 
             // 根据AI个性调整攻击概率
-            int attackChance = personality == ForceAI.AIPersonalityType.Aggressive ? 50 : 
+            int attackChance = personality == ForceAI.AIPersonalityType.Aggressive ? 50 :
                               personality == ForceAI.AIPersonalityType.Defensive ? 80 : 70;
             if (GameRandom.Chance(attackChance))
                 return false;
@@ -1385,8 +1388,7 @@ namespace Sango.Game
             troop.MaxMorale = city.MaxMorale;
             troop.Leader = people[0];
             troop.TroopType = spType;
-            troop.missionType = (int)city.TroopMissionType;
-            troop.missionTarget = city.TroopMissionTargetId;
+         
             if (people.Length > 1) troop.Member1 = people[1];
             if (people.Length > 2) troop.Member2 = people[2];
 
@@ -1424,6 +1426,7 @@ namespace Sango.Game
             troop.troops = maxTroopNum;
             troop.food = food;
             city.Render?.UpdateRender();
+            troop.SetMission(city.TroopMissionType, city.TroopMissionTargetId);
             return troop;
         }
         /// <summary>
@@ -1463,8 +1466,7 @@ namespace Sango.Game
             troop.Member1 = null;
             troop.Member2 = null;
             city.Render?.UpdateRender();
-            troop.missionType = (int)MissionType.TroopTransformGoodsToCity;
-            troop.missionTarget = target.Id;
+            troop.SetMission(MissionType.TroopTransformGoodsToCity, target.Id);
             return troop;
         }
 

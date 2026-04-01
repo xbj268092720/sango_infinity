@@ -1,4 +1,4 @@
-﻿using Sango.Game.Player;
+using Sango.Game.Player;
 using Sango.Game.Render;
 using Sango.Game.Tools;
 using System.Collections.Generic;
@@ -79,12 +79,13 @@ namespace Sango.Game
             if (city.IsBorderCity)
             {
 
+                AICommandList.Add(CityAI.AISearching);
+                AICommandList.Add(CityAI.AIRecruitPerson);
                 AICommandList.Add(CityAI.AIAttack);
                 AICommandList.Add(CityAI.AITradeFood);
                 AICommandList.Add(CityAI.AISecurity);
                 AICommandList.Add(CityAI.AITrainTroop);
                 AICommandList.Add(CityAI.AIRewardPerson);
-                AICommandList.Add(CityAI.AIRecruitPerson);
 
                 if (city.troops < 20000)
                 {
@@ -116,13 +117,14 @@ namespace Sango.Game
             else
             {
                 // 物资输送
+                AICommandList.Add(CityAI.AISearching);
+                AICommandList.Add(CityAI.AIRecruitPerson);
                 AICommandList.Add(CityAI.AITransfrom);
 
                 AICommandList.Add(CityAI.AISecurity);
                 AICommandList.Add(CityAI.AITradeFood);
                 AICommandList.Add(CityAI.AITrainTroop);
                 AICommandList.Add(CityAI.AIRewardPerson);
-                AICommandList.Add(CityAI.AIRecruitPerson);
                 
                 if (city.troops < city.itemStore.TotalNumber)
                     AICommandList.Add(CityAI.AIRecruitTroop);
@@ -145,6 +147,13 @@ namespace Sango.Game
             // 计算基础收入
             city.totalGainFood = city.BaseGainFood + city.agriculture * variables.agriculture_add_food;
             city.totalGainGold = city.BaseGainGold + city.commerce * variables.commerce_add_gold;
+            
+            // 人口对金钱收入的影响
+            if (variables.populationEnable)
+            {
+                city.totalGainGold += (int)(city.population * variables.populationGoldIncomeFactor);
+                city.totalGainFood += (int)(city.population * variables.populationFoodCostFactor * 0.5f);
+            }
 
             // 计算建筑收入
             city.allBuildings.ForEach(x =>

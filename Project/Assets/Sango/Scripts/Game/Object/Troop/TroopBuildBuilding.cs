@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Sango.Game
 {
@@ -26,36 +27,46 @@ namespace Sango.Game
             {
                 if (Troop.BelongCity.IsSameForce(Troop))
                 {
-                    Troop.missionType = (int)MissionType.TroopReturnCity;
-                    Troop.missionTarget = Troop.BelongCity.Id;
+                    Troop.SetMission(MissionType.TroopReturnCity, Troop.BelongCity.Id);
                 }
                 else
                 {
-                    Troop.missionType = (int)MissionType.TroopOccupyCity;
-                    Troop.missionTarget = TargetCity.Id;
+                    Troop.SetMission(MissionType.TroopOccupyCity, TargetCity.Id);
                 }
                 Troop.NeedPrepareMission();
             }
 
-            if (FinalCell == null || FinalCell.IsEmpty() || (!FinalCell.IsEmpty() && FinalCell.troop != Troop))
-            {
-                if (troop.MoveRange.Count == 0)
-                {
-                    scenario.Map.GetMoveRange(troop, troop.MoveRange);
-#if SANGO_DEBUG_AI
-                    GameAIDebug.Instance.ShowMoveRange(troop.MoveRange, troop);
-#endif
-                }
-                for (int i = 0; i < 6; i++)
-                {
-                    Cell cell = TargetCell.Neighbors[i];
-                    if (cell.IsEmpty() && troop.MoveRange.Contains(cell))
-                    {
-                        FinalCell = cell;
-                        return;
-                    }
-                }
 
+            if (troop.MoveRange.Count == 0)
+            {
+                scenario.Map.GetMoveRange(troop, troop.MoveRange);
+#if SANGO_DEBUG_AI
+                GameAIDebug.Instance.ShowMoveRange(troop.MoveRange, troop);
+#endif
+            }
+
+            List<Cell> emptyCell = new List<Cell>();
+            for (int i = 0; i < 6; i++)
+            {
+                Cell cell = TargetCell.Neighbors[i];
+                if (cell == troop.cell)
+                {
+                    FinalCell = cell;
+                    return;
+                }
+                else if (cell.IsEmpty() && troop.MoveRange.Contains(cell))
+                {
+                    emptyCell.Add(cell);
+                }
+            }
+
+            if (emptyCell.Count > 0)
+            {
+                emptyCell.Sort((a, b) => a.Distance(troop.cell).CompareTo(b.Distance(troop.cell)));
+                FinalCell = emptyCell[0];
+            }
+            else
+            {
                 FinalCell = null;
             }
         }

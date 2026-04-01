@@ -316,6 +316,21 @@ namespace Sango.Game
         /// 人口增长因子
         /// </summary>
         public float population_increase_factor = 0;
+
+        /// <summary>
+        /// 人口上限
+        /// </summary>
+        public int PopulationLimit => Scenario.Cur.Variables.populationLimitBase + CityLevelType.Id * Scenario.Cur.Variables.populationLimitPerLevel;
+
+        /// <summary>
+        /// 最大兵役人口
+        /// </summary>
+        public int MaxTroopPopulation => (int)(population * Scenario.Cur.Variables.maxTroopPopulationRatio);
+
+        /// <summary>
+        /// 基础兵役人口
+        /// </summary>
+        public int BaseTroopPopulation => (int)(population * Scenario.Cur.Variables.baseTroopPopulationRatio);
         /// <summary>
         /// 边界线
         /// </summary>
@@ -628,12 +643,29 @@ namespace Sango.Game
         public int FightPower => fightPower;
 
         /// <summary>
-        /// 添加武将
+        /// 添加一般武将
         /// </summary>
-        /// <param name="person">要添加的武将</param>
-        /// <returns>添加的武将</returns>
-        public Person Add(Person person) { allPersons.Add(person); return person; }
+        /// <param name="person"></param>
+        public void AddPerson(Person person)
+        {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> allPersons 添加 {person.Name} ");
+#endif
+            allPersons.Add(person);
+        }
 
+        /// <summary>
+        /// 移除一般武将
+        /// </summary>
+        /// <param name="person"></param>
+        public void RemovePerson(Person person)
+        {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> allPersons 删除 {person.Name} ");
+#endif
+            allPersons.Remove(person);
+            freePersons.Remove(person);
+        }
 
         /// <summary>
         /// 添加囚犯
@@ -642,6 +674,10 @@ namespace Sango.Game
         /// <returns>添加的武将</returns>
         public Person AddCaptive(Person person)
         {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> captiveList 添加 {person.Name} ");
+#endif
+            person.state = (int)PersonStateType.Prisoner;
             captiveList.Add(person);
             person.BelongForce?.BeCaptiveList.Add(person);
             person.ChangeCurrentCity(this);
@@ -655,20 +691,84 @@ namespace Sango.Game
         /// <returns>添加的武将</returns>
         public Person RemoveCaptive(Person person)
         {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> captiveList 删除 {person.Name} ");
+#endif
             captiveList.Remove(person);
             person.BelongForce?.BeCaptiveList.Remove(person);
             return person;
         }
 
         /// <summary>
-        /// 移除武将
+        /// 添加在野武将
         /// </summary>
-        /// <param name="person">要移除的武将</param>
-        /// <returns>移除的武将</returns>
-        public Person Remove(Person person)
+        /// <param name="person"></param>
+        public void AddWildPerson(Person person)
         {
-            allPersons.Remove(person); freePersons.Remove(person);
-            return person;
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> wildPersons 添加 {person.Name} ");
+#endif
+            wildPersons.Add(person);
+        }
+
+        /// <summary>
+        /// 移除在野武将
+        /// </summary>
+        /// <param name="person"></param>
+        public void RemoveWildPerson(Person person)
+        {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> wildPersons 删除 {person.Name} ");
+#endif
+            wildPersons.Remove(person);
+        }
+
+        /// <summary>
+        /// 添加未发现武将
+        /// </summary>
+        /// <param name="person"></param>
+        public void AddInvisiblePerson(Person person)
+        {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> invisiblePersons 添加 {person.Name} ");
+#endif
+            invisiblePersons.Add(person);
+        }
+
+        /// <summary>
+        /// 移除未发现武将
+        /// </summary>
+        /// <param name="person"></param>
+        public void RemoveInvisiblePerson(Person person)
+        {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> invisiblePersons 删除 {person.Name} ");
+#endif
+            invisiblePersons.Remove(person);
+        }
+
+        /// <summary>
+        /// 添加其他过路武将
+        /// </summary>
+        /// <param name="person"></param>
+        public void AddOtherPerson(Person person)
+        {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> otherPersons 添加 {person.Name} ");
+#endif
+            otherPersons.Add(person);
+        }
+
+        /// <summary>
+        /// 移除其他过路武将
+        /// </summary>
+        /// <param name="person"></param>
+        public void RemoveOtherPerson(Person person)
+        {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> otherPersons 删除 {person.Name} ");
+#endif
+            otherPersons.Remove(person);
         }
 
         /// <summary>
@@ -918,10 +1018,26 @@ namespace Sango.Game
             int troopPop = 0;
             if (scenario.Variables.populationEnable)
             {
-                pop = GameRandom.Random((int)(population * population_increase_factor), 0.1f);
-                population += pop;
-                troopPop = (int)(pop * 0.3f);
-                troopPopulation += troopPop;
+                // 计算人口增长
+                pop = GameRandom.Random((int)(population * population_increase_factor * extraPopulationFactor), 0.1f);
+                // 确保人口不超过上限
+                int newPopulation = population + pop;
+                if (newPopulation > PopulationLimit)
+                {
+                    pop = PopulationLimit - population;
+                    newPopulation = PopulationLimit;
+                }
+                population = newPopulation;
+
+                // 计算兵役人口增长
+                troopPop = (int)(pop * scenario.Variables.baseTroopPopulationRatio);
+                int newTroopPopulation = troopPopulation + troopPop;
+                // 确保兵役人口不超过最大限制
+                if (newTroopPopulation > MaxTroopPopulation)
+                {
+                    newTroopPopulation = MaxTroopPopulation;
+                }
+                troopPopulation = newTroopPopulation;
             }
 
             if (BelongCorps == null)
@@ -1119,7 +1235,13 @@ namespace Sango.Game
         public int FoodCost(Scenario scenario)
         {
             int foodCost = 0;
+            // 军队粮食消耗
             foodCost += (int)System.Math.Ceiling(scenario.Variables.baseFoodCostInCity * (troops + woundedTroops));
+            // 人口粮食消耗
+            if (scenario.Variables.populationEnable)
+            {
+                foodCost += (int)System.Math.Ceiling(population * scenario.Variables.populationFoodCostFactor);
+            }
             return foodCost;
         }
 
@@ -1392,6 +1514,7 @@ namespace Sango.Game
 
             Force lastBelongForce = BelongForce;
             freePersons.Clear();
+
             // 清理火
             for (int i = 0; i < OccupyCellList.Count; ++i)
             {
@@ -1403,12 +1526,6 @@ namespace Sango.Game
                 }
             }
 
-            // 城倒,俘虏逃
-            //for (int i = 0; i < this.captiveList.Count; i++)
-            //{
-            //    Person person = this.captiveList[i];
-            //    person.Escape(EscapeType.Released);
-            //}
             //this.captiveList.Clear();
 
             // 白城
@@ -1425,10 +1542,7 @@ namespace Sango.Game
 
 
             BelongForce.CityBaseCount--;
-            if (IsCity())
-            {
-                BelongForce.CityCount--;
-            }
+            if (IsCity()) BelongForce.CityCount--;
 
             // 确认一个撤退城市
             City escapeCity = null;
@@ -1440,6 +1554,7 @@ namespace Sango.Game
                     escapeCity = BelongForce.Governor.BelongCity;
             }
 
+#if SANGO_DEBUG
             if (IsPort() || IsGate())
             {
                 if (escapeCity == null)
@@ -1447,12 +1562,13 @@ namespace Sango.Game
                     Debug.LogError("为啥 escapeCity == null");
                 }
             }
+#endif
 
             // 基础抓捕率
             int cacaptureChangce = escapeCity != null ? scenarioVariables.captureChangceWhenCityFall : scenarioVariables.captureChangceWhenLastCityFall;
 
             // 处理俘虏
-            List<Person> captiveList = new List<Person>();
+            List<Person> temp_captive_list = new List<Person>();
 
             // 必须优先处理队伍
             if (escapeCity == null)
@@ -1478,6 +1594,10 @@ namespace Sango.Game
                                  p.LeaveToWild();
                              });
                             c.allPersons.Clear();
+                            c.captiveList.ForEach(p =>
+                            {
+                                p.Escape(EscapeType.Escape);
+                            });
                             c.LeaveToWild();
                         }
                     }
@@ -1491,23 +1611,45 @@ namespace Sango.Game
             for (int i = allPersons.Count - 1; i >= 0; --i)
             {
                 Person person = allPersons[i];
-                // 没有执行任务的才能被捕获,暂时不能抓捕主公
-                if (person.IsFree && person != person.BelongForce.Governor && GameRandom.Chance(cacaptureChangce))
+                if (person.IsPrisoner)
                 {
-                    captiveList.Add(person);
-                }
-                else
-                {
+                    RemovePerson(person);
                     if (escapeCity != null)
                     {
-                        person.ChangeCity(escapeCity);
-                        if (person.BelongTroop == null)
-                            person.SetMission(MissionType.PersonReturn, person.BelongCity);
+                        // 改变所属
+                        person.ChangeBelongCity(escapeCity);
+                        escapeCity.AddPerson(person);
                     }
                     else
                     {
-                        person.ClearMission();
-                        person.LeaveToWild();
+                        // 灭亡时,作为俘虏失去势力
+                        person.BelongCity = person.CurrentCity;
+                        person.BelongCorps = null;
+                        person.BelongForce = null;
+                    }
+                }
+                else
+                {
+                    // 没有执行任务的才能被捕获,暂时不能抓捕主公
+                    if (person.IsFree && person != person.BelongForce.Governor && GameRandom.Chance(cacaptureChangce))
+                    {
+                        temp_captive_list.Add(person);
+                    }
+                    else
+                    {
+                        if (escapeCity != null)
+                        {
+                            RemovePerson(person);
+                            person.ChangeBelongCity(escapeCity);
+                            escapeCity.AddPerson(person);
+                            if (person.BelongTroop == null)
+                                person.SetMission(MissionType.PersonReturn, person.BelongCity);
+                        }
+                        else
+                        {
+                            person.ClearMission();
+                            person.LeaveToWild();
+                        }
                     }
                 }
             }
@@ -1528,19 +1670,26 @@ namespace Sango.Game
 
             if (escapeCity == null)
             {
-                Scenario.Cur.Remove(BelongCorps);
+                BelongCorps.IsAlive = false;
 #if SANGO_DEBUG
                 Sango.Log.Print($"{BelongForce.Name} 灭亡!!!");
 #endif
                 BelongForce.IsAlive = false;
-                Scenario.Cur.Remove(BelongForce);
 
                 // 势力灭亡事件
                 GameEvent.OnForceFall?.Invoke(BelongForce, this, atk);
 
-                if (Scenario.Cur.forceSet.DataCount == 1)
+                bool allInOne = true;
+                scenario.citySet.ForEach(x =>
+                {
+                    if (x != this && x.IsCity() && x.BelongForce != atk.BelongForce)
+                        allInOne = false;
+                });
+
+                if (allInOne)
                 {
                     Sango.Log.Print($"{Scenario.Cur.GetDateStr()} --> {atk.BelongForce.Name} 统一!!!!!!!!!!!!!!");
+                    scenario.OnGamePause();
                 }
             }
 
@@ -1561,6 +1710,21 @@ namespace Sango.Game
             commerce = agriculture * (GameRandom.RandomWeightIndex(scenarioVariables.cityFallCanKeepCommerce) * 10 + 10) / 100;
 
             Leader = atk.Leader;
+
+
+            // 解救俘虏, 一定是在势力更改后解救
+            for (int i = this.captiveList.Count - 1; i >= 0; i--)
+            {
+                Person person = this.captiveList[i];
+                if (person.IsSameForce(atk))
+                {
+                    RemoveCaptive(person);
+                    person.BelongCity.RemovePerson(person);
+                    person.ChangeBelongCity(this);
+                    AddPerson(person);
+                }
+            }
+
             atk.EnterCity(this);
 
             Render?.UpdateRender();
@@ -1581,9 +1745,10 @@ namespace Sango.Game
 
             CityRecruitPersonWhenCityFallEvent te = new CityRecruitPersonWhenCityFallEvent()
             {
-                captiveList = captiveList,
+                captiveList = temp_captive_list,
                 atk = atk,
                 targetCity = this,
+                escapeCity = escapeCity,
                 recruitType = escapeCity == null ? 2 : 0
             };
             RenderEvent.Instance.Add(te);
@@ -2826,8 +2991,8 @@ namespace Sango.Game
 #if SANGO_DEBUG
                     Sango.Log.Print($"@内政@[{BelongForce.Name}]<{Name}>的{person.Name}发现了人才->{target.Name}");
 #endif
-                    invisiblePersons.Remove(target);
-                    wildPersons.Add(target);
+                    RemoveInvisiblePerson(target);
+                    AddWildPerson(target);
                     person.merit += meritGain;
                     person.GainExp(meritGain);
                     person.ActionOver = true;
@@ -3612,7 +3777,7 @@ namespace Sango.Game
             for (int i = 0; i < allPersons.Count; i++)
             {
                 Person checker = allPersons[i];
-                if (checker != null && checker.IsAlive)
+                if (checker != null && checker.IsAlive && !checker.IsPrisoner)
                 {
                     if (checker.IsGovernor)
                     {

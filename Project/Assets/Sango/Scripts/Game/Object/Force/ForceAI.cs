@@ -670,7 +670,7 @@ namespace Sango.Game
             ProcessCaptives(force, scenario);
 
             // 处理其他势力的俘虏赎回请求
-            //ProcessRansomRequests(force, scenario);
+            ProcessRansomRequests(force, scenario);
 
             return true;
         }
@@ -758,7 +758,7 @@ namespace Sango.Game
             }
 
             if (GameRandom.Chance(probability, 10000))
-            { 
+            {
                 captive.CurrentCity.RemoveCaptive(captive);
                 captive.ChangeCorps(force.Governor?.BelongCorps);
                 captive.ChangeCity(force.Governor?.BelongCity);
@@ -817,47 +817,43 @@ namespace Sango.Game
             // 检查是否有其他势力的俘虏在本势力
             if (force.BeCaptiveList == null || force.BeCaptiveList.Count == 0)
                 return;
-
-            for (int i = 0; i < force.BeCaptiveList.Count; i++)
+            force.BeCaptiveList.Sort(PersonSortFunction.SortByMilitaryAbility.Sort);
+         
+            // 根据势力领袖的性格调整赎回概率
+            int ransomChance = 50;
+            if (force.Governor != null && force.Governor.personality != null)
             {
-                Person captive = force.BeCaptiveList[i];
-
-                // 检查原势力是否有足够的资金赎回
-                if (captive.BelongForce != null && captive.BelongForce.Governor != null && captive.BelongForce.Governor.BelongCity != null)
+                ransomChance += force.Governor.personality.ransomCaptiveTendencyAdd;
+            }
+            // 原势力有足够的资金，考虑接受赎回
+            if (GameRandom.Chance(ransomChance))
+            {
+                Person captive = force.BeCaptiveList[GameRandom.Range(force.BeCaptiveList.Count)];
+                int ransom = CalculateRansom(captive);
+                bool hasSend = false;
+                force.ForEachCity(city =>
                 {
-                    City homeCity = captive.BelongCity;
-                    int ransom = CalculateRansom(captive);
-
-                    if (homeCity.gold >= ransom)
+                    if (!hasSend && city.gold >= ransom + 500)
                     {
-                        // 根据势力领袖的性格调整赎回概率
-                        int ransomChance = 70;
-                        if (force.Governor != null && force.Governor.personality != null)
+                        Person[] people = ForceAI.CounsellorRecommendDiplomacy(city.freePersons);
+                        if (people != null && people.Length > 0)
                         {
-                            ransomChance += force.Governor.personality.ransomCaptiveTendencyAdd;
-                        }
-
-                        // 原势力有足够的资金，考虑接受赎回
-                        if (GameRandom.Chance(ransomChance))
-                        {
-                            // 接受赎回
-                            homeCity.gold -= ransom;
-                            City capital = force.Governor?.BelongCity;
-                            if (capital != null)
+                            Person person = people[0];
+                            int rate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Ransom, force, captive.CurrentCity.BelongForce, person, ransom);
+                            if (rate > 50)
                             {
-                                capital.gold += ransom;
-                            }
-
-                            // 释放俘虏
-                            ReleaseCaptive(force, captive, scenario);
-                            i--;
-
+                                city.gold -= ransom;
+                                person.SetMission(MissionType.PersonDiplomacy, captive.CurrentCity, (int)DiplomacyActionType.Ransom, ransom, person.Id);
+                                city.freePersons.Remove(person);
+                                hasSend = true;
 #if SANGO_DEBUG
-                            Sango.Log.Print($"{captive.BelongForce?.Name}支付了{ransom}金赎回了{captive.Name}！");
-#endif
+                                Sango.Log.Print($"{captive.BelongForce?.Name}派遣{person.Name}前往{captive.CurrentCity.BelongForce.Name}赎回我方俘虏{captive.Name}！");
+#endif          
+                                return;
+                            }
                         }
                     }
-                }
+                });
             }
         }
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Sango.Game
@@ -819,20 +820,19 @@ namespace Sango.Game
         /// <param name="ransomValue">赎金</param>
         /// <param name="captiveId">俘虏ID</param>
         /// <returns>是否成功</returns>
-        public bool PerformRansom(Force sender, Force receiver, int ransomValue, int captiveId)
+        public bool PerformRansom(Person sender, Force receiver, int ransomValue, int captiveId)
         {
             // 检查发送方是否有足够的资金
-            if (sender.Governor?.BelongCity?.gold < ransomValue)
-                return false;
+            ransomValue = System.Math.Min(ransomValue, sender.BelongCity.gold);
 
             // 查找指定的俘虏
             Person captive = null;
             City captiveCity = null;
             Troop captiveTroop = null;
 
-            for(int i = 0; i < sender.BeCaptiveList.Count; i++)
+            for(int i = 0; i < sender.BelongForce.BeCaptiveList.Count; i++)
             {
-                Person person = sender.BeCaptiveList[i];
+                Person person = sender.BelongForce.BeCaptiveList[i];
                 if (person.Id == captiveId)
                 {
                     captive = person;
@@ -846,21 +846,21 @@ namespace Sango.Game
                 return false;
 
             // 扣除资金
-            sender.Governor.BelongCity.gold -= ransomValue;
+            sender.BelongCity.gold -= ransomValue;
 
             // 释放俘虏
             captive.Escape(EscapeType.Released, receiver);
 
             // 增加关系
             int relationIncrease = ransomValue / Scenario.Cur.Variables.diplomacyRansomRelationFactor; // 每20金增加1点关系
-            AddRelation(sender, receiver, relationIncrease);
+            AddRelation(sender.BelongForce, receiver, relationIncrease);
 
 #if SANGO_DEBUG
             Sango.Log.Print($"@外交@{sender.Name} 向 {receiver.Name} 支付了 {ransomValue} 金赎回了俘虏 {captive.Name}，关系增加了 {relationIncrease}!!");
 #endif
 
             // 触发事件
-            GameEvent.OnDiplomacyRansom?.Invoke(sender, receiver, ransomValue, true);
+            GameEvent.OnDiplomacyRansom?.Invoke(sender.BelongForce, receiver, ransomValue, true);
 
             return true;
         }
@@ -1133,8 +1133,9 @@ namespace Sango.Game
                         success = PerformTruceRequest(person.BelongForce, receiverForce);
                         break;
                     case DiplomacyActionType.Ransom:
+
                         // 使用missionParams3存储赎金，missionParams4存储俘虏ID
-                        success = PerformRansom(person.BelongForce, receiverForce, resourceValue, captiveId);
+                        success = PerformRansom(person, receiverForce, resourceValue, captiveId);
                         break;
                 }
             }

@@ -300,18 +300,19 @@ namespace Sango.Game
         /// <summary>
         /// 攻击力
         /// </summary>
-        public int Attack => IsInWater ? waterAttack : landAttack;
+        public int Attack => extraAttack + (IsInWater ? waterAttack : landAttack);
 
         public int waterAttack;
         public int landAttack;
-
+        public int extraAttack;
         /// <summary>
         /// 防御力
         /// </summary>
-        public int Defence => IsInWater ? waterDefence : landDefence;
+        public int Defence => extraDefence + (IsInWater ? waterDefence : landDefence);
 
         public int waterDefence;
         public int landDefence;
+        public int extraDefence;
 
         /// <summary>
         /// 建设力
@@ -347,6 +348,7 @@ namespace Sango.Game
         public TroopRender Render { get; private set; }
         bool isMissionPrepared = false;
         public int foodCost = 0;
+        public float foodCostFactor = 1;
 
         public List<ActionBase> actionList;
         public List<Cell> MoveRange = new List<Cell>(256);
@@ -373,7 +375,7 @@ namespace Sango.Game
             cell.troop = this;
             Render = new TroopRender(this);
             foodCost = (int)System.Math.Ceiling(scenario.Variables.baseFoodCostInTroop * (troops + woundedTroops) * TroopType.foodCostFactor);
-
+            foodCost = (int)Math.Ceiling(foodCost * foodCostFactor);
             StrategySkills.Clear();
             scenario.CommonData.Skills.ForEach(x =>
             {
@@ -382,6 +384,7 @@ namespace Sango.Game
             });
 
             buffManager.Init(this);
+            GameEvent.OnTroopEnterCell(this, cell, null);
         }
 
         public virtual bool Run(Corps corps, Force force, Scenario scenario)
@@ -406,6 +409,7 @@ namespace Sango.Game
         {
             Scenario scenario = Scenario.Cur;
             foodCost = (int)System.Math.Ceiling(scenario.Variables.baseFoodCostInTroop * (troops + woundedTroops) * TroopType.foodCostFactor);
+            foodCost = (int)Math.Ceiling(foodCost * foodCostFactor);
             return foodCost;
         }
 
@@ -1236,17 +1240,7 @@ namespace Sango.Game
             for (int i = 0; i < captiveList.Count; i++)
             {
                 Person person = captiveList[i];
-                if (person.IsWild)
-                {
-                    person.ChangeCity(CurrentCity);
-                    person.ChangeCurrentCity(CurrentCity);
-                }
-                else
-                {
-                    person.BelongForce?.BeCaptiveList.Remove(person);
-                    person.ChangeCurrentCity(CurrentCity);
-                    person.SetMission(MissionType.PersonReturn, person.BelongCity);
-                }
+                person.Escape(EscapeType.TroopDestroyed);
             }
             captiveList.Clear();
         }
@@ -1571,7 +1565,7 @@ namespace Sango.Game
             {
                 captiveList.ForEach(p =>
                 {
-                    city.captiveList.Add(p);
+                    city.AddCaptive(p);
                     p.ChangeCurrentCity(city);
                     p.BelongTroop = null;
                 });
@@ -1611,6 +1605,7 @@ namespace Sango.Game
                 // 运输武将返回所属城市
                 ForEachPerson((person) =>
                 {
+                    person.ChangeCurrentCity(city);
                     person.SetMission(MissionType.PersonReturn, person.BelongCity);
                 });
             }
@@ -1619,6 +1614,7 @@ namespace Sango.Game
                 ForEachPerson((person) =>
                 {
                     person.ChangeCity(city);
+                    person.ChangeCurrentCity(city);
                 });
             }
 
@@ -1637,6 +1633,7 @@ namespace Sango.Game
                 {
                     x.Escape(EscapeType.TroopDestroyed);
                 });
+
                 captiveList = null;
             }
 
@@ -1730,6 +1727,7 @@ namespace Sango.Game
                 mem.SetMission(MissionType.PersonReturn, mem.BelongCity);
                 mem.ActionOver = true;
             });
+            Leader.JoinToForce(city);
             CalculateAttribute(Scenario.Cur);
             return true;
         }
@@ -1765,8 +1763,7 @@ namespace Sango.Game
             {
                 if (missionType == 0)
                 {
-                    missionType = (int)MissionType.TroopReturnCity;
-                    missionTarget = BelongCity.Id;
+                    SetMission(MissionType.TroopReturnCity, BelongCity.Id);
                     NeedPrepareMission();
                 }
 
@@ -1873,6 +1870,10 @@ namespace Sango.Game
         /// <returns>添加的武将</returns>
         public Person AddCaptive(Person person)
         {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> captiveList 添加 {person.Name} ");
+#endif
+            person.state = (int)PersonStateType.Prisoner;
             captiveList.Add(person);
             person.BelongForce?.BeCaptiveList.Add(person);
             person.BelongTroop = this;
@@ -1886,6 +1887,9 @@ namespace Sango.Game
         /// <returns>添加的武将</returns>
         public Person RemoveCaptive(Person person)
         {
+#if SANGO_DEBUG
+            Sango.Log.Print($"*{Name} -> captiveList 删除 {person.Name} ");
+#endif
             captiveList.Remove(person);
             person.BelongForce?.BeCaptiveList.Remove(person);
             person.BelongTroop = null;
