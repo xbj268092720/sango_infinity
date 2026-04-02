@@ -252,6 +252,18 @@ namespace Sango.Core
         /// </summary>
         Reward = 20,
 
+        xxxx = 21,
+
+        /// <summary>
+        /// 送礼
+        /// </summary>
+        SendGift = 22,
+
+        /// <summary>
+        /// 同盟
+        /// </summary>
+        Alliance = 23,
+
         /// <summary>
         /// 最大工作数量
         /// </summary>

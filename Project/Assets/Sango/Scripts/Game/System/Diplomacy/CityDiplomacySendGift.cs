@@ -1,4 +1,3 @@
-using Sango.UI;
 using System.Collections.Generic;
 
 namespace Sango.Core.Player
@@ -6,7 +5,8 @@ namespace Sango.Core.Player
     [GameSystem]
     public class CityDiplomacySendGift : CityBaseSystem
     {
-        public List<Person> counsellorRecommendList = new List<Person>();
+        public List<Force> targetForces = new List<Force>();
+        public List<ObjectSortTitle> customForceTitleList;
 
         public CityDiplomacySendGift()
         {
@@ -15,44 +15,31 @@ namespace Sango.Core.Player
             customMenuName = "外交/送礼";
             customMenuOrder = 304;
             windowName = "window_city_diplomacy_send_gift";
+            customTitleList = new List<ObjectSortTitle>()
+            {
+                PersonSortFunction.SortByName,
+                PersonSortFunction.SortByPolitics,
+            };
 
+            customForceTitleList = new List<ObjectSortTitle>()
+            {
+                ForceSortFunction.SortByName,
+                ForceSortFunction.SortByLeader,
+            };
         }
 
         public override bool IsValid
         {
             get
             {
-                return TargetCity.freePersons.Count > 0 && TargetCity.BelongCorps.ActionPoint >= 1 && TargetCity.gold >= 1000;
+                return TargetCity.freePersons.Count > 0 && TargetCity.BelongCorps.ActionPoint >= JobType.GetJobCostAP((int)CityJobType.SendGift) && TargetCity.gold >= 1000;
             }
         }
 
         public override void OnEnter()
         {
-            counsellorRecommendList.Clear();
-            Person[] recommandList = ForceAI.CounsellorRecommendDiplomacy(TargetCity.freePersons);
-            if (recommandList != null)
-            {
-                for (int i = 0; i < recommandList.Length; i++)
-                {
-                    counsellorRecommendList.Add(recommandList[i]);
-                }
-            }
-
+            targetForces.Clear();
             personList.Clear();
-            if (counsellorRecommendList.Count > 0)
-                personList.Add(counsellorRecommendList[0]);
-
-            if (customTitleList == null)
-            {
-                customTitleList = new List<ObjectSortTitle>()
-                {
-                    PersonSortFunction.SortByName,
-                    PersonSortFunction.GetSortByContainsInList("军师推荐", counsellorRecommendList),
-                    PersonSortFunction.SortByPolitics,
-                    PersonSortFunction.SortByGlamour,
-                };
-            }
-
             Window.Instance.Open(windowName);
         }
 
@@ -64,13 +51,18 @@ namespace Sango.Core.Player
 
         public override void DoJob()
         {
-            if (personList.Count <= 0)
+            if (personList.Count <= 0 || targetForces.Count <= 0)
                 return;
 
-            // 这里应该调用外交系统的送礼方法
-            // 暂时留空，等待具体实现
+            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, TargetCity.BelongForce, targetForces[0], personList[0], JobType.GetJobCost((int)CityJobType.SendGift));
+            GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"交给我吧, 保证完成任务!!", () =>
+            {
+                // 暂时直接招募
+                GameDialog.Close();
+                Done();
 
-            Done();
+            });
+            dialog1.SetPerson(personList[0]);
         }
     }
 }

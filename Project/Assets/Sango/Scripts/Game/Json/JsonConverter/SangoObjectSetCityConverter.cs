@@ -1,7 +1,6 @@
-﻿using TKNewtonsoft.Json;
+﻿using System;
+using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
-using System;
-using Unity.Burst.Intrinsics;
 
 namespace Sango.Core
 {

@@ -5,9 +5,7 @@
  * 最后修改：2026-03-27
  */
 
-using System;
 using Sango.Core.Debate;
-using Sango.UI.Debate;
 
 namespace Sango.Core
 {

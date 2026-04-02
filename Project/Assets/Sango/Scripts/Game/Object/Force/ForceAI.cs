@@ -367,7 +367,7 @@ namespace Sango.Core
         /// <param name="force">势力</param>
         /// <param name="targetForceId">目标势力ID</param>
         /// <returns>是否处于免疫期</returns>
-        private static bool IsInDiplomacyImmunity(Force force, int targetForceId)
+        public static bool IsInDiplomacyImmunity(Force force, int targetForceId)
         {
             if (force.DiplomacyImmunityTime.TryGetValue(targetForceId, out int immunityEndTime))
             {

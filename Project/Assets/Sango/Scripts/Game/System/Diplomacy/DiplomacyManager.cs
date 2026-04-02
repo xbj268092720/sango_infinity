@@ -830,7 +830,7 @@ namespace Sango.Core
             City captiveCity = null;
             Troop captiveTroop = null;
 
-            for(int i = 0; i < sender.BelongForce.BeCaptiveList.Count; i++)
+            for (int i = 0; i < sender.BelongForce.BeCaptiveList.Count; i++)
             {
                 Person person = sender.BelongForce.BeCaptiveList[i];
                 if (person.Id == captiveId)

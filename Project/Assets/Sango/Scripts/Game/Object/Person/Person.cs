@@ -735,7 +735,6 @@ namespace Sango.Core
             List<City> path = scenario.FindShortestPath(currentCity, target);
             if (path == null || path.Count <= 1)
             {
-                ClearMission();
                 return true;
             }
 
@@ -743,7 +742,6 @@ namespace Sango.Core
             ChangeCurrentCity(next);
             if (next == dest)
             {
-                ClearMission();
                 return true;
             }
             return false;
@@ -785,6 +783,7 @@ namespace Sango.Core
 
                         if (DoMove(dest, scenario))
                         {
+                            ClearMission();
                             CityRecruitPersonEvent te = RenderEvent.Instance.Create<CityRecruitPersonEvent>();
                             te.Init(this, dest_person);
                             RenderEvent.Instance.Add(te);
@@ -841,7 +840,9 @@ namespace Sango.Core
                             DiplomacyActionType actionType = (DiplomacyActionType)missionParams2;
                             if (this.IsPlayer || receiverForce.IsPlayer)
                             {
-
+                                Sango.Render.DiplomacyEvent diplomacyEvent = RenderEvent.Instance.Create<Sango.Render.DiplomacyEvent>();
+                                diplomacyEvent.Init(this, actionType, receiverForce, targetCity, missionParams3, missionParams4);
+                                RenderEvent.Instance.Add(diplomacyEvent);
                             }
                             else
                             {

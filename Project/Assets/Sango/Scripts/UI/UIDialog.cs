@@ -68,9 +68,9 @@ namespace Sango.UI
                 sureAction = NextTalk;
             SetPerson(data.person);
             content.text = data.text;
-            if (string.IsNullOrEmpty(data.sound))
+            if (!string.IsNullOrEmpty(data.sound))
                 AudioManager.Instance.PlaySfx(data.sound);
-            if (string.IsNullOrEmpty(data.bgm))
+            if (!string.IsNullOrEmpty(data.bgm))
                 AudioManager.Instance.PlayBgm(data.bgm);
         }
 

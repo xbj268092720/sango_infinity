@@ -3965,6 +3965,30 @@
       "tpGain": 20,
       "limit": 0,
       "linkBuildingKind": 0
+    },
+    "22": {
+      "Id": 22,
+      "Name": "外交送礼",
+      "path": "外交/送礼",
+      "kind": 5,
+      "costAP": 30,
+      "cost": 1000,
+      "meritGain": 20,
+      "tpGain": 20,
+      "limit": 1,
+      "linkBuildingKind": 0
+    },
+    "23": {
+      "Id": 23,
+      "Name": "外交同盟",
+      "path": "外交/同盟",
+      "kind": 5,
+      "costAP": 30,
+      "cost": 0,
+      "meritGain": 20,
+      "tpGain": 20,
+      "limit": 1,
+      "linkBuildingKind": 0
     }
   },
   "Officials": {
