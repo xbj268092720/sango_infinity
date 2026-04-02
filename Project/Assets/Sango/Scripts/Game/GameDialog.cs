@@ -54,7 +54,7 @@ namespace Sango.Core
 
         public static IDialog StartTalk(List<TalkData> talk_content, System.Action endAction)
         {
-            string windowName = "window_dialog2";
+            string windowName = "window_dialog4";
             IDialog uIDialog = Open(windowName, "", null, Input.mousePosition);
             uIDialog.StartTalk(talk_content, endAction);
             return uIDialog;

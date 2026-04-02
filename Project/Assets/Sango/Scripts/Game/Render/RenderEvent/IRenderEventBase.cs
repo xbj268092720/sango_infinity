@@ -4,10 +4,7 @@ namespace Sango.Render
 {
     public interface IRenderEventBase
     {
-        /// <summary>
-        /// 是否栈式添加在最前面,否则顺序添加至末尾
-        /// </summary>
-        bool IsStack { get; set; }
+        bool IsInited { get; set; }
         bool IsDone { get; set; }
         bool IsVisible();
         bool Update(Scenario scenario, float deltaTime);

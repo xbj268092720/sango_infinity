@@ -13,18 +13,12 @@ namespace Sango.Core.Player
             customTitleName = "送礼";
 
             customMenuName = "外交/送礼";
-            customMenuOrder = 304;
+            customMenuOrder = 300;
             windowName = "window_city_diplomacy_send_gift";
             customTitleList = new List<ObjectSortTitle>()
             {
                 PersonSortFunction.SortByName,
                 PersonSortFunction.SortByPolitics,
-            };
-
-            customForceTitleList = new List<ObjectSortTitle>()
-            {
-                ForceSortFunction.SortByName,
-                ForceSortFunction.SortByLeader,
             };
         }
 
@@ -40,6 +34,12 @@ namespace Sango.Core.Player
         {
             targetForces.Clear();
             personList.Clear();
+            customForceTitleList = new List<ObjectSortTitle>()
+            {
+                ForceSortFunction.SortByName,
+                ForceSortFunction.SortByLeader,
+                ForceSortFunction.GetSortByDistanceDay(TargetCity)
+            };
             Window.Instance.Open(windowName);
         }
 

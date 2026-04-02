@@ -6,8 +6,9 @@ namespace Sango.Core.Player
     [GameSystem]
     public class CityDiplomacyAlliance : CityBaseSystem
     {
-        public List<Person> counsellorRecommendList = new List<Person>();
-
+        public List<Force> targetForces = new List<Force>();
+        public List<ObjectSortTitle> customForceTitleList;
+        public int gold;
         public CityDiplomacyAlliance()
         {
             customTitleName = "结盟";
@@ -15,43 +16,34 @@ namespace Sango.Core.Player
             customMenuName = "外交/结盟";
             customMenuOrder = 301;
             windowName = "window_city_diplomacy_alliance";
+            customTitleList = new List<ObjectSortTitle>()
+            {
+                PersonSortFunction.SortByName,
+                PersonSortFunction.SortByPolitics,
+            };
 
+           
         }
 
         public override bool IsValid
         {
             get
             {
-                return TargetCity.freePersons.Count > 0 && TargetCity.BelongCorps.ActionPoint >= 1;
+                return TargetCity.freePersons.Count > 0 && TargetCity.BelongCorps.ActionPoint >= JobType.GetJobCostAP((int)CityJobType.Alliance) && TargetCity.gold >= 1000;
             }
         }
 
         public override void OnEnter()
         {
-            counsellorRecommendList.Clear();
-            Person[] recommandList = ForceAI.CounsellorRecommendDiplomacy(TargetCity.freePersons);
-            if (recommandList != null)
-            {
-                for (int i = 0; i < recommandList.Length; i++)
-                {
-                    counsellorRecommendList.Add(recommandList[i]);
-                }
-            }
-
+            gold = 0;
+            targetForces.Clear();
             personList.Clear();
-            if (counsellorRecommendList.Count > 0)
-                personList.Add(counsellorRecommendList[0]);
-
-            if (customTitleList == null)
+            customForceTitleList = new List<ObjectSortTitle>()
             {
-                customTitleList = new List<ObjectSortTitle>()
-                {
-                    PersonSortFunction.SortByName,
-                    PersonSortFunction.GetSortByContainsInList("军师推荐", counsellorRecommendList),
-                    PersonSortFunction.SortByPolitics,
-                    PersonSortFunction.SortByGlamour,
-                };
-            }
+                ForceSortFunction.SortByName,
+                ForceSortFunction.SortByLeader,
+                ForceSortFunction.GetSortByDistanceDay(TargetCity)
+            };
 
             Window.Instance.Open(windowName);
         }
@@ -67,10 +59,15 @@ namespace Sango.Core.Player
             if (personList.Count <= 0)
                 return;
 
-            // 这里应该调用外交系统的结盟方法
-            // 暂时留空，等待具体实现
+            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Alliance, TargetCity.BelongForce, targetForces[0], personList[0], gold);
+            GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"交给我吧, 保证完成任务!!", () =>
+            {
+                // 暂时直接招募
+                GameDialog.Close();
+                Done();
 
-            Done();
+            });
+            dialog1.SetPerson(personList[0]);
         }
     }
 }

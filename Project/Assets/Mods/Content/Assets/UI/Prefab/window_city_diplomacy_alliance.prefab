@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 5973749658295835790}
   - component: {fileID: 174056003858870177}
   - component: {fileID: 576643473640125865}
-  - component: {fileID: 6033243540688450173}
+  - component: {fileID: 3632986135305392867}
   m_Layer: 5
   m_Name: window_city_diplomacy_alliance
   m_TagString: Untagged
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 32
---- !u!114 &6033243540688450173
+--- !u!114 &3632986135305392867
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -239,15 +239,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 9039031632039893254}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2cbe9c83497e9e54a870a79c2e73657a, type: 3}
+  m_Script: {fileID: 11500000, guid: dc0b180b4ed93f240916d5fdb1be5eab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   windowTitle: {fileID: 3789918412727178981}
-  personCountLabel: {fileID: 0}
-  personItems: {fileID: 0}
-  action_value: {fileID: 0}
-  statusItem: {fileID: 0}
-  sureButton: {fileID: 0}
+  target: {fileID: 3266664340765936153}
+  gold: {fileID: 8147552149618633765}
+  goldSlider: {fileID: 4009244712160208560}
+  relationship: {fileID: 6481232896409930628}
+  days: {fileID: 3033171720264160862}
+  personItems: {fileID: 4513229609694431714}
+  action_value: {fileID: 3842726730203427811}
+  statusItem: {fileID: 2895328793553037553}
+  sureButton: {fileID: 2615132759251461884}
 --- !u!1 &9167501678661684136
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,6 +435,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
+--- !u!114 &3266664340765936153 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3047893051244007579, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
+  m_PrefabInstance: {fileID: 511668172337568386}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0dfa7c71c9f7146a307ef80a4b6f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8214671680911688479 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8437967942657644957, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
@@ -450,14 +465,14 @@ PrefabInstance:
     - target: {fileID: 4047078994823135925, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3632986135305392867}
     - target: {fileID: 4047078994823135925, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnSure
       objectReference: {fileID: 0}
     - target: {fileID: 4047078994823135925, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Sango.Game.Render.UI.UICityPersonCall, Assembly-CSharp
+      value: Sango.UI.UICityDiplomacyAlliance, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4864162001864629904, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -466,14 +481,14 @@ PrefabInstance:
     - target: {fileID: 5788964857443963546, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3632986135305392867}
     - target: {fileID: 5788964857443963546, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnCancel
       objectReference: {fileID: 0}
     - target: {fileID: 5788964857443963546, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Sango.Game.Render.UI.UICityPersonCall, Assembly-CSharp
+      value: Sango.UI.UICityDiplomacyAlliance, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6062729483653480700, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_Pivot.x
@@ -569,6 +584,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
+--- !u!114 &2615132759251461884 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4047078994823135925, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
+  m_PrefabInstance: {fileID: 2044860201333122121}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3789918412727178981 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2952306590412944044, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
@@ -687,14 +713,14 @@ PrefabInstance:
     - target: {fileID: 1153131622752677892, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3632986135305392867}
     - target: {fileID: 1153131622752677892, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnSelectPerson
       objectReference: {fileID: 0}
     - target: {fileID: 1153131622752677892, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Sango.Game.Render.UI.UICityPersonCall, Assembly-CSharp
+      value: Sango.UI.UICityDiplomacyAlliance, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2828715672620830701, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -734,11 +760,33 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: d558882fb4405dd448187416583e6945, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+--- !u!114 &2895328793553037553 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 583421193512755668, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+  m_PrefabInstance: {fileID: 2321320072417855781}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 516c1b7e074591847ba05bfbd5cdf6d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &3157931531971052449 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 857308670807018116, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
   m_PrefabInstance: {fileID: 2321320072417855781}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4513229609694431714 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2203608375503077575, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+  m_PrefabInstance: {fileID: 2321320072417855781}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f1b13101022d974c8ca3a58c01c9a58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2337260494523025297
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -857,6 +905,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2795483318831252755, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
   m_PrefabInstance: {fileID: 2337260494523025297}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6481232896409930628 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8763557320523140117, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
+  m_PrefabInstance: {fileID: 2337260494523025297}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0dfa7c71c9f7146a307ef80a4b6f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2373901802398408331
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1082,6 +1141,18 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3949046842360334380, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3632986135305392867}
+    - target: {fileID: 3949046842360334380, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnGoldCalculator
+      objectReference: {fileID: 0}
+    - target: {fileID: 3949046842360334380, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sango.UI.UICityDiplomacyAlliance, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 3958649795476361187, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
       propertyPath: m_Text
       value: "\u8D44\u91D1"
@@ -1134,17 +1205,51 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 293.0678
       objectReference: {fileID: 0}
+    - target: {fileID: 8166079252497292362, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3632986135305392867}
+    - target: {fileID: 8166079252497292362, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnGoldSliderValueChanged
+      objectReference: {fileID: 0}
+    - target: {fileID: 8166079252497292362, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sango.UI.UICityDiplomacyAlliance, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8865677798180101803, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
       propertyPath: m_Name
       value: gold
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
+--- !u!114 &4009244712160208560 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8166079252497292362, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
+  m_PrefabInstance: {fileID: 5111602080899267322}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7311705206639111488 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2560413107675256762, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
   m_PrefabInstance: {fileID: 5111602080899267322}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8147552149618633765 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4026750787430962911, guid: 7fa61c03eb65318458ab3b3370eeecca, type: 3}
+  m_PrefabInstance: {fileID: 5111602080899267322}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0dfa7c71c9f7146a307ef80a4b6f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5533361992760442870
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1242,6 +1347,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
+--- !u!114 &3842726730203427811 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8763557320523140117, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
+  m_PrefabInstance: {fileID: 5533361992760442870}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0dfa7c71c9f7146a307ef80a4b6f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7638665917229284069 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2795483318831252755, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
@@ -1360,6 +1476,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
+--- !u!114 &3033171720264160862 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8763557320523140117, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
+  m_PrefabInstance: {fileID: 6019506652268812875}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0dfa7c71c9f7146a307ef80a4b6f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8449342428726615896 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2795483318831252755, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
@@ -1375,14 +1502,14 @@ PrefabInstance:
     - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3632986135305392867}
     - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnSelectCity
+      value: OnSelectForce
       objectReference: {fileID: 0}
     - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Sango.Game.Render.UI.UICityPersonTransform, Assembly-CSharp
+      value: Sango.UI.UICityDiplomacyAlliance, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1435482676807624152, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_Text

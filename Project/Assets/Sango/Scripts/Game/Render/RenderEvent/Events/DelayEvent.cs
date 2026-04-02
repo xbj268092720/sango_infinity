@@ -4,7 +4,6 @@ namespace Sango.Render
 {
     public class DelayEvent : RenderEventBase
     {
-        public override bool IsStack => true;
         public float delayTime;
         public System.Action doneAction;
         public void Init(float delayTime, System.Action action)

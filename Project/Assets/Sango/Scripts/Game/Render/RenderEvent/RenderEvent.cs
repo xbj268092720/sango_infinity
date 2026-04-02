@@ -32,43 +32,41 @@ namespace Sango.Render
 
         public void Add(IRenderEventBase renderEvent)
         {
-            if (renderEvent.IsStack)
-                eventQueue.Insert(0, renderEvent);
-            else
-                eventQueue.Add(renderEvent);
+            eventQueue.Add(renderEvent);
+        }
+
+        public void AddFront(IRenderEventBase renderEvent)
+        {
+            eventQueue.Insert(0, renderEvent);
         }
 
         public bool Update(Scenario scenario, float deltaTime)
         {
-            while (CurEvent != null)
+            while (eventQueue.Count > 0)
             {
+                CurEvent = eventQueue[0];
+                if(!CurEvent.IsInited)
+                {
+                    CurEvent.IsInited = true;
+                    CurEvent.Enter(scenario);
+                }
+
                 if (!CurEvent.Update(scenario, deltaTime))
                     return false;
 
                 CurEvent.Exit(scenario);
+                eventQueue.RemoveAt(0);
                 ReturnToPool(CurEvent);
-                eventQueue.Remove(CurEvent);
                 CurEvent = null;
-
-                if (eventQueue.Count > 0)
-                {
-                    CurEvent = eventQueue[0];
-                    CurEvent.Enter(scenario);
-                }
             }
-
-            if (eventQueue.Count > 0)
-            {
-                CurEvent = eventQueue[0];
-                CurEvent.Enter(scenario);
-                return false;
-            }
-
             return true;
         }
 
         void ReturnToPool(IRenderEventBase renderEvent)
         {
+            renderEvent.IsInited = false;
+            renderEvent.IsDone = false;
+
             string key = renderEvent.GetType().FullName;
             Stack<IRenderEventBase> stack;
             if (!eventPool.TryGetValue(key, out stack))

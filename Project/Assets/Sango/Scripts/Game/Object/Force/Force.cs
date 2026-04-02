@@ -700,7 +700,7 @@ namespace Sango.Core
                                     // 创建相机移动事件
                                     CameraMoveEvent cameraMoveEvent = RenderEvent.Instance.Create<CameraMoveEvent>();
                                     cameraMoveEvent.Init(troopCity.CenterCell.Position, 0.5f, GameDialog.DialogStyle.ClickPersonSay, $"{ColorName}大人，\n我军细作传来消息,有敌军正在往我方{targetCity.ColorName}靠近!!。", Counsellor, null, null);
-                                    RenderEvent.Instance.Add(cameraMoveEvent);
+                                    RenderEvent.Instance.AddFront(cameraMoveEvent);
                                     
                                     // 触发发现敌方部队事件
                                     GameEvent.OnDiscoverEnemyTroop?.Invoke(this, targetCity, troop, Counsellor);

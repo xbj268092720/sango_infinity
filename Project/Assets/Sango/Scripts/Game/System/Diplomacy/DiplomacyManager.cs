@@ -98,6 +98,7 @@ namespace Sango.Core
         {
             int currentRelation = GetRelation(forceA, forceB);
             SetRelation(forceA, forceB, currentRelation + value);
+            Player.PlayerMessage.AddTextMessage($"{forceA.ColorName}与{forceB.ColorName}的关系得到了提升!!", forceA, forceB.Governor.BelongCity.x, forceB.Governor.BelongCity.y);
         }
 
         /// <summary>
@@ -1151,6 +1152,102 @@ namespace Sango.Core
             {
 #if SANGO_DEBUG
                 Sango.Log.Print($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动失败了！成功率: {successRate}%");
+#endif
+                // 外交失败减少关系
+                int relationDecrease = 0;
+                switch (actionType)
+                {
+                    case DiplomacyActionType.Alliance:
+                    case DiplomacyActionType.AllianceRequest:
+                        relationDecrease = 50;
+                        break;
+                    case DiplomacyActionType.Truce:
+                    case DiplomacyActionType.TruceRequest:
+                        relationDecrease = 30;
+                        break;
+                    case DiplomacyActionType.RequestTechnique:
+                        relationDecrease = 100;
+                        break;
+                    case DiplomacyActionType.RequestTroops:
+                        relationDecrease = 150;
+                        break;
+                    case DiplomacyActionType.Trade:
+                        relationDecrease = 40;
+                        break;
+                    case DiplomacyActionType.Marriage:
+                        relationDecrease = 80;
+                        break;
+                    case DiplomacyActionType.Ransom:
+                        relationDecrease = 60;
+                        break;
+                    default:
+                        relationDecrease = 20;
+                        break;
+                }
+
+                ReduceRelation(person.BelongForce, receiverForce, relationDecrease);
+
+#if SANGO_DEBUG
+                Sango.Log.Print($"@外交@{person.BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
+#endif
+            }
+        }
+
+        public void DoPersonDiplomacyActionNoCheck(bool success, Person person, DiplomacyActionType actionType, Force receiverForce, int resourceValue, int captiveId)
+        {
+            switch (actionType)
+            {
+                case DiplomacyActionType.Alliance:
+                    PerformAlliance(person.BelongForce, receiverForce);
+                    break;
+                case DiplomacyActionType.Truce:
+                    PerformTruce(person.BelongForce, receiverForce);
+                    break;
+                case DiplomacyActionType.DeclareWar:
+                    PerformDeclareWar(person.BelongForce, receiverForce);
+                    break;
+                case DiplomacyActionType.SendGift:
+                    // 使用missionParams3存储礼物价值
+                    PerformSendGift(person.BelongForce, receiverForce, resourceValue);
+                    break;
+                case DiplomacyActionType.RequestTechnique:
+                    // 使用missionParams3存储技术ID
+                    PerformRequestTechnique(person.BelongForce, receiverForce, resourceValue);
+                    break;
+                case DiplomacyActionType.RequestTroops:
+                    // 使用missionParams3存储兵力数量
+                    PerformRequestTroops(person.BelongForce, receiverForce, resourceValue);
+                    break;
+                case DiplomacyActionType.Trade:
+                    PerformTrade(person.BelongForce, receiverForce);
+                    break;
+                case DiplomacyActionType.Marriage:
+                    PerformMarriage(person.BelongForce, receiverForce);
+                    break;
+                case DiplomacyActionType.AllianceRequest:
+                    PerformAllianceRequest(person.BelongForce, receiverForce);
+                    break;
+                case DiplomacyActionType.TruceRequest:
+                    PerformTruceRequest(person.BelongForce, receiverForce);
+                    break;
+                case DiplomacyActionType.Ransom:
+
+                    // 使用missionParams3存储赎金，missionParams4存储俘虏ID
+                    PerformRansom(person, receiverForce, resourceValue, captiveId);
+                    break;
+            }
+
+            // 输出调试信息
+            if (success)
+            {
+#if SANGO_DEBUG
+                Sango.Log.Print($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动成功了！");
+#endif
+            }
+            else
+            {
+#if SANGO_DEBUG
+                Sango.Log.Print($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动失败了！");
 #endif
                 // 外交失败减少关系
                 int relationDecrease = 0;

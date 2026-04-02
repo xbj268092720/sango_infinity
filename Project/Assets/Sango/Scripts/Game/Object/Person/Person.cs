@@ -786,7 +786,7 @@ namespace Sango.Core
                             ClearMission();
                             CityRecruitPersonEvent te = RenderEvent.Instance.Create<CityRecruitPersonEvent>();
                             te.Init(this, dest_person);
-                            RenderEvent.Instance.Add(te);
+                            RenderEvent.Instance.AddFront(te);
                             SetMission(MissionType.PersonReturn, BelongCity);
                         }
                     }

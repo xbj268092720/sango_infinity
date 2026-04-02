@@ -2825,7 +2825,7 @@ namespace Sango.Core
             {
                 CityRecruitPersonEvent te = RenderEvent.Instance.Create<CityRecruitPersonEvent>();
                 te.Init(person, dest);
-                RenderEvent.Instance.Add(te);
+                RenderEvent.Instance.AddFront(te);
                 BelongCorps.ReduceActionPoint(apCost);
                 return true;
             }

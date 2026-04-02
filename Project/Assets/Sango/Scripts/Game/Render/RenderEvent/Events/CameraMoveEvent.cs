@@ -30,11 +30,7 @@ namespace Sango.Render
         /// </summary>
         private Vector3 startPosition;
 
-        /// <summary>
-        /// 是否可以堆叠
-        /// </summary>
-        public override bool IsStack => true;
-
+        
         /// <summary>
         /// 对话框样式
         /// </summary>

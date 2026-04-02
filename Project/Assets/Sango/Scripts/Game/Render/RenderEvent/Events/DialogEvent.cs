@@ -4,7 +4,6 @@ namespace Sango.Render
 {
     public class DialogEvent : RenderEventBase
     {
-        public override bool IsStack => true;
         public GameDialog.DialogStyle dialogStyle;
         public string content;
         public Person person;

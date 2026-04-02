@@ -131,5 +131,15 @@ namespace Sango.Core
             valueSortFunc = (a, b) => SangoObject.Compare(a.Governor, b.Governor),
         };
 
+        public static SortTitle GetSortByDistanceDay(City where)
+        {
+            return new SortTitle()
+            {
+                name = "期间",
+                width = 50,
+                valueStrGetCall = x => $"{x.Governor.DistanceDays(where)}0日",
+                valueSortFunc = (a, b) => a.Governor.DistanceDays(where).CompareTo(b.Governor.DistanceDays(where)),
+            };
+        }
     }
 }

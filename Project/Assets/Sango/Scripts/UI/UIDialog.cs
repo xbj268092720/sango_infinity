@@ -54,7 +54,7 @@ namespace Sango.UI
         public void StartTalk(List<TalkData> talkData, System.Action talkEndAction)
         {
             this.talkData = talkData;
-            this.talkEndAction = sureAction;
+            this.talkEndAction = talkEndAction;
             NextTalk();
         }
 
