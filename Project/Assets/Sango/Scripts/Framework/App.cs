@@ -7,45 +7,50 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.UI;
+
 namespace Sango
 {
     /// <summary>
     /// Unity3D游戏主框架类
     /// </summary>
-    public abstract class App<T> where T : class, new()
+    public abstract class App 
     {
-        private static T _instance;
-        public static T Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-#if UNITY_EDITOR
-                    try
-                    {
-                        _instance = new T();
-                    }
-                    catch (System.Exception e)
-                    {
-                        UnityEngine.Debug.LogError(e);
-                    }
-#else
-                    _instance = new T();
-#endif
-                }
-                return _instance;
-            }
-        }
+        protected static App _app_instance;
+        public static App Instance => _app_instance;
+        /// <summary>
+        /// UI相机
+        /// </summary>
+        public Camera UICamera { get; set; }
+
+        /// <summary>
+        /// UI根节点
+        /// </summary>
+        public RectTransform UIRoot { get; set; }
+
+        /// <summary>
+        /// 根画布
+        /// </summary>
+        public Canvas RootCanvas { get; set; }
+
+        /// <summary>
+        /// 画布缩放器
+        /// </summary>
+        public CanvasScaler CanvasScaler { get; set; }
+
+        /// <summary>
+        /// 画布缩放因子
+        /// </summary>
+        public float CanvasScalerFactor { get; set; }
 
         /// <summary>
         /// 框架根游戏物体，脚本依赖此根，通常会挂到此游戏物体下
         /// </summary>
-        internal MonoBehaviour rootBehaviour;
+        protected MonoBehaviour rootBehaviour;
         /// <summary>
         /// 框架根行为脚本
         /// </summary>
-        internal GameObject rootGameObject;
+        protected GameObject rootGameObject;
         /// <summary>
         /// 更新对象
         /// </summary>

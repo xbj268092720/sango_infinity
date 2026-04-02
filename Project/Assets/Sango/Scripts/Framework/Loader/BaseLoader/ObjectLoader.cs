@@ -31,7 +31,7 @@ namespace Sango.Loader
             if (helper == null)
             {
                 helper = new LoaderHelper();
-                Game.Instance.AddTick(helper);
+                App.Instance.AddTick(helper);
             }
         }
         protected static LoadData CheckExistLoader(string fileName)

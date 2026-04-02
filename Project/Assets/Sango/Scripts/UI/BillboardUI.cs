@@ -1,9 +1,7 @@
-using UnityEngine;
-using System.Collections;
 using Sango.Render;
-using Sango.Core;
+using UnityEngine;
 
-namespace Sango
+namespace Sango.UI
 {
     public class BillboardUI : MonoBehaviour
     {
@@ -13,6 +11,7 @@ namespace Sango
         public Vector3 cacheOffset = new Vector3(0f, 0f, 0f);
         private Transform cacheTrans;
         float tempFactor;
+
 
         private void Start()
         {

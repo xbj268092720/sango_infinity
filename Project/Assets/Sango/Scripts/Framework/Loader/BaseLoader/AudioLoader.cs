@@ -135,9 +135,9 @@ namespace Sango.Loader
                 UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip($"file://{filePath}", audioType);
 
                 // 使用Unity的协程系统处理异步加载
-                if (Game.Instance != null)
+                if (App.Instance != null)
                 {
-                    Game.Instance.StartCoroutine(LoadAudioCoroutine(www, filePath, callback, is3D, customData));
+                    App.Instance.StartCoroutine(LoadAudioCoroutine(www, filePath, callback, is3D, customData));
                 }
                 else
                 {

@@ -286,7 +286,7 @@ namespace Sango
                     Transform node = aniNode[i];
                     Vector3 targetPos = node.position;
                     float height;
-                    if (!MapRender.QueryHeight(targetPos, out height))
+                    if (!Render.MapRender.QueryHeight(targetPos, out height))
                     {
                         return;
                     }

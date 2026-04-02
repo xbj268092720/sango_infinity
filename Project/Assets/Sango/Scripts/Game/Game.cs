@@ -20,32 +20,34 @@ namespace Sango.Core
     /// <summary>
     /// 游戏核心类，管理游戏的初始化、更新、暂停、恢复和关闭
     /// </summary>
-    public class Game : App<Game>
+    public class Game : App
     {
-        /// <summary>
-        /// UI相机
-        /// </summary>
-        public Camera UICamera { get; internal set; }
+        private static Game _instance;
 
-        /// <summary>
-        /// UI根节点
-        /// </summary>
-        public RectTransform UIRoot { get; internal set; }
+        public new static Game Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+#if UNITY_EDITOR
+                    try
+                    {
+                        _instance = new Game();
+                        _app_instance = _instance;
+                    }
+                    catch (System.Exception e)
+                    {
+                        UnityEngine.Debug.LogError(e);
+                    }
+#else
+                    _instance = new T();
+#endif
+                }
+                return _instance;
+            }
+        }
 
-        /// <summary>
-        /// 根画布
-        /// </summary>
-        public Canvas RootCanvas { get; internal set; }
-
-        /// <summary>
-        /// 画布缩放器
-        /// </summary>
-        public CanvasScaler CanvasScaler { get; internal set; }
-
-        /// <summary>
-        /// 画布缩放因子
-        /// </summary>
-        public float CanvasScalerFactor { get; internal set; }
 
         /// <summary>
         /// 初始化状态

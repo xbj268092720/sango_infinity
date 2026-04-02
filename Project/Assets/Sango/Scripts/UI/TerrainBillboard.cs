@@ -1,6 +1,5 @@
-using UnityEngine;
-using System.Collections;
 using Sango.Render;
+using UnityEngine;
 
 namespace Sango
 {

@@ -2,10 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine;
-using Sango;
-using Sango.Mod;
-using System.Linq;
 
 namespace Sango
 {

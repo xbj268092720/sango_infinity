@@ -84,7 +84,7 @@ namespace Sango.Loader
                 return;
             }
 
-            Sango.Core.Game.Instance.StartCoroutine(LoadImage(filePath, OnLoaded, loadData));
+            App.Instance.StartCoroutine(LoadImage(filePath, OnLoaded, loadData));
 
         }
         public static void LoadFromFile(string filePath, object customData, OnObjectLoaded onLoadedFunc, bool textureNeedCompress = true, bool needMipmap = true)
