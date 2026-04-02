@@ -843,11 +843,8 @@ namespace Sango.Game
                         {
                             building.Workers.ForEach((worker) =>
                             {
-                                CityPersonSearchingEvent te = new CityPersonSearchingEvent()
-                                {
-                                    city = city,
-                                    person = worker,
-                                };
+                                CityPersonSearchingEvent te = RenderEvent.Instance.Create<CityPersonSearchingEvent>();
+                                te.Init(city, worker);
                                 RenderEvent.Instance.Add(te);
                             });
                         }

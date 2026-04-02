@@ -1,4 +1,4 @@
-﻿using Sango.Render;
+using Sango.Render;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +13,17 @@ namespace Sango.Game.Render
         private bool isAction = false;
         private SkillInstance replaceSkill;
         private float time = 0;
+
+        public void Init(Troop troop, SkillInstance skill, Cell spellCell)
+        {
+            this.troop = troop;
+            this.skill = skill;
+            this.spellCell = spellCell;
+            this.isAction = false;
+            this.replaceSkill = null;
+            this.time = 0;
+            IsDone = false;
+        }
         public override void Enter(Scenario scenario)
         {
             isAction = false;

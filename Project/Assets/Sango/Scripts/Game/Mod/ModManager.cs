@@ -22,7 +22,7 @@ namespace Sango.Mod
 
         public void Init()
         {
-            string path = Path.ContentRootPath + "/Package";
+            string path = $"{Path.ContentRootPath}/Package/{PlatformUtility.GetPlatformName()}";
             Directory.EnumFiles(path, "*.pkg", SearchOption.AllDirectories, (file) =>
             {
                 Sango.Log.Print($"LoadPackage: {file}");

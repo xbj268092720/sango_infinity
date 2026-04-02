@@ -1,4 +1,4 @@
-﻿using Sango.Render;
+using Sango.Render;
 using System;
 using UnityEngine;
 
@@ -12,6 +12,16 @@ namespace Sango.Game.Render
         public Cell dest;
         public bool isLastMove;
         public System.Action doneAction;
+
+        public void Init(Troop troop, Cell start, Cell dest, bool isLastMove, System.Action doneAction)
+        {
+            this.troop = troop;
+            this.start = start;
+            this.dest = dest;
+            this.isLastMove = isLastMove;
+            this.doneAction = doneAction;
+            IsDone = false;
+        }
 
         public override void Enter(Scenario scenario)
         {

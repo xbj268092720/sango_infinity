@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Sango.Game
@@ -56,11 +56,8 @@ namespace Sango.Game
                     GameEvent.OnForceResearchComplete?.Invoke(force, technique);
                     if (force.IsPlayer)
                     {
-                        Render.WindowEvent windowEvent = new Render.WindowEvent()
-                        {
-                            windowName = "window_technique_complete",
-                            args = new object[] { technique }
-                        };
+                        Render.WindowEvent windowEvent = Render.RenderEvent.Instance.Create<Render.WindowEvent>();
+                        windowEvent.Init("window_technique_complete", new object[] { technique });
                         Render.RenderEvent.Instance.Add(windowEvent);
                     }
                 }

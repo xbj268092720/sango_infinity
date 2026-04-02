@@ -1,4 +1,4 @@
-﻿using Sango.Game.Action;
+using Sango.Game.Action;
 using Sango.Game.Render.UI;
 using System.Collections.Generic;
 
@@ -9,6 +9,14 @@ namespace Sango.Game.Render
         public Person person;
         public Person target;
         public bool result;
+
+        public void Init(Person person, Person target, bool result)
+        {
+            this.person = person;
+            this.target = target;
+            this.result = result;
+            IsDone = false;
+        }
         
         public override void Enter(Scenario scenario)
         {

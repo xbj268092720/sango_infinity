@@ -1,4 +1,4 @@
-﻿using Sango.Game.Action;
+using Sango.Game.Action;
 using Sango.Game.Render.UI;
 using System.Collections.Generic;
 
@@ -11,6 +11,16 @@ namespace Sango.Game.Render
         public City escapeCity;
         public Troop atk;
         public int recruitType;
+
+        public void Init(List<Person> captiveList, City targetCity, City escapeCity, Troop atk, int recruitType)
+        {
+            this.captiveList = captiveList;
+            this.targetCity = targetCity;
+            this.escapeCity = escapeCity;
+            this.atk = atk;
+            this.recruitType = recruitType;
+            IsDone = false;
+        }
         public override void Enter(Scenario scenario)
         {
             if (captiveList.Count == 0)

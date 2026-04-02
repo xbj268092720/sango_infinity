@@ -1,4 +1,4 @@
-﻿using Sango.Render;
+using Sango.Render;
 using System;
 using UnityEngine;
 
@@ -9,6 +9,13 @@ namespace Sango.Game.Render
     {
         public Troop troop;
         public System.Action doneAction;
+
+        public void Init(Troop troop, System.Action doneAction)
+        {
+            this.troop = troop;
+            this.doneAction = doneAction;
+            IsDone = false;
+        }
 
         public override void Enter(Scenario scenario)
         {

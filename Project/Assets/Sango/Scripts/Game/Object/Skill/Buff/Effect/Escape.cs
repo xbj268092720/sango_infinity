@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json.Linq;
+using TKNewtonsoft.Json.Linq;
 using Sango.Game.Render;
 using System.Collections.Generic;
 
@@ -21,11 +21,9 @@ namespace Sango.Game
             {
                 troop.ActionOver = true;
                 troop.TryMoveToCity(troop.BelongCity);
-                Render.RenderEvent.Instance.Add(new TroopEscapeToCityEvent()
-                {
-                    troop = troop,
-                    dest = troop.BelongCity
-                });
+                TroopEscapeToCityEvent @event = Render.RenderEvent.Instance.Create<TroopEscapeToCityEvent>();
+                @event.Init(troop, troop.BelongCity, null);
+                Render.RenderEvent.Instance.Add(@event);
             }
         }
 

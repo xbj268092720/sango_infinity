@@ -785,11 +785,8 @@ namespace Sango.Game
 
                         if (DoMove(dest, scenario))
                         {
-                            CityRecruitPersonEvent te = new CityRecruitPersonEvent()
-                            {
-                                person = this,
-                                target = dest_person,
-                            };
+                            CityRecruitPersonEvent te = RenderEvent.Instance.Create<CityRecruitPersonEvent>();
+                            te.Init(this, dest_person);
                             RenderEvent.Instance.Add(te);
                             SetMission(MissionType.PersonReturn, BelongCity);
                         }
@@ -841,9 +838,15 @@ namespace Sango.Game
                                 SetMission(MissionType.PersonReturn, BelongCity);
                                 return;
                             }
-
                             DiplomacyActionType actionType = (DiplomacyActionType)missionParams2;
-                            DiplomacyManager.Instance.DoPersonDiplomacyAction(this, actionType, receiverForce, missionParams3, missionParams4);
+                            if (this.IsPlayer || receiverForce.IsPlayer)
+                            {
+
+                            }
+                            else
+                            {
+                                DiplomacyManager.Instance.DoPersonDiplomacyAction(this, actionType, receiverForce, missionParams3, missionParams4);
+                            }
 
                             // 完成任务，返回原城市
                             SetMission(MissionType.PersonReturn, BelongCity);

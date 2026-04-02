@@ -1079,13 +1079,8 @@ namespace Sango.Game
                 {
                     bool isLast = i == tempCellList.Count - 1;
                     Cell dest = tempCellList[i];
-                    TroopMoveEvent @event = new TroopMoveEvent()
-                    {
-                        troop = this,
-                        dest = dest,
-                        start = start,
-                        isLastMove = isLast
-                    };
+                    TroopMoveEvent @event = RenderEvent.Instance.Create<TroopMoveEvent>();
+                    @event.Init(this, start, dest, isLast, null);
 
                     if (isLast)
                         moveRenderEvent = @event;
@@ -1131,13 +1126,9 @@ namespace Sango.Game
                         }
                     }
 
-                    RenderEvent.Instance.Add(new TroopMoveEvent()
-                    {
-                        troop = this,
-                        dest = dest,
-                        start = start,
-                        isLastMove = i == tempCellList.Count - 1
-                    });
+                    TroopMoveEvent @event = RenderEvent.Instance.Create<TroopMoveEvent>();
+                    @event.Init(this, start, dest, i == tempCellList.Count - 1, null);
+                    RenderEvent.Instance.Add(@event);
                     start = dest;
 
                     if (findSpell)
@@ -1273,24 +1264,15 @@ namespace Sango.Game
 #if SANGO_DEBUG
                     Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 技能: {skill.Name} =>({spellCell.x},{spellCell.y})]  暴击判定成功!  暴击伤害倍率{criticalFactor}!!");
 #endif
-                    TroopSpellSkillCriticalEvent @event = new TroopSpellSkillCriticalEvent()
-                    {
-                        troop = this,
-                        skill = skill,
-                        spellCell = spellCell,
-                        criticalFactor = criticalFactor
-                    };
+                    TroopSpellSkillCriticalEvent @event = RenderEvent.Instance.Create<TroopSpellSkillCriticalEvent>();
+                    @event.Init(this, skill, spellCell, criticalFactor);
                     actionRenderEvent = @event;
                     RenderEvent.Instance.Add(@event);
                 }
                 else
                 {
-                    TroopSpellSkillEvent @event = new TroopSpellSkillEvent()
-                    {
-                        troop = this,
-                        skill = skill,
-                        spellCell = spellCell,
-                    };
+                    TroopSpellSkillEvent @event = RenderEvent.Instance.Create<TroopSpellSkillEvent>();
+                    @event.Init(this, skill, spellCell);
                     actionRenderEvent = @event;
                     RenderEvent.Instance.Add(@event);
                 }
@@ -1300,12 +1282,8 @@ namespace Sango.Game
 #if SANGO_DEBUG
                 Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 技能: {skill.Name} =>({spellCell.x},{spellCell.y})]  判定失败! 释放不成功!!");
 #endif
-                TroopSpellSkillFailEvent @event = new TroopSpellSkillFailEvent()
-                {
-                    troop = this,
-                    skill = skill,
-                    spellCell = spellCell,
-                };
+                TroopSpellSkillFailEvent @event = RenderEvent.Instance.Create<TroopSpellSkillFailEvent>();
+                @event.Init(this, skill, spellCell);
                 actionRenderEvent = @event;
                 RenderEvent.Instance.Add(@event);
             }
@@ -1325,12 +1303,8 @@ namespace Sango.Game
                     return false;
             }
 
-            TroopBuildBuildingEvent @event = new TroopBuildBuildingEvent()
-            {
-                troop = this,
-                buildingType = buildingType,
-                targetCell = dest,
-            };
+            TroopBuildBuildingEvent @event = RenderEvent.Instance.Create<TroopBuildBuildingEvent>();
+            @event.Init(this, buildingType, dest);
             actionRenderEvent = @event;
             RenderEvent.Instance.Add(@event);
 

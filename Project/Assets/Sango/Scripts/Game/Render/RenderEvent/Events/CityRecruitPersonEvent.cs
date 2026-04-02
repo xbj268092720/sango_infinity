@@ -1,4 +1,4 @@
-﻿using Sango.Game.Action;
+using Sango.Game.Action;
 using Sango.Game.Render.UI;
 using System.Collections.Generic;
 
@@ -10,6 +10,13 @@ namespace Sango.Game.Render
         public Person person;
         public Person target;
         static List<ActionBase> sJobActions = new List<ActionBase>();
+
+        public void Init(Person person, Person target)
+        {
+            this.person = person;
+            this.target = target;
+            IsDone = false;
+        }
         void InitJobFeature(Person person)
         {
             sJobActions.Clear();

@@ -1,4 +1,4 @@
-﻿using TKNewtonsoft.Json;
+using TKNewtonsoft.Json;
 using Sango.Game.Render;
 
 namespace Sango.Game
@@ -84,12 +84,8 @@ namespace Sango.Game
             int dmg = damage + intelligence * 2 - troop.Intelligence - troop.Defence;
            // if (troop.ChangeTroops(-dmg, this, false))
             {
-                FireDamageEvent @event = new FireDamageEvent()
-                {
-                    fire = this,
-                    targetTroop = troop,
-                    damage = dmg
-                };
+                FireDamageEvent @event = RenderEvent.Instance.Create<FireDamageEvent>();
+                @event.Init(this, dmg, troop, null);
                 RenderEvent.Instance.Add(@event);
             }
         }
@@ -105,12 +101,8 @@ namespace Sango.Game
             if (dmg > 0)
             {
                 //building.ChangeDurability(-dmg, this, false);
-                FireDamageEvent @event = new()
-                {
-                    fire = this,
-                    targetBuilding = building,
-                    damage = dmg
-                };
+                FireDamageEvent @event = RenderEvent.Instance.Create<FireDamageEvent>();
+                @event.Init(this, dmg, null, building);
                 RenderEvent.Instance.Add(@event);
             }
         }

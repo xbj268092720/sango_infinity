@@ -159,100 +159,109 @@ namespace Sango.Loader
         public static UnityEngine.Object LoadObject(string assetName, string packageName, System.Type objType, params object[] ps)
         {
             string objName = assetName;
-            if (!string.IsNullOrEmpty(packageName))
+
+            // 优先外面读取
+            UnityEngine.Object obj = null;
+            if (objType == TextureType)
             {
-                string storeName = string.Format("obj_{0}_{1}", packageName, objName);
-                UnityEngine.Object obj = AssetStore.Instance.GetAsset(storeName);
-                if (obj == null)
-                {
-                    if (packageName.Equals("Resources"))
-                    {
-                        obj = Resources.Load(objName, objType);
-                    }
-                    else
-                    {
-                        obj = PackageManager.Instance.LoadAssets(packageName, objName, objType);
-                    }
-
-                    if (obj != null)
-                    {
-                        AssetStore.Instance.StoreAsset(storeName, obj);
-                    }
-                    else
-                    {
-                        if (objType == TextureType)
-                        {
-                            bool textureNeedCompress = true;
-                            bool needMipmap = false;
-                            if (ps.Length > 0)
-                                textureNeedCompress = (bool)ps[0];
-                            if (ps.Length > 1)
-                                needMipmap = (bool)ps[1];
-                            obj = TextureLoader.LoadFromFileSync(objName, textureNeedCompress, needMipmap);
-                        }
-                        else if (objType == MaterialType && ps.Length > 0)
-                        {
-                            obj = MaterialLoader.LoadMaterial(objName, (bool)ps[0]);
-                        }
-                        else if (objType == GameObjectType && ps.Length > 3)
-                        {
-                            obj = ModelLoader.LoadFromFileSync(objName, (string)ps[0], (bool)ps[1], (string)ps[2], (bool)ps[3]);
-                        }
-                        else if (objType == SpriteType)
-                        {
-                            obj = SpriteLoader.LoadSprite(objName);
-                        }
-                        else if (objType == AudioClipType)
-                        {
-                            bool is3D = false;
-                            if (ps.Length > 0)
-                                is3D = (bool)ps[0];
-                            obj = AudioLoader.LoadFromFileSync(objName, is3D);
-                        }
-                    }
-                }
-                return obj;
+                bool textureNeedCompress = true;
+                bool needMipmap = false;
+                if (ps.Length > 0)
+                    textureNeedCompress = (bool)ps[0];
+                if (ps.Length > 1)
+                    needMipmap = (bool)ps[1];
+                obj = TextureLoader.LoadFromFileSync(objName, textureNeedCompress, needMipmap);
             }
-            else
+            else if (objType == MaterialType && ps.Length > 0)
             {
-                UnityEngine.Object obj = null;
-                if (objType == TextureType)
-                {
-                    bool textureNeedCompress = true;
-                    bool needMipmap = false;
-                    if (ps.Length > 0)
-                        textureNeedCompress = (bool)ps[0];
-                    if (ps.Length > 1)
-                        needMipmap = (bool)ps[1];
-                    obj = TextureLoader.LoadFromFileSync(objName, textureNeedCompress, needMipmap);
-                }
-                else if (objType == MaterialType && ps.Length > 0)
-                {
-                    obj = MaterialLoader.LoadMaterial(objName, (bool)ps[0]);
-                }
-                else if (objType == GameObjectType && ps.Length > 3)
-                {
-                    obj = ModelLoader.LoadFromFileSync(objName, (string)ps[0], (bool)ps[1], (string)ps[2], (bool)ps[3]);
-                }
-                else if (objType == SpriteType)
-                {
-                    obj = SpriteLoader.LoadSprite(objName);
-                }
-                else if (objType == AudioClipType)
-                {
-                    bool is3D = false;
-                    if (ps.Length > 0)
-                        is3D = (bool)ps[0];
-                    obj = AudioLoader.LoadFromFileSync(objName, is3D);
-                }
-
-                if (obj == null)
-                {
-                    obj = LoadObject(assetName, "Content", objType, ps);
-                }
-
-                return obj;
+                obj = MaterialLoader.LoadMaterial(objName, (bool)ps[0]);
             }
+            else if (objType == GameObjectType && ps.Length > 3)
+            {
+                obj = ModelLoader.LoadFromFileSync(objName, (string)ps[0], (bool)ps[1], (string)ps[2], (bool)ps[3]);
+            }
+            else if (objType == SpriteType)
+            {
+                obj = SpriteLoader.LoadSprite(objName);
+            }
+            else if (objType == AudioClipType)
+            {
+                bool is3D = false;
+                if (ps.Length > 0)
+                    is3D = (bool)ps[0];
+                obj = AudioLoader.LoadFromFileSync(objName, is3D);
+            }
+
+            if (obj == null)
+            {
+                obj = LoadFromPackage(assetName, packageName, objType, ps);
+                if (obj == null)
+                    obj = LoadFromPackage(assetName, "Content", objType, ps);
+            }
+            return obj;
+        }
+
+        static UnityEngine.Object LoadFromPackage(string assetName, string packageName, System.Type objType, params object[] ps)
+        {
+            if (string.IsNullOrEmpty(packageName)) return null;
+
+            string objName = assetName;
+
+            // 优先外面读取
+            UnityEngine.Object obj = null;
+
+            string storeName = string.Format("obj_{0}_{1}", packageName, objName);
+            obj = AssetStore.Instance.GetAsset(storeName);
+            if (obj == null)
+            {
+                if (packageName.Equals("Resources"))
+                {
+                    obj = Resources.Load(objName, objType);
+                }
+                else
+                {
+                    obj = PackageManager.Instance.LoadAssets(packageName, objName, objType);
+                }
+
+                if (obj != null)
+                {
+                    AssetStore.Instance.StoreAsset(storeName, obj);
+                }
+                else
+                {
+                    if (objType == TextureType)
+                    {
+                        bool textureNeedCompress = true;
+                        bool needMipmap = false;
+                        if (ps.Length > 0)
+                            textureNeedCompress = (bool)ps[0];
+                        if (ps.Length > 1)
+                            needMipmap = (bool)ps[1];
+                        obj = TextureLoader.LoadFromFileSync(objName, textureNeedCompress, needMipmap);
+                    }
+                    else if (objType == MaterialType && ps.Length > 0)
+                    {
+                        obj = MaterialLoader.LoadMaterial(objName, (bool)ps[0]);
+                    }
+                    else if (objType == GameObjectType && ps.Length > 3)
+                    {
+                        obj = ModelLoader.LoadFromFileSync(objName, (string)ps[0], (bool)ps[1], (string)ps[2], (bool)ps[3]);
+                    }
+                    else if (objType == SpriteType)
+                    {
+                        obj = SpriteLoader.LoadSprite(objName);
+                    }
+                    else if (objType == AudioClipType)
+                    {
+                        bool is3D = false;
+                        if (ps.Length > 0)
+                            is3D = (bool)ps[0];
+                        obj = AudioLoader.LoadFromFileSync(objName, is3D);
+                    }
+                }
+            }
+
+            return obj;
         }
 
         public static T LoadObject<T>(string assetName, params object[] ps) where T : UnityEngine.Object

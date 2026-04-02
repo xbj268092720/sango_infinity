@@ -212,11 +212,8 @@ namespace Sango.Game
                     Cell cell = effectCells[i];
                     if (cell.troop != null && IsEnemy(cell.troop))
                     {
-                        BuildingAttackEvent @event = new BuildingAttackEvent()
-                        {
-                            building = this,
-                            targetCell = cell,
-                        };
+                        BuildingAttackEvent @event = RenderEvent.Instance.Create<BuildingAttackEvent>();
+                        @event.Init(this, cell);
                         RenderEvent.Instance.Add(@event);
                     }
                 }

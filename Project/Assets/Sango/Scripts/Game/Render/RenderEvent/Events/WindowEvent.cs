@@ -1,4 +1,4 @@
-﻿using Sango.Game.Render.UI;
+using Sango.Game.Render.UI;
 
 namespace Sango.Game.Render
 {
@@ -8,6 +8,13 @@ namespace Sango.Game.Render
         public object[] args;
 
         Window.WindowInterface targetWindow;
+
+        public void Init(string windowName, object[] args)
+        {
+            this.windowName = windowName;
+            this.args = args;
+            IsDone = false;
+        }
         public override void Enter(Scenario scenario)
         {
             targetWindow = Window.Instance.Open(windowName, args);

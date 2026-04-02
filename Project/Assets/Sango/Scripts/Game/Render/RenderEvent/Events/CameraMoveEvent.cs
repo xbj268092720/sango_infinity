@@ -67,6 +67,28 @@ namespace Sango.Game.Render
         UIDialog dialog;
 
         /// <summary>
+        /// 初始化方法
+        /// </summary>
+        /// <param name="targetPosition">目标位置</param>
+        /// <param name="moveDuration">移动持续时间</param>
+        /// <param name="dialogStyle">对话框样式</param>
+        /// <param name="content">对话框内容</param>
+        /// <param name="person">人物对象</param>
+        /// <param name="sureAction">确认按钮回调</param>
+        /// <param name="cancelAction">取消按钮回调</param>
+        public void Init(Vector3 targetPosition, float moveDuration, UIDialog.DialogStyle dialogStyle, string content, Person person, System.Action sureAction, System.Action cancelAction)
+        {
+            this.targetPosition = targetPosition;
+            this.moveDuration = moveDuration;
+            this.dialogStyle = dialogStyle;
+            this.content = content;
+            this.person = person;
+            this.sureAction = sureAction;
+            this.cancelAction = cancelAction;
+            IsDone = false;
+        }
+
+        /// <summary>
         /// 进入事件处理
         /// </summary>
         /// <param name="scenario">场景实例</param>

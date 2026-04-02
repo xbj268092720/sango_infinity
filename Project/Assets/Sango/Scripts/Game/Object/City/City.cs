@@ -1735,22 +1735,13 @@ namespace Sango.Game
 
             if (atk.BelongCorps.IsPlayer)
             {
-                Render.WindowEvent windowEvent = new Render.WindowEvent()
-                {
-                    windowName = "window_city_complete",
-                    args = new object[] { Name }
-                };
+                Render.WindowEvent windowEvent = RenderEvent.Instance.Create<Render.WindowEvent>();
+                windowEvent.Init("window_city_complete", new object[] { Name });
                 RenderEvent.Instance.Add(windowEvent);
             }
 
-            CityRecruitPersonWhenCityFallEvent te = new CityRecruitPersonWhenCityFallEvent()
-            {
-                captiveList = temp_captive_list,
-                atk = atk,
-                targetCity = this,
-                escapeCity = escapeCity,
-                recruitType = escapeCity == null ? 2 : 0
-            };
+            CityRecruitPersonWhenCityFallEvent te = RenderEvent.Instance.Create<CityRecruitPersonWhenCityFallEvent>();
+            te.Init(temp_captive_list, this, escapeCity, atk, escapeCity == null ? 2 : 0);
             RenderEvent.Instance.Add(te);
 
         }
@@ -2832,11 +2823,8 @@ namespace Sango.Game
             freePersons.Remove(person);
             if (dest.BelongCity == person.BelongCity)
             {
-                CityRecruitPersonEvent te = new CityRecruitPersonEvent()
-                {
-                    person = person,
-                    target = dest,
-                };
+                CityRecruitPersonEvent te = RenderEvent.Instance.Create<CityRecruitPersonEvent>();
+                te.Init(person, dest);
                 RenderEvent.Instance.Add(te);
                 BelongCorps.ReduceActionPoint(apCost);
                 return true;
@@ -2940,11 +2928,8 @@ namespace Sango.Game
             {
                 Person person = personList[i];
                 if (person == null) continue;
-                CityPersonSearchingEvent te = new CityPersonSearchingEvent()
-                {
-                    city = this,
-                    person = person,
-                };
+                CityPersonSearchingEvent te = RenderEvent.Instance.Create<CityPersonSearchingEvent>();
+                te.Init(this, person);
                 RenderEvent.Instance.Add(te);
             }
             return true;

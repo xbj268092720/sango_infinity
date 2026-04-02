@@ -1,4 +1,4 @@
-﻿
+
 using Sango.Game.Render;
 using System.Collections.Generic;
 
@@ -43,19 +43,8 @@ namespace Sango.Game.Player
             {
                 bool isLast = i == MovePath.Count - 1;
                 Cell dest = MovePath[i];
-                TroopMoveEvent @event = new TroopMoveEvent()
-                {
-                    troop = TargetTroop,
-                    dest = dest,
-                    start = start,
-                    isLastMove = isLast
-                };
-
-                if (isLast)
-                {
-                    @event.doneAction = OnMoveDone;
-                }
-
+                TroopMoveEvent @event = RenderEvent.Instance.Create<TroopMoveEvent>();
+                @event.Init(TargetTroop, start, dest, isLast, isLast ? OnMoveDone : null);
                 RenderEvent.Instance.Add(@event);
                 start = dest;
             }

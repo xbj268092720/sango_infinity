@@ -1,4 +1,4 @@
-﻿using Sango.Game.Render.UI;
+using Sango.Game.Render.UI;
 using UnityEngine;
 
 namespace Sango.Game.Render
@@ -8,6 +8,14 @@ namespace Sango.Game.Render
         public City city;
         public Person person;
         public Person target;
+
+        public void Init(City city, Person person)
+        {
+            this.city = city;
+            this.person = person;
+            this.target = null;
+            IsDone = false;
+        }
         public override void Enter(Scenario scenario)
         {
             int rs = city.DoJobSearching(person, out target);

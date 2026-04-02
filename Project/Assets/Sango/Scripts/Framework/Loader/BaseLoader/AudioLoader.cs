@@ -20,11 +20,9 @@ namespace Sango.Loader
             {
                 return obj as AudioClip;
             }
-
             filePath = Path.FindFile(filePath);
             if (filePath == null)
             {
-                Debug.LogError($"音频文件不存在: {filePath}");
                 return null;
             }
             try

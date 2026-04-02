@@ -1,4 +1,4 @@
-﻿using Sango.Render;
+using Sango.Render;
 using UnityEngine;
 
 
@@ -11,6 +11,16 @@ namespace Sango.Game.Render
         public Cell targetCell;
         private bool isAction = false;
         private float time = 0;
+
+        public void Init(Troop troop, BuildingType buildingType, Cell targetCell)
+        {
+            this.troop = troop;
+            this.buildingType = buildingType;
+            this.targetCell = targetCell;
+            this.isAction = false;
+            this.time = 0;
+            IsDone = false;
+        }
         public override void Enter(Scenario scenario)
         {
             isAction = false;

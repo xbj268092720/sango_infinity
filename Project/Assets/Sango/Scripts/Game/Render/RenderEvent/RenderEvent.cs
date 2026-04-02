@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Sango.Game.Render
 {
@@ -6,6 +8,29 @@ namespace Sango.Game.Render
     {
         List<IRenderEventBase> eventQueue = new List<IRenderEventBase>();
         IRenderEventBase CurEvent { get; set; }
+        Dictionary<string, Stack<IRenderEventBase>> eventPool = new Dictionary<string, Stack<IRenderEventBase>>();
+
+        public T Create<T>() where T : IRenderEventBase, new()
+        {
+            string key = typeof(T).FullName;
+
+            Stack<IRenderEventBase> stack;
+            if (!eventPool.TryGetValue(key, out stack))
+            {
+                stack = new Stack<IRenderEventBase>();
+                eventPool[key] = stack;
+            }
+
+            if (stack.Count > 0)
+            {
+                return (T)stack.Pop();
+            }
+            else
+            {
+                return new T();
+            }
+        }
+
         public void Add(IRenderEventBase renderEvent)
         {
             if (renderEvent.IsStack)
@@ -22,6 +47,7 @@ namespace Sango.Game.Render
                     return false;
 
                 CurEvent.Exit(scenario);
+                ReturnToPool(CurEvent);
                 eventQueue.Remove(CurEvent);
                 CurEvent = null;
 
@@ -40,6 +66,18 @@ namespace Sango.Game.Render
             }
 
             return true;
+        }
+
+        void ReturnToPool(IRenderEventBase renderEvent)
+        {
+            string key = renderEvent.GetType().FullName;
+            Stack<IRenderEventBase> stack;
+            if (!eventPool.TryGetValue(key, out stack))
+            {
+                stack = new Stack<IRenderEventBase>();
+                eventPool[key] = stack;
+            }
+            stack.Push(renderEvent);
         }
     }
 }

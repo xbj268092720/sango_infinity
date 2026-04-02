@@ -27,11 +27,8 @@ namespace Sango.Game
             DebateManager.Instance.StartDebate(participant1, participant2);
             
             // 打开舌战窗口
-            Sango.Game.Render.WindowEvent windowEvent = new Sango.Game.Render.WindowEvent()
-            {
-                windowName = "window_debate",
-                args = new object[] { }
-            };
+            Sango.Game.Render.WindowEvent windowEvent = Sango.Game.Render.RenderEvent.Instance.Create<Sango.Game.Render.WindowEvent>();
+            windowEvent.Init("window_debate", new object[] { });
             Sango.Game.Render.RenderEvent.Instance.Add(windowEvent);
         }
 

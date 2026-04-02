@@ -1,4 +1,4 @@
-﻿using Sango.Game.Render;
+using Sango.Game.Render;
 using Sango.Game.Render.UI;
 
 namespace Sango.Game.Player
@@ -28,16 +28,11 @@ namespace Sango.Game.Player
             }
       
             PlayerMessage.AddPersonMessage($"下一步，我们该干些什么呢？。", person);
-            DialogEvent te = new DialogEvent()
+            DialogEvent te = RenderEvent.Instance.Create<DialogEvent>();
+            te.Init(UIDialog.DialogStyle.ClickPersonSay, $"{force.ColorName}大人，\n终于轮到我们了啊。", person, null, () =>
             {
-                dialogStyle = UIDialog.DialogStyle.ClickPersonSay,
-                content = $"{force.ColorName}大人，\n终于轮到我们了啊。",
-                person = person,
-                cancelAction = () =>
-                {
-                    Done();
-                }
-            };
+                Done();
+            });
             RenderEvent.Instance.Add(te);
 
         }

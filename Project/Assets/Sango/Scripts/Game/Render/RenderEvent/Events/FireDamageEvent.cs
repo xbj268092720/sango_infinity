@@ -1,4 +1,4 @@
-﻿using Sango.Render;
+using Sango.Render;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +13,17 @@ namespace Sango.Game.Render
         public BuildingBase targetBuilding;
         public float actTime = 0.1f;
         private float time = 0;
+
+        public void Init(Fire fire, int damage, Troop targetTroop, BuildingBase targetBuilding, float actTime = 0.1f)
+        {
+            this.fire = fire;
+            this.damage = damage;
+            this.targetTroop = targetTroop;
+            this.targetBuilding = targetBuilding;
+            this.actTime = actTime;
+            this.time = 0;
+            IsDone = false;
+        }
         public override void Enter(Scenario scenario)
         {
             time = 0;
