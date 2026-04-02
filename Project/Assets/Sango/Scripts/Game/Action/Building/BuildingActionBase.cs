@@ -1,6 +1,6 @@
 using TKNewtonsoft.Json.Linq;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 建筑动作基类

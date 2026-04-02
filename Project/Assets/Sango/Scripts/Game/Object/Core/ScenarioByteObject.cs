@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Sango.Game
+namespace Sango.Core
 {
 
     public abstract class ScenarioByteObject<T> where T : SangoObject, new()

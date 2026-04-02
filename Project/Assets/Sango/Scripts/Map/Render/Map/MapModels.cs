@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using Sango;
 using UnityEngine.Rendering;
-using Sango.Game;
+using Sango.Core;
 using Sango.Loader;
 using Sango.Tools;
 

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 单元格类，管理游戏地图中的单个单元格

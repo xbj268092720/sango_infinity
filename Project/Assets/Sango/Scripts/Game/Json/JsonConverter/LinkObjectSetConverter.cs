@@ -2,7 +2,7 @@
 //using TKNewtonsoft.Json.Converters;
 //using System;
 
-//namespace Sango.Game
+//namespace Sango.Core
 //{
 //    public class SangoObjectSetConverter<T> : CustomCreationConverter<SangoObjectSet<T>> where T : SangoObject, new()
 //    {

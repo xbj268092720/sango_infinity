@@ -1,6 +1,6 @@
-﻿using Sango.Game.Render.UI;
+﻿using Sango.UI;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class PlayerEndTurn : GameSystem
@@ -34,14 +34,14 @@ namespace Sango.Game.Player
         public override void OnEnter()
         {
             updateTroopAI = false;
-            UIDialog.Open("是否需要结束玩家回合", () =>
+            GameDialog.Open("是否需要结束玩家回合", () =>
             {
                 updateTroopAI = true;
 
-                UIDialog.Close();
+                GameDialog.Close();
             }).cancelAction = ()=>
             {
-                UIDialog.Close();
+                GameDialog.Close();
                 Done();
             };
         }
@@ -68,7 +68,7 @@ namespace Sango.Game.Player
 
         public override void OnDestroy()
         {
-            UIDialog.Close();
+            GameDialog.Close();
         }
 
         public override void HandleEvent(CommandEventType eventType, Cell cell, UnityEngine.Vector3 clickPosition, bool isOverUI)

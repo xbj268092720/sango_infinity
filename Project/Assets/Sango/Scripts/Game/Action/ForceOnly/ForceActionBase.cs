@@ -1,6 +1,6 @@
 using TKNewtonsoft.Json.Linq;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 势力动作基类，所有与势力相关的动作都继承自此类

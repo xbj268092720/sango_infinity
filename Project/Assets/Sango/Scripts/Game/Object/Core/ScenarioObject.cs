@@ -1,7 +1,7 @@
 ﻿using SimpleJSON;
 using System.IO;
 
-namespace Sango.Game
+namespace Sango.Core
 {
 
     public abstract class ScenarioObject<T> where T : SangoObject, new()

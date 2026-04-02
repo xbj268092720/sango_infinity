@@ -9,7 +9,7 @@ using System.IO;
 using TKNewtonsoft.Json;
 using System.Xml;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 64位位检查类，用于管理64位状态

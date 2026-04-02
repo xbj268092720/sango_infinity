@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class CityBuildBuilding : CityBaseSystem
@@ -163,7 +163,7 @@ namespace Sango.Game.Player
                 }
             }
             ShowBuildRange();
-            Render.UI.ContextMenu.SetVisible(false);
+            UI.ContextMenu.SetVisible(false);
             SelectBuildingObject = MapObject.Create(TargetBuildingType.Name);
             SelectBuildingObject.objType = TargetBuildingType.kind;
             SelectBuildingObject.modelId = TargetBuildingType.Id;

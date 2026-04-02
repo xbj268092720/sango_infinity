@@ -1,4 +1,4 @@
-﻿using Sango.Game.Player;
+﻿using Sango.Core.Player;
 using Sango.Loader;
 using Sango.Render;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     public class UIGame : UGUIWindow
     {
@@ -227,14 +227,14 @@ namespace Sango.Game.Render.UI
         {
             pauseObj.SetActive(false);
             resumeObj.SetActive(true);
-            Sango.Game.Scenario.Pause();
+            Sango.Core.Scenario.Pause();
         }
 
         public void OnBtnResume()
         {
             pauseObj.SetActive(true);
             resumeObj.SetActive(false);
-            Sango.Game.Scenario.Resume();
+            Sango.Core.Scenario.Resume();
         }
 
 
@@ -242,14 +242,14 @@ namespace Sango.Game.Render.UI
         {
             pauseObj.SetActive(false);
             resumeObj.SetActive(true);
-            Sango.Game.Scenario.NextForce();
+            Sango.Core.Scenario.NextForce();
         }
 
         public void OnBtnNextTurn()
         {
             pauseObj.SetActive(false);
             resumeObj.SetActive(true);
-            Sango.Game.Scenario.NextTurn();
+            Sango.Core.Scenario.NextTurn();
         }
 
         public void OnBtnDebugAI()
@@ -361,7 +361,7 @@ namespace Sango.Game.Render.UI
         public void OnSave()
         {
             Save();
-            //if (Sango.Game.Scenario.Cur.PauseTrunCount == Sango.Game.Scenario.Cur.Info.turnCount)
+            //if (Sango.Core.Scenario.Cur.PauseTrunCount == Sango.Core.Scenario.Cur.Info.turnCount)
             //{
             //    Save();
             //}
@@ -460,7 +460,7 @@ namespace Sango.Game.Render.UI
         {
             if (needSave)
             {
-                if (Sango.Game.Scenario.Cur.PauseTrunCount == Sango.Game.Scenario.Cur.Info.turnCount)
+                if (Sango.Core.Scenario.Cur.PauseTrunCount == Sango.Core.Scenario.Cur.Info.turnCount)
                 {
                     Save();
                     needSave = false;

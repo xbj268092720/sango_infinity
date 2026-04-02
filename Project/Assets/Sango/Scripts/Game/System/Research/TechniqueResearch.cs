@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 科技研究模块

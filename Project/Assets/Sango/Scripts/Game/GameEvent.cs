@@ -1,8 +1,8 @@
-using Sango.Game.Tools;
+using Sango.Core.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class GameEvent : EventBase
     {
@@ -624,6 +624,11 @@ namespace Sango.Game
         /// </summary>
         public static EventDelegate<Force, Force, int, bool> OnDiplomacyRansom;
         #endregion Diplomacy
+
+        #region bridge
+        public static EventDelegate DialogClose;
+        public static EventDelegate<Person, string, System.Action, System.Action> DialogShow;
+        #endregion
 
         #endregion Game
 

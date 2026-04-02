@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class TroopSelectSystem : ObjectSelectSystem

@@ -1,7 +1,7 @@
 ﻿using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     public abstract class TroopActionBase : ActionBase
     {

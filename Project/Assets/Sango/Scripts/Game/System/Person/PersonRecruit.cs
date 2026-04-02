@@ -1,7 +1,7 @@
-using Sango.Game.Render;
-using Sango.Game.Render.UI;
+using Sango.Render;
+using Sango.UI;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [GameSystem]
     public class PersonRecruit : GameSystem
@@ -87,9 +87,9 @@ namespace Sango.Game
                     result = recruitor.JobRecruitPerson(target, recruitType) == true ? 1 : 0;
                 if (result == 1)
                 {
-                    UIDialog dialog1 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
+                    GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
                     {
-                        UIDialog.Close();
+                        GameDialog.Close();
                         Done();
                         doneAction?.Invoke(this);
                     });
@@ -115,17 +115,17 @@ namespace Sango.Game
                     result = recruitor.JobRecruitPerson(target, recruitType) == true ? 1 : 0;
                 if (result == 0)
                 {
-                    UIDialog dialog1 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, talk[GameRandom.Range(0, talk.Length)], () =>
+                    GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, talk[GameRandom.Range(0, talk.Length)], () =>
                     {
-                        UIDialog.Close();
+                        GameDialog.Close();
                     });
                     dialog1.SetPerson(target);
                 }
                 else if (result == 1)
                 {
-                    UIDialog dialog1 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
+                    GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
                     {
-                        UIDialog.Close();
+                        GameDialog.Close();
                         Done();
                         doneAction?.Invoke(this);
                     });

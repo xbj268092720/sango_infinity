@@ -6,7 +6,7 @@ using UnityEngine;
 using Task = System.Threading.Tasks.Task;
 using System.Threading;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
 

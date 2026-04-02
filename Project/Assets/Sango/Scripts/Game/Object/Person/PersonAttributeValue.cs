@@ -2,7 +2,7 @@
 using System.Collections;
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class PersonAttributeValue : IAarryDataObject

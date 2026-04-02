@@ -5,17 +5,17 @@
  * 最后修改：2026-03-27
  */
 
-using Sango.Game.Action;
+using Sango.Core.Action;
 using Sango.Mod;
 using Sango.Render;
 using Sango.Tools;
 using Sango.Manager;
-using Sango.Game.Debate;
+using Sango.Core.Debate;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 游戏核心类，管理游戏的初始化、更新、暂停、恢复和关闭

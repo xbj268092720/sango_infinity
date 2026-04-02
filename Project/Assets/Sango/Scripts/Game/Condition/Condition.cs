@@ -1,7 +1,7 @@
 using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 条件基类，所有游戏中的条件判断都继承自此类

@@ -1,11 +1,6 @@
-﻿
-using Sango.Game.Render.Model;
-using Sango.Game.Render.UI;
-using Sango.Loader;
-using Sango.Render;
-using UnityEngine;
+﻿using Sango.Core;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class PortRender : BuildingBaseRender
     {

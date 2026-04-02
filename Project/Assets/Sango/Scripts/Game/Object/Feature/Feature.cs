@@ -1,9 +1,9 @@
 ﻿using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
-using Sango.Game.Action;
+using Sango.Core.Action;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 特性

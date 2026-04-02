@@ -1,6 +1,6 @@
 using HybridCLR;
 
-using Sango.Game;
+using Sango.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -71,7 +71,7 @@ namespace Sango.Mod
             //Game.GameData.LoadBin(path);
 
             // 加载技能配置
-            Sango.Game.SkillConfigManager.Instance.LoadModSkillConfigs(this);
+            Sango.Core.SkillConfigManager.Instance.LoadModSkillConfigs(this);
         }
 
         public void LoadAssembly()

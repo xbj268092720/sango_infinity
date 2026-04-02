@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public interface ILinkObject { }
 

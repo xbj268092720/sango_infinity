@@ -1,8 +1,8 @@
-﻿using Sango.Game.Tools;
+﻿using Sango.Core.Tools;
 using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     public abstract class ForceTroopActionBase : ForceActionBase
     {

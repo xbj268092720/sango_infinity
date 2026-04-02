@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Sango.Game.Object.Arrow
+namespace Sango.Core.Object.Arrow
 {
     /// <summary>
     /// 创建爆炸特效预制体

@@ -1,8 +1,8 @@
 using TKNewtonsoft.Json.Linq;
-using Sango.Game.Tools;
+using Sango.Core.Tools;
 using System.Collections.Generic;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 计算建筑的粮食产量，并提升系数  

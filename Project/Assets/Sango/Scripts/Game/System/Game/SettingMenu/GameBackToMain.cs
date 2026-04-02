@@ -1,6 +1,6 @@
-﻿using Sango.Game.Render.UI;
+﻿using Sango.UI;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class GameBackToMain : GameSettingMenuBase
@@ -13,21 +13,21 @@ namespace Sango.Game.Player
 
         public override void OnEnter()
         {
-            UIDialog.Open("是否需要回到游戏主菜单", () =>
+            GameDialog.Open("是否需要回到游戏主菜单", () =>
             {
                 Done();
-                UIDialog.Close();
+                GameDialog.Close();
                 GameSystem.GetSystem<Player>().QuitToMainMenu();
             }).cancelAction = () =>
             {
-                UIDialog.Close();
+                GameDialog.Close();
                 Done();
             }; ;
         }
 
         public override void OnDestroy()
         {
-            UIDialog.Close();
+            GameDialog.Close();
         }
     }
 }

@@ -1,11 +1,7 @@
-﻿
-using Sango.Game.Render.Model;
-using Sango.Game.Render.UI;
-using Sango.Loader;
-using Sango.Render;
+﻿using Sango.Core;
 using UnityEngine;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class FireRender : ObjectRender
     {

@@ -1,7 +1,7 @@
-﻿using Sango.Game.Player;
+﻿using Sango.Core.Player;
 using UnityEngine;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     public class UIObjectSelector : UIObjectDisplay
     {
@@ -71,7 +71,7 @@ namespace Sango.Game.Render.UI
             {
                 RectTransform itemRect = uIObjectListItemsRect[i];
                 UIObjectListItem listItem = uIObjectListItems[i];
-                if (listItem == currentSelectItem && RectTransformUtility.RectangleContainsScreenPoint(itemRect, Input.mousePosition, Sango.Game.Game.Instance.UICamera))
+                if (listItem == currentSelectItem && RectTransformUtility.RectangleContainsScreenPoint(itemRect, Input.mousePosition, Sango.Core.Game.Instance.UICamera))
                 {
                     OnPersonListSelected(item);
                     break;
@@ -151,7 +151,7 @@ namespace Sango.Game.Render.UI
             {
                 RectTransform itemRect = uIObjectListItemsRect[i];
                 UIObjectListItem listItem = uIObjectListItems[i];
-                if (listItem != item && RectTransformUtility.RectangleContainsScreenPoint(itemRect, Input.mousePosition, Sango.Game.Game.Instance.UICamera))
+                if (listItem != item && RectTransformUtility.RectangleContainsScreenPoint(itemRect, Input.mousePosition, Sango.Core.Game.Instance.UICamera))
                 {
                     if (listItem.IsSelected() && !dragFlag)
                     {

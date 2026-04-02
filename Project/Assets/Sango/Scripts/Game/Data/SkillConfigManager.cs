@@ -3,7 +3,7 @@ using System.IO;
 using TKNewtonsoft.Json;
 using Sango.Mod;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 技能配置管理器

@@ -1,5 +1,5 @@
 ﻿
-using Sango.Game;
+using Sango.Core;
 using Sango.Loader;
 using System;
 using System.IO;

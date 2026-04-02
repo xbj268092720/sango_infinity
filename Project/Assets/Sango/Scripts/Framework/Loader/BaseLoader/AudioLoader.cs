@@ -2,6 +2,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using Sango.Core;
 
 namespace Sango.Loader
 {
@@ -134,9 +135,9 @@ namespace Sango.Loader
                 UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip($"file://{filePath}", audioType);
 
                 // 使用Unity的协程系统处理异步加载
-                if (Game.Game.Instance != null)
+                if (Game.Instance != null)
                 {
-                    Game.Game.Instance.StartCoroutine(LoadAudioCoroutine(www, filePath, callback, is3D, customData));
+                    Game.Instance.StartCoroutine(LoadAudioCoroutine(www, filePath, callback, is3D, customData));
                 }
                 else
                 {

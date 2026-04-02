@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public static class GameRandom
     {

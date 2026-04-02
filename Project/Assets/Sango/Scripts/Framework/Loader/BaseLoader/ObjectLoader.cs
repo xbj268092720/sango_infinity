@@ -1,9 +1,8 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using Sango;
+using Sango.Core;
 using System;
-using System.CodeDom;
 
 namespace Sango.Loader
 {
@@ -32,7 +31,7 @@ namespace Sango.Loader
             if (helper == null)
             {
                 helper = new LoaderHelper();
-                Game.Game.Instance.AddTick(helper);
+                Game.Instance.AddTick(helper);
             }
         }
         protected static LoadData CheckExistLoader(string fileName)

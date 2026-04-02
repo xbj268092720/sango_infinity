@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using static Sango.Game.PersonSortFunction;
+using static Sango.Core.PersonSortFunction;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class PersonSelectSystem : ObjectSelectSystem

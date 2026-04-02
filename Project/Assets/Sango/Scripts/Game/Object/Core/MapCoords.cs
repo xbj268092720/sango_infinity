@@ -2,7 +2,7 @@
 using System.Collections;
 using System.IO;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public struct MapCoords
     {

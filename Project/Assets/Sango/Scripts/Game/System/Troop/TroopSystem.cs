@@ -1,7 +1,7 @@
 ﻿using Sango.Render;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class TroopSystem : GameSystem

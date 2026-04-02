@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Sango.Loader;
 
-namespace Sango.Game.Object.Arrow
+namespace Sango.Core.Object.Arrow
 {
     /// <summary>
     /// 弓兵部队弓箭管理器

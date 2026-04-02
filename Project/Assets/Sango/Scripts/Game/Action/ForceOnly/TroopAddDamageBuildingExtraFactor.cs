@@ -1,7 +1,7 @@
-﻿using Sango.Game.Tools;
+﻿using Sango.Core.Tools;
 using TKNewtonsoft.Json.Linq;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 某兵种战法耐久破坏威力(百分比)增加

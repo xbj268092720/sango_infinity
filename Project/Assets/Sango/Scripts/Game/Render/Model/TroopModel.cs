@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Sango.Core;
+using UnityEngine;
 
-namespace Sango.Game.Render.Model
+namespace Sango.Render.Model
 {
     public class TroopModel : MonoBehaviour
     {

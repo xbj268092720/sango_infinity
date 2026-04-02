@@ -20,7 +20,7 @@ namespace UnityEngine.UI
             if (cacheTrans != null)
             {
                 cachePosition = cacheTrans.anchoredPosition;
-                uiRoot = Sango.Game.Game.Instance.UIRoot;
+                uiRoot = Sango.Core.Game.Instance.UIRoot;
             }
 
             if (!dontResetCachePosition)

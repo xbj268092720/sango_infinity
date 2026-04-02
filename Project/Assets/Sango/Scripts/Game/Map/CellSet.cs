@@ -3,7 +3,7 @@ using System.IO;
 using TKNewtonsoft.Json;
 using System.Text;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 单元格集合类，管理游戏地图中的所有单元格

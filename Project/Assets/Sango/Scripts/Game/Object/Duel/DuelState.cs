@@ -1,4 +1,4 @@
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 单挑状态枚举

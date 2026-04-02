@@ -1,4 +1,4 @@
-﻿namespace Sango.Game.Render
+﻿namespace Sango.Render
 {
     public enum RenderEventType : int
     {

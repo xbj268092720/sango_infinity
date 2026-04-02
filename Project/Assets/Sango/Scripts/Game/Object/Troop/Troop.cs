@@ -1,11 +1,11 @@
-using Sango.Game.Action;
-using Sango.Game.Render;
+using Sango.Core.Action;
+using Sango.Render;
 using Sango.Tools;
 using System;
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Troop : SangoObject

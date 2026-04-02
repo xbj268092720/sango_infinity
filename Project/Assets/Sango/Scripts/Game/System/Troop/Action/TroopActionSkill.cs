@@ -1,9 +1,9 @@
-﻿using Sango.Game.Render;
-using Sango.Game.Render.UI;
+﻿using Sango.Render;
+using Sango.UI;
 using Sango.Render;
 using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class TroopActionSkill : TroopActionAttack

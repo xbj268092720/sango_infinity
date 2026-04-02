@@ -2,7 +2,7 @@ using TKNewtonsoft.Json;
 using Sango.Mod;
 using System.Xml;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class GameData : Singleton<GameData>
     {

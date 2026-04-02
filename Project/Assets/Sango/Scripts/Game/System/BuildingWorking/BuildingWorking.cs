@@ -1,9 +1,8 @@
-using Sango.Game.Render;
-using Sango.Game.Render.UI;
+using Sango.Render;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 建筑工作模块

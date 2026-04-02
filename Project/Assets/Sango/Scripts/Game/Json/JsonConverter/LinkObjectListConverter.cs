@@ -1,7 +1,7 @@
 ﻿//using TKNewtonsoft.Json;
 //using System;
 
-//namespace Sango.Game
+//namespace Sango.Core
 //{
 //    public class LinkObjectListConverter<T, T1> : JsonConverter<LinkObjectList<T, T1>> where T : ScenarioObject<T1>, new() where T1 : SangoObject, new()
 //    {

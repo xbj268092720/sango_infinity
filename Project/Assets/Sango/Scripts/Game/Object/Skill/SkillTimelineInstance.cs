@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 技能时间轴实例

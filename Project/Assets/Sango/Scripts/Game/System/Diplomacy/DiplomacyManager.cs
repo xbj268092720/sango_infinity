@@ -3,7 +3,7 @@ using TKNewtonsoft.Json;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 外交管理器

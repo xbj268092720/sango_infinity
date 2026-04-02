@@ -4,7 +4,7 @@ using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Skill : SangoObject

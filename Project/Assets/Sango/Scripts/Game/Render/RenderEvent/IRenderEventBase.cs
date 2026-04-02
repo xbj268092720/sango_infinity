@@ -1,4 +1,6 @@
-﻿namespace Sango.Game.Render
+﻿using Sango.Core;
+
+namespace Sango.Render
 {
     public interface IRenderEventBase
     {

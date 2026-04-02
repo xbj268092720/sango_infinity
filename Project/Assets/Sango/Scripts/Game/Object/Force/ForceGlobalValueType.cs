@@ -2,7 +2,7 @@
 using TKNewtonsoft.Json.Serialization;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public enum GameEffectType
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class TroopType : SangoObject

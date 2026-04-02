@@ -1,4 +1,4 @@
-﻿namespace Sango.Game.Player
+﻿namespace Sango.Core.Player
 {
     /// <summary>
     /// 部队委任-占领城池

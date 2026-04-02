@@ -1,8 +1,8 @@
-﻿using Sango.Game.Player;
+﻿using Sango.Core.Player;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     public class UICitySearching : UGUIWindow
     {
@@ -31,13 +31,13 @@ namespace Sango.Game.Render.UI
                     content = $"我对此任务很有信心，\n请务必交给我吧。";
                 }
 
-                UIDialog dialog = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, content, () => { UIDialog.Close(); UpdateContent(); });
+                GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, content, () => { GameDialog.Close(); UpdateContent(); });
                 Person person = TargetCity.BelongForce.Counsellor;
                 dialog.SetPerson(person);
             }
             else
             {
-                UIDialog dialog = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"如今并无适合担任此任务的人选。", () => { UIDialog.Close(); });
+                GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"如今并无适合担任此任务的人选。", () => { GameDialog.Close(); });
             }
         }
 

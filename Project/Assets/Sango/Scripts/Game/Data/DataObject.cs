@@ -1,4 +1,4 @@
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 数据对象抽象类，实现IDataObject接口

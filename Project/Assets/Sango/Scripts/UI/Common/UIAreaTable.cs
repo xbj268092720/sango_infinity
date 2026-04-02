@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Security.Principal;
 using UnityEngine;
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
 
     public class UIAreaTable : MonoBehaviour

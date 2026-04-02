@@ -1,7 +1,7 @@
 using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 势力检查条件

@@ -1,8 +1,8 @@
-﻿using Sango.Game.Render.UI;
+﻿using Sango.UI;
 using System;
 using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class CityTransport : CityBaseSystem

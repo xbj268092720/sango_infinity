@@ -1,6 +1,6 @@
-﻿using ContextMenu = Sango.Game.Render.UI.ContextMenu;
+﻿using ContextMenu = Sango.UI.ContextMenu;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     /// <summary>
     /// 建筑拆除

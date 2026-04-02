@@ -1,10 +1,10 @@
 using TKNewtonsoft.Json;
-using Sango.Game.Action;
-using Sango.Game.Render;
+using Sango.Core.Action;
+using Sango.Render;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 建筑类，继承自BuildingBase，用于管理游戏中的建筑对象

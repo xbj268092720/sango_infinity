@@ -1,6 +1,6 @@
 
 using Sango;
-using Sango.Game;
+using Sango.Core;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

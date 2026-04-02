@@ -1,7 +1,7 @@
 ﻿using TKNewtonsoft.Json;
 using System;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 角色兵种适应力

@@ -1,7 +1,7 @@
 ﻿using TKNewtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class ScenarioCommonData

@@ -7,7 +7,7 @@ using TKNewtonsoft.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
 

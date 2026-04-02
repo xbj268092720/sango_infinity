@@ -1,8 +1,8 @@
-﻿using Sango.Game.Player;
-using Sango.Game.Render.UI;
+﻿using Sango.Core.Player;
+using Sango.UI;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 势力情报

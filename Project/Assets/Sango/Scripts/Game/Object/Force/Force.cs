@@ -3,12 +3,12 @@ using System.IO;
 using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
 using TKNewtonsoft.Json.Serialization;
-using Sango.Game.Action;
-using Sango.Game.Render;
+using Sango.Core.Action;
+using Sango.Render;
 using UnityEngine;
 using System.Linq;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 势力类，继承自SangoObject，用于管理游戏中的势力对象
@@ -699,7 +699,7 @@ namespace Sango.Game
                                 {
                                     // 创建相机移动事件
                                     CameraMoveEvent cameraMoveEvent = RenderEvent.Instance.Create<CameraMoveEvent>();
-                                    cameraMoveEvent.Init(troopCity.CenterCell.Position, 0.5f, Render.UI.UIDialog.DialogStyle.ClickPersonSay, $"{ColorName}大人，\n我军细作传来消息,有敌军正在往我方{targetCity.ColorName}靠近!!。", Counsellor, null, null);
+                                    cameraMoveEvent.Init(troopCity.CenterCell.Position, 0.5f, GameDialog.DialogStyle.ClickPersonSay, $"{ColorName}大人，\n我军细作传来消息,有敌军正在往我方{targetCity.ColorName}靠近!!。", Counsellor, null, null);
                                     RenderEvent.Instance.Add(cameraMoveEvent);
                                     
                                     // 触发发现敌方部队事件

@@ -1,6 +1,6 @@
-using Sango.Game.Render.UI;
+using Sango.Core;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class DiplomacyEvent : RenderEventBase
     {

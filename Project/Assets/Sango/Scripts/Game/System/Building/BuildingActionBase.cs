@@ -1,6 +1,6 @@
-﻿using Sango.Game.Render.UI;
+﻿using Sango.UI;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     public class BuildingActionBase : GameSystem
     {

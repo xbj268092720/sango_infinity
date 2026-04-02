@@ -1,4 +1,4 @@
-﻿namespace Sango.Game
+﻿namespace Sango.Core
 {
     public class TroopTransformGoodsToCity : TroopMissionBehaviour
     {

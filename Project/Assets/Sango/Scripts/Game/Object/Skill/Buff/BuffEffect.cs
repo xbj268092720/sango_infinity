@@ -2,7 +2,7 @@ using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class BuffEffect
     {

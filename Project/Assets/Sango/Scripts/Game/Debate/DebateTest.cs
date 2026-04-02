@@ -6,9 +6,9 @@
  */
 
 using UnityEngine;
-using Sango.Game.Debate;
+using Sango.Core.Debate;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 舌战系统测试脚本

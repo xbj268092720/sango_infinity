@@ -1,11 +1,11 @@
 ﻿using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
-using Sango.Game.Action;
-using Sango.Game.Tools;
+using Sango.Core.Action;
+using Sango.Core.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 州

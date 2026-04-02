@@ -6,10 +6,10 @@
  */
 
 using System;
-using Sango.Game.Debate;
+using Sango.Core.Debate;
 using Sango.UI.Debate;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 舌战系统集成类
@@ -27,9 +27,9 @@ namespace Sango.Game
             DebateManager.Instance.StartDebate(participant1, participant2);
             
             // 打开舌战窗口
-            Sango.Game.Render.WindowEvent windowEvent = Sango.Game.Render.RenderEvent.Instance.Create<Sango.Game.Render.WindowEvent>();
+            Sango.Render.WindowEvent windowEvent = Sango.Render.RenderEvent.Instance.Create<Sango.Render.WindowEvent>();
             windowEvent.Init("window_debate", new object[] { });
-            Sango.Game.Render.RenderEvent.Instance.Add(windowEvent);
+            Sango.Render.RenderEvent.Instance.Add(windowEvent);
         }
 
         /// <summary>

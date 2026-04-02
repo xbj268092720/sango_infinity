@@ -3,7 +3,7 @@ using TKNewtonsoft.Json;
 using UnityEngine;
 
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class ScenarioVariables : SangoObject

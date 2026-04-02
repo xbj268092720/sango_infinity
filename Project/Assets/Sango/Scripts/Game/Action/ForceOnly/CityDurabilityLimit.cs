@@ -1,8 +1,8 @@
-﻿using Sango.Game.Tools;
+﻿using Sango.Core.Tools;
 using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 某类型城池的最大耐久增加

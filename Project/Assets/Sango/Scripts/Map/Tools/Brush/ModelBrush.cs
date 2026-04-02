@@ -1,4 +1,4 @@
-using Sango.Game;
+using Sango.Core;
 using Sango.Render;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace Sango.Tools
     {
         public class EditModelConfig
         {
-            public Sango.Game.ModelConfig modelConfig;
+            public Sango.Core.ModelConfig modelConfig;
             public string mod;
             public string shaderName;
             public bool isShardMat;

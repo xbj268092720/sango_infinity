@@ -4,24 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game.Render.UI
+using Sango.Core;
+using static Sango.Core.GameDialog;
+
+namespace Sango.UI
 {
     /// <summary>
     /// 游戏开始界面
     /// </summary>
-    public class UIDialog : UGUIWindow
+    public class UIDialog : UGUIWindow, IDialog
     {
-        public enum DialogStyle
-        {
-            Normal,
-            ChoosePersonSay,
-            Window,
-            ClickPersonSay,
-        }
-
         public Text content;
-        public System.Action cancelAction;
-        public System.Action sureAction;
+        public System.Action cancelAction { get; set; }
+        public System.Action sureAction { get; set; }
         public RectTransform panelRect;
         public RectTransform btnRect;
         public RawImage headImg;
@@ -29,7 +24,22 @@ namespace Sango.Game.Render.UI
         public List<TalkData> talkData;
         public System.Action talkEndAction;
 
-        static UIDialog CurInstance;
+        public override void OnShow(params object[] objects)
+        {
+            string _content = "";
+            System.Action _sureAction = null;
+            System.Action _cancelAction = null;
+            Vector3 _startPoint = Vector3.zero;
+            if (objects.Length > 0)
+                _content = objects[0] as string;
+            if (objects.Length > 1)
+                _sureAction = objects[1] as System.Action;
+            if (objects.Length > 2)
+                _cancelAction = objects[2] as System.Action;
+            if (objects.Length > 3)
+                _startPoint = (Vector3)objects[3];
+            Init(_content, _sureAction, _cancelAction, _startPoint);
+        }
 
         public void OnSure()
         {
@@ -41,81 +51,14 @@ namespace Sango.Game.Render.UI
             cancelAction?.Invoke();
         }
 
-        public struct TalkData
-        {
-            public string text;
-            public Person person;
-            public string sound;
-            public string bgm;
-        }
-
-        public static UIDialog StartTalk(List<TalkData> talk_content, System.Action endAction)
-        {
-            string windowName = "window_dialog2";
-            UIDialog uIDialog = Open(windowName, "", null, Input.mousePosition);
-            uIDialog._StartTalk(talk_content, endAction);
-            return uIDialog;
-        }
-
-        public static UIDialog Open(string content, System.Action sureAction)
-        {
-            return Open(content, sureAction, Input.mousePosition);
-        }
-
-        public static UIDialog Open(DialogStyle dialogStyle, string content, System.Action sureAction)
-        {
-            string windowName = "window_dialog";
-            switch (dialogStyle)
-            {
-                case DialogStyle.ChoosePersonSay:
-                    windowName = "window_dialog2"; break;
-                case DialogStyle.Window:
-                    windowName = "window_dialog3"; break;
-                case DialogStyle.ClickPersonSay:
-                    windowName = "window_dialog4"; break;
-            }
-            return Open(windowName, content, sureAction, Input.mousePosition);
-        }
-
-        public static UIDialog Open(string content, System.Action sureAction, Vector3 startPoint)
-        {
-            return Open("window_dialog", content, sureAction, startPoint);
-        }
-
-        public static UIDialog Open(string windowName, string content, System.Action sureAction, Vector3 startPoint)
-        {
-            Window.WindowInterface windowInterface = Window.Instance.Open(windowName);
-            if (windowInterface.ugui_instance == null)
-                return null;
-
-            UIDialog uIDialog = windowInterface.ugui_instance.GetComponent<UIDialog>();
-            if (uIDialog == null) return null;
-
-            uIDialog.content.text = content;
-            uIDialog.sureAction = sureAction;
-            uIDialog.cancelAction = Close;
-            CurInstance = uIDialog;
-
-            if (uIDialog.btnRect != null)
-            {
-                Vector2 anchorPos;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(uIDialog.GetComponent<RectTransform>(),
-                    startPoint, Game.Instance.UICamera, out anchorPos);
-
-                uIDialog.btnRect.anchoredPosition = anchorPos + new Vector2(-74, 0);
-            }
-
-            return uIDialog;
-        }
-
-        void _StartTalk(List<TalkData> talkData, System.Action talkEndAction)
+        public void StartTalk(List<TalkData> talkData, System.Action talkEndAction)
         {
             this.talkData = talkData;
             this.talkEndAction = sureAction;
             NextTalk();
         }
 
-        void NextTalk()
+        public void NextTalk()
         {
             TalkData data = talkData[0];
             talkData.RemoveAt(0);
@@ -130,7 +73,6 @@ namespace Sango.Game.Render.UI
             if (string.IsNullOrEmpty(data.bgm))
                 AudioManager.Instance.PlayBgm(data.bgm);
         }
-
 
         public void SetPerson(Person person)
         {
@@ -147,17 +89,34 @@ namespace Sango.Game.Render.UI
             nameText.text = person.Name;
         }
 
-        public static void Close()
+        public void SetContent(string str)
         {
-            CurInstance?.Hide();
-            CurInstance = null;
+            content.text = str;
         }
 
-        public static void Close(UIDialog uIDialog)
+        public void SetSureAction(Action action)
         {
-            if (uIDialog == CurInstance)
-                uIDialog.Hide();
-            CurInstance = null;
+            sureAction = action;
+        }
+
+        public void SetCancelAction(Action action)
+        {
+            cancelAction = action;
+        }
+
+        public void Init(string str, Action sure, Action cancel, Vector3 startPoint)
+        {
+            content.text = str;
+            sureAction = sure;
+            cancelAction = cancel;
+            if (btnRect != null)
+            {
+                Vector2 anchorPos;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(GetComponent<RectTransform>(),
+                    startPoint, Sango.Core.Game.Instance.UICamera, out anchorPos);
+
+                btnRect.anchoredPosition = anchorPos + new Vector2(-74, 0);
+            }
         }
     }
 }

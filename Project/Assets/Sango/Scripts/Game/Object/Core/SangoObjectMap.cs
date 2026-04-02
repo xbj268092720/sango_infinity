@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// SangoObject映射数据集

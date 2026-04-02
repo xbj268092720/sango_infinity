@@ -3,7 +3,7 @@ using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 技能成功率逻辑库

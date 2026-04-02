@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using UnityEngine.UIElements;
 using System.Collections;
 
-namespace Sango.Game
+namespace Sango.Core
 {
 
     /// <summary>

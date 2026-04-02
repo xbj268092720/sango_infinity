@@ -1,7 +1,7 @@
 
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class Personality : SangoObject
     {

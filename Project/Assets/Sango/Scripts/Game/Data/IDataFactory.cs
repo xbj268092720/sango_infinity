@@ -4,7 +4,7 @@ using System.IO;
 using TKNewtonsoft.Json;
 using System.Xml;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 数据工厂接口，用于创建数据对象

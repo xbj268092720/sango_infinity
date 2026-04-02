@@ -4,7 +4,7 @@ using TKNewtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class String2JArrayConverter : JsonConverter<JArray> 
     {

@@ -5,7 +5,7 @@
  * 最后修改：2026-03-27
  */
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 季节类型枚举

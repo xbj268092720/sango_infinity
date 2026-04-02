@@ -1,10 +1,10 @@
 ﻿using TKNewtonsoft.Json;
-using Sango.Game.Render;
+using Sango.Render;
 using Sango.Render;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
 

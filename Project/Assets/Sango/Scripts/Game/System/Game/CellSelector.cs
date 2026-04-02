@@ -1,9 +1,9 @@
-﻿using Sango.Game.Tools;
+﻿using Sango.Core.Tools;
 using Sango.Render;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [GameSystem]
     internal class CellSelector : GameSystem

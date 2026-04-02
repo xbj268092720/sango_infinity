@@ -3,7 +3,7 @@ using Sango.Mod;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 多语言文本管理

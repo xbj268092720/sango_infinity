@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 城池商人系统逻辑

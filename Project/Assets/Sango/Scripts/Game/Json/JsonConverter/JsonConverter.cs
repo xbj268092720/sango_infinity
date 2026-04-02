@@ -1,7 +1,7 @@
 ﻿using TKNewtonsoft.Json.Converters;
 using System;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public abstract class JsonConverter<T> : CustomCreationConverter<T> where T : new()
     {

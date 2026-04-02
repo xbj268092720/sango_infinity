@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 地图渲染接口

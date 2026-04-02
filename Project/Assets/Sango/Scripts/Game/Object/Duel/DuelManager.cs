@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 单挑管理器类，负责管理单挑过程

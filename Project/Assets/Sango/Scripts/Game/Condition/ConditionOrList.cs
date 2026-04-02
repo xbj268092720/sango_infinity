@@ -1,7 +1,7 @@
 ﻿using TKNewtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 或集,任何一个满足则返回true

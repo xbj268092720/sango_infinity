@@ -5,7 +5,7 @@ using System.IO;
 using System.Xml;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 数据加载器类，用于加载和保存各种类型的数据
@@ -893,7 +893,7 @@ namespace Sango.Game
             SimpleJSON.JSONNode classNode = AddArrayNode(node, name);
             for (int i = 0; i < count; ++i)
             {
-                value[i].Save(Sango.Game.DataLoader.AddNode(classNode));
+                value[i].Save(Sango.Core.DataLoader.AddNode(classNode));
             }
             return classNode;
         }
@@ -904,7 +904,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                o[i].Save(Sango.Game.DataLoader.AddNode(node));
+                o[i].Save(Sango.Core.DataLoader.AddNode(node));
             }
         }
 
@@ -914,7 +914,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<byte> o, SimpleJSON.JSONNode node)
@@ -923,7 +923,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<sbyte> o, SimpleJSON.JSONNode node)
@@ -932,7 +932,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<short> o, SimpleJSON.JSONNode node)
@@ -941,7 +941,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<ushort> o, SimpleJSON.JSONNode node)
@@ -950,7 +950,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<int> o, SimpleJSON.JSONNode node)
@@ -959,7 +959,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<uint> o, SimpleJSON.JSONNode node)
@@ -968,7 +968,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<long> o, SimpleJSON.JSONNode node)
@@ -977,7 +977,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<ulong> o, SimpleJSON.JSONNode node)
@@ -986,7 +986,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<bool> o, SimpleJSON.JSONNode node)
@@ -995,7 +995,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<float> o, SimpleJSON.JSONNode node)
@@ -1004,7 +1004,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
         public static void Save(IList<double> o, SimpleJSON.JSONNode node)
@@ -1013,7 +1013,7 @@ namespace Sango.Game
             int count = o.Count;
             for (int i = 0; i < count; ++i)
             {
-                Save(o[i], Sango.Game.DataLoader.AddNode(node));
+                Save(o[i], Sango.Core.DataLoader.AddNode(node));
             }
         }
 

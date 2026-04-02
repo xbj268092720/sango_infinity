@@ -1,10 +1,10 @@
-﻿using Sango.Game.Player;
+﻿using Sango.Core.Player;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     /// <summary>
     /// 存档读档界面
@@ -32,12 +32,12 @@ namespace Sango.Game.Render.UI
         List<GameObject> cityList = new List<GameObject>();
         ShortScenario newestData;
         UIScenarioSaveItem curSelectedItem;
-        Player.Player player;
+        Player player;
         bool isSave => sysType == 0;
 
         public override void OnShow(params object[] objects)
         {
-            player = GameSystem.GetSystem<Player.Player>();
+            player = GameSystem.GetSystem<Player>();
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
             curSelectIndex = -1;
 #else
@@ -185,12 +185,12 @@ namespace Sango.Game.Render.UI
         {
             ShortScenario scenario = player.all_saved_scenario_list[index];
             string content = scenario != null ? $"是否覆盖{index + 1}号存档" : $"是否保存至{index + 1}号存档";
-            UIDialog.Open(content, async () =>
+            GameDialog.Open(content, async () =>
             {
                 player.Save(index);
                 newestData = player.all_saved_scenario_list[index];
                 while(!newestData.loadOK) { }
-                UIDialog.Close();
+                GameDialog.Close();
                 ShowPage(curShowPage);
             });
         }
@@ -201,14 +201,14 @@ namespace Sango.Game.Render.UI
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
             GameSystemManager.Instance.Done();
             player.Load(index);
-            UIDialog.Close();
+            GameDialog.Close();
 #else
             string content = $"是否加载{index + 1}号存档？";
-            UIDialog.Open(content, () =>
+            GameDialog.Open(content, () =>
             {
                 GameSystemManager.Instance.Done();
                 player.Load(index);
-                UIDialog.Close();
+                GameDialog.Close();
             });
 #endif
         }
@@ -370,7 +370,7 @@ namespace Sango.Game.Render.UI
             for (int i = 0; i < selectedItems.Length; i++)
             {
                 UIScenarioSaveItem uIScenarioItem = selectedItems[i];
-                if (RectTransformUtility.RectangleContainsScreenPoint(uIScenarioItem.root, Input.mousePosition, Game.Instance.UICamera))
+                if (RectTransformUtility.RectangleContainsScreenPoint(uIScenarioItem.root, Input.mousePosition, Sango.Core.Game.Instance.UICamera))
                 {
                     if (uIScenarioItem.targetIndex < player.all_saved_scenario_list.Length)
                     {

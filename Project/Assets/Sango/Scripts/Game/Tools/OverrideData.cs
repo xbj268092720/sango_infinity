@@ -1,4 +1,4 @@
-﻿namespace Sango.Game.Tools
+﻿namespace Sango.Core.Tools
 {
     public class OverrideData<T>
     {

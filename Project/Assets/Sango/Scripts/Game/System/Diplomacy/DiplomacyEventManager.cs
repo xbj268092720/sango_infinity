@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Sango.Game.Player;
+using Sango.Core.Player;
 using System.IO;
 using TKNewtonsoft.Json;
 using Sango.Mod;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 外交事件管理器

@@ -1,11 +1,10 @@
 
-using Sango.Game.Render.Model;
-using Sango.Game.Render.UI;
-using Sango.Loader;
-using Sango.Render;
+using Sango.Core;
+using Sango.Render.Model;
+using Sango.UI;
 using UnityEngine;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class TroopRender : ObjectRender
     {

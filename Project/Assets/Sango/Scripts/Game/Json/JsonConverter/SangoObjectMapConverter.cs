@@ -1,7 +1,7 @@
 ﻿using TKNewtonsoft.Json;
 using System;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class SangoObjectMaptConverter<T> : JsonConverter<SangoObjectMap<T>> where T : SangoObject, new()
     {

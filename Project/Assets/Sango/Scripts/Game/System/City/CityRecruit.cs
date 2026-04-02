@@ -1,7 +1,6 @@
-﻿using Sango.Game.Render.UI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class CityRecruit : CityBaseSystem
@@ -105,7 +104,7 @@ namespace Sango.Game.Player
         }
         public override void OnDestroy()
         {
-            UIDialog.Close();
+            GameDialog.Close();
             Window.Instance.Close(windowName);
         }
 
@@ -130,10 +129,10 @@ namespace Sango.Game.Player
 
             if (!TargetCity.JobRecruitPerson(personList[0], target[0]))
             {
-                UIDialog dialog1 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"交给我吧", () =>
+                GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"交给我吧", () =>
                 {
                     // 暂时直接招募
-                    UIDialog.Close();
+                    GameDialog.Close();
                     Done();
 
                 });

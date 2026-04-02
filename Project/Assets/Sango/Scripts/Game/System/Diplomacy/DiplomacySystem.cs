@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Sango.Game.Render.UI;
+using Sango.UI;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 外交系统

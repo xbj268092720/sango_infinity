@@ -3,17 +3,17 @@
 public static class XmlLoader
 {
 
-    //public static void Save(this Sango.Game.CellSet o, System.Xml.XmlNode parent, string value_name)
+    //public static void Save(this Sango.Core.CellSet o, System.Xml.XmlNode parent, string value_name)
     //{
     //    if (o == null) return;
     //    AddNode(parent, value_name, o.ToString());
     //}
 
-    //public static void Load(this Sango.Game.CellSet o, System.Xml.XmlNode node)
+    //public static void Load(this Sango.Core.CellSet o, System.Xml.XmlNode node)
     //{
     //    o.FromString(node.InnerText);
     //}
-    //public static void Save(this Sango.Game.AttributeChangeType o, System.Xml.XmlNode parent, string value_name)
+    //public static void Save(this Sango.Core.AttributeChangeType o, System.Xml.XmlNode parent, string value_name)
     //{
     //    if (o == null) return;
     //    System.Xml.XmlNode node = AddNode(parent, value_name);
@@ -22,7 +22,7 @@ public static class XmlLoader
     //    Save(o.ToString(), node, "Value");
     //}
 
-    //public static void Load(this Sango.Game.AttributeChangeType o, System.Xml.XmlNode node)
+    //public static void Load(this Sango.Core.AttributeChangeType o, System.Xml.XmlNode node)
     //{
     //    int count = node.ChildNodes.Count;
     //    for (int i = 0; i < count; ++i)

@@ -1,5 +1,5 @@
 using Sango;
-using Sango.Game;
+using Sango.Core;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -484,18 +484,18 @@ public static class XMLExportTools
             if (IsValueType(memberType))
             {
                 xml_load.AppendLine($"                    case \"{memberInfo.Name}\":");
-                xml_load.AppendLine($"                        {memberInfo.Name} = Sango.Game.DataLoader.Load({memberInfo.Name}, attr);");
+                xml_load.AppendLine($"                        {memberInfo.Name} = Sango.Core.DataLoader.Load({memberInfo.Name}, attr);");
                 xml_load.AppendLine("                        break;");
 
-                xml_save_node.AppendLine($"            Sango.Game.DataLoader.Save({memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                xml_save_node.AppendLine($"            Sango.Core.DataLoader.Save({memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                 json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                 json_load.AppendLine($"            {{");
                 json_load.AppendLine($"                SimpleJSON.JSONNode attr = node[\"{memberInfo.Name}\"];");
-                json_load.AppendLine($"                {memberInfo.Name} = Sango.Game.DataLoader.Load({memberInfo.Name}, attr);");
+                json_load.AppendLine($"                {memberInfo.Name} = Sango.Core.DataLoader.Load({memberInfo.Name}, attr);");
                 json_load.AppendLine($"            }}");
 
-                json_save_node.AppendLine($"            Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
+                json_save_node.AppendLine($"            Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
             }
             else if (DataFactoryInterfaceType.IsAssignableFrom(memberType))
             {
@@ -506,7 +506,7 @@ public static class XMLExportTools
                     xml_load.AppendLine("                        break;");
 
                     xml_save_node.AppendLine($"            if ({memberInfo.Name} != null)");
-                    xml_save_node.AppendLine($"                {memberInfo.Name}.Save(Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    xml_save_node.AppendLine($"                {memberInfo.Name}.Save(Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                     json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                     json_load.AppendLine($"            {{");
@@ -515,7 +515,7 @@ public static class XMLExportTools
                     json_load.AppendLine($"                {memberInfo.Name}.Load(attr);");
                     json_load.AppendLine($"            }}");
 
-                    json_save_node.AppendLine($"            Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
+                    json_save_node.AppendLine($"            Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
                 }
             }
             else if (DataInterfaceType.IsAssignableFrom(memberType))
@@ -529,7 +529,7 @@ public static class XMLExportTools
                     xml_load.AppendLine("                        break;");
 
                     xml_save_node.AppendLine($"            if ({memberInfo.Name} != null)");
-                    xml_save_node.AppendLine($"                {memberInfo.Name}.Save(Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    xml_save_node.AppendLine($"                {memberInfo.Name}.Save(Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                     json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                     json_load.AppendLine($"            {{");
@@ -539,7 +539,7 @@ public static class XMLExportTools
                     json_load.AppendLine($"                {memberInfo.Name}.Load(attr);");
                     json_load.AppendLine($"            }}");
 
-                    json_save_node.AppendLine($"            Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
+                    json_save_node.AppendLine($"            Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
                 }
                 else
                 {
@@ -547,7 +547,7 @@ public static class XMLExportTools
                     xml_load.AppendLine($"                        {memberInfo.Name}.Load(attr);");
                     xml_load.AppendLine("                        break;");
 
-                    xml_save_node.AppendLine($"            {memberInfo.Name}.Save(Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    xml_save_node.AppendLine($"            {memberInfo.Name}.Save(Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                     json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                     json_load.AppendLine($"            {{");
@@ -555,7 +555,7 @@ public static class XMLExportTools
                     json_load.AppendLine($"                {memberInfo.Name}.Load(attr);");
                     json_load.AppendLine($"            }}");
 
-                    json_save_node.AppendLine($"            Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
+                    json_save_node.AppendLine($"            Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
                 }
             }
             //else if (ComponentInterfaceType.IsAssignableFrom(memberType))
@@ -570,7 +570,7 @@ public static class XMLExportTools
             //        xml_load.AppendLine("                        break;");
 
             //        xml_save_node.AppendLine($"            if ({memberInfo.Name} != null)");
-            //        xml_save_node.AppendLine($"                {memberInfo.Name}.Save(Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+            //        xml_save_node.AppendLine($"                {memberInfo.Name}.Save(Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
             //        json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
             //        json_load.AppendLine($"            {{");
@@ -581,7 +581,7 @@ public static class XMLExportTools
             //        json_load.AppendLine($"                {memberInfo.Name}.Load(attr);");
             //        json_load.AppendLine($"            }}");
 
-            //        json_save_node.AppendLine($"            Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
+            //        json_save_node.AppendLine($"            Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\", {memberInfo.Name});");
             //    }
             //}
             else if (memberType.IsGenericType && memberType.GetGenericTypeDefinition() == typeof(List<>))
@@ -595,11 +595,11 @@ public static class XMLExportTools
                     xml_load.AppendLine($"                        if ({memberInfo.Name} == null)");
                     xml_load.AppendLine($"                            {memberInfo.Name} = new {memberTypeFullName}();");
                     xml_load.AppendLine($"                        {memberInfo.Name}.Clear();");
-                    xml_load.AppendLine($"                        Sango.Game.DataLoader.Load({memberInfo.Name}, attr);");
+                    xml_load.AppendLine($"                        Sango.Core.DataLoader.Load({memberInfo.Name}, attr);");
                     xml_load.AppendLine("                        break;");
 
                     xml_save_node.AppendLine($"            if ({memberInfo.Name} != null && {memberInfo.Name}.Count > 0)");
-                    xml_save_node.AppendLine($"                Sango.Game.DataLoader.Save({memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    xml_save_node.AppendLine($"                Sango.Core.DataLoader.Save({memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                     json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                     json_load.AppendLine($"            {{");
@@ -607,10 +607,10 @@ public static class XMLExportTools
                     json_load.AppendLine($"                if ({memberInfo.Name} == null)");
                     json_load.AppendLine($"                    {memberInfo.Name} = new {memberTypeFullName}();");
                     json_load.AppendLine($"                {memberInfo.Name}.Clear();");
-                    json_load.AppendLine($"                Sango.Game.DataLoader.Load({memberInfo.Name}, attr);");
+                    json_load.AppendLine($"                Sango.Core.DataLoader.Load({memberInfo.Name}, attr);");
                     json_load.AppendLine($"            }}");
 
-                    json_save_node.AppendLine($"            Sango.Game.DataLoader.Save( {memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    json_save_node.AppendLine($"            Sango.Core.DataLoader.Save( {memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
                 }
                 else
                 {
@@ -618,11 +618,11 @@ public static class XMLExportTools
                     xml_load.AppendLine($"                        if ({memberInfo.Name} == null)");
                     xml_load.AppendLine($"                            {memberInfo.Name} = new {memberTypeFullName}();");
                     xml_load.AppendLine($"                        {memberInfo.Name}.Clear();");
-                    xml_load.AppendLine($"                        Sango.Game.DataLoader.Load<{elementTypeFullName}>({memberInfo.Name}, attr);");
+                    xml_load.AppendLine($"                        Sango.Core.DataLoader.Load<{elementTypeFullName}>({memberInfo.Name}, attr);");
                     xml_load.AppendLine("                        break;");
 
                     xml_save_node.AppendLine($"            if ({memberInfo.Name} != null && {memberInfo.Name}.Count > 0)");
-                    xml_save_node.AppendLine($"                Sango.Game.DataLoader.Save<{elementTypeFullName}>({memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    xml_save_node.AppendLine($"                Sango.Core.DataLoader.Save<{elementTypeFullName}>({memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                     json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                     json_load.AppendLine($"            {{");
@@ -630,10 +630,10 @@ public static class XMLExportTools
                     json_load.AppendLine($"                if ({memberInfo.Name} == null)");
                     json_load.AppendLine($"                    {memberInfo.Name} = new {memberTypeFullName}();");
                     json_load.AppendLine($"                {memberInfo.Name}.Clear();");
-                    json_load.AppendLine($"                Sango.Game.DataLoader.Load<{elementTypeFullName}>({memberInfo.Name}, attr);");
+                    json_load.AppendLine($"                Sango.Core.DataLoader.Load<{elementTypeFullName}>({memberInfo.Name}, attr);");
                     json_load.AppendLine($"            }}");
 
-                    json_save_node.AppendLine($"            Sango.Game.DataLoader.AddNode<{elementTypeFullName}>(node, \"{memberInfo.Name}\", {memberInfo.Name});");
+                    json_save_node.AppendLine($"            Sango.Core.DataLoader.AddNode<{elementTypeFullName}>(node, \"{memberInfo.Name}\", {memberInfo.Name});");
 
                 }
             }
@@ -644,19 +644,19 @@ public static class XMLExportTools
                 if (elementType.IsValueType)
                 {
                     xml_load.AppendLine($"                    case \"{memberInfo.Name}\":");
-                    xml_load.AppendLine($"                        {memberInfo.Name} = Sango.Game.DataLoader.LoadArray<{elementTypeFullName}>(attr);");
+                    xml_load.AppendLine($"                        {memberInfo.Name} = Sango.Core.DataLoader.LoadArray<{elementTypeFullName}>(attr);");
                     xml_load.AppendLine("                        break;");
 
                     xml_save_node.AppendLine($"            if ({memberInfo.Name} != null && {memberInfo.Name}.Length > 0)");
-                    xml_save_node.AppendLine($"                Sango.Game.DataLoader.Save({memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    xml_save_node.AppendLine($"                Sango.Core.DataLoader.Save({memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                     json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                     json_load.AppendLine($"            {{");
                     json_load.AppendLine($"                SimpleJSON.JSONNode attr = node[\"{memberInfo.Name}\"];");
-                    json_load.AppendLine($"                {memberInfo.Name} = Sango.Game.DataLoader.LoadArray<{elementTypeFullName}>(attr);");
+                    json_load.AppendLine($"                {memberInfo.Name} = Sango.Core.DataLoader.LoadArray<{elementTypeFullName}>(attr);");
                     json_load.AppendLine($"            }}");
 
-                    json_save_node.AppendLine($"            Sango.Game.DataLoader.Save( {memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    json_save_node.AppendLine($"            Sango.Core.DataLoader.Save( {memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
                 }
                 else
                 {
@@ -664,11 +664,11 @@ public static class XMLExportTools
                     //xml_load.AppendLine($"                        if ({memberInfo.Name} == null)");
                     //xml_load.AppendLine($"                            {memberInfo.Name} = new {memberTypeFullName}();");
                     //xml_load.AppendLine($"                        {memberInfo.Name}.Clear();");
-                    //xml_load.AppendLine($"                        Sango.Game.DataLoader.Load<{elementTypeFullName}>({memberInfo.Name}, Sango.Game.DataLoader.AddNode(attr, \"{memberInfo.Name}\"));");
+                    //xml_load.AppendLine($"                        Sango.Core.DataLoader.Load<{elementTypeFullName}>({memberInfo.Name}, Sango.Core.DataLoader.AddNode(attr, \"{memberInfo.Name}\"));");
                     //xml_load.AppendLine("                        break;");
 
                     //xml_save_node.AppendLine($"            if ({memberInfo.Name} != null && {memberInfo.Name}.Length > 0)");
-                    //xml_save_node.AppendLine($"                Sango.Game.DataLoader.Save<{elementTypeFullName}>({memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    //xml_save_node.AppendLine($"                Sango.Core.DataLoader.Save<{elementTypeFullName}>({memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                     //json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                     //json_load.AppendLine($"            {{");
@@ -676,10 +676,10 @@ public static class XMLExportTools
                     //json_load.AppendLine($"                if ({memberInfo.Name} == null)");
                     //json_load.AppendLine($"                    {memberInfo.Name} = new {memberTypeFullName}();");
                     //json_load.AppendLine($"                {memberInfo.Name}.Clear();");
-                    //json_load.AppendLine($"                Sango.Game.DataLoader.Load<{elementTypeFullName}>({memberInfo.Name}, attr);");
+                    //json_load.AppendLine($"                Sango.Core.DataLoader.Load<{elementTypeFullName}>({memberInfo.Name}, attr);");
                     //json_load.AppendLine($"            }}");
 
-                    //json_save_node.AppendLine($"            Sango.Game.DataLoader.AddNode<{elementTypeFullName}>(node, \"{memberInfo.Name}\", {memberInfo.Name});");
+                    //json_save_node.AppendLine($"            Sango.Core.DataLoader.AddNode<{elementTypeFullName}>(node, \"{memberInfo.Name}\", {memberInfo.Name});");
 
                 }
             }
@@ -690,36 +690,36 @@ public static class XMLExportTools
                     xml_load.AppendLine($"                    case \"{memberInfo.Name}\":");
                     xml_load.AppendLine($"                        if ({memberInfo.Name} == null)");
                     xml_load.AppendLine($"                            {memberInfo.Name} = new {memberTypeFullName}();");
-                    xml_load.AppendLine($"                        Sango.Game.DataLoader.Load({memberInfo.Name}, attr);");
+                    xml_load.AppendLine($"                        Sango.Core.DataLoader.Load({memberInfo.Name}, attr);");
                     xml_load.AppendLine("                        break;");
 
-                    xml_save_node.AppendLine($"            Sango.Game.DataLoader.Save({memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    xml_save_node.AppendLine($"            Sango.Core.DataLoader.Save({memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                     json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                     json_load.AppendLine($"            {{");
                     json_load.AppendLine($"                SimpleJSON.JSONNode attr = node[\"{memberInfo.Name}\"];");
-                    json_load.AppendLine($"                Sango.Game.DataLoader.Load({memberInfo.Name}, attr);");
+                    json_load.AppendLine($"                Sango.Core.DataLoader.Load({memberInfo.Name}, attr);");
                     json_load.AppendLine($"            }}");
 
 
-                    json_save_node.AppendLine($"            Sango.Game.DataLoader.Save({memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    json_save_node.AppendLine($"            Sango.Core.DataLoader.Save({memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                 }
                 else
                 {
                     xml_load.AppendLine($"                    case \"{memberInfo.Name}\":");
-                    xml_load.AppendLine($"                        Sango.Game.DataLoader.Load(ref {memberInfo.Name}, attr);");
+                    xml_load.AppendLine($"                        Sango.Core.DataLoader.Load(ref {memberInfo.Name}, attr);");
                     xml_load.AppendLine("                        break;");
 
-                    xml_save_node.AppendLine($"            Sango.Game.DataLoader.Save({memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    xml_save_node.AppendLine($"            Sango.Core.DataLoader.Save({memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                     json_load.AppendLine($"            if (node.HasKey(\"{memberInfo.Name}\"))");
                     json_load.AppendLine($"            {{");
                     json_load.AppendLine($"                SimpleJSON.JSONNode attr = node[\"{memberInfo.Name}\"];");
-                    json_load.AppendLine($"                Sango.Game.DataLoader.Load(ref {memberInfo.Name}, attr);");
+                    json_load.AppendLine($"                Sango.Core.DataLoader.Load(ref {memberInfo.Name}, attr);");
                     json_load.AppendLine($"            }}");
 
-                    json_save_node.AppendLine($"            Sango.Game.DataLoader.Save({memberInfo.Name}, Sango.Game.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
+                    json_save_node.AppendLine($"            Sango.Core.DataLoader.Save({memberInfo.Name}, Sango.Core.DataLoader.AddNode(node, \"{memberInfo.Name}\"));");
 
                 }
 

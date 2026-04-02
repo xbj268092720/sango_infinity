@@ -1,7 +1,7 @@
-﻿using Sango.Game.Tools;
+﻿using Sango.Core.Tools;
 using TKNewtonsoft.Json.Linq;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 某兵种类型战法的成功率增加-前 (必中)

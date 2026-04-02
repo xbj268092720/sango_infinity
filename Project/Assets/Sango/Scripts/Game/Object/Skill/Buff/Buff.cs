@@ -1,10 +1,10 @@
 ﻿using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
-using Sango.Game.Action;
+using Sango.Core.Action;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Buff : SangoObject

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     /// <summary>
     /// 剧本选择界面

@@ -2,7 +2,7 @@
 //using TKNewtonsoft.Json.Linq;
 //using System;
 
-//namespace Sango.Game
+//namespace Sango.Core
 //{
 //    /// <summary>
 //    /// 这个比较特殊,包括继承类

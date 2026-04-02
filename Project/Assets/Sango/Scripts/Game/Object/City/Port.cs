@@ -1,11 +1,11 @@
 ﻿using TKNewtonsoft.Json;
-using Sango.Game.Render;
+using Sango.Render;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Port : Gate

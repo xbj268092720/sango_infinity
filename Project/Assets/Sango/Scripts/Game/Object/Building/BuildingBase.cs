@@ -1,8 +1,8 @@
 ﻿using TKNewtonsoft.Json;
-using Sango.Game.Render;
+using Sango.Render;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public abstract class BuildingBase : SangoObject
     {

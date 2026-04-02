@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     /// <summary>
     /// 玩家消息系统

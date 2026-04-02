@@ -3,7 +3,7 @@ using TKNewtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class PersonAttributeValueConverter : JsonConverter<PersonAttributeValue>
     {

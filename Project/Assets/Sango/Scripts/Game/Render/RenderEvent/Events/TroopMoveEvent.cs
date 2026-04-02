@@ -1,9 +1,8 @@
-using Sango.Render;
-using System;
+using Sango.Core;
 using UnityEngine;
 
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class TroopMoveEvent : RenderEventBase
     {

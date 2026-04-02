@@ -1,7 +1,7 @@
 ﻿using TKNewtonsoft.Json.Linq;
-using Sango.Game.Tools;
+using Sango.Core.Tools;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 增加势力城池的士气上限 

@@ -4,7 +4,7 @@ using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 技能时间轴

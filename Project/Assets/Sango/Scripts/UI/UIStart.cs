@@ -2,7 +2,7 @@ using Sango.Manager;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     /// <summary>
     /// 游戏开始界面

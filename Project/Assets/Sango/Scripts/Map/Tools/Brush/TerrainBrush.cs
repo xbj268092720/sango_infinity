@@ -7,7 +7,7 @@ using Sango.Render;
 using Sango;
 using System.Collections.Generic;
 using DG.Tweening.Plugins.Core.PathCore;
-using Sango.Game;
+using Sango.Core;
 
 namespace Sango.Tools
 {

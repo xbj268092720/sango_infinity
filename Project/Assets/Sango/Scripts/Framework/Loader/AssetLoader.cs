@@ -2,7 +2,7 @@ using Sango.Loader;
 using System;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 规范资源加载流程

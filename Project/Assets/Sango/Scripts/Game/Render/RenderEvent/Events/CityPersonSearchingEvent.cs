@@ -1,7 +1,6 @@
-using Sango.Game.Render.UI;
-using UnityEngine;
+using Sango.Core;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class CityPersonSearchingEvent : RenderEventBase
     {
@@ -23,9 +22,9 @@ namespace Sango.Game.Render
             {
                 if (city.BelongCorps.IsPlayer)
                 {
-                    UIDialog dialog3 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, "很遗憾, 什么都没有发现...", () =>
+                    GameDialog.IDialog dialog3 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, "很遗憾, 什么都没有发现...", () =>
                     {
-                        UIDialog.Close();
+                        GameDialog.Close();
                         IsDone = true;
                     });
                     dialog3.SetPerson(person);
@@ -54,21 +53,21 @@ namespace Sango.Game.Render
             {
 
                 string content = $"搜索结果，\n发现了名为{target.ColorName}的武将。";
-                UIDialog dialog = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, content, () =>
+                GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, content, () =>
                 {
-                    UIDialog.Close();
+                    GameDialog.Close();
 
                     //展示武将
                     GameSystem.GetSystem<PersonRecruit>().Start(person, target, 0, 1, x =>
                     {
                         if (x.result == 1)
                         {
-                            UIDialog dialog1 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"成功招募了{target.ColorName}", () =>
+                            GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"成功招募了{target.ColorName}", () =>
                             {
-                                UIDialog.Close();
-                                UIDialog dialog2 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
+                                GameDialog.Close();
+                                GameDialog.IDialog dialog2 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
                                 {
-                                    UIDialog.Close();
+                                    GameDialog.Close();
                                     IsDone = true;
                                 });
                                 dialog2.SetPerson(target);
@@ -77,9 +76,9 @@ namespace Sango.Game.Render
                         }
                         else if (x.result == 0)
                         {
-                            UIDialog dialog1 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"很遗憾，\n未能招募到{target.ColorName}", () =>
+                            GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"很遗憾，\n未能招募到{target.ColorName}", () =>
                             {
-                                UIDialog.Close();
+                                GameDialog.Close();
                                 IsDone = true;
                             });
                             dialog1.SetPerson(person);
@@ -93,9 +92,9 @@ namespace Sango.Game.Render
             else
             {
 
-                UIDialog dialog = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"发现了资金{rs}", () =>
+                GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"发现了资金{rs}", () =>
                 {
-                    UIDialog.Close();
+                    GameDialog.Close();
                     IsDone = true;
                 });
                 dialog.SetPerson(person);

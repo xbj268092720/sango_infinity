@@ -201,7 +201,7 @@ namespace Sango
             //            win.SetLuaPeer(table);
             //        info.instance = new WindowInterface() { fgui_instance = win };
             //        windowMap[windowName] = info;
-            //        Sango.Game.Event.OnWindowCreate?.Invoke(windowName, info.instance);
+            //        Sango.Core.Event.OnWindowCreate?.Invoke(windowName, info.instance);
             //    }
             //}
             //else
@@ -218,9 +218,9 @@ namespace Sango
                         //if (canvas != null)
                         //{
                         //    canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                        //    canvas.worldCamera = Sango.Game.Game.Instance.UICamera;
+                        //    canvas.worldCamera = Sango.Core.Game.Instance.UICamera;
                         //}
-                        uguiWinObj.transform.SetParent(Sango.Game.Game.Instance.UIRoot, false);
+                        uguiWinObj.transform.SetParent(Sango.Core.Game.Instance.UIRoot, false);
 
                         UGUIWindow uGUIWindow = uguiWinObj.GetComponent<UGUIWindow>();
                         if (uGUIWindow == null)
@@ -258,7 +258,7 @@ namespace Sango
             if (win != null)
             {
                 win.Show();
-                Sango.Game.GameEvent.OnWindowCreate?.Invoke(windowName, win);
+                Sango.Core.GameEvent.OnWindowCreate?.Invoke(windowName, win);
             }
             return win;
         }
@@ -272,7 +272,7 @@ namespace Sango
             if (win != null)
             {
                 win.Show(objects);
-                Sango.Game.GameEvent.OnWindowCreate?.Invoke(windowName, win);
+                Sango.Core.GameEvent.OnWindowCreate?.Invoke(windowName, win);
             }
             return win;
         }
@@ -390,7 +390,7 @@ namespace Sango
             //    if (table != null)
             //        win.SetLuaPeer(table);
             //    WindowInterface windowInterface = new WindowInterface() { fgui_instance = win };
-            //    Sango.Game.Event.OnWindowCreate?.Invoke(windowName, windowInterface);
+            //    Sango.Core.Event.OnWindowCreate?.Invoke(windowName, windowInterface);
             //    return windowInterface;
             //}
             return null;

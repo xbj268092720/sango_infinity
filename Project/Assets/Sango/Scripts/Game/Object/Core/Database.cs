@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public interface IDatabase
     {

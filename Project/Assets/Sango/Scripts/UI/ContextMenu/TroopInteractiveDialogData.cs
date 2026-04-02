@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     public class TroopInteractiveDialogData : ITroopInteractiveDialogData
     {

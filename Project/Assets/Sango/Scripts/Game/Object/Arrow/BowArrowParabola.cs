@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Sango.Game.Object.Arrow
+namespace Sango.Core.Object.Arrow
 {
     /// <summary>
     /// 弓箭抛物线飞行

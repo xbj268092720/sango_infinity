@@ -1,4 +1,4 @@
-using Sango.Game.Player;
+using Sango.Core.Player;
 using Sango.Loader;
 using Sango.Render;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     /// <summary>
     /// 文本消息项UI组件

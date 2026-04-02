@@ -1,6 +1,6 @@
-﻿using static Sango.Game.City;
+﻿using static Sango.Core.City;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class TroopProtectCity : TroopMissionBehaviour
     {

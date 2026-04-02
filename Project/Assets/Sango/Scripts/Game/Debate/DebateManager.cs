@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game.Debate
+namespace Sango.Core.Debate
 {
     /// <summary>
     /// 舌战管理器

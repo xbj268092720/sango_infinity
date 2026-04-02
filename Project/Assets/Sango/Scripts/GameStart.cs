@@ -1,5 +1,5 @@
 using Sango;
-using Sango.Game;
+using Sango.Core;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;

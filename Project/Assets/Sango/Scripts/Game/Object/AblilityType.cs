@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public enum PersonAblilityType : int
     {

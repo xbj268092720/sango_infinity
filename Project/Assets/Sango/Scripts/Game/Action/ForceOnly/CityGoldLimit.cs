@@ -1,7 +1,7 @@
-﻿using Sango.Game.Tools;
+﻿using Sango.Core.Tools;
 using TKNewtonsoft.Json.Linq;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 某类型城池的最大资金增加

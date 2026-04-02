@@ -1,5 +1,5 @@
 ﻿
-using Sango.Game;
+using Sango.Core;
 using System.Collections.Generic;
 using System.IO;
 

@@ -1,6 +1,6 @@
-﻿using Sango.Game.Render.UI;
+﻿using Sango.UI;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class PersonInfo : GameSystem
@@ -32,21 +32,21 @@ namespace Sango.Game.Player
 
         //public override void OnEnter()
         //{
-        //    UIDialog.Open("是否需要结束玩家回合", () =>
+        //    GameDialog.Open("是否需要结束玩家回合", () =>
         //    {
         //        Scenario.Cur.CurRunForce.CurRunCorps.ActionOver = true;
-        //        UIDialog.Close();
+        //        GameDialog.Close();
         //        Done();
         //    }).cancelAction = ()=>
         //    {
-        //        UIDialog.Close();
+        //        GameDialog.Close();
         //        Done();
         //    };
         //}
 
         //public override void OnDestroy()
         //{
-        //    UIDialog.Close();
+        //    GameDialog.Close();
         //}
 
         //public override void HandleEvent(CommandEventType eventType, Cell cell, UnityEngine.Vector3 clickPosition, bool isOverUI)

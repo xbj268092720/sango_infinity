@@ -1,8 +1,8 @@
 using TKNewtonsoft.Json.Linq;
-using Sango.Game.Tools;
+using Sango.Core.Tools;
 using System.Collections.Generic;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 提升范围内部队的攻击力

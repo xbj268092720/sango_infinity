@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Sango.Render;
-using Sango.Game;
+using Sango.Core;
 
 namespace Sango
 {

@@ -1,6 +1,6 @@
 using TKNewtonsoft.Json; using TKNewtonsoft.Json.Linq;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class Burn : BuffEffect
     {

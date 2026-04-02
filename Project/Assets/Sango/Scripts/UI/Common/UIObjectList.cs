@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     public class UIObjectList : MonoBehaviour
     {
@@ -138,7 +138,7 @@ namespace Sango.Game.Render.UI
             {
                 RectTransform itemRect = uIObjectListItemsRect[i];
                 UIObjectListItem listItem = uIObjectListItems[i];
-                if (listItem == currentSelectItem && RectTransformUtility.RectangleContainsScreenPoint(itemRect, Input.mousePosition, Sango.Game.Game.Instance.UICamera))
+                if (listItem == currentSelectItem && RectTransformUtility.RectangleContainsScreenPoint(itemRect, Input.mousePosition, Sango.Core.Game.Instance.UICamera))
                 {
                     OnItemSelected(item);
                     break;

@@ -1,6 +1,6 @@
-﻿using static Sango.Game.TroopAIUtility;
+﻿using static Sango.Core.TroopAIUtility;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class TroopReturnCity : TroopMissionBehaviour
     {

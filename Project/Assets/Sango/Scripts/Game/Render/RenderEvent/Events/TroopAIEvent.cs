@@ -1,9 +1,7 @@
-using Sango.Render;
-using System;
-using UnityEngine;
+using Sango.Core;
 
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class TroopAIEvent : RenderEventBase
     {

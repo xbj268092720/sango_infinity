@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
-using Sango.Game.Render;
+using Sango.Render;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 治疗伤兵

@@ -1,5 +1,5 @@
 using TKNewtonsoft.Json;
-using Sango.Game.Render;
+using Sango.Render;
 using Sango.Render;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Threading;
 using UnityEngine;
 using Task = System.Threading.Tasks.Task;
 
-namespace Sango.Game
+namespace Sango.Core
 {
 
     [JsonObject(MemberSerialization.OptIn)]

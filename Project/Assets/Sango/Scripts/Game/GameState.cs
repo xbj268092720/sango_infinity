@@ -5,7 +5,7 @@
  * 最后修改：2026-03-27
  */
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 游戏状态类，管理游戏的状态切换

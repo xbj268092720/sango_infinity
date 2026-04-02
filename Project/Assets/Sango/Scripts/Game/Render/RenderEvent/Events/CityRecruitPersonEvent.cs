@@ -1,8 +1,8 @@
-using Sango.Game.Action;
-using Sango.Game.Render.UI;
+using Sango.Core;
+using Sango.Core.Action;
 using System.Collections.Generic;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class CityRecruitPersonEvent : RenderEventBase
     {
@@ -51,16 +51,16 @@ namespace Sango.Game.Render
 
             if (person.JobRecruitPerson(target, 0))
             {
-                UIDialog dialog1 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"成功招募了{target.ColorName}", () =>
+                GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"成功招募了{target.ColorName}", () =>
                 {
                     // TODO:展示武将
                     // 暂时直接招募
-                    UIDialog.Close();
-                    UIDialog dialog2 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
+                    GameDialog.Close();
+                    GameDialog.IDialog dialog2 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
                     {
                         // TODO:展示武将
                         // 暂时直接招募
-                        UIDialog.Close();
+                        GameDialog.Close();
                         IsDone = true;
                     });
                     dialog2.SetPerson(target);
@@ -69,12 +69,12 @@ namespace Sango.Game.Render
             }
             else
             {
-                UIDialog dialog1 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"很遗憾，\n未能招募到{target.ColorName}", () =>
+                GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"很遗憾，\n未能招募到{target.ColorName}", () =>
                 {
                     // TODO:展示武将
                     // 暂时直接招募
                     ClearJobFeature();
-                    UIDialog.Close();
+                    GameDialog.Close();
                     IsDone = true;
                 });
                 dialog1.SetPerson(person);

@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     internal class Color32Converter : JsonConverter<Color32>
     {

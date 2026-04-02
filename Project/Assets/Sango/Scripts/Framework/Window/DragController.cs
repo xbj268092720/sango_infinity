@@ -22,10 +22,10 @@ public class DragController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (dragRect != null && !RectTransformUtility.RectangleContainsScreenPoint(dragRect, eventData.position, Sango.Game.Game.Instance.UICamera))
+        if (dragRect != null && !RectTransformUtility.RectangleContainsScreenPoint(dragRect, eventData.position, Sango.Core.Game.Instance.UICamera))
             return;
         draging = true;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(parentTran, eventData.position, Sango.Game.Game.Instance.UICamera, out Vector2 localPoint);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(parentTran, eventData.position, Sango.Core.Game.Instance.UICamera, out Vector2 localPoint);
 
         // 计算触摸点与拖动对象的偏移量
         pointerOffset = localPoint - (Vector2)tran.anchoredPosition;
@@ -36,7 +36,7 @@ public class DragController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
         if (!draging)
             return;
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(parentTran, eventData.position, Sango.Game.Game.Instance.UICamera, out Vector2 localPoint);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(parentTran, eventData.position, Sango.Core.Game.Instance.UICamera, out Vector2 localPoint);
 
         // 更新拖动对象的位置
         tran.anchoredPosition = localPoint - pointerOffset;

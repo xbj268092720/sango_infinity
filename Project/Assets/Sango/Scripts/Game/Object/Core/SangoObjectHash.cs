@@ -5,7 +5,7 @@
 //using TKNewtonsoft.Json;
 //using System.Xml;
 
-//namespace Sango.Game
+//namespace Sango.Core
 //{
 //    [JsonObject(MemberSerialization.OptIn)]
 //    public class SangoObjectHash<T> : Database<T> where T : SangoObject, new()

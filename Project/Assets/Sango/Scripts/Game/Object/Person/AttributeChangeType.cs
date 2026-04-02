@@ -4,7 +4,7 @@ using System.IO;
 using TKNewtonsoft.Json;
 using System.Xml;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class AttributeChangeType : SangoObject

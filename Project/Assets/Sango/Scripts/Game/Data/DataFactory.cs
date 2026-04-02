@@ -5,7 +5,7 @@ using System.IO;
 using TKNewtonsoft.Json;
 using System.Xml;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 数据工厂类，用于创建和加载数据对象

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Sango.Tools;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 单挑系统类，负责处理三国志11风格的单挑逻辑

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class LinkObjectList<T, T1> where T : ScenarioObject<T1>, new() where T1 : SangoObject, new()
     {

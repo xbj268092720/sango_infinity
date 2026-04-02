@@ -1,8 +1,6 @@
-﻿using Sango.Game.Render.UI;
-using System.Collections.Generic;
-using static Sango.Game.PersonSortFunction;
+﻿using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     public class CityDevelop : CityBaseSystem
     {

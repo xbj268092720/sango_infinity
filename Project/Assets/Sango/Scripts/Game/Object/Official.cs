@@ -2,7 +2,7 @@
 using System.IO;
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 特性

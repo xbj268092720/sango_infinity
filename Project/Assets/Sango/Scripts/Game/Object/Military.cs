@@ -1,9 +1,9 @@
 ﻿
-using Sango.Game.Render;
+using Sango.Render;
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 部队

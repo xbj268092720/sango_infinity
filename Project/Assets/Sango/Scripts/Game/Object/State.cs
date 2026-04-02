@@ -1,5 +1,5 @@
 ﻿using TKNewtonsoft.Json;
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 州

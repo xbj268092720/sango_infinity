@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Sango.Mod;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     /// <summary>
     /// MOD管理界面
@@ -155,7 +155,7 @@ namespace Sango.Game.Render.UI
             // 重新初始化MOD
             ModManager.Instance.InitMods(enabledMods.ToArray());
             // 显示提示，需要重启游戏才能生效
-            UIDialog.Open("修改MOD后需要重启游戏才能生效，点击确定重启游戏。", () =>
+            GameDialog.Open("修改MOD后需要重启游戏才能生效，点击确定重启游戏。", () =>
             {
                 // 重启游戏
                 UnityEngine.SceneManagement.SceneManager.LoadScene(0);
@@ -217,7 +217,7 @@ namespace Sango.Game.Render.UI
             {
                 RectTransform itemRect = uIObjectListItemsRect[i];
                 UIModItem listItem = uIModItems[i];
-                if (listItem == currentSelectItem && RectTransformUtility.RectangleContainsScreenPoint(itemRect, Input.mousePosition, Sango.Game.Game.Instance.UICamera))
+                if (listItem == currentSelectItem && RectTransformUtility.RectangleContainsScreenPoint(itemRect, Input.mousePosition, Sango.Core.Game.Instance.UICamera))
                 {
                     OnItemSelected(item);
                     break;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 模块属性,定义模块的执行优先级 order越小越优先 以及模块的别名

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 数据对象接口，定义数据的保存和加载方法

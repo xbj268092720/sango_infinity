@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game
+namespace Sango.Core
 
 {
     public class GameRenderHelper

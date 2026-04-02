@@ -1,9 +1,9 @@
 using TKNewtonsoft.Json;
-using Sango.Game.Render;
+using Sango.Render;
 using System;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 逃出方式枚举

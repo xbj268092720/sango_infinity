@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TKNewtonsoft.Json;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public enum SkillKindType : int
     {

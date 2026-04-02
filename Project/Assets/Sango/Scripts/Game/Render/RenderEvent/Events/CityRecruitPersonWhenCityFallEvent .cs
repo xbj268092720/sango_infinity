@@ -1,8 +1,7 @@
-using Sango.Game.Action;
-using Sango.Game.Render.UI;
+using Sango.Core;
 using System.Collections.Generic;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class CityRecruitPersonWhenCityFallEvent : RenderEventBase
     {

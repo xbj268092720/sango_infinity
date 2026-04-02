@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 字符串数据接口

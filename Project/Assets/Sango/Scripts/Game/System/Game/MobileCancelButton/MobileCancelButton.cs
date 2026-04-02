@@ -1,4 +1,4 @@
-﻿namespace Sango.Game
+﻿namespace Sango.Core
 {
     /// <summary>
     /// 移动端的一个取消按钮

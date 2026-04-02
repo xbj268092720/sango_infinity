@@ -1,11 +1,11 @@
-using Sango.Game.Player;
-using Sango.Game.Render;
-using Sango.Game.Tools;
+using Sango.Core.Player;
+using Sango.Render;
+using Sango.Core.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 经典内政系统

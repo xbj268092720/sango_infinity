@@ -1,7 +1,6 @@
-﻿using Sango.Game.Render.UI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class CityReward : CityBaseSystem
@@ -64,7 +63,7 @@ namespace Sango.Game.Player
 
         public override void OnDestroy()
         {
-            UIDialog.Close();
+            GameEvent.DialogClose?.Invoke();
             base.OnDestroy();
         }
 

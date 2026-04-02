@@ -1,7 +1,7 @@
 using TKNewtonsoft.Json;
-using Sango.Game.Render;
+using Sango.Render;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Fire : SangoObject

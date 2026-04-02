@@ -5,11 +5,10 @@
  * 最后修改：2026-03-27
  */
 
-using Sango.Render;
+using Sango.Core;
 using UnityEngine;
-using Sango.Game.Render.UI;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     /// <summary>
     /// 相机移动事件类，用于处理相机移动和对话框显示
@@ -39,7 +38,7 @@ namespace Sango.Game.Render
         /// <summary>
         /// 对话框样式
         /// </summary>
-        public UIDialog.DialogStyle dialogStyle;
+        public GameDialog.DialogStyle dialogStyle;
 
         /// <summary>
         /// 对话框内容
@@ -64,7 +63,7 @@ namespace Sango.Game.Render
         /// <summary>
         /// 对话框实例
         /// </summary>
-        UIDialog dialog;
+        GameDialog.IDialog dialog;
 
         /// <summary>
         /// 初始化方法
@@ -76,7 +75,7 @@ namespace Sango.Game.Render
         /// <param name="person">人物对象</param>
         /// <param name="sureAction">确认按钮回调</param>
         /// <param name="cancelAction">取消按钮回调</param>
-        public void Init(Vector3 targetPosition, float moveDuration, UIDialog.DialogStyle dialogStyle, string content, Person person, System.Action sureAction, System.Action cancelAction)
+        public void Init(Vector3 targetPosition, float moveDuration, GameDialog.DialogStyle dialogStyle, string content, Person person, System.Action sureAction, System.Action cancelAction)
         {
             this.targetPosition = targetPosition;
             this.moveDuration = moveDuration;
@@ -97,17 +96,17 @@ namespace Sango.Game.Render
             base.Enter(scenario);
             startPosition = MapRender.Instance.GetCameraPos();
             MapRender.Instance.MoveCameraTo(targetPosition, moveDuration);
-            dialog = UIDialog.Open(dialogStyle, content, () =>
+            dialog = GameDialog.Open(dialogStyle, content, () =>
             {
                 sureAction?.Invoke();
-                UIDialog.Close();
+                GameDialog.Close();
                 IsDone = true;
             });
             if (person != null)
                 dialog.SetPerson(person);
             dialog.cancelAction = () =>
             {
-                UIDialog.Close();
+                GameDialog.Close();
                 IsDone = true;
                 cancelAction?.Invoke();
             };

@@ -7,7 +7,7 @@
 
 using System;
 
-namespace Sango.Game.Debate
+namespace Sango.Core.Debate
 {
     /// <summary>
     /// 舌战技能类型

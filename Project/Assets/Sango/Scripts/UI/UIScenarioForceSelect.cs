@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     /// <summary>
     /// 剧本势力选择界面
@@ -387,13 +387,13 @@ namespace Sango.Game.Render.UI
         {
             if (playerList.Count == 0)
             {
-                UIDialog.Open("未选择任何势力,将进入上帝放置模式,确定进入游戏吗??", () =>
+                GameDialog.Open("未选择任何势力,将进入上帝放置模式,确定进入游戏吗??", () =>
                 {
-                    UIDialog.Close();
+                    GameDialog.Close();
                     StartGame();
                 }).cancelAction = () =>
                 {
-                    UIDialog.Close();
+                    GameDialog.Close();
                 };
                 return;
             }

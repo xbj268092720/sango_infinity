@@ -10,7 +10,7 @@ using Sango.Tools;
 using System.Collections;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 游戏配置类，存储游戏的基本配置信息

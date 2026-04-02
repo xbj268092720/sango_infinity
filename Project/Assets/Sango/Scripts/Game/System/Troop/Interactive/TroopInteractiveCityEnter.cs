@@ -1,7 +1,7 @@
-using Sango.Game.Render;
+using Sango.Render;
 using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class TroopInteractiveCityEnter : TroopInteractiveBase

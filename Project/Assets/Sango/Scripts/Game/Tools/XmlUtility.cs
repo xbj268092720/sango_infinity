@@ -7,7 +7,7 @@ using System.Xml;
 
 
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class XmlUtility
     {

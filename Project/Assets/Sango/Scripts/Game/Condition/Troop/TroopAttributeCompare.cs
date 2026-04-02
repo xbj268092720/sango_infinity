@@ -1,8 +1,8 @@
 ﻿using TKNewtonsoft.Json.Linq;
-using Sango.Game.Tools;
+using Sango.Core.Tools;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 部队属性比较

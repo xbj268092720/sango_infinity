@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class SangoObjectList<T> : Database<T> where T : SangoObject, new()

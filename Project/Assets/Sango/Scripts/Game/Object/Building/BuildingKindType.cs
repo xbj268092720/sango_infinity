@@ -2,7 +2,7 @@
 using TKNewtonsoft.Json;
 using System.Xml;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 建筑大类型

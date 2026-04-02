@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class ForceAI
     {

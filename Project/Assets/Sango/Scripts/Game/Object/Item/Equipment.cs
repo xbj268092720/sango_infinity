@@ -1,9 +1,9 @@
-using Sango.Game.Action;
+using Sango.Core.Action;
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class Equipment : ItemType
     {

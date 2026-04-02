@@ -3,7 +3,7 @@ using TKNewtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public class SangoObjectListIDConverter<T> : JsonConverter<SangoObjectList<T>> where T : SangoObject, new()
     {

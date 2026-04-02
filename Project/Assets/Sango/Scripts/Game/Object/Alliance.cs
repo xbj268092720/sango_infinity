@@ -1,7 +1,7 @@
 using TKNewtonsoft.Json;
 using System.Text;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 联盟类型

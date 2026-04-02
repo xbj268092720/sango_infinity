@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
-using Sango.Game.Render;
+using Sango.Render;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public enum SangoObjectType : int
     {

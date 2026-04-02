@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using static Sango.Game.TroopAIUtility;
+using static Sango.Core.TroopAIUtility;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public abstract class TroopMissionBehaviour
     {

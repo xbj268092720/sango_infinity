@@ -1,8 +1,8 @@
-﻿using Sango.Game.Player;
+﻿using Sango.Core.Player;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public enum PersonSortTileType : int
     {

@@ -1,11 +1,11 @@
-﻿using Sango.Game.Action;
-using Sango.Game.Player;
+﻿using Sango.Core.Action;
+using Sango.Core.Player;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 模块管理器

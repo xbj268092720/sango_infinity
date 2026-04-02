@@ -1,4 +1,4 @@
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 字符串数据对象接口

@@ -1,8 +1,8 @@
 using TKNewtonsoft.Json.Linq;
-using Sango.Game.Render;
+using Sango.Render;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 逃跑(伪报)

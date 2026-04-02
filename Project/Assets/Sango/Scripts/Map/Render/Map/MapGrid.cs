@@ -1,5 +1,5 @@
 ﻿
-using Sango.Game;
+using Sango.Core;
 using Sango.Tools;
 using System.Collections.Generic;
 using System.IO;
@@ -410,7 +410,7 @@ namespace Sango.Render
                     GridData data = yTable[y];
                     data.OnLoad(versionCode, reader);
                     yTable[y] = data;
-                    Game.TerrainType terrainType = Game.GameData.Instance.ScenarioCommonData.TerrainTypes.Get(data.terrainType);
+                    TerrainType terrainType = GameData.Instance.ScenarioCommonData.TerrainTypes.Get(data.terrainType);
                     if (terrainType != null && terrainType.moveable)
                     {
                         int py = GridMaskTexture.height - y - 1;
@@ -452,7 +452,7 @@ namespace Sango.Render
         }
         public bool GetMovable(GridData data)
         {
-            Game.TerrainType terrainType = Game.GameData.Instance.ScenarioCommonData.TerrainTypes.Get(data.terrainType);
+            TerrainType terrainType = GameData.Instance.ScenarioCommonData.TerrainTypes.Get(data.terrainType);
             return terrainType.moveable;
         }
 
@@ -579,9 +579,9 @@ namespace Sango.Render
                         GridData gridData = GetGridData(x, y);
                         if (gridData.textObj == null)
                         {
-                            TerrainType terrainType = Sango.Game.GameData.Instance.ScenarioCommonData.TerrainTypes.Get(gridData.terrainType);
+                            TerrainType terrainType = Sango.Core.GameData.Instance.ScenarioCommonData.TerrainTypes.Get(gridData.terrainType);
                             if (terrainType == null)
-                                terrainType = Sango.Game.GameData.Instance.ScenarioCommonData.TerrainTypes[0];
+                                terrainType = Sango.Core.GameData.Instance.ScenarioCommonData.TerrainTypes[0];
 
                             if (terrainType.moveable)
                             {

@@ -1,4 +1,4 @@
-﻿using Sango.Game;
+﻿using Sango.Core;
 using Sango.Tools;
 using System;
 using System.Threading;

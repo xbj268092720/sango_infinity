@@ -2,7 +2,7 @@ using Sango.Tools;
 using System;
 using System.Collections.Generic;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public static class TroopAIUtility
     {

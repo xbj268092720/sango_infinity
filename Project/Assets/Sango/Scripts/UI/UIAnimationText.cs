@@ -3,8 +3,10 @@ using Sango.Loader;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using Sango.Core;
+using Sango.Render;
 
-namespace Sango.Game.Render.UI
+namespace Sango.UI
 {
     public class UIAnimationText : UGUIWindow
     {

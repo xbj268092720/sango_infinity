@@ -1,7 +1,7 @@
-﻿using Sango.Game.Render.UI;
+﻿using Sango.UI;
 using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class CitySetCounsellor : CityBaseSystem
@@ -53,7 +53,7 @@ namespace Sango.Game.Player
         }
         public override void OnDestroy()
         {
-            UIDialog.Close();
+            GameEvent.DialogClose?.Invoke();
             Window.Instance.Close(windowName);
         }
 
@@ -72,11 +72,11 @@ namespace Sango.Game.Player
             }
 
             TargetForce.ChangeCounsellor(personList[0]);
-            UIDialog dialog1 = UIDialog.Open(UIDialog.DialogStyle.ClickPersonSay, $"交给我吧", () =>
+            GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"交给我吧", () =>
             {
                 // TODO:展示武将
                 // 暂时直接招募
-                UIDialog.Close();
+                GameDialog.Close();
                 Done();
 
             });

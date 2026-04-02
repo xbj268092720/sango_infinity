@@ -10,7 +10,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 游戏控制器类，处理游戏中的输入事件和相机控制
@@ -819,7 +819,7 @@ namespace Sango.Game
             }
 
             GameSystemManager.Instance.HandleEvent(CommandEventType.Cancel, null, clickPosition, false);
-            //Sango.Game.Render.UI.ContextMenu.Close();
+            //Sango.Render.UI.ContextMenu.Close();
         }
 
     }

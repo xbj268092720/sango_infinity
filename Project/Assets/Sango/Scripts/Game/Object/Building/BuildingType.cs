@@ -3,9 +3,9 @@ using TKNewtonsoft.Json;
 using System.Xml;
 using System.Collections.Generic;
 using TKNewtonsoft.Json.Linq;
-using Sango.Game.Action;
+using Sango.Core.Action;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class BuildingType : SangoObject

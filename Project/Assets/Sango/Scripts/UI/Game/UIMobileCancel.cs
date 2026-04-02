@@ -1,6 +1,6 @@
-﻿using Sango.Game.Player;
+﻿using Sango.Core.Player;
 
-namespace Sango.Game.Render.UI
+using Sango.Core; namespace Sango.UI
 {
     public class UIMobileCancel : UGUIWindow
     {

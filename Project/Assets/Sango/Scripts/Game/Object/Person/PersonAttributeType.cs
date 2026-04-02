@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     public enum AttributeType : int
     {

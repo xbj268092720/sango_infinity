@@ -1,18 +1,18 @@
-using Sango.Game.Render.UI;
+using Sango.Core;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class DialogEvent : RenderEventBase
     {
         public override bool IsStack => true;
-        public UIDialog.DialogStyle dialogStyle;
+        public GameDialog.DialogStyle dialogStyle;
         public string content;
         public Person person;
         public System.Action sureAction;
         public System.Action cancelAction;
-        UIDialog dialog;
+        GameDialog.IDialog dialog;
 
-        public void Init(UIDialog.DialogStyle dialogStyle, string content, Person person, System.Action sureAction, System.Action cancelAction)
+        public void Init(GameDialog.DialogStyle dialogStyle, string content, Person person, System.Action sureAction, System.Action cancelAction)
         {
             this.dialogStyle = dialogStyle;
             this.content = content;
@@ -23,20 +23,20 @@ namespace Sango.Game.Render
         }
         public override void Enter(Scenario scenario)
         {
-            dialog = UIDialog.Open(dialogStyle, content, () =>
+            dialog = GameDialog.Open(dialogStyle, content, () =>
             {
                 sureAction?.Invoke();
-                UIDialog.Close();
+                GameDialog.Close();
                 IsDone = true;
             });
             if (person != null)
                 dialog.SetPerson(person);
-            dialog.cancelAction = () =>
+            dialog.SetCancelAction(() =>
             {
-                UIDialog.Close();
+                GameDialog.Close();
                 IsDone = true;
                 cancelAction?.Invoke();
-            };
+            });
         }
     }
 }

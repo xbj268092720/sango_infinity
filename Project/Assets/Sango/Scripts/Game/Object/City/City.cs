@@ -9,17 +9,17 @@
 //------------------------------------------------------------------------------
 
 using TKNewtonsoft.Json;
-using Sango.Game.Action;
-using Sango.Game.Render;
-using Sango.Game.Tools;
+using Sango.Core.Action;
+using Sango.Render;
+using Sango.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using Sango.Game.Player;
+using Sango.Core.Player;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 城市类，继承自BuildingBase，用于管理城市的各种属性和行为

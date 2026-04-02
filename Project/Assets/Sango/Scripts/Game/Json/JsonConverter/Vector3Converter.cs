@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     internal class Vector3Converter : JsonConverter<Vector3>
     {

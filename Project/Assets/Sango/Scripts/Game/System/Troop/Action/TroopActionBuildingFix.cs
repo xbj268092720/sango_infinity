@@ -1,11 +1,11 @@
-using Sango.Game.Render;
-using Sango.Game.Render.UI;
+using Sango.Render;
+using Sango.UI;
 using Sango.Render;
 using System.Collections.Generic;
 using UnityEngine;
-using ContextMenu = Sango.Game.Render.UI.ContextMenu;
+using ContextMenu = Sango.UI.ContextMenu;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class TroopActionBuildingFix : TroopActionBase

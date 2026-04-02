@@ -1,8 +1,8 @@
-﻿using Sango.Game.Render;
-using Sango.Game.Render.UI;
+﻿using Sango.Render;
+using Sango.UI;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class TroopInteractiveDialog : GameSystem
@@ -21,11 +21,11 @@ namespace Sango.Game.Player
             GameEvent.OnTroopInteractiveContextDialogShow?.Invoke(TroopInteractiveDialogData.InteractiveDialogData, troop, targetCell);
             if (!TroopInteractiveDialogData.InteractiveDialogData.IsEmpty())
             {
-                UIDialog dialog = UIDialog.Open(UIDialog.DialogStyle.ChoosePersonSay, TroopInteractiveDialogData.InteractiveDialogData.content,
+                GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ChoosePersonSay, TroopInteractiveDialogData.InteractiveDialogData.content,
                     TroopInteractiveDialogData.InteractiveDialogData.sureAction);
                 dialog.cancelAction = () =>
                 {
-                    UIDialog.Close();
+                    GameDialog.Close();
                     GameSystemManager.Instance.Back();
                 };
                 dialog.SetPerson(troop.Leader);
@@ -45,12 +45,12 @@ namespace Sango.Game.Player
         /// </summary>
         public override void OnExit()
         {
-            UIDialog.Close();
+            GameDialog.Close();
         }
 
         public override void OnDestroy()
         {
-            UIDialog.Close();
+            GameDialog.Close();
             GameSystem.GetSystem<TroopSystem>().ClearShowMovePath();
             GameSystem.GetSystem<TroopSystem>().ClearShowMoveRange();
         }

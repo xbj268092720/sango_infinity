@@ -1,7 +1,7 @@
-using Sango.Game.Render.UI;
+using Sango.UI;
 using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     [GameSystem]
     public class CityDiplomacyRansom : CityBaseSystem
@@ -58,7 +58,7 @@ namespace Sango.Game.Player
 
         public override void OnDestroy()
         {
-            UIDialog.Close();
+            GameDialog.Close();
             Window.Instance.Close(windowName);
         }
 

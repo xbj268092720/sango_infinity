@@ -1,8 +1,8 @@
 
-using Sango.Game.Render;
+using Sango.Render;
 using System.Collections.Generic;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     /// <summary>
     /// 部队委任-建造建筑

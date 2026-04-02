@@ -1,7 +1,7 @@
-﻿using Sango.Game.Render.UI;
+﻿using Sango.UI;
 using UnityEngine;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
     /// <summary>
     /// 游戏右键菜单
@@ -24,7 +24,7 @@ namespace Sango.Game.Player
                 if (!ContextMenuData.MenuData.IsEmpty())
                 {
                     // 特殊处理<进行>
-                    UIContextMenu contextMenu = Render.UI.ContextMenu.Show(ContextMenuData.MenuData, clickPosition, ContextMenuType.Command);
+                    UIContextMenu contextMenu = UI.ContextMenu.Show(ContextMenuData.MenuData, clickPosition, ContextMenuType.Command);
                     PlayerEndTurn playerEndTurn = GameSystem.GetSystem<PlayerEndTurn>();
                     if (playerEndTurn != null)
                     {
@@ -35,7 +35,7 @@ namespace Sango.Game.Player
                             {
                                 item.SetTitle(playerEndTurn.customTitleName).SetListener(() =>
                                 {
-                                    Render.UI.ContextMenu.CloseAll();
+                                    UI.ContextMenu.CloseAll();
                                     playerEndTurn.Push();
                                 });
                             }
@@ -82,7 +82,7 @@ namespace Sango.Game.Player
                 if (!ContextMenuData.MenuData.IsEmpty())
                 {
                     // 特殊处理<进行>
-                    UIContextMenu contextMenu = Render.UI.ContextMenu.Show(ContextMenuData.MenuData, clickPosition, menuType);
+                    UIContextMenu contextMenu = UI.ContextMenu.Show(ContextMenuData.MenuData, clickPosition, menuType);
                     PlayerEndTurn playerEndTurn = GameSystem.GetSystem<PlayerEndTurn>();
                     if (playerEndTurn != null)
                     {
@@ -93,7 +93,7 @@ namespace Sango.Game.Player
                             {
                                 item.SetTitle(playerEndTurn.customTitleName).SetListener(() =>
                                 {
-                                    Render.UI.ContextMenu.CloseAll();
+                                    UI.ContextMenu.CloseAll();
                                     playerEndTurn.Push();
                                 });
                             }
@@ -107,7 +107,7 @@ namespace Sango.Game.Player
 
         public override void OnDestroy()
         {
-            Render.UI.ContextMenu.CloseAll();
+            UI.ContextMenu.CloseAll();
         }
 
         public override void HandleEvent(CommandEventType eventType, Cell cell, UnityEngine.Vector3 clickPosition, bool isOverUI)

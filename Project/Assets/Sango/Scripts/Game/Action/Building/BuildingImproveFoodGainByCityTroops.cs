@@ -1,9 +1,9 @@
 ﻿using TKNewtonsoft.Json.Linq;
-using Sango.Game.Tools;
+using Sango.Core.Tools;
 using System;
 using System.Collections.Generic;
 
-namespace Sango.Game.Action
+namespace Sango.Core.Action
 {
     /// <summary>
     /// 根据所属城市的士兵数量来增加粮食产量

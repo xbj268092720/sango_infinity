@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-namespace Sango.Game.Render.UI
+namespace Sango.UI
 {
     public class UIObjectListItem : MonoBehaviour
     {

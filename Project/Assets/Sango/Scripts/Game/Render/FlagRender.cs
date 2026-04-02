@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Sango.Core;
+using UnityEngine;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class FlagRender : MonoBehaviour
     {

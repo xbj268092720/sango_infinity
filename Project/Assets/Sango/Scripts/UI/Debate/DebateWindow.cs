@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Sango.Game.Debate;
+using Sango.Core.Debate;
 
 namespace Sango.UI.Debate
 {

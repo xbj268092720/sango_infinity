@@ -8,7 +8,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Sango.Game.Debate
+namespace Sango.Core.Debate
 {
     /// <summary>
     /// 舌战参与者类型

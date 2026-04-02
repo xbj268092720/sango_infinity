@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
 
     public class ScaleWithScreenHeigh : MonoBehaviour

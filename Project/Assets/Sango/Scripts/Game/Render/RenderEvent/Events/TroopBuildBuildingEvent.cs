@@ -1,8 +1,8 @@
-using Sango.Render;
+using Sango.Core;
 using UnityEngine;
 
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class TroopBuildBuildingEvent : RenderEventBase
     {

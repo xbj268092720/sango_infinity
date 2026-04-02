@@ -7,7 +7,7 @@
 
 using TKNewtonsoft.Json;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 32位位检查类，用于管理32位状态

@@ -1,8 +1,7 @@
-using System;
+using Sango.Core;
 using System.Collections.Generic;
-using System.Reflection;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class RenderEvent : Singleton<RenderEvent>
     {

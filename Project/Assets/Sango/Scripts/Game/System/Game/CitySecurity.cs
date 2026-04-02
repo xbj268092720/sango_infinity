@@ -1,8 +1,8 @@
-﻿using Sango.Game.Tools;
+﻿using Sango.Core.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Sango.Game
+namespace Sango.Core
 {
     /// <summary>
     /// 城池治安系统逻辑

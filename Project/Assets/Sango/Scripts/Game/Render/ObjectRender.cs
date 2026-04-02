@@ -1,8 +1,8 @@
-﻿using Sango.Game.Object.Arrow;
-using Sango.Render;
+﻿using Sango.Core;
+using Sango.Core.Object.Arrow;
 using UnityEngine;
 
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public abstract class ObjectRender : IRender
     {

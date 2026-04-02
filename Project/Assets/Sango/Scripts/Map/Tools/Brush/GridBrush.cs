@@ -7,7 +7,7 @@ using System.Drawing;
 using Sango.Render;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using Sango.Game;
+using Sango.Core;
 using System.Collections;
 
 namespace Sango.Tools
@@ -457,7 +457,7 @@ namespace Sango.Tools
             }
 
             if (needCreateTex)
-                Game.Game.Instance.StartCoroutine(CreateLayerTexture());
+                Game.Instance.StartCoroutine(CreateLayerTexture());
         }
         public UnityEngine.Color TypeIndexToColor(int index)
         {

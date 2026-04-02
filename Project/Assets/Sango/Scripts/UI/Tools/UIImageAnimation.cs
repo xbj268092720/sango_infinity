@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sango.Game.Player
+namespace Sango.Core.Player
 {
 
     public class UIImageAnimation : MonoBehaviour

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using Sango.Core;
 
-namespace Sango.Game.Render.Model
+namespace Sango.Render.Model
 {
     public class BuildingModel : BuildingBaseModel
     {

@@ -1,9 +1,7 @@
-using Sango.Render;
-using System.Collections.Generic;
+using Sango.Core;
 using UnityEngine;
 
-
-namespace Sango.Game.Render
+namespace Sango.Render
 {
     public class TroopSpellSkillCriticalEvent : RenderEventBase
     {
