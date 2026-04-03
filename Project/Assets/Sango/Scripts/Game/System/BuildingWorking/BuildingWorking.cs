@@ -39,7 +39,7 @@ namespace Sango.Core
         /// </summary>
         /// <param name="scenario"></param>
         /// <param name="index"></param>
-        void OnGameSave(Scenario scenario, int index)
+        void OnGameSave(Scenario scenario, int index, bool isAuto)
         {
             scenario.Variables.SetExtensionData("WorkingType", selectedWorkingType);
         }

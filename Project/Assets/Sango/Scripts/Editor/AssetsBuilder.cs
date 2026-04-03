@@ -11,7 +11,7 @@ using Sango;
 /// </summary>
 public class AssetsBuilder
 {
-    [MenuItem("Sango/美术工具/资源导出", false, 0)]
+    //[MenuItem("Sango/美术工具/资源导出", false, 0)]
     public static void BuildAssetBundls()
     {
         string outDir = SangoSetting.projectDataDir + "/Assets/" + SangoSetting.GetBuildTargetName();

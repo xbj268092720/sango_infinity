@@ -167,7 +167,7 @@ namespace Sango.Core
         /// <summary>
         /// 游戏保存
         /// </summary>
-        public static EventDelegate<Scenario, int> OnGameSave;
+        public static EventDelegate<Scenario, int, bool> OnGameSave;
 
         /// <summary>
         /// 游戏加载

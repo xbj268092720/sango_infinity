@@ -161,6 +161,7 @@ namespace Sango
 
         }
 
+
         public virtual void Hide()
         {
             if (this.gameObject.activeInHierarchy)

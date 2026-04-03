@@ -55,12 +55,16 @@ namespace Sango.Core
         /// </summary>
         public static bool AIDiplomacy(Force force, Scenario scenario)
         {
+            if (scenario.TurnCount < 10) return true;
+            if (force.IsPlayer) return true;
             if (force.Governor == null) return true;
             if (force.Governor.BelongCity == null) return true;
 
             City centerCity = force.Governor.BelongCity;
             if (centerCity.freePersons.Count == 0)
                 return true;
+
+            if (!GameRandom.Chance(30)) return true;
 
             // 获取AI个性
             AIPersonalityType personality = GetAIPersonality(force);
@@ -116,6 +120,9 @@ namespace Sango.Core
             // 处理结盟
             foreach (Force neighbor in force.NeighborForceList)
             {
+                // 不和玩家结盟
+                if (neighbor.IsPlayer && GameRandom.Chance(95)) continue;
+
                 if (force.IsAlliance(neighbor)) continue;
                 if (IsInDiplomacyImmunity(force, neighbor.Id)) continue;
                 if (neighbor == force) continue;
@@ -341,7 +348,7 @@ namespace Sango.Core
 
             return true;
         }
-
+    
         /// <summary>
         /// 查找合适的外交使者
         /// </summary>

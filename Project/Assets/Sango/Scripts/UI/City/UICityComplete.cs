@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+using Sango.Manager;
+
+namespace Sango.UI
 {
     /// <summary>
     /// 攻陷城池
@@ -18,6 +21,7 @@ using Sango.Core; namespace Sango.UI
             base.OnShow();
             cityName.text = (ps[0] as string);
             animation.Play();
+            AudioManager.Instance.PlaySfx("Assets/Sound/2265.ogg");
             Invoke("Hide", animation.clip.length);
         }
     }

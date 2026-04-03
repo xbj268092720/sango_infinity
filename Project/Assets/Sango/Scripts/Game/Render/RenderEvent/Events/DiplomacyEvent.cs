@@ -38,11 +38,64 @@ namespace Sango.Render
                 {
                     case DiplomacyActionType.Alliance:
                         {
+                            List<GameDialog.TalkData> talkDatas = new List<GameDialog.TalkData>
+                            {
+                                new GameDialog.TalkData
+                                {
+                                    person = receiverForce.Governor,
+                                    text = $"{person.BelongForce.ColorName}军的{person.ColorName}远道而来辛苦了。\n立刻让我听听你的来意吧！",
+                                },
+                                    new GameDialog.TalkData
+                                {
+                                    person = person,
+                                    text = $"此次前来不为其他。\n是想请问可否与我方{person.BelongForce.ColorName}军\n缔结同盟呢？",
+                                },
+                                new GameDialog.TalkData
+                                {
+                                    person = receiverForce.Governor,
+                                    text = $"什么，同盟……？\n嗯嗯……",
+                                }
+                            };
+
                             if (receiverForce.IsPlayer)
                             {
                                 // 玩家选择结果
-                                bool success = false;
-
+                                GameDialog.StartTalk(talkDatas, () =>
+                                {
+                                    System.Action sureAction = () =>
+                                    {
+                                        talkDatas.Clear();
+                                        talkDatas.Add(new GameDialog.TalkData
+                                        {
+                                            person = receiverForce.Governor,
+                                            text = $"那么就和{person.BelongForce.ColorName}军缔结同盟吧。",
+                                        });
+                                        GameDialog.StartTalk(talkDatas, () =>
+                                        {
+                                            DiplomacyManager.Instance.DoPersonDiplomacyActionNoCheck(true, person, actionType, receiverForce, resourceValue, captiveId);
+                                            // 完成任务，返回原城市
+                                            person.SetMission(MissionType.PersonReturn, person.BelongCity);
+                                            IsDone = true;
+                                        });
+                                    };
+                                    System.Action cancelAction = () =>
+                                    {
+                                        talkDatas.Clear();
+                                        talkDatas.Add(new GameDialog.TalkData
+                                        {
+                                            person = receiverForce.Governor,
+                                            text = $"{person.BelongForce.ColorName}军缔结同盟，\n毕竟是不可能的事。\n就当做没有过这回事好了。",
+                                        });
+                                        GameDialog.StartTalk(talkDatas, () =>
+                                        {
+                                            DiplomacyManager.Instance.DoPersonDiplomacyActionNoCheck(false, person, actionType, receiverForce, resourceValue, captiveId);
+                                            // 完成任务，返回原城市
+                                            person.SetMission(MissionType.PersonReturn, person.BelongCity);
+                                            IsDone = true;
+                                        });
+                                    };
+                                    Window.Instance.Open("window_city_diplomacy_alliance_check_dialog", actionType, person, receiverForce, resourceValue, sureAction, cancelAction);
+                                });
                             }
                             else
                             {
@@ -53,25 +106,6 @@ namespace Sango.Render
                                 DelayEvent delay = RenderEvent.Instance.Create<DelayEvent>();
                                 delay.Init(1, () =>
                                 {
-                                    List<GameDialog.TalkData> talkDatas = new List<GameDialog.TalkData>
-                                    {
-                                        new GameDialog.TalkData
-                                        {
-                                            person = receiverForce.Governor,
-                                            text = $"{person.BelongForce.ColorName}军的{person.ColorName}远道而来辛苦了。\n立刻让我听听你的来意吧！",
-                                        },
-                                         new GameDialog.TalkData
-                                        {
-                                            person = person,
-                                            text = $"此次前来不为其他。\n是想请问可否与我方{person.BelongForce.ColorName}军\n缔结同盟呢？",
-                                        },
-                                        new GameDialog.TalkData
-                                        {
-                                            person = receiverForce.Governor,
-                                            text = $"什么，同盟……？\n嗯嗯……",
-                                        }
-                                    };
-
                                     if (!success)
                                     {
                                         talkDatas.Add(new GameDialog.TalkData

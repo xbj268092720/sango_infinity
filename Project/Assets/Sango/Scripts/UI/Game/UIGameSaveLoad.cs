@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     /// <summary>
     /// 存档读档界面
@@ -15,6 +16,7 @@ using Sango.Core; namespace Sango.UI
         public int curShowPage = -1;
         public int CountInPage = 8;
         public int curSelectIndex = -1;
+        public ShortScenario[] all_saved_scenario_list;
 
         [Header("分页控制")]
         public Toggle[] pageToggles; // 拖入第1-4页Toggle
@@ -46,10 +48,13 @@ using Sango.Core; namespace Sango.UI
             sysType = (int)objects[0];
             titleLabel.text = isSave ? "储存" : "读档";
             long t = 0;
+
+            all_saved_scenario_list = player.all_saved_scenario_list;
+
             // 遍历存档列表，找到最新的存档
-            for (int k = 0; k < player.all_saved_scenario_list.Length; k++)
+            for (int k = 0; k < all_saved_scenario_list.Length; k++)
             {
-                ShortScenario scenario = player.all_saved_scenario_list[k];
+                ShortScenario scenario = all_saved_scenario_list[k];
                 if (scenario != null)
                 {
                     if (scenario.Info.dateTime > t)
@@ -65,6 +70,9 @@ using Sango.Core; namespace Sango.UI
             // 默认显示第1页
             SetToggleSelected(0);
             ShowPage(0);
+
+            if (pageToggles.Length > 4)
+                pageToggles[4].interactable = !isSave;
         }
 
         /// <summary>
@@ -104,11 +112,22 @@ using Sango.Core; namespace Sango.UI
         {
             ResetScenarioDetail();
             this.curShowPage = curShowPage;
+
+            if (curShowPage == 4)
+                all_saved_scenario_list = player.all_auto_saved_scenario_list;
+            else
+                all_saved_scenario_list = player.all_saved_scenario_list;
+
+
             // 循环生成每页的存档项
             for (int i = 0; i < CountInPage; i++)
             {
                 int index = curShowPage * CountInPage + i;
-                ShortScenario scenario = player.all_saved_scenario_list[index];
+                if (curShowPage == 4)
+                {
+                    index = i;
+                }
+                ShortScenario scenario = all_saved_scenario_list[index];
                 UIScenarioSaveItem item = selectedItems[i];
                 item.SetIsLoad(!isSave);
                 item.SetSelected(false);
@@ -136,7 +155,7 @@ using Sango.Core; namespace Sango.UI
                     if (curSelectedItem != null)
                         curSelectedItem.SetSelected(false);
                     curSelectedItem = null;
-                    ShortScenario scenario1 = player.all_saved_scenario_list[index];
+                    ShortScenario scenario1 = all_saved_scenario_list[index];
                     if (scenario1 != null)
                     {
                         curSelectedItem = item;
@@ -145,10 +164,6 @@ using Sango.Core; namespace Sango.UI
                     }
                     ShowScenario(index);
                 });
-                //item.BindSureCall(() =>
-                //{
-                //    Load(index);
-                //});
             }
         }
 
@@ -183,13 +198,13 @@ using Sango.Core; namespace Sango.UI
 
         public void Save(int index)
         {
-            ShortScenario scenario = player.all_saved_scenario_list[index];
+            ShortScenario scenario = all_saved_scenario_list[index];
             string content = scenario != null ? $"是否覆盖{index + 1}号存档" : $"是否保存至{index + 1}号存档";
             GameDialog.Open(content, async () =>
             {
                 player.Save(index);
-                newestData = player.all_saved_scenario_list[index];
-                while(!newestData.loadOK) { }
+                newestData = all_saved_scenario_list[index];
+                while (!newestData.loadOK) { }
                 GameDialog.Close();
                 ShowPage(curShowPage);
             });
@@ -197,7 +212,7 @@ using Sango.Core; namespace Sango.UI
 
         public void Load(int index)
         {
-            ShortScenario scenario = player.all_saved_scenario_list[index];
+            ShortScenario scenario = all_saved_scenario_list[index];
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
             GameSystemManager.Instance.Done();
             player.Load(index);
@@ -223,7 +238,7 @@ using Sango.Core; namespace Sango.UI
             }
 
             curSelectIndex = index;
-            ShortScenario scenario = player.all_saved_scenario_list[index];
+            ShortScenario scenario = all_saved_scenario_list[index];
 
             if (scenario == null)
             {
@@ -372,9 +387,9 @@ using Sango.Core; namespace Sango.UI
                 UIScenarioSaveItem uIScenarioItem = selectedItems[i];
                 if (RectTransformUtility.RectangleContainsScreenPoint(uIScenarioItem.root, Input.mousePosition, Sango.Core.Game.Instance.UICamera))
                 {
-                    if (uIScenarioItem.targetIndex < player.all_saved_scenario_list.Length)
+                    if (uIScenarioItem.targetIndex < all_saved_scenario_list.Length)
                     {
-                        ShortScenario scenario = player.all_saved_scenario_list[uIScenarioItem.targetIndex];
+                        ShortScenario scenario = all_saved_scenario_list[uIScenarioItem.targetIndex];
                         ShowScenarioDetail(uIScenarioItem.targetIndex, scenario);
                         return;
                     }

@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+using Sango.Manager;
+
+namespace Sango.UI
 {
     public class UIGame : UGUIWindow
     {
@@ -213,14 +216,29 @@ using Sango.Core; namespace Sango.UI
             "Assets/UI/AtlasTexture/4846-6/4846-6_9.png",       //夏
             "Assets/UI/AtlasTexture/4846-6/4846-6_11.png"       //冬
         };
+        string[] seasonBGMPath = new string[] {
+            "Assets/Sound/2242.ogg",                             //秋
+            "Assets/Sound/2240.ogg",       //春
+            "Assets/Sound/2241.ogg",       //夏
+            "Assets/Sound/2243.ogg"       //冬
+        };
+        string[] seasonSfxPath = new string[] {
+            "Assets/Sound/2289.ogg",                             //秋
+            "Assets/Sound/2287.ogg",       //春
+            "Assets/Sound/2288.ogg",       //夏
+            "Assets/Sound/2290.ogg"       //冬
+        };
         public void OnDayUpdate(Scenario scenario)
         {
             dateText.text = scenario.GetDateStr();
         }
         public void OnSeasonUpdate(Scenario scenario)
         {
-            seasonImg.sprite = ObjectLoader.LoadObject<UnityEngine.Sprite>(seasonIconPath[(int)scenario.CurSeason]);
-            seasonLabel.text = GameDefine.seasonName[(int)scenario.CurSeason];
+            int sIndex = (int)scenario.CurSeason;
+            seasonImg.sprite = ObjectLoader.LoadObject<UnityEngine.Sprite>(seasonIconPath[sIndex]);
+            seasonLabel.text = GameDefine.seasonName[sIndex];
+            AudioManager.Instance.PlayBgm(seasonBGMPath[sIndex]);
+            AudioManager.Instance.PlaySfx(seasonSfxPath[sIndex]);
         }
 
         public void OnBtnPause()
@@ -354,7 +372,7 @@ using Sango.Core; namespace Sango.UI
         {
             int count = Scenario.all_scenario_list.Count;
             string savePath = Path.ContentRootPath + $"/Scenario/scenario_save_{count}.json";
-            GameEvent.OnGameSave?.Invoke(Scenario.Cur, count);
+            GameEvent.OnGameSave?.Invoke(Scenario.Cur, count, false);
             Scenario.Cur.Save(savePath);
         }
 

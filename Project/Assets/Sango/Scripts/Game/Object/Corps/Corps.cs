@@ -262,6 +262,7 @@ namespace Sango.Core
                 GameEvent.OnPlayerControl?.Invoke(this, scenario);
                 return false;
             }
+            Sango.Log.Error(Name);
 
             if (!DoAI(scenario))
                 return false;

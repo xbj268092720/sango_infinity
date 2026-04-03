@@ -41,7 +41,7 @@ namespace Sango.Core
                         UnityEngine.Debug.LogError(e);
                     }
 #else
-                    _instance = new T();
+                    _instance = new Game();
 #endif
                 }
                 return _instance;

@@ -935,6 +935,27 @@ namespace Sango.Core
 
         public override bool OnTurnStart(Scenario scenario)
         {
+           
+            return base.OnTurnStart(scenario);
+        }
+        public override bool OnForceTurnStart(Scenario scenario)
+        {
+            if (BelongForce != null && IsAlive)
+            {
+                BelongForce.GainHegemonyPoint(1);
+            }
+
+            ActionOver = !IsFree;
+            return base.OnForceTurnStart(scenario);
+        }
+
+        public override bool OnForceTurnEnd(Scenario scenario)
+        {
+            return base.OnForceTurnEnd(scenario);
+        }
+
+        public override bool OnTurnEnd(Scenario scenario)
+        {
             // 在野武将移动逻辑
             if (IsWild)
             {
@@ -964,28 +985,10 @@ namespace Sango.Core
                     }
                 }
             }
-            return base.OnTurnStart(scenario);
-        }
-        public override bool OnForceTurnStart(Scenario scenario)
-        {
-            //TODO:在野角色随机移动
+
             UpdateMission(scenario);
-            if (BelongForce != null && IsAlive)
-            {
-                BelongForce.GainHegemonyPoint(1);
-            }
-
-            ActionOver = !IsFree;
-            return base.OnForceTurnStart(scenario);
+            return base.OnTurnEnd(scenario);
         }
-
-        public override bool OnForceTurnEnd(Scenario scenario)
-        {
-            //TODO:在野角色随机移动
-            //UpdateMission(scenario);
-            return base.OnForceTurnEnd(scenario);
-        }
-
 
         public void TransformToCity(City dest)
         {
