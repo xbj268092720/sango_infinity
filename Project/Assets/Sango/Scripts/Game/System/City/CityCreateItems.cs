@@ -172,6 +172,7 @@ namespace Sango.Core.Player
                     TargetCity.JobCreateItems(personList.ToArray(), CurSelectedItemType.itemType, TargetBuilding);
                 }
                 Done();
+                GameMedia.Instance.PlayDoAcitonSfx();
             }
         }
     }

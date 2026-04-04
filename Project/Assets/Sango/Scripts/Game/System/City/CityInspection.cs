@@ -55,6 +55,7 @@ namespace Sango.Core.Player
             if (personList.Count > 0)
             {
                 TargetCity.JobInspection(personList.ToArray());
+                GameMedia.Instance.PlayDoAcitonSfx();
                 Done();
             }
         }

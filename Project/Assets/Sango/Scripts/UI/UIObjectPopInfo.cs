@@ -19,9 +19,9 @@ using Sango.Core; namespace Sango.UI
         UIMiniInfoPanel currentPanel;
         SangoObject currentObject;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
-            base.OnShow();
+            base.OnOpen();
             ResetAllPanel(null);
             GameController.Instance.onCellOverEnter += OnCellOverEnter;
             GameController.Instance.onCellOverExit += OnCellOverExit;
@@ -53,11 +53,11 @@ using Sango.Core; namespace Sango.UI
             currentObject = null;
         }
 
-        public override void OnHide()
+        public override void OnClose()
         {
             GameController.Instance.onCellOverEnter -= OnCellOverEnter;
             GameController.Instance.onCellOverExit -= OnCellOverExit;
-            base.OnHide();
+            base.OnClose();
         }
 
         void OnCellOverEnter(Cell cell)

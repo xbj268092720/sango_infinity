@@ -1,4 +1,5 @@
 using Sango.Core;
+using Sango.Manager;
 using UnityEngine;
 
 
@@ -11,6 +12,7 @@ namespace Sango.Render
         public Cell dest;
         public bool isLastMove;
         public System.Action doneAction;
+        int soundChannel = -1;
 
         public void Init(Troop troop, Cell start, Cell dest, bool isLastMove, System.Action doneAction)
         {
@@ -27,6 +29,7 @@ namespace Sango.Render
             if (IsVisible())
             {
                 troop.Render.SetSmokeShow(true);
+                soundChannel = AudioManager.Instance.PlaySfx("Assets/Sound/troop_move.mp3");
             }
         }
 
@@ -36,6 +39,8 @@ namespace Sango.Render
             {
                 troop.Render.SetSmokeShow(false);
             }
+            if (soundChannel >= 0)
+                AudioManager.Instance.StopSfx(soundChannel);
         }
 
         public override bool IsVisible()

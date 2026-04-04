@@ -1667,6 +1667,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: toggle_4
       objectReference: {fileID: 0}
+    - target: {fileID: 8381245239866314543, guid: d56a4d30c857fcd44be163139d9ed188, type: 3}
+      propertyPath: m_Text
+      value: "\u73A9\u5BB6\u5267\u672C"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d56a4d30c857fcd44be163139d9ed188, type: 3}
 --- !u!224 &4382105791896043516 stripped

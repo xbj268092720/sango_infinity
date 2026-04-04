@@ -19,7 +19,7 @@ using Sango.Core; namespace Sango.UI
         public Button sureBtn;
 
         CityTransformPerson currentSystem;
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CityTransformPerson>();
             windiwTitle.text = currentSystem.customTitleName;

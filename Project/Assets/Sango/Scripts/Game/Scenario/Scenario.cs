@@ -554,7 +554,7 @@ namespace Sango.Core
             string path = $"{Path.ContentRootPath}/Scenario";
             Directory.EnumFiles(path, "*.json", SearchOption.AllDirectories, (file) =>
             {
-                Sango.Log.Print($"Find Scenario: {file}");
+                Sango.Log.Info($"Find Scenario: {file}");
                 Add(file);
                 ShortScenario.Add(file);
             });

@@ -643,6 +643,24 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1064673849769811101, guid: f53ce2bc2c9f4c24589f7727e7efbd48, type: 3}
   m_PrefabInstance: {fileID: 1932763967523920657}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6800349470711835792 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4939673939409074049, guid: f53ce2bc2c9f4c24589f7727e7efbd48, type: 3}
+  m_PrefabInstance: {fileID: 1932763967523920657}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7720226372179541697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6800349470711835792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c5f21e74bc2bf14ba2b0d46ccf3182f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxPath: Assets/Sound/cancel.mp3
 --- !u!1001 &7983215411130654034
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -744,6 +762,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a78b2400f9e564e48b8ec8605c0ee286, type: 3}
+--- !u!1 &4027404736586454619 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6426112594388175625, guid: a78b2400f9e564e48b8ec8605c0ee286, type: 3}
+  m_PrefabInstance: {fileID: 7983215411130654034}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1841423407920027389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4027404736586454619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c5f21e74bc2bf14ba2b0d46ccf3182f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxPath: Assets/Sound/button.mp3
 --- !u!224 &7771613634283487616 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 364867926463945938, guid: a78b2400f9e564e48b8ec8605c0ee286, type: 3}

@@ -17,7 +17,7 @@ using Sango.Core; namespace Sango.UI
         CitySeraching currentSystem;
         public Button sureButton;
 
-        public override void OnShow()
+        public override void OnOpen()
         {   
             currentSystem = GameSystem.GetSystem<CitySeraching>();
             windiwTitle.text = currentSystem.customTitleName;

@@ -17,7 +17,7 @@ using Sango.Core; namespace Sango.UI
         CityDiplomacyRequestTechnique currentSystem;
         public Button sureButton;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CityDiplomacyRequestTechnique>();
             windowTitle.text = currentSystem.customTitleName;

@@ -1688,7 +1688,7 @@ namespace Sango.Core
 
                 if (allInOne)
                 {
-                    Sango.Log.Print($"{Scenario.Cur.GetDateStr()} --> {atk.BelongForce.Name} 统一!!!!!!!!!!!!!!");
+                    Sango.Log.Info($"{Scenario.Cur.GetDateStr()} --> {atk.BelongForce.Name} 统一!!!!!!!!!!!!!!");
                     scenario.OnGamePause();
                 }
             }

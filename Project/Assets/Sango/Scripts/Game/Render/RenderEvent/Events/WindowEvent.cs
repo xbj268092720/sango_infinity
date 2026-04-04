@@ -23,12 +23,12 @@ namespace Sango.Render
                 IsDone = true; 
                 return;
             }
-            targetWindow.ugui_instance.OnHideAction = OnWindowHide;
+            targetWindow.ugui_instance.OnCloseAction = OnWindowHide;
         }
 
         void OnWindowHide()
         {
-            targetWindow.ugui_instance.OnHideAction = null;
+            targetWindow.ugui_instance.OnCloseAction = null;
             IsDone = true;
         }
     }

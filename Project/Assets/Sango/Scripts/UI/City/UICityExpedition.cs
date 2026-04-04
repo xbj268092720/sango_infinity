@@ -56,7 +56,7 @@ using Sango.Core; namespace Sango.UI
         bool showLand = true;
         City targetCity;
         Troop targetTroop;
-        public override void OnShow()
+        public override void OnOpen()
         {
 
             cityExpeditionSys = GameSystem.GetSystem<CityExpedition>();

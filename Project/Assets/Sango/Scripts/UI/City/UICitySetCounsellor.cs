@@ -18,7 +18,7 @@ using Sango.Core; namespace Sango.UI
         public Button sureButton;
         Force TargetForce;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CitySetCounsellor>();
             TargetForce = currentSystem.TargetForce;

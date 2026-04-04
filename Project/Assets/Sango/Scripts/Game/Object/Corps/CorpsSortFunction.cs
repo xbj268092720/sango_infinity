@@ -1,0 +1,149 @@
+﻿using Sango.Core.Player;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Sango.Core
+{
+
+    public enum CorpsSortGroupType : int
+    {
+        //自定义,功能独有
+        Custom = 0,
+        //状态
+        State,
+        //战力
+        FightPower,
+        //兵装
+        Item,
+        //资金
+        Gold,
+        //兵粮
+        Food,
+        //灾害
+        Disaster,
+
+        Max
+    }
+
+    public class CorpsSortFunction : Singleton<CorpsSortFunction>
+    {
+        public delegate string CorpsValueStrGet(Corps corps);
+        public delegate int CorpsValueGet(Corps corps);
+        public delegate int CorpsSortFunc(Corps corps1, Corps corps2);
+
+        public Corps CurCorps;
+
+        public class SortTitle : ObjectSortTitle
+        {
+            public CorpsValueStrGet valueStrGetCall;
+            public CorpsSortFunc valueSortFunc;
+
+            public override string GetValueStr(SangoObject obj)
+            {
+                return valueStrGetCall.Invoke((Corps)obj);
+            }
+
+            public override int Sort(SangoObject a, SangoObject b)
+            {
+                return valueSortFunc.Invoke((Corps)a, (Corps)b);
+            }
+
+            public SortTitle Copy()
+            {
+                return new SortTitle
+                {
+                    name = name,
+                    alignment = alignment,
+                    width = width,
+                    valueStrGetCall = valueStrGetCall,
+                    valueSortFunc = valueSortFunc,
+                };
+            }
+        }
+
+        public void GetSortTitleGroup(CorpsSortGroupType CorpsSortTileGroupType, List<ObjectSortTitle> titleList)
+        {
+            switch (CorpsSortTileGroupType)
+            {
+                case CorpsSortGroupType.State:
+                    {
+                        titleList.Add(SortByName);
+                        break;
+                    }
+                case CorpsSortGroupType.FightPower:
+                    {
+                        titleList.Add(SortByName);
+                        break;
+                    }
+                case CorpsSortGroupType.Item:
+                    {
+                        titleList.Add(SortByName);
+                        break;
+                    }
+                case CorpsSortGroupType.Gold:
+                    {
+                        titleList.Add(SortByName);
+                        break;
+                    }
+                case CorpsSortGroupType.Food:
+                    {
+
+                        titleList.Add(SortByName);
+                        break;
+                    }
+                case CorpsSortGroupType.Disaster:
+                    {
+
+                        titleList.Add(SortByName);
+                        break;
+                    }
+            }
+        }
+
+        public string GetSortTitleGroupName(CorpsSortGroupType CorpsSortTileGroupType)
+        {
+            switch (CorpsSortTileGroupType)
+            {
+                case CorpsSortGroupType.State: return "状态";
+                case CorpsSortGroupType.FightPower: return "战力";
+                case CorpsSortGroupType.Item: return "兵装";
+                case CorpsSortGroupType.Gold: return "资金";
+                case CorpsSortGroupType.Food: return "兵粮";
+                case CorpsSortGroupType.Disaster: return "灾害";
+            }
+
+            return "";
+        }
+
+        public static SortTitle SortByName = new SortTitle()
+        {
+            name = "势力",
+            width = 100,
+            valueStrGetCall = x => x.BelongForce.Name,
+            valueSortFunc = (a, b) => a.BelongForce.Name.CompareTo(b.BelongForce.Name),
+        };
+
+        public static SortTitle SortByNumber = new SortTitle()
+        {
+            name = "番号",
+            width = 100,
+            valueStrGetCall = x => $"第{x.number}军团",
+            valueSortFunc = (a, b) => a.number.CompareTo(b.number),
+        };
+
+        public static SortTitle SortByLeader = new SortTitle()
+        {
+            name = "军团长",
+            width = 100,
+            valueStrGetCall = x => x.Comander?.Name ?? "---",
+            valueSortFunc = (a, b) => SangoObject.Compare(a.Comander, b.Comander),
+        };
+
+        public static List<ObjectSortTitle> DefaultSortList = new List<ObjectSortTitle>()
+        {
+            SortByName,
+            SortByNumber,
+            SortByLeader
+        };
+    }
+}

@@ -1,7 +1,4 @@
-﻿
-using Sango.Loader;
-using System;
-using System.Text;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +7,7 @@ namespace Sango
 
     public class UGUIWindow : MonoBehaviour
     {
-        public Action OnHideAction;
+        public Action OnCloseAction;
         protected UnityEngine.Canvas[] panels;
         public bool IsOpen { get; set; }
         protected virtual void Awake()
@@ -127,32 +124,32 @@ namespace Sango
             }
         }
 
-        public virtual void Show()
+        public virtual void Open()
         {
             IsOpen = true;
             //if (!this.gameObject.activeInHierarchy)
             {
                 this.gameObject.SetActive(true);
             }
-            OnShow();
+            OnOpen();
         }
 
-        public virtual void Show(params object[] objects)
+        public virtual void Open(params object[] objects)
         {
             IsOpen = true;
             if (!this.gameObject.activeInHierarchy)
             {
                 this.gameObject.SetActive(true);
             }
-            OnShow(objects);
+            OnOpen(objects);
         }
 
-        public virtual void OnShow(params object[] objects)
+        public virtual void OnOpen(params object[] objects)
         {
 
         }
 
-        public virtual void OnShow()
+        public virtual void OnOpen()
         {
 
         }
@@ -162,13 +159,13 @@ namespace Sango
         }
 
 
-        public virtual void Hide()
+        public virtual void Close()
         {
             if (this.gameObject.activeInHierarchy)
             {
                 this.gameObject.SetActive(false);
             }
-            OnHide();
+            OnClose();
             IsOpen = false;
         }
 
@@ -178,9 +175,9 @@ namespace Sango
         }
 
 
-        public virtual void OnHide()
+        public virtual void OnClose()
         {
-            OnHideAction?.Invoke();
+            OnCloseAction?.Invoke();
         }
 
         public void SetText(string path, string content)

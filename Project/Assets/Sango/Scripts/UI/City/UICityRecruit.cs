@@ -24,7 +24,7 @@ using Sango.Core; namespace Sango.UI
         public Button sureButton;
 
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CityRecruit>();
             TargetCity = currentSystem.TargetCity;

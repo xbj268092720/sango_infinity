@@ -36,7 +36,7 @@ using Sango.Core; namespace Sango.UI
         /// 显示外交界面
         /// </summary>
         /// <param name="objects">参数</param>
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
             _diplomacySystem = objects[0] as DiplomacySystem;
             windowTitle.text = "外交";

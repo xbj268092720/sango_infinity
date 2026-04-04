@@ -25,7 +25,7 @@ namespace Sango.Mod
             string path = $"{Path.ContentRootPath}/Package/{PlatformUtility.GetPlatformName()}";
             Directory.EnumFiles(path, "*.pkg", SearchOption.AllDirectories, (file) =>
             {
-                Sango.Log.Print($"LoadPackage: {file}");
+                Sango.Log.Info($"LoadPackage: {file}");
                 string packageName = System.IO.Path.GetFileNameWithoutExtension(file).Split('_')[0];
                 PackageManager.Instance.AddPackage(packageName, file, true);
             });

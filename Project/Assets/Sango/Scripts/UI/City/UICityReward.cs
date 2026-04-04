@@ -20,7 +20,7 @@ using Sango.Core; namespace Sango.UI
         CityReward currentSystem;
         public Button sureButton;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CityReward>();
             TargetCity = currentSystem.TargetCity;

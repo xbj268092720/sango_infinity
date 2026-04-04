@@ -25,7 +25,7 @@ using Sango.Core; namespace Sango.UI
         BuildingActionUpgrade currentSystem;
 
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<BuildingActionUpgrade>();
             windiwTitle.text = currentSystem.customTitleName;
@@ -78,7 +78,7 @@ using Sango.Core; namespace Sango.UI
         {
             currentSystem.personList = personList;
             currentSystem.UpdateJobValue();
-            OnShow();
+            OnOpen();
         }
 
     }

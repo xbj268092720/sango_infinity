@@ -24,7 +24,7 @@ using Sango.Core; namespace Sango.UI
 
         public GameObject sureButton;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             curSelectIndex = -1;
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
@@ -157,6 +157,7 @@ using Sango.Core; namespace Sango.UI
 
         public void OnReturn()
         {
+            GameMedia.Instance.PlayCancelSfx();
             Clear();
             Window.Instance.Open("window_start");
             Window.Instance.Close("window_scenario_select");
@@ -165,6 +166,7 @@ using Sango.Core; namespace Sango.UI
         public void OnNext()
         {
             if (curSelectIndex == -1) return;
+            GameMedia.Instance.PlayButtonSfx();
 
             Clear();
             ShortScenario scenario = ShortScenario.all_scenario_info_list[curSelectIndex];

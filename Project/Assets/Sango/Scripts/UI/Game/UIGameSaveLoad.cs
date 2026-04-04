@@ -37,7 +37,7 @@ namespace Sango.UI
         Player player;
         bool isSave => sysType == 0;
 
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
             player = GameSystem.GetSystem<Player>();
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
@@ -367,7 +367,7 @@ namespace Sango.UI
 
             if (sysType == 2)
             {
-                Hide();
+                Close();
                 return;
             }
         }

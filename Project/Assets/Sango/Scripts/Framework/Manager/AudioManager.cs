@@ -37,7 +37,7 @@ namespace Sango.Manager
         /// <summary>
         /// 背景音乐音量
         /// </summary>
-        public float BgmVolume { get; set; } = 0.7f;
+        public float BgmVolume { get; set; } = 0.6f;
 
         /// <summary>
         /// 音效音量
@@ -121,6 +121,7 @@ namespace Sango.Manager
         /// <param name="loop">是否循环</param>
         public void PlayBgm(string audioName, bool loop = true)
         {
+            if (BgmVolume <= 0) return;
             AudioClip clip = LoadAudioClip(audioName);
             if (clip != null)
             {
@@ -191,6 +192,7 @@ namespace Sango.Manager
         /// <returns>播放音效的声道索引</returns>
         public int PlaySfx(string audioName, float volume = 1.0f)
         {
+            if (SfxVolume <= 0) return -1;
             AudioClip clip = LoadAudioClip(audioName);
             if (clip == null)
                 return -1;
@@ -216,6 +218,7 @@ namespace Sango.Manager
         /// <returns>播放音效的声道索引</returns>
         public int PlaySfx3D(string audioName, Vector3 position, float volume = 1.0f)
         {
+            if (SfxVolume <= 0) return -1;
             AudioClip clip = LoadAudioClip(audioName);
             if (clip == null)
                 return -1;
@@ -400,6 +403,9 @@ namespace Sango.Manager
                     }
                     break;
             }
+
+
         }
+
     }
 }

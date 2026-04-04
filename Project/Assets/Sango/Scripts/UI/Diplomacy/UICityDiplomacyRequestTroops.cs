@@ -17,7 +17,7 @@ using Sango.Core; namespace Sango.UI
         CityDiplomacyRequestTroops currentSystem;
         public Button sureButton;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CityDiplomacyRequestTroops>();
             windowTitle.text = currentSystem.customTitleName;

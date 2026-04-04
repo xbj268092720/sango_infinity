@@ -37,7 +37,7 @@ namespace Sango.UI
         Dictionary<int, UIItemType> id2UIItemType = new Dictionary<int, UIItemType>();
         City targetCity;
         Troop targetTroop;
-        public override void OnShow()
+        public override void OnOpen()
         {
             showLand = true; 
             cityTransportSys = GameSystem.GetSystem<CityTransport>();

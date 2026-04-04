@@ -14,7 +14,7 @@ namespace Sango.Core.Player
         {
             customTitleName = "军师";
             customMenuName = "君主/军师";
-            customMenuOrder = 900;
+            customMenuOrder = 901;
             windowName = "window_city_set_counsellor";
             customTitleList = new List<ObjectSortTitle>()
             {
@@ -71,6 +71,7 @@ namespace Sango.Core.Player
                 return;
             }
 
+            GameMedia.Instance.PlayDoAcitonSfx();
             TargetForce.ChangeCounsellor(personList[0]);
             GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"交给我吧", () =>
             {

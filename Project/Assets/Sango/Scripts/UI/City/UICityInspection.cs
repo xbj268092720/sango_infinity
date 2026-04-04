@@ -19,7 +19,7 @@ using Sango.Core; namespace Sango.UI
         CityInspection currentSystem;
         public Button sureButton;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CityInspection>();
             windiwTitle.text = currentSystem.customTitleName;

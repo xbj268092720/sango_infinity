@@ -9,6 +9,7 @@ using Sango.Core; namespace Sango.UI
         public static ContextMenuData MenuData = new ContextMenuData();
 
         public List<ContextMenuItem> headList = new List<ContextMenuItem>();
+        public Vector2 startPosition;
 
         /// <summary>
         /// order越小越靠前,菜单链父级菜单以最小子级菜单order计算

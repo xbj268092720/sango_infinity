@@ -61,6 +61,8 @@ namespace Sango.Core
         /// <param name="targetPlatform">目标平台</param>
         public override void Init(MonoBehaviour start, Platform.PlatformName targetPlatform)
         {
+            AudioManager.Instance.Init();
+            GameSetting.Instance.Initialize();
             inited = false;
             CanvasScalerFactor = CanvasScaler.referenceResolution.y / 1080f;
             base.Init(start, targetPlatform);
@@ -130,7 +132,6 @@ namespace Sango.Core
             CursorManager.Instance.SetCursorStyle(0);
 #endif
             // 初始化音效管理器
-            AudioManager.Instance.Init();
             SkillVisualizer.Init();
 
             // 初始化外交管理器

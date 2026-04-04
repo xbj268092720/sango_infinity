@@ -18,6 +18,8 @@ using Sango.Core; namespace Sango.UI
         {
             this.title.text = title;
             if (min > max) { min = max; }
+            this.min = min;
+            this.max = max;
             inputField.SetTextWithoutNotify(value.ToString());
             inputField.characterValidation = InputField.CharacterValidation.Decimal;
             inputField.onValueChanged.RemoveAllListeners();

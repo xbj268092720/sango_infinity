@@ -74,6 +74,7 @@ namespace Sango.Core.Player
 
             TargetCity.JobRewardPersons(personList.ToArray());
             Done();
+            GameMedia.Instance.PlayDoAcitonSfx();
         }
     }
 }

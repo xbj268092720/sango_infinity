@@ -20,10 +20,10 @@ using Sango.Core; namespace Sango.UI
             }
         }
 
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
             this.objectSelectSystem = objects[0] as ObjectSelectSystem;
-            base.OnShow(objectSelectSystem);
+            base.OnOpen(objectSelectSystem);
         }
 
         public override void UpdateItemStartIndex(int startIndex)

@@ -29,9 +29,9 @@ using Sango.Core; namespace Sango.UI
 
         List<ObjectSortTitle> objectSortTitles;
 
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
-            base.OnShow();
+            base.OnOpen();
             City city = (City)objects[0];
             ResetPool();
             objectSortTitles = new List<ObjectSortTitle>()
@@ -128,9 +128,9 @@ using Sango.Core; namespace Sango.UI
             }
         }
 
-        public override void OnHide()
+        public override void OnClose()
         {
-            base.OnHide();
+            base.OnClose();
         }
 
         protected void ResetPool()

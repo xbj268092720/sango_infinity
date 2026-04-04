@@ -1005,6 +1005,91 @@ namespace Sango.Core
         }
 
         /// <summary>
+        /// 创建军团
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="commander"></param>
+        /// <param name="cities"></param>
+        public void CreateCorps(int number, Person commander, List<City> cities)
+        {
+            Corps corps = new Corps();
+            corps.number = number;
+            corps.BelongForce = this;
+            corps.Comander = commander;
+            Scenario.Cur.Add(corps);
+            corps.Init(Scenario.Cur);
+            foreach (var city in cities)
+            {
+                city.BelongCorps = corps;
+                foreach(Person person in city.allPersons)
+                {
+                    person.BelongCorps = corps;
+
+                }
+                foreach (Building building in city.allBuildings)
+                {
+                    building.BelongCorps = corps;
+                }
+            }
+            GameEvent.OnCorpsCreate?.Invoke(corps, Scenario.Cur);
+        }
+
+        /// <summary>
+        /// 解散军团
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="commander"></param>
+        /// <param name="cities"></param>
+        public void DeleteCorps(int number)
+        {
+            Corps corps = Scenario.Cur.corpsSet.Find((x) =>
+            {
+                return x.BelongForce == this && x.number == number;
+            });
+            DeleteCorps(corps);
+        }
+
+        /// <summary>
+        /// 解散军团
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="commander"></param>
+        /// <param name="cities"></param>
+        public void DeleteCorps(Corps corps)
+        {
+            if (corps.BelongForce != this) return;
+
+            Corps governorCorps = Governor.BelongCorps;
+            Scenario scenario = Scenario.Cur;
+            scenario.citySet.ForEach(x =>
+            {
+                if (x.IsAlive && x.BelongCorps == corps)
+                {
+                    x.BelongCorps = governorCorps;
+                }
+            });
+
+            scenario.personSet.ForEach(x =>
+            {
+                if (x.IsAlive && x.BelongCorps == corps)
+                {
+                    x.BelongCorps = governorCorps;
+                }
+            });
+
+            scenario.buildingSet.ForEach(x =>
+            {
+                if (x.IsAlive && x.BelongCorps == corps)
+                {
+                    x.BelongCorps = governorCorps;
+                }
+            });
+
+            Scenario.Cur.corpsSet.Remove(corps);
+            GameEvent.OnCorpsDelete?.Invoke(corps, Scenario.Cur);
+        }
+
+        /// <summary>
         /// 更换军师
         /// </summary>
         /// <param name="dest">新军师</param>

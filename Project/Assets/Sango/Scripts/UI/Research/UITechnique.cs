@@ -56,7 +56,7 @@ using Sango.Core; namespace Sango.UI
             }
         }
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             sureBtn.interactable = false;
             selectedItem = null;

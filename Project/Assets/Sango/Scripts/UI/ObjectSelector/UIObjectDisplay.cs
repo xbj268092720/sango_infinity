@@ -51,7 +51,7 @@ using Sango.Core; namespace Sango.UI
             sortButtonPool.Add(sortBtn);
             return sortBtn;
         }
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
             this.objectSelectSystem = objects[0] as ObjectSelectSystem;
             Init(objectSelectSystem);
@@ -294,9 +294,9 @@ using Sango.Core; namespace Sango.UI
         }
 
 
-        public override void OnHide()
+        public override void OnClose()
         {
-            base.OnHide();
+            base.OnClose();
             for (int i = 0; i < sortButtonPool.Count; i++)
                 sortButtonPool[i].gameObject.SetActive(false);
         }

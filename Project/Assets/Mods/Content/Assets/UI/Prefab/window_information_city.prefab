@@ -1004,6 +1004,7 @@ MonoBehaviour:
   itemObject: {fileID: 176455472952862656}
   buildingItemObject: {fileID: 5874151867020953100}
   buildingNumLabel: {fileID: 2058379221202651903}
+  showTab: 0
   port_gate_btn: {fileID: 3911193315941099873}
   troop_btn: {fileID: 8832747575827843232}
   person_btn: {fileID: 4242182090221383403}
@@ -1136,6 +1137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5d6125d06f1fef4aa9861c00314c119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scaleable: 0
 --- !u!1001 &130581700438592930
 PrefabInstance:
   m_ObjectHideFlags: 0

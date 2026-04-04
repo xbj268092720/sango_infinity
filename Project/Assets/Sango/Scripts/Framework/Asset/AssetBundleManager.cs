@@ -745,7 +745,7 @@ namespace Sango
 
 #if UNITY_EDITOR
             if (Config.isDebug)
-                Log.Print("==异步加载资源信息：" + fileName);
+                Log.Info("==异步加载资源信息：" + fileName);
 #endif
 
             AssetBundleInfo bundleInfo = _CreateAssetBundleInfo(fileName);

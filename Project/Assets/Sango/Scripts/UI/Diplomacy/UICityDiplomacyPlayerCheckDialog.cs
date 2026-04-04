@@ -17,7 +17,7 @@ namespace Sango.UI
         Person person;
         Force receiverForce;
         int resourceValue;
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
             windowTitle.text = DiplomacyManager.Instance.GetActionName(actionType);
             actionType = (DiplomacyActionType)objects[0];
@@ -40,13 +40,13 @@ namespace Sango.UI
         
         public void OnSure()
         {
-            Hide();
+            Close();
             sureAction?.Invoke();
         }
         
         public void OnCancel()
         {
-            Hide();
+            Close();
             cancelAction?.Invoke();
         }
     }

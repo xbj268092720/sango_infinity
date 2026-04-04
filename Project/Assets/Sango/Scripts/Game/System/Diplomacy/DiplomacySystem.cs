@@ -35,7 +35,7 @@ namespace Sango.Core
 
             // 显示外交界面
             UIDiplomacy uiDiplomacy = Window.Instance.Open<UIDiplomacy>(windowName);
-            uiDiplomacy.OnShow(this);
+            uiDiplomacy.OnOpen(this);
         }
 
         /// <summary>

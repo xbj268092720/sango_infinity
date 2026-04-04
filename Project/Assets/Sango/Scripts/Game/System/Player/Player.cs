@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Sango.Core.Player
 {
@@ -9,7 +10,7 @@ namespace Sango.Core.Player
         public ShortScenario[] all_auto_saved_scenario_list = new ShortScenario[10];
         private int autoSaveIndex = -1;
         private long autoSaveTime = 0;
-        public bool autoSave = true;
+        public int autoSave = 0;
         public int autoSaveTurnType = 0;
         int[] autoTurn = new int[] { 2, 3, 4, 6, 10 };
         public int currentTurnCount = 0;
@@ -20,17 +21,20 @@ namespace Sango.Core.Player
             InitAutoSaveFile();
             currentTurnCount = 0;
             GameEvent.OnForceTurnStart += OnForceTurnStart;
-            GameEvent.OnScenarioVariablesSetting += OnScenarioVariablesSetting;
-            GameEvent.OnScenarioInit += OnScenarioInit;
-            GameEvent.OnGameSave += OnGameSave;
+            GameEvent.OnGameSetting += OnGameSetting;
+            GameEvent.OnGameSettingApply += OnGameSettingApply;
+            GameEvent.OnGameSettingCancel += OnGameSettingCancel;
+            autoSave = PlayerPrefs.GetInt("AutoSave", 0);
+            autoSaveTurnType = PlayerPrefs.GetInt("AutoSaveTurnType", 0);
+
         }
 
         public override void Clear()
         {
             GameEvent.OnForceTurnStart -= OnForceTurnStart;
-            GameEvent.OnScenarioVariablesSetting -= OnScenarioVariablesSetting;
-            GameEvent.OnScenarioInit -= OnScenarioInit;
-            GameEvent.OnGameSave -= OnGameSave;
+            GameEvent.OnGameSetting -= OnGameSetting;
+            GameEvent.OnGameSettingApply -= OnGameSettingApply;
+            GameEvent.OnGameSettingCancel -= OnGameSettingCancel;
         }
 
         /// <summary>
@@ -38,26 +42,27 @@ namespace Sango.Core.Player
         /// </summary>
         /// <param name="scenario"></param>
         /// <param name="index"></param>
-        void OnGameSave(Scenario scenario, int index, bool isAuto)
+        void OnGameSettingApply()
         {
-            scenario.Variables.SetExtensionData("AutoSave", autoSave);
-            scenario.Variables.SetExtensionData("AutoSaveType", autoSaveTurnType);
+            PlayerPrefs.SetInt("AutoSave", autoSave);
+            PlayerPrefs.SetInt("AutoSaveTurnType", autoSaveTurnType);
+            PlayerPrefs.Save();
         }
 
-        void OnScenarioInit(Scenario scenario)
+        void OnGameSettingCancel()
         {
-            if (scenario.Variables.HasExtensionData("AutoSave"))
-                autoSave = scenario.Variables.GetExtensionData<bool>("AutoSave");
-            if (scenario.Variables.HasExtensionData("AutoSaveType"))
-                autoSaveTurnType = scenario.Variables.GetExtensionData<int>("AutoSaveType");
+            
         }
 
-        void OnScenarioVariablesSetting(IVariablesSetting variablesSetting, Scenario scenario)
+        void OnGameSetting(IVariablesSetting variablesSetting)
         {
-            variablesSetting.AddToggleItem("自动存档", autoSave,
+            // 音频设置
+            variablesSetting.AddBigTitle("游戏设置");
+
+            variablesSetting.AddToggleItem("自动存档", autoSave == 1,
                 (v) =>
                 {
-                    autoSave = v;
+                    autoSave = v ? 1 : 0;
                 });
             variablesSetting.AddDropdownItem("自动存档间隔回合", autoSaveTurnType,
                 new List<string>(new string[]
@@ -74,10 +79,9 @@ namespace Sango.Core.Player
                 });
         }
 
-
         void OnForceTurnStart(Force force, Scenario scenario)
         {
-            if (autoSave && force.IsPlayer)
+            if (autoSave == 1 && force.IsPlayer)
             {
                 currentTurnCount++;
                 if (currentTurnCount >= autoTurn[autoSaveTurnType])

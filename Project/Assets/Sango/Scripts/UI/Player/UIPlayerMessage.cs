@@ -274,9 +274,9 @@ using Sango.Core; namespace Sango.UI
         /// 窗口显示方法
         /// 获取消息系统实例，更新滚动视图，并注册事件监听
         /// </summary>
-        public override void OnShow()
+        public override void OnOpen()
         {
-            base.OnShow();
+            base.OnOpen();
             playerMessage = GameSystem.GetSystem<PlayerMessage>();
 
             textMessageScrollRect.totalCount = playerMessage.textMessages.Count;

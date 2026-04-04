@@ -55,7 +55,7 @@ namespace Sango.Core.Player
                 );
 
             personList.Clear();
-            if(counsellorRecommendList.Count > 0)
+            if (counsellorRecommendList.Count > 0)
                 personList.Add(counsellorRecommendList[0]);
 
             if (customTitleList == null)
@@ -79,15 +79,16 @@ namespace Sango.Core.Player
 
         public override void DoJob()
         {
-            if(personList.Count <= 0)
+            if (personList.Count <= 0)
                 return;
 
-            for(int i = 0; i < personList.Count; i++)
+            for (int i = 0; i < personList.Count; i++)
             {
                 TargetCity.JobSearching(personList.ToArray());
             }
 
             Done();
+            GameMedia.Instance.PlayDoAcitonSfx();
         }
     }
 }

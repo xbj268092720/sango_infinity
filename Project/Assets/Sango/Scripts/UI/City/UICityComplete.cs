@@ -16,9 +16,9 @@ namespace Sango.UI
         public Text cityName;
         public Animation animation;
 
-        public override void OnShow(params object[] ps)
+        public override void OnOpen(params object[] ps)
         {
-            base.OnShow();
+            base.OnOpen();
             cityName.text = (ps[0] as string);
             animation.Play();
             AudioManager.Instance.PlaySfx("Assets/Sound/2265.ogg");

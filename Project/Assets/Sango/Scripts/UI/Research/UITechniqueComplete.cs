@@ -13,9 +13,9 @@ using Sango.Core; namespace Sango.UI
         public UITechniqueItem techniqueItem;
         public Animation animation;
 
-        public override void OnShow(params object[] ps)
+        public override void OnOpen(params object[] ps)
         {
-            base.OnShow();
+            base.OnOpen();
             techniqueItem.SetTechnique(ps[0] as Technique);
             animation.Play();
             Invoke("Hide", animation.clip.length);

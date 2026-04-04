@@ -85,7 +85,7 @@ using Sango.Core; namespace Sango.UI
             }
         }
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             cityToggleList.Clear();
             ShortScenario scenario = ShortScenario.CurSelected;
@@ -315,7 +315,7 @@ using Sango.Core; namespace Sango.UI
             ShowForce((ShortForce)null);
         }
 
-        public override void OnHide()
+        public override void OnClose()
         {
             for (int i = 0; i < cityList.Count; i++)
             {

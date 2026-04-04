@@ -55,6 +55,7 @@ namespace Sango.Core.Player
             {
                 TargetCity.JobRecruitTroop(personList.ToArray());
                 Done();
+                GameMedia.Instance.PlayDoAcitonSfx();
             }
         }
     }

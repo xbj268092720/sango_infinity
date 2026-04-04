@@ -18,7 +18,7 @@ namespace Sango.Core
 
         public void Init()
         {
-            Sango.Log.Print("GameData.Init()");
+            Sango.Log.Info("GameData.Init()");
             LoadCommonData();
             LoadModelConfig();
             SkillConfigManager.Instance.Init();

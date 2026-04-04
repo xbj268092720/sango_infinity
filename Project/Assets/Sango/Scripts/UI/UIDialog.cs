@@ -24,7 +24,7 @@ namespace Sango.UI
         public List<TalkData> talkData;
         public System.Action talkEndAction;
 
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
             string _content = "";
             System.Action _sureAction = null;

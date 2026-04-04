@@ -18,8 +18,8 @@ namespace Sango.Core
             void Init(string str, System.Action sure, System.Action cancel, Vector3 startPoint);
             System.Action cancelAction { get; set; }
             System.Action sureAction { get; set; }
-            void Hide();
-            void Show();
+            void Close();
+            void Open();
 
         }
         public static IDialog CurInstance;
@@ -41,13 +41,13 @@ namespace Sango.Core
 
         public static void Close()
         {
-            CurInstance?.Hide();
+            CurInstance?.Close();
             CurInstance = null;
         }
         public static void Close(IDialog uIDialog)
         {
             if (uIDialog == CurInstance)
-                uIDialog.Hide();
+                uIDialog.Close();
             CurInstance = null;
         }
 

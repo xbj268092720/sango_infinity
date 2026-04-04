@@ -63,9 +63,9 @@ namespace Sango.UI
 
         float gameSpeed = 1;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
-            base.OnShow();
+            base.OnOpen();
             Window.Instance.Close("window_loading");
             GameController.Instance.onCellOverEnter += OnCellOverEnter;
             GameController.Instance.onCellOverExit += OnCellOverExit;
@@ -73,11 +73,11 @@ namespace Sango.UI
             Window.Instance.Open("window_object_pop_info");
         }
 
-        public override void OnHide()
+        public override void OnClose()
         {
             GameController.Instance.onCellOverEnter -= OnCellOverEnter;
             GameController.Instance.onCellOverExit -= OnCellOverExit;
-            base.OnHide();
+            base.OnClose();
         }
 
         void OnCellOverEnter(Cell cell)
@@ -194,6 +194,7 @@ namespace Sango.UI
 
             if (force.IsPlayer)
             {
+                GameMedia.Instance.PlayNewTurnSfx();
                 uIPlayerInfoPanel.UpdateShowType();
                 GameSystem.GetSystem<PlayerTurnStartGreeting>().Push();
             }

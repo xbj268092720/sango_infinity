@@ -60,7 +60,7 @@ namespace Sango.Core.Player
                     TargetCity.BelongCorps.ActionPoint >= JobType.GetJobCostAP((int)CityJobType.TransformPerson);
             }
         }
-  
+
         public override void OnEnter()
         {
             transformTo.Clear();
@@ -76,6 +76,7 @@ namespace Sango.Core.Player
             {
                 personList[i].TransformToCity(transformTo[0]);
             }
+            GameMedia.Instance.PlayDoAcitonSfx();
             base.DoJob();
         }
     }

@@ -86,9 +86,9 @@ namespace Sango.UI.Debate
         /// <summary>
         /// 打开窗口
         /// </summary>
-        public override void Show()
+        public override void Open()
         {
-            base.Show();
+            base.Open();
             
             // 获取当前舌战实例
             _currentDebate = DebateManager.Instance.GetCurrentDebate();
@@ -110,7 +110,7 @@ namespace Sango.UI.Debate
         /// <summary>
         /// 关闭窗口
         /// </summary>
-        public override void Hide()
+        public override void Close()
         {
             // 取消注册事件
             if (_currentDebate != null)
@@ -125,7 +125,7 @@ namespace Sango.UI.Debate
             // 清空技能卡片
             ClearSkillCards();
             
-            base.Hide();
+            base.Close();
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace Sango.UI.Debate
             Debug.Log(resultText);
             
             // 关闭窗口
-            Hide();
+            Close();
         }
 
         /// <summary>

@@ -24,9 +24,9 @@ using Sango.Core; namespace Sango.UI
         public Button recruitBtn2;
     
         PersonRecruit personRecruit;
-        public override void OnShow()
+        public override void OnOpen()
         {
-            base.OnShow();
+            base.OnOpen();
             btnGroup_1.gameObject.SetActive(false);
             btnGroup_2.gameObject.SetActive(false);
             personRecruit = GameSystem.GetSystem<PersonRecruit>();

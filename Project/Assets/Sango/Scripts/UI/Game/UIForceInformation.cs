@@ -81,7 +81,7 @@ using Sango.Core; namespace Sango.UI
             itemPool = new CreatePool<UIBuildingTypeItem>(itemObject);
         }
 
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
             showTab = 0;
             currentSystem = objects[0] as ForceInformation;

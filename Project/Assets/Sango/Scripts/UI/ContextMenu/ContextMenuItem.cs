@@ -26,11 +26,13 @@ using Sango.Core; namespace Sango.UI
             targetItem = item;
             if (action == null)
             {
+                GameMedia.Instance.PlayMenuClickSfx();
                 RectTransform rect = item.GetComponent<RectTransform>();
                 Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(Game.Instance.UICamera, rect.position);
                 ContextMenu.Show(children, screenPos);
                 return;
             }
+            GameMedia.Instance.PlaySubMenuClickSfx();
             action.Invoke(this);
         }
     }

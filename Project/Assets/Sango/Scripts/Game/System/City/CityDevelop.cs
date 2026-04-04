@@ -76,6 +76,7 @@ namespace Sango.Core.Player
             if (personList.Count > 0)
             {
                 TargetCity.JobDevelop(personList.ToArray());
+                GameMedia.Instance.PlayDoAcitonSfx();
                 Done();
             }
         }

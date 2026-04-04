@@ -35,7 +35,7 @@ using Sango.Core; namespace Sango.UI
             itemPool = new CreatePool<UIBuildingTypeItem>(objUIBuildingTypeItem);
         }
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CityCreateItems>();
             windiwTitle.text = currentSystem.customTitleName;
@@ -153,7 +153,7 @@ using Sango.Core; namespace Sango.UI
         public void OnSure()
         {
             currentSystem.DoJob();
-            OnShow();
+            OnOpen();
         }
 
         public void OnCancel()

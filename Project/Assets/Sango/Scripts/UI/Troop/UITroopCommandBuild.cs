@@ -26,7 +26,7 @@ using Sango.Core; namespace Sango.UI
 
         TroopActionBuild troopCommandBuildSys;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             buildCountLabel.text = "";
             cityGoldLabel.text = "";

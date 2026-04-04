@@ -22,7 +22,7 @@ namespace Sango.UI
         CityDiplomacyAlliance currentSystem;
         public Button sureButton;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CityDiplomacyAlliance>();
             windowTitle.text = currentSystem.customTitleName;

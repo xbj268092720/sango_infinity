@@ -70,7 +70,7 @@ using Sango.Core; namespace Sango.UI
         {
         }
 
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
             showTab = 0;
             currentSystem = objects[0] as PersonInformation;

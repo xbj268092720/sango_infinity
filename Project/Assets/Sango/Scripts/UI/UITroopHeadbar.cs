@@ -27,7 +27,7 @@ using Sango.Core; namespace Sango.UI
             GameEvent.OnForceTurnStart += OnForceStart;
         }
 
-        public override void OnHide()
+        public override void OnClose()
         {
             GameEvent.OnForceTurnStart -= OnForceStart;
         }

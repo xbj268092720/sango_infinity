@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using static Sango.Window;
-
-using Sango.Core; namespace Sango.UI
+﻿namespace Sango.UI
 {
     public enum ContextMenuType : int
     {
@@ -10,5 +6,6 @@ using Sango.Core; namespace Sango.UI
         Command,
         Object,
         System,
+        Other,
     }
 }

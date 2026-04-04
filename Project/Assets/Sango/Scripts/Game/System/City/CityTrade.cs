@@ -26,7 +26,7 @@ namespace Sango.Core.Player
         {
             get
             {
-                return TargetCity.FreePersonCount > 0 && 
+                return TargetCity.FreePersonCount > 0 &&
                     TargetCity.hasBusiness > 0 &&
                     TargetCity.CheckJobCost(CityJobType.TradeFood) &&
                     TargetCity.GetJobCounter((int)CityJobType.TradeFood) == 0 &&
@@ -36,7 +36,7 @@ namespace Sango.Core.Player
 
         public override int CalculateWonderNumber()
         {
-            if(personList.Count == 0)
+            if (personList.Count == 0)
                 return 0;
             wonderNumber = GameUtility.Method_Trade(personList[0].Politics);
             return wonderNumber;
@@ -64,7 +64,8 @@ namespace Sango.Core.Player
                 if (targetValue != 0)
                 {
                     TargetCity.JobTradeFood(personList.ToArray(), targetValue);
-                   
+
+                    GameMedia.Instance.PlayDoAcitonSfx();
                 }
                 Done();
             }

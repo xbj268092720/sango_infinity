@@ -26,7 +26,7 @@ using Sango.Core; namespace Sango.UI
         int lastSelectIndex = -1;
         public Text pageLabel;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             buildCountLabel.text = "";
             cityGoldLabel.text = "";
@@ -174,11 +174,11 @@ using Sango.Core; namespace Sango.UI
             if (buildBuildingSys.TargetCell == null)
             {
                 buildBuildingSys.OnSelectCell();
-                Hide();
+                Close();
             }
             else
             {
-                Hide();
+                Close();
                 buildBuildingSys.DoJob();
                 buildBuildingSys.Done();
             }

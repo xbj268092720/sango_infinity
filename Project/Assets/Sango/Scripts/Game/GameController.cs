@@ -351,7 +351,7 @@ namespace Sango.Core
                     {
                         isDragMoving = true;
 
-                        if (DragMoveViewEnabled)
+                        if (DragMoveViewEnabled && GameSetting.Instance.MovementMode == 0)
                         {
                             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                             float dis;
@@ -705,11 +705,11 @@ namespace Sango.Core
         /// </summary>
         public void HandleBorderMoveCamera()
         {
-#if UNITY_EDITOR
+#if UNITY_EDITOR || !UNITY_STANDALONE_WIN
             return;
 #endif
 
-            if (!BorderMoveViewEnabled) return;
+            if (!BorderMoveViewEnabled || GameSetting.Instance.MovementMode == 0) return;
 
             int sWidth = UnityEngine.Screen.width;
             int sHeight = UnityEngine.Screen.height;

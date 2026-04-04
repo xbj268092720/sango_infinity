@@ -1,7 +1,6 @@
 ﻿//using FairyGUI;
 
 using Sango.Loader;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,24 +32,24 @@ namespace Sango
                 return ugui_instance.gameObject.activeSelf;
             }
 
-            public void Show()
+            public void Open()
             {
                 //fgui_instance?.Show();
-                ugui_instance?.Show();
+                ugui_instance?.Open();
 
             }
 
-            public void Show(params object[] objects)
+            public void Open(params object[] objects)
             {
                 //fgui_instance?.Show();
-                ugui_instance?.Show(objects);
+                ugui_instance?.Open(objects);
 
             }
 
-            public void Hide()
+            public void Close()
             {
                 //fgui_instance?.Hide();
-                ugui_instance?.Hide();
+                ugui_instance?.Close();
             }
             public void Refresh()
             {
@@ -257,7 +256,7 @@ namespace Sango
             WindowInterface win = CreateWindow(windowName);
             if (win != null)
             {
-                win.Show();
+                win.Open();
                 Sango.Core.GameEvent.OnWindowCreate?.Invoke(windowName, win);
             }
             return win;
@@ -271,7 +270,7 @@ namespace Sango
             WindowInterface win = CreateWindow(windowName);
             if (win != null)
             {
-                win.Show(objects);
+                win.Open(objects);
                 Sango.Core.GameEvent.OnWindowCreate?.Invoke(windowName, win);
             }
             return win;
@@ -308,7 +307,7 @@ namespace Sango
                 if (info.instance != null)
                 {
                     if (info.instance.ugui_instance != null)
-                        info.instance.ugui_instance.Hide();
+                        info.instance.ugui_instance.Close();
                     //if (info.instance.fgui_instance != null)
                     //    info.instance.fgui_instance.Hide();
                 }
@@ -322,7 +321,7 @@ namespace Sango
                 if (info.instance != null)
                 {
                     if (info.instance.ugui_instance != null)
-                        info.instance.ugui_instance.Hide();
+                        info.instance.ugui_instance.Close();
                 }
             }
         }

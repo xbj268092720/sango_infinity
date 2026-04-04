@@ -17,7 +17,10 @@ namespace Sango.Core
 
         public virtual bool AIFinished { get; set; }
         public virtual bool AIPrepared { get; set; }
-        public override string Name { get { return Comander?.Name; } }
+
+        public readonly string[] numberTxt = { "一", "二", "三", "四", "五", "六", "七", "八" };
+        public override string Name { get { return $"第{numberTxt[number - 1]}军团"; } }
+        public string ColorName { get { return $"<color=#7CCADB>第{numberTxt[number - 1]}军团</color>"; } }
 
         /// <summary>
         /// 所属势力
@@ -34,14 +37,30 @@ namespace Sango.Core
         public Person Comander;
 
         /// <summary>
-        /// 军团任务
+        /// 番号
         /// </summary>
-        [JsonProperty] public int CropsMissionType { get; set; }
+        [JsonProperty]
+        public int number;
 
         /// <summary>
-        /// 军团任务目标
+        /// 中期目标类型
         /// </summary>
-        [JsonProperty] public int CropsMissionTarget { get; set; }
+        [JsonProperty] public int mid_objective;
+
+        /// <summary>
+        /// 中期目标
+        /// </summary>
+        [JsonProperty] public int mid_objective_target;
+
+        /// <summary>
+        /// 政策类型
+        /// </summary>
+        [JsonProperty] public int policy;
+
+        /// <summary>
+        /// 政策目标
+        /// </summary>
+        [JsonProperty] public int policy_target;
 
         /// <summary>
         /// 行动力点数
@@ -49,8 +68,23 @@ namespace Sango.Core
         [JsonProperty] public int ActionPoint { get; set; }
 
 
-        public Color Color => Color.cyan;
-        public int Index => 1;
+        static Color[] colors = new Color[]
+        {
+            Color.cyan,
+            Color.red * 0.8f,
+            Color.yellow * 0.8f,
+            Color.green * 0.8f,
+            Color.blue * 0.8f,
+            Color.gray,
+            Color.magenta * 0.8f,
+        };
+
+        public Color Color => colors[number-1];
+
+        /// <summary>
+        /// 番号
+        /// </summary>
+        public int Index => number;
 
         public City TargetCity { get; set; }
         public Force TargetForce { get; set; }
@@ -262,7 +296,6 @@ namespace Sango.Core
                 GameEvent.OnPlayerControl?.Invoke(this, scenario);
                 return false;
             }
-            Sango.Log.Error(Name);
 
             if (!DoAI(scenario))
                 return false;

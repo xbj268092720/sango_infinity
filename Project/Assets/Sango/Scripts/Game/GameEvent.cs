@@ -163,6 +163,12 @@ namespace Sango.Core
         #endregion Window
 
         #region Game
+        /// <summary>
+        /// 游戏设置界面展示
+        /// </summary>
+        public static EventDelegate<IVariablesSetting> OnGameSetting;
+        public static EventDelegate OnGameSettingApply;
+        public static EventDelegate OnGameSettingCancel;
 
         /// <summary>
         /// 游戏保存
@@ -270,6 +276,11 @@ namespace Sango.Core
 
         #endregion Force
 
+        #region Corps
+        public static EventDelegate<Corps, Scenario> OnCorpsCreate;
+        public static EventDelegate<Corps, Scenario> OnCorpsDelete;
+
+        #endregion Corps
 
         /// <summary>
         /// 城池AI

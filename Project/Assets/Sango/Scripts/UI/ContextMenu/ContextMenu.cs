@@ -2,7 +2,8 @@
 using UnityEngine;
 using static Sango.Window;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     public class ContextMenu
     {
@@ -11,17 +12,20 @@ using Sango.Core; namespace Sango.UI
             "window_contextMenu_command",
             "window_contextMenu_object",
             "window_contextMenu_system",
+            "window_contextMenu_other",
         };
 
         static string currentWindowName;
 
         public static UIContextMenu Show(ContextMenuData itemData, Vector2 position)
         {
-           return Show(itemData.headList, position, ContextMenuType.Common);
+            itemData.startPosition = position;
+            return Show(itemData.headList, position, ContextMenuType.Common);
         }
 
         public static UIContextMenu Show(ContextMenuData itemData, Vector2 position, ContextMenuType contentMenuType)
         {
+            itemData.startPosition = position;
             return Show(itemData.headList, position, contentMenuType);
         }
 
@@ -70,7 +74,7 @@ using Sango.Core; namespace Sango.UI
 
         public static bool IsVisible()
         {
-            if(string.IsNullOrEmpty(currentWindowName)) return false;
+            if (string.IsNullOrEmpty(currentWindowName)) return false;
 
             WindowInterface windowInterface = Window.Instance.GetWindow(currentWindowName);
             if (windowInterface == null) return false;

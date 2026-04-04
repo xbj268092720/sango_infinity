@@ -25,7 +25,7 @@ using Sango.Core; namespace Sango.UI
         float currentP = 0;
         public Button sureButton;
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<CityTrade>();
             TargetCity = currentSystem.TargetCity;

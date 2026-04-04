@@ -58,16 +58,16 @@ namespace Sango
 #endif
         }
 
-        public static void Print(object message, LogType t)
+        public static void Info(object message, LogType t)
         {
             if (t == LogType.None)
                 Debug.Log(message.ToString());
             else
                 Debug.Log(format(message, t));
         }
-        public static void Print(object message)
+        public static void Info(object message)
         {
-            Print(message, LogType.None);
+            Info(message, LogType.None);
         }
 
         public static void Error(object message, LogType t)

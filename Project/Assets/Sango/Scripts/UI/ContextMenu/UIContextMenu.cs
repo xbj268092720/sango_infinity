@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     public class UIContextMenu : UGUIWindow
     {
@@ -44,6 +45,8 @@ using Sango.Core; namespace Sango.UI
         public int showDepth = -1;
         public void Show(Vector2 screenPoint, int depth, List<ContextMenuItem> menuItems)
         {
+            if (depth == 0)
+                GameMedia.Instance.PlayButtonSfx();
             showDepth = depth;
             RectTransform root = menuRoot[showDepth];
             if (root != null)
@@ -100,6 +103,7 @@ using Sango.Core; namespace Sango.UI
                 }
                 menuRoot[showDepth].gameObject.SetActive(false);
                 showDepth--;
+                GameMedia.Instance.PlayCancelSfx();
             }
             return showDepth < 0;
         }

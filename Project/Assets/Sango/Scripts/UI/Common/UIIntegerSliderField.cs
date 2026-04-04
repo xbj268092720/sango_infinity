@@ -23,9 +23,12 @@ using Sango.Core; namespace Sango.UI
                 Sango.Log.Error("min >= max! set min = max - 1");
                 min = max - 1;
             }
+            this.min = min;
+            this.max = max;
             this.slider.minValue = min;
             this.slider.maxValue = max;
-            this.slider.SetValueWithoutNotify((float)(value - min) / (float)(max - min));
+            //this.slider.SetValueWithoutNotify((float)(value - min) / (float)(max - min));
+            this.slider.SetValueWithoutNotify(value);
             inputField.SetTextWithoutNotify(value.ToString());
             inputField.characterValidation = InputField.CharacterValidation.Integer;
             inputField.onValueChanged.RemoveAllListeners();
@@ -44,7 +47,8 @@ using Sango.Core; namespace Sango.UI
                 if (v != value)
                 {
                     value = v;
-                    slider.SetValueWithoutNotify((float)(value - min) / (max - min));
+                    //slider.SetValueWithoutNotify((float)(value - min) / (max - min));
+                    slider.SetValueWithoutNotify(value);
                     onValueChange?.Invoke(value);
                 }
             }
@@ -52,7 +56,7 @@ using Sango.Core; namespace Sango.UI
 
         void OnSliderNumberChanged(float number)
         {
-            int v = min + (int)((float)(max - min) * number);
+            int v = (int)number;
             if (v != value)
             {
                 value = v;

@@ -86,7 +86,7 @@ namespace Sango
 
             if (Config.isDebug)
             {
-                Log.Print("!!!!!!!!! Module : " + name + "注册成功!!", Log.LogType.Object);
+                Log.Info("!!!!!!!!! Module : " + name + "注册成功!!", Log.LogType.Object);
             }
             return true;
         }
@@ -106,7 +106,7 @@ namespace Sango
                 sHasRemoved = true;
                 if (Config.isDebug)
                 {
-                    Log.Print("xxxxx 反注册 Module : " + name, Log.LogType.Object);
+                    Log.Info("xxxxx 反注册 Module : " + name, Log.LogType.Object);
                 }
             }
         }
@@ -157,13 +157,13 @@ namespace Sango
         static public void ClearAll()
         {
             if (Config.isDebug)
-                Log.Print("释放了 " + sObjectPool.Count + " 个Module", Log.LogType.Object);
+                Log.Info("释放了 " + sObjectPool.Count + " 个Module", Log.LogType.Object);
 
             for (int i = 0; i < sObjectList.Count; ++i)
             {
                 IObject obj = sObjectList[i];
                 if (Config.isDebug)
-                    Log.Print("释放 " + obj.GetName(), Log.LogType.Object);
+                    Log.Info("释放 " + obj.GetName(), Log.LogType.Object);
                 obj.DeleteObject();
             }
 

@@ -716,5 +716,27 @@ namespace Sango.Render
             }
             return rs;
         }
+
+        /// <summary>
+        /// 设置键盘移动速度
+        /// </summary>
+        /// <param name="m"></param>
+        public void SetKeyBoardMoveSpeed(float m)
+        {
+            if (mapCamera == null) return;
+            mapCamera.keyBoardMoveSpeed = m;
+        }
+
+        /// <summary>
+        /// 设置最大视野
+        /// </summary>
+        /// <param name="m"></param>
+        public void SetMaxViewDistance(float m)
+        {
+            if (mapCamera == null) return;
+            Vector2 l = mapCamera.limitDistance;
+            l.y = m;
+            mapCamera.limitDistance = l;
+        }
     }
 }

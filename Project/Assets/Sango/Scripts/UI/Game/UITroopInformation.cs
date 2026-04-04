@@ -55,7 +55,7 @@ using Sango.Core; namespace Sango.UI
             itemPool = new CreatePool<UIBuildingTypeItem>(itemObject);
         }
 
-        public override void OnShow(params object[] objects)
+        public override void OnOpen(params object[] objects)
         {
             currentSystem = objects[0] as TroopInformation;
             Target = currentSystem.Target;

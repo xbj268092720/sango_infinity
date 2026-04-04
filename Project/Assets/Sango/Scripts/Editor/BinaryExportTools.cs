@@ -11,7 +11,7 @@ using Unity.VisualScripting;
 public static class BinaryExportTools
 {
 #if UNITY_EDITOR
-    //[UnityEditor.MenuItem("Sango/Data/Binary «Â¿Ì")]
+    //[UnityEditor.MenuItem("Sango/Data/Binary Ê∏ÖÁêÜ")]
 #endif
     static void ProcessXMLClean()
     {
@@ -69,7 +69,7 @@ public static class BinaryExportTools
                 Type[] typeParameters = type.BaseType.GenericTypeArguments;
                 if (typeParameters.Length > 0)
                 {
-                    // ¥¶¿ÌLinkObj : ScenarioObject<T>
+                    // Â§ÑÁêÜLinkObj : ScenarioObject<T>
                     Type _ObjectType = typeof(ScenarioObject<>);
                     Type dest = _ObjectType.MakeGenericType(typeParameters);
                     if (dest != null && type.IsSubclassOf(dest))
@@ -79,7 +79,7 @@ public static class BinaryExportTools
                         if (string.IsNullOrEmpty(TypeFullName))
                             return "";
 
-                        Log.Print($"CenericCustomType : {TypeFullName}");
+                        Log.Info($"CenericCustomType : {TypeFullName}");
                         StringBuilder sb_load = new StringBuilder();
                         sb_load.AppendLine($"       public static void Load(this {TypeFullName} o, System.Xml.XmlNode node)");
                         sb_load.AppendLine($"       {{");
@@ -90,11 +90,11 @@ public static class BinaryExportTools
                         sb_load.AppendLine($"            node.InnerText = o.ID.ToString();");
                         sb_load.AppendLine($"       }}");
                         alreadyGenericList.Add(type);
-                        Log.Print($"CenericType : {TypeFullName}");
+                        Log.Info($"CenericType : {TypeFullName}");
                         return sb_load.ToString();
                     }
 
-                    // ¥¶¿ÌLinkObj : Database<T>
+                    // Â§ÑÁêÜLinkObj : Database<T>
                     _ObjectType = typeof(Database<>);
                     dest = _ObjectType.MakeGenericType(typeParameters);
                     if (dest != null && type.IsSubclassOf(dest))
@@ -104,7 +104,7 @@ public static class BinaryExportTools
                             return "";
                         Type p1 = typeParameters[0];
                         string p1_fullName = GetGenericTypeName(p1);
-                        Log.Print($"CenericCustomType : {TypeFullName}");
+                        Log.Info($"CenericCustomType : {TypeFullName}");
                         StringBuilder sb_load = new StringBuilder();
                         sb_load.AppendLine($"       public static void Load(this {TypeFullName} o, System.Xml.XmlNode node)");
                         sb_load.AppendLine($"       {{");
@@ -122,7 +122,7 @@ public static class BinaryExportTools
                         sb_load.AppendLine($"            o.ForEach(x=>{{ Save(x, AddNode(node, \"{p1_fullName}\"));}});");
                         sb_load.AppendLine($"       }}");
                         alreadyGenericList.Add(type);
-                        Log.Print($"CenericType : {TypeFullName}");
+                        Log.Info($"CenericType : {TypeFullName}");
                         return sb_load.ToString();
                     }
                 }
@@ -150,7 +150,7 @@ public static class BinaryExportTools
             {
                 string elementTypeFullName = elementType.FullName;
                 alreadyGenericList.Add(type);
-                Log.Print($"CenericType : {TypeFullName}");
+                Log.Info($"CenericType : {TypeFullName}");
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine($"{depthStr}public static void Load(ref {TypeFullName} o, System.Xml.XmlNode node)");
                 stringBuilder.AppendLine($"{depthStr}{{");
@@ -177,7 +177,7 @@ public static class BinaryExportTools
             {
                 string elementTypeFullName = elementType.FullName;
                 alreadyGenericList.Add(type);
-                Log.Print($"CenericType : {TypeFullName}");
+                Log.Info($"CenericType : {TypeFullName}");
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine($"{depthStr}public static void Load(ref {TypeFullName} o, System.Xml.XmlNode node)");
                 stringBuilder.AppendLine($"{depthStr}{{");
@@ -200,7 +200,7 @@ public static class BinaryExportTools
             {
                 string elementTypeFullName = GetGenericTypeName(type);
                 alreadyGenericList.Add(type);
-                Log.Print($"CenericType : {TypeFullName}");
+                Log.Info($"CenericType : {TypeFullName}");
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine($"{depthStr}public static void Load(ref {TypeFullName} o, System.Xml.XmlNode node)");
                 stringBuilder.AppendLine($"{depthStr}{{");
@@ -242,7 +242,7 @@ public static class BinaryExportTools
         {
             string TypeFullName = type.FullName;
             alreadyGenericList.Add(type);
-            Log.Print($"CenericType : {TypeFullName}");
+            Log.Info($"CenericType : {TypeFullName}");
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine($"{depthStr}public static void Load(ref {TypeFullName} o, System.Xml.XmlNode node)");
             stringBuilder.AppendLine($"{depthStr}{{");
@@ -258,7 +258,7 @@ public static class BinaryExportTools
         {
             string TypeFullName = type.FullName;
             alreadyGenericList.Add(type);
-            Log.Print($"CenericType : {TypeFullName}");
+            Log.Info($"CenericType : {TypeFullName}");
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine($"{depthStr}public static void Load(ref {TypeFullName} o, System.Xml.XmlNode node)");
             stringBuilder.AppendLine($"{depthStr}{{");
@@ -295,7 +295,7 @@ public static class BinaryExportTools
             return "";
 
         alreadyGenericList.Add(type);
-        Log.Print($"CenericType : {TypeFullName}");
+        Log.Info($"CenericType : {TypeFullName}");
 
         StringBuilder sb_load = new StringBuilder();
         StringBuilder sb_save = new StringBuilder();
@@ -375,7 +375,7 @@ public static class BinaryExportTools
 
 
 #if UNITY_EDITOR
-    //[UnityEditor.MenuItem("Sango/Data/Binary –Ú¡–ªØ¥˙¬Î…˙≥…")]
+    //[UnityEditor.MenuItem("Sango/Data/Binary Â∫èÂàóÂåñ‰ª£Á†ÅÁîüÊàê")]
 #endif
     static void ProcessXMLScript()
     {

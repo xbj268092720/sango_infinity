@@ -39,7 +39,7 @@ using Sango.Core; namespace Sango.UI
                 uIObjectListItemsRect[i] = uIModItems[i].GetComponent<RectTransform>();
         }
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             LoadModList();
             selectedIndex = 0;

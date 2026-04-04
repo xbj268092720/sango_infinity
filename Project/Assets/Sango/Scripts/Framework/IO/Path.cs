@@ -66,9 +66,9 @@ namespace Sango
 #endif
             ContentRootPath.Replace("\\", "/");
             ModRootPath.Replace("\\", "/");
-            Log.Print("游戏内容目录: " + ContentRootPath, Log.LogType.Game);
-            Log.Print("游戏Mod目录: " + ModRootPath, Log.LogType.Game);
-            Log.Print("游戏存档目录: " + SaveRootPath, Log.LogType.Game);
+            Log.Info("游戏内容目录: " + ContentRootPath, Log.LogType.Game);
+            Log.Info("游戏Mod目录: " + ModRootPath, Log.LogType.Game);
+            Log.Info("游戏存档目录: " + SaveRootPath, Log.LogType.Game);
         }
 
         static List<string> searchPaths = new List<string>();

@@ -21,17 +21,18 @@ using Sango.Core; namespace Sango.UI
         public GameObject toggleObj;
         public GameObject toggleGroupObj;
 
-        List<GameObject> pool_titleObj = new List<GameObject>();
-        List<GameObject> pool_bigTitleObj = new List<GameObject>();
-        List<GameObject> pool_integerObj = new List<GameObject>();
-        List<GameObject> pool_floatObj = new List<GameObject>();
-        List<GameObject> pool_integerSliderObj = new List<GameObject>();
-        List<GameObject> pool_floatSliderObj = new List<GameObject>();
-        List<GameObject> pool_dropdownObj = new List<GameObject>();
-        List<GameObject> pool_toggleObj = new List<GameObject>();
-        List<GameObject> pool_toggleGroupObj = new List<GameObject>();
+        protected List<GameObject> pool_titleObj = new List<GameObject>();
+        protected List<GameObject> pool_bigTitleObj = new List<GameObject>();
+        protected List<GameObject> pool_integerObj = new List<GameObject>();
+        protected List<GameObject> pool_floatObj = new List<GameObject>();
+        protected List<GameObject> pool_integerSliderObj = new List<GameObject>();
+        protected List<GameObject> pool_floatSliderObj = new List<GameObject>();
+        protected List<GameObject> pool_dropdownObj = new List<GameObject>();
+        protected List<GameObject> pool_toggleObj = new List<GameObject>();
+        protected List<GameObject> pool_toggleGroupObj = new List<GameObject>();
+        protected List<GameObject> itemList = new List<GameObject>();
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             for (int i = 0; i < itemList.Count; i++)
                 RemoveItem(itemList[i]);
@@ -292,9 +293,8 @@ using Sango.Core; namespace Sango.UI
             GameEvent.OnScenarioVariablesSetting?.Invoke(this, scenario);
         }
 
-        List<GameObject> itemList = new List<GameObject>();
 
-        public void RefreshSetting()
+        public virtual void RefreshSetting()
         {
             for (int i = 0; i < itemList.Count; i++)
                 RemoveItem(itemList[i]);
@@ -525,14 +525,14 @@ using Sango.Core; namespace Sango.UI
             return obj;
         }
 
-        public void OnStartGame()
+        public virtual void OnStartGame()
         {
             Window.Instance.Open("window_loading");
             Window.Instance.Close("window_scenario_variables");
             Scenario.StartScenario(Scenario.CurSelected);
         }
 
-        public void OnCancel()
+        public virtual void OnCancel()
         {
             Window.Instance.Close("window_scenario_variables");
             Window.Instance.Open("window_scenario_force_select");

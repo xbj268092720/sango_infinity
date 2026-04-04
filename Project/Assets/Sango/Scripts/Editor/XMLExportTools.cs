@@ -226,7 +226,7 @@ public static class XMLExportTools
             {
                 string elementTypeFullName = elementType.FullName;
                 alreadyGenericList.Add(type);
-                Log.Print($"CenericType : {TypeFullName}");
+                Log.Info($"CenericType : {TypeFullName}");
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine($"{depthStr}public static void Load(ref {TypeFullName} o, System.Xml.XmlNode node)");
                 stringBuilder.AppendLine($"{depthStr}{{");
@@ -254,7 +254,7 @@ public static class XMLExportTools
             {
                 string elementTypeFullName = elementType.FullName;
                 alreadyGenericList.Add(type);
-                Log.Print($"CenericType : {TypeFullName}");
+                Log.Info($"CenericType : {TypeFullName}");
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine($"{depthStr}public static void Load(ref {TypeFullName} o, System.Xml.XmlNode node)");
                 stringBuilder.AppendLine($"{depthStr}{{");
@@ -278,7 +278,7 @@ public static class XMLExportTools
             {
                 string elementTypeFullName = GetGenericTypeFullName(elementType);
                 alreadyGenericList.Add(type);
-                Log.Print($"CenericType : {TypeFullName}");
+                Log.Info($"CenericType : {TypeFullName}");
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.AppendLine($"{depthStr}public static void Load(ref {TypeFullName} o, System.Xml.XmlNode node)");
                 stringBuilder.AppendLine($"{depthStr}{{");
@@ -320,7 +320,7 @@ public static class XMLExportTools
                     {
                         string elementTypeFullName = elementType.FullName;
                         alreadyGenericList.Add(type);
-                        Log.Print($"CenericType : {TypeFullName}");
+                        Log.Info($"CenericType : {TypeFullName}");
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.AppendLine($"{depthStr}public static void Load(this {TypeFullName} o, System.Xml.XmlNode node)");
                         stringBuilder.AppendLine($"{depthStr}{{");
@@ -352,7 +352,7 @@ public static class XMLExportTools
                     {
                         string elementTypeFullName = GetGenericTypeFullName(elementType);
                         alreadyGenericList.Add(type);
-                        Log.Print($"CenericType : {TypeFullName}");
+                        Log.Info($"CenericType : {TypeFullName}");
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.AppendLine($"{depthStr}public static void Load(this {TypeFullName} o, System.Xml.XmlNode node)");
                         stringBuilder.AppendLine($"{depthStr}{{");
@@ -387,7 +387,7 @@ public static class XMLExportTools
                     {
                         string elementTypeFullName = GetGenericTypeFullName(elementType);
                         alreadyGenericList.Add(type);
-                        Log.Print($"CenericType : {TypeFullName}");
+                        Log.Info($"CenericType : {TypeFullName}");
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.AppendLine($"{depthStr}public static void Load(this {TypeFullName} o, System.Xml.XmlNode node)");
                         stringBuilder.AppendLine($"{depthStr}{{");
@@ -456,7 +456,7 @@ public static class XMLExportTools
         if (members.Length == 0)
             return;
 
-        Log.Print($"CenericType : {type.FullName}");
+        Log.Info($"CenericType : {type.FullName}");
 
         for (int i = 0; i < members.Length; i++)
         {

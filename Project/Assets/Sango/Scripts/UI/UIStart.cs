@@ -16,23 +16,44 @@ using Sango.Core; namespace Sango.UI
         {
             version.text = $"版本: {Application.version}";
             AudioManager.Instance.PlayBgm("Assets/Sound/2238.ogg");
-#if UNITY_ANDORID && !UNITY_EDITOR
+#if UNITY_ANDROID
             mapEditorBtn.SetActive(false);
 #endif
         }
 
         public void OnNewGame()
         {
+            GameMedia.Instance.PlayButtonSfx();
             Game.Instance.StartNewGame();
+        }
+        public void QuitGame()
+        {
+            GameMedia.Instance.PlayButtonSfx();
+            GameDialog.Open("是否要退出游戏??", () =>
+            {
+                GameDialog.Close();
+                Application.Quit();
+            }).cancelAction = () =>
+            {
+                GameDialog.Close();
+            };
+        }
+
+        public void OnGameSetting()
+        {
+            GameMedia.Instance.PlayButtonSfx();
+            Window.Instance.Open("window_game_setting");
         }
 
         public void OnMapEditor()
         {
+            GameMedia.Instance.PlayButtonSfx();
             Game.Instance.EnterMapEditor();
         }
 
         public void OnLoadGame()
         {
+            GameMedia.Instance.PlayButtonSfx();
             Window.Instance.Open("window_scenario_save", 2);
         }
 
@@ -50,6 +71,7 @@ using Sango.Core; namespace Sango.UI
 
         public void OnModManager()
         {
+            GameMedia.Instance.PlayButtonSfx();
             Window.Instance.Open("window_mod_manager");
             Window.Instance.Close("window_start");
         }

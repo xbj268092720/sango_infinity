@@ -24,7 +24,7 @@ using Sango.Core; namespace Sango.UI
 
         List<Person> selectedPersonList = new List<Person>();
 
-        public override void OnShow()
+        public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<BuildingWorking>();
             windiwTitle.text = currentSystem.customTitleName;

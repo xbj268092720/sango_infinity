@@ -25,7 +25,7 @@ namespace Sango.Core
         /// </summary>
         public void Init()
         {
-            Sango.Log.Print("SkillConfigManager.Init()");
+            Sango.Log.Info("SkillConfigManager.Init()");
             LoadSkillConfigs();
             LoadBuffConfigs();
         }
