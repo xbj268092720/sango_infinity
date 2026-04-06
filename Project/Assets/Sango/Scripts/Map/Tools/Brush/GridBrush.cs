@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using Sango.Core;
 using System.Collections;
+using Sango.Tools.UndoRedo;
 
 namespace Sango.Tools
 {
@@ -93,6 +94,12 @@ namespace Sango.Tools
 
         EditorWindow infoWind;
         float gridInfoAlpha = 1;
+        
+        // 拖拽相关变量
+        private Dictionary<int, GridEditCommand.GridDataChange> dragChangesMap = new Dictionary<int, GridEditCommand.GridDataChange>();
+        private GridEditCommand.EditType dragEditType;
+        private string dragDescription;
+        private List<Sango.Hexagon.Hex> dragHexList = new List<Sango.Hexagon.Hex>();
 
         public GridBrush(MapEditor e) : base(e)
         {
@@ -106,8 +113,125 @@ namespace Sango.Tools
                 TerrainType terrainType = GameData.Instance.ScenarioCommonData.TerrainTypes.Get(i);
                 terrainTypeTitle[i] = terrainType.Name;
             }
+        }
+        
+        /// <summary>
+        /// 拖拽开始
+        /// </summary>
+        /// <param name="center">中心点</param>
+        public override void OnDragStart(Vector3 center)
+        {
+            // 清空之前的拖拽数据
+            dragChangesMap.Clear();
+            dragHexList.Clear();
+            
+            // 设置编辑类型和描述
+            switch (brushType)
+            {
+                case BrushType.TerrainType:
+                    dragEditType = GridEditCommand.EditType.TerrainType;
+                    dragDescription = "修改地形类型";
+                    break;
+                case BrushType.Area:
+                    dragEditType = GridEditCommand.EditType.Area;
+                    dragDescription = "修改区域";
+                    break;
+                case BrushType.Interior:
+                    dragEditType = GridEditCommand.EditType.Interior;
+                    dragDescription = "修改内政";
+                    break;
+                case BrushType.Defence:
+                    dragEditType = GridEditCommand.EditType.Defence;
+                    dragDescription = "修改防守";
+                    break;
+                case BrushType.Thief:
+                    dragEditType = GridEditCommand.EditType.Thief;
+                    dragDescription = "修改贼";
+                    break;
+                default:
+                    return;
+            }
+        }
+        
+        /// <summary>
+        /// 拖拽过程
+        /// </summary>
+        /// <param name="center">中心点</param>
+        public override void OnDrag(Vector3 center)
+        {
+            if (currentEditMode <= 0)
+                return;
+                
+            Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
+            
+            // 计算笔刷影响范围
+            dragHexList.Clear();
+            hex.Spiral(size, dragHexList);
+            
+            int value = opacity;
+            if (Input.GetKey(KeyCode.LeftShift))
+                value = InvertOpacity(brushType, opacity);
+            
+            // 收集变化数据
+            foreach (Sango.Hexagon.Hex h in dragHexList)
+            {
+                Sango.Hexagon.Coord coord = Sango.Hexagon.Coord.OffsetFromCube(h);
+                
+                // 假设地格的宽度为地图的列数
+                int gridWidth = editor.map.mapGrid.bounds.x;
+                // 使用数学公式计算唯一key：col + width * row
+                int gridKey = coord.col + gridWidth * coord.row;
+                    
+                MapGrid.GridData data = editor.map.mapGrid.GetGridData(coord.col, coord.row);
+                int oldValue = GetGridDataProterty(brushType, data);
+                
+                // 创建临时副本进行修改
+                MapGrid.GridData tempData = data;
+                SetGridDataProterty(brushType, tempData, (byte)value);
+                int newValue = GetGridDataProterty(brushType, tempData);
+                SetTerrainMaskShowColor(coord.col, coord.row, newValue, terrainTypeMaskCol, terrainTypeMaskRow);
 
+                // 检查是否已经有记录
+                if (dragChangesMap.ContainsKey(gridKey))
+                {
+                    // 更新现有记录的新值为最终值
+                    GridEditCommand.GridDataChange existingChange = dragChangesMap[gridKey];
+                    existingChange.newValue = newValue;
+                    dragChangesMap[gridKey] = existingChange;
+                }
+                else
+                {
+                    // 创建新记录
+                    GridEditCommand.GridDataChange change = new GridEditCommand.GridDataChange();
+                    change.col = coord.col;
+                    change.row = coord.row;
+                    change.oldValue = oldValue;
+                    change.newValue = newValue;
+                    dragChangesMap.Add(gridKey, change);
+                }
+            }
 
+            // 更新地形掩码显示
+            terrainTypeMaskTex.Apply(false);
+        }
+        
+        /// <summary>
+        /// 拖拽结束
+        /// </summary>
+        /// <param name="center">中心点</param>
+        public override void OnDragEnd(Vector3 center)
+        {
+            // 如果有变化，创建批量命令并执行
+            if (dragChangesMap.Count > 0)
+            {
+                List<GridEditCommand.GridDataChange> finalChanges = new List<GridEditCommand.GridDataChange>(dragChangesMap.Values);
+                GridEditCommand command = new GridEditCommand(editor, dragEditType, finalChanges, dragDescription, this);
+                editor.undoRedoManager.AddCommand(command);
+            }
+            
+            // 清空拖拽数据
+            dragChangesMap.Clear();
+            dragHexList.Clear();
         }
 
         // 准备图层贴图
@@ -780,6 +904,7 @@ namespace Sango.Tools
                 Shader.SetGlobalFloat("_TerrainTypeShowFlag", 1);
             }
 
+            base.Update();
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastLayer))
@@ -793,16 +918,13 @@ namespace Sango.Tools
                             // 吸取目标值
                             SuckValue(hit.point, editor);
                             lastCenter = hit.point;
-                        }
-                        else if ((Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButton(0)) || Input.GetMouseButtonDown(0))
-                        {
-                            Modify(hit.point, editor);
-                            lastCenter = hit.point;
+                            return;
                         }
                     }
-                    DrawGizmos(hit.point);
                 }
             }
+
+            base.Update();
         }
 
         List<Sango.Hexagon.Hex> tempHexList = new List<Hexagon.Hex>();
@@ -864,7 +986,7 @@ namespace Sango.Tools
         /// </summary>
         /// <param name="center"></param>
         /// <param name="editor"></param>
-        void SuckValue(Vector3 center, MapEditor editor)
+        public override void SuckValue(Vector3 center, MapEditor editor)
         {
             Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
             Sango.Hexagon.Coord coord = Sango.Hexagon.Coord.OffsetFromCube(hex);
@@ -877,22 +999,71 @@ namespace Sango.Tools
             if (Input.GetKey(KeyCode.LeftShift))
                 value = InvertOpacity(brushType, opacity);
 
+            // 记录变化前的数据
+            List<GridEditCommand.GridDataChange> changes = new List<GridEditCommand.GridDataChange>();
+            GridEditCommand.EditType editType = GridEditCommand.EditType.TerrainType;
+            string description = "";
+            
+            switch (brushType)
+            {
+                case BrushType.TerrainType:
+                    editType = GridEditCommand.EditType.TerrainType;
+                    description = "修改地形类型";
+                    break;
+                case BrushType.Area:
+                    editType = GridEditCommand.EditType.Area;
+                    description = "修改区域";
+                    break;
+                case BrushType.Interior:
+                    editType = GridEditCommand.EditType.Interior;
+                    description = "修改内政";
+                    break;
+                case BrushType.Defence:
+                    editType = GridEditCommand.EditType.Defence;
+                    description = "修改防守";
+                    break;
+                case BrushType.Thief:
+                    editType = GridEditCommand.EditType.Thief;
+                    description = "修改贼";
+                    break;
+            }
+            
+            // 收集变化数据
             for (int i = 0; i < tempHexList.Count; i++)
             {
                 Sango.Hexagon.Hex h = tempHexList[i];
                 Sango.Hexagon.Coord coord = Sango.Hexagon.Coord.OffsetFromCube(h);
                 MapGrid.GridData data = editor.map.mapGrid.GetGridData(coord.col, coord.row);
-                SetGridDataProterty(brushType, data, (byte)value);
-                SetTerrainMaskShowColor(coord.col, coord.row, GetGridDataProterty(brushType, data), terrainTypeMaskCol, terrainTypeMaskRow);
-                if (brushType == BrushType.TerrainType)
+                
+                int oldValue = GetGridDataProterty(brushType, data);
+                
+                // 创建临时副本进行修改
+                MapGrid.GridData tempData = data;
+                SetGridDataProterty(brushType, tempData, (byte)value);
+                int newValue = GetGridDataProterty(brushType, tempData);
+                SetTerrainMaskShowColor(coord.col, coord.row, newValue, terrainTypeMaskCol, terrainTypeMaskRow);
+
+                // 只有值发生变化时才记录
+                if (oldValue != newValue)
                 {
-                    editor.map.mapGrid.BeginUpdateMovable(coord.col, coord.row);
+                    GridEditCommand.GridDataChange change = new GridEditCommand.GridDataChange();
+                    change.col = coord.col;
+                    change.row = coord.row;
+                    change.oldValue = oldValue;
+                    change.newValue = newValue;
+                    changes.Add(change);
                 }
             }
-            if (brushType == BrushType.TerrainType)
-                editor.map.mapGrid.EndUpdateMovable();
 
             terrainTypeMaskTex.Apply(false);
+
+            // 如果有变化，创建命令并执行
+            if (changes.Count > 0)
+            {
+                GridEditCommand command = new GridEditCommand(editor, editType, changes, description, this);
+                editor.undoRedoManager.AddCommand(command);
+            }
+
         }
 
     }

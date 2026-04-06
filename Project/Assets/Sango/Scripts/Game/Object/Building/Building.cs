@@ -267,7 +267,7 @@ namespace Sango.Core
             });
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"[{BelongCity.Name}]{stringBuilder}完成{Name}建造!!");
+            Sango.Log.Info($"[{BelongCity.Name}]{stringBuilder}完成{Name}建造!!");
 #endif
             Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(techniquePointGain);
             GameEvent.OnCityJobGainTechniquePoint?.Invoke(BelongCity, jobId, Workers.objects.ToArray(), overrideData);
@@ -305,7 +305,7 @@ namespace Sango.Core
                 person.ActionOver = false;
             }
 #if SANGO_DEBUG
-            Sango.Log.Print($"[{BelongCity.Name}]{stringBuilder}完成{Name}建造!!");
+            Sango.Log.Info($"[{BelongCity.Name}]{stringBuilder}完成{Name}建造!!");
 #endif
             Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(techniquePointGain);
             GameEvent.OnCityJobGainTechniquePoint?.Invoke(BelongCity, jobId, Builder.objects.ToArray(), overrideData);
@@ -346,7 +346,7 @@ namespace Sango.Core
                 person.ClearMission();
             }
 #if SANGO_DEBUG
-            Sango.Log.Print($"[{BelongCity.Name}]{stringBuilder}完成{Name}升级!!");
+            Sango.Log.Info($"[{BelongCity.Name}]{stringBuilder}完成{Name}升级!!");
 #endif
             Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(techniquePointGain);
             GameEvent.OnCityJobGainTechniquePoint?.Invoke(BelongCity, jobId, Builder.objects.ToArray(), overrideData);

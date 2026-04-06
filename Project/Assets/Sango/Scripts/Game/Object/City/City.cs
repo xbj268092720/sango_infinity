@@ -12,6 +12,9 @@ using Sango.Core.Player;
 using Sango.Render;
 using System;
 using System.Collections.Generic;
+#if SANGO_DEBUG
+using System.Text;
+#endif
 using TKNewtonsoft.Json;
 using UnityEngine;
 
@@ -645,7 +648,7 @@ namespace Sango.Core
         public void AddPerson(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> allPersons 添加 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> allPersons 添加 {person.Name} ");
 #endif
             allPersons.Add(person);
         }
@@ -657,7 +660,7 @@ namespace Sango.Core
         public void RemovePerson(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> allPersons 删除 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> allPersons 删除 {person.Name} ");
 #endif
             allPersons.Remove(person);
             freePersons.Remove(person);
@@ -671,7 +674,7 @@ namespace Sango.Core
         public Person AddCaptive(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> captiveList 添加 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> captiveList 添加 {person.Name} ");
 #endif
             person.state = (int)PersonStateType.Prisoner;
             captiveList.Add(person);
@@ -688,7 +691,7 @@ namespace Sango.Core
         public Person RemoveCaptive(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> captiveList 删除 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> captiveList 删除 {person.Name} ");
 #endif
             captiveList.Remove(person);
             person.BelongForce?.BeCaptiveList.Remove(person);
@@ -702,7 +705,7 @@ namespace Sango.Core
         public void AddWildPerson(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> wildPersons 添加 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> wildPersons 添加 {person.Name} ");
 #endif
             wildPersons.Add(person);
         }
@@ -714,7 +717,7 @@ namespace Sango.Core
         public void RemoveWildPerson(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> wildPersons 删除 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> wildPersons 删除 {person.Name} ");
 #endif
             wildPersons.Remove(person);
         }
@@ -726,7 +729,7 @@ namespace Sango.Core
         public void AddInvisiblePerson(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> invisiblePersons 添加 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> invisiblePersons 添加 {person.Name} ");
 #endif
             invisiblePersons.Add(person);
         }
@@ -738,7 +741,7 @@ namespace Sango.Core
         public void RemoveInvisiblePerson(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> invisiblePersons 删除 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> invisiblePersons 删除 {person.Name} ");
 #endif
             invisiblePersons.Remove(person);
         }
@@ -750,7 +753,7 @@ namespace Sango.Core
         public void AddOtherPerson(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> otherPersons 添加 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> otherPersons 添加 {person.Name} ");
 #endif
             otherPersons.Add(person);
         }
@@ -762,7 +765,7 @@ namespace Sango.Core
         public void RemoveOtherPerson(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> otherPersons 删除 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> otherPersons 删除 {person.Name} ");
 #endif
             otherPersons.Remove(person);
         }
@@ -993,7 +996,7 @@ namespace Sango.Core
             //            Render?.ShowInfo(harvest, (int)InfoType.Food);
             //            food += harvest;
             //#if SANGO_DEBUG
-            //            Sango.Log.Print($"城市：{Name}, 收获粮食：{harvest}, 现有粮食: {food}");
+            //            Sango.Log.Info($"城市：{Name}, 收获粮食：{harvest}, 现有粮食: {food}");
             //#endif
 
             GameEvent.OnCitySeasonStart?.Invoke(this, scenario);
@@ -1051,7 +1054,7 @@ namespace Sango.Core
                 Render?.ShowInfo(cost, (int)InfoType.Gold);
 
 #if SANGO_DEBUG
-                Sango.Log.Print($"城市：{Name},  支出：{cost}, 现有资金: {gold}");
+                Sango.Log.Info($"城市：{Name},  支出：{cost}, 现有资金: {gold}");
 #endif
             }
 
@@ -1209,7 +1212,7 @@ namespace Sango.Core
                 {
                     person.Escape(EscapeType.Escape);
 #if SANGO_DEBUG
-                    Sango.Log.Print($"{person.Name}逃跑!");
+                    Sango.Log.Info($"{person.Name}逃跑!");
 #endif
                     GameEvent.OnPersonEscape?.Invoke(person, this);
                 }
@@ -1668,7 +1671,7 @@ namespace Sango.Core
             {
                 BelongCorps.IsAlive = false;
 #if SANGO_DEBUG
-                Sango.Log.Print($"{BelongForce.Name} 灭亡!!!");
+                Sango.Log.Info($"{BelongForce.Name} 灭亡!!!");
 #endif
                 BelongForce.IsAlive = false;
 
@@ -1776,7 +1779,7 @@ namespace Sango.Core
         public void OnPersonReturnCity(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"[{person.BelongForce.Name}]{person.Name}回到[{BelongForce.Name}]<{Name}>");
+            Sango.Log.Info($"[{person.BelongForce.Name}]{person.Name}回到[{BelongForce.Name}]<{Name}>");
 #endif
             GameEvent.OnPersonChangeBelongCity?.Invoke(person, person.BelongCity, this);
         }
@@ -1788,7 +1791,7 @@ namespace Sango.Core
         public void OnPersonTransformEnd(Person person, City from)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"[{person.BelongForce.Name}]{person.Name}到达[{BelongForce.Name}]<{Name}>");
+            Sango.Log.Info($"[{person.BelongForce.Name}]{person.Name}到达[{BelongForce.Name}]<{Name}>");
 #endif
             GameEvent.OnPersonChangeBelongCity?.Invoke(person, from, this);
         }
@@ -1862,7 +1865,7 @@ namespace Sango.Core
             building.ChangeDurability(GameUtility.Method_TroopBuildAbility(builder), null);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"[{BelongForce.Name}]在<{Name}>由{builder.Name}开始修建: {building.Name}");
+            Sango.Log.Info($"[{BelongForce.Name}]在<{Name}>由{builder.Name}开始修建: {building.Name}");
 #endif
             building.Render.UpdateRender();
             return building;
@@ -1959,7 +1962,7 @@ namespace Sango.Core
             BelongCorps.ReduceActionPoint(JobType.GetJobCostAP((int)CityJobType.Build));
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]在<{Name}>由{stringBuilder}开始修建: {building.Name} 需耗时:{buildCount} 回合");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]在<{Name}>由{stringBuilder}开始修建: {building.Name} 需耗时:{buildCount} 回合");
 #endif
             building.Render.UpdateRender();
             return building;
@@ -2006,7 +2009,7 @@ namespace Sango.Core
             building.Render?.UpdateRender();
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]在<{Name}>由{stringBuilder}开始升级建筑: {building.Name} 需耗时: {buildCount}回合");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]在<{Name}>由{stringBuilder}开始升级建筑: {building.Name} 需耗时: {buildCount}回合");
 #endif
             return building;
         }
@@ -2125,7 +2128,7 @@ namespace Sango.Core
             building.LeftCounter = turnCount;
             building.isWorking = true;
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了舰船生产!开始生产{itemType.Name}, 所需回合:{turnCount}, 建筑:{building.Name}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了舰船生产!开始生产{itemType.Name}, 所需回合:{turnCount}, 建筑:{building.Name}");
 #endif
             ClearJobFeature();
             return null;
@@ -2198,7 +2201,7 @@ namespace Sango.Core
             BelongForce.GainTechniquePoint(techniquePointGain);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了船只生产!共生产了{totalValue}{itemType.Name}, 当前数量:{exsistNumber}, 建筑:{building.Name}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了船只生产!共生产了{totalValue}{itemType.Name}, 当前数量:{exsistNumber}, 建筑:{building.Name}");
 #endif
 
             Render?.ShowInfo(totalValue, itemType.Id + 1);
@@ -2329,7 +2332,7 @@ namespace Sango.Core
             building.isWorking = true;
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了器械生产!开始生产{itemType.Name}, 所需回合:{turnCount}, 建筑:{building.Name}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了器械生产!开始生产{itemType.Name}, 所需回合:{turnCount}, 建筑:{building.Name}");
 #endif
             Render?.UpdateRender();
             ClearJobFeature();
@@ -2401,7 +2404,7 @@ namespace Sango.Core
             BelongForce.GainTechniquePoint(techniquePointGain);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了器械生产!共生产了{totalValue}{itemType.Name}, 当前数量:{exsistNumber}, 建筑:{building.Name}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了器械生产!共生产了{totalValue}{itemType.Name}, 当前数量:{exsistNumber}, 建筑:{building.Name}");
 #endif
 
             Render?.ShowInfo(totalValue, itemType.Id + 1);
@@ -2493,7 +2496,7 @@ namespace Sango.Core
             Render?.ShowInfo(totalValue, (int)InfoType.Food);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了开垦!农业值达到了:{agriculture}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了开垦!农业值达到了:{agriculture}");
 #endif
             ClearJobFeature();
             return totalValue;
@@ -2584,7 +2587,7 @@ namespace Sango.Core
             Render?.ShowInfo(totalValue, (int)InfoType.Gold);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了开发!商业值达到了:{commerce}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了开发!商业值达到了:{commerce}");
 #endif
             ClearJobFeature();
             return totalValue;
@@ -2682,7 +2685,7 @@ namespace Sango.Core
             Render?.ShowInfo(totalValue, (int)InfoType.Security);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了巡视!治安提升到了:{security}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了巡视!治安提升到了:{security}");
 #endif
             ClearJobFeature();
             return totalValue;
@@ -2796,7 +2799,7 @@ namespace Sango.Core
             Render?.ShowInfo(totalValue, (int)InfoType.Morale);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了训练!士气提升到了:{morale}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了训练!士气提升到了:{morale}");
 #endif
             ClearJobFeature();
             return totalValue;
@@ -2871,7 +2874,7 @@ namespace Sango.Core
             AddJobCounter(jobId);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]在<{Name}>使用资金对{stringBuilder}进行了褒赏!!");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]在<{Name}>使用资金对{stringBuilder}进行了褒赏!!");
 #endif
             return true;
         }
@@ -2906,7 +2909,7 @@ namespace Sango.Core
             BelongCorps.ReduceActionPoint(apCost);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]在<{Name}>使用资金对{stringBuilder}进行了褒赏!! 忠诚从{lastLoyalty}提升到->{person.loyalty}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]在<{Name}>使用资金对{stringBuilder}进行了褒赏!! 忠诚从{lastLoyalty}提升到->{person.loyalty}");
 #endif
             return true;
         }
@@ -2970,7 +2973,7 @@ namespace Sango.Core
                     }
 
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@内政@[{BelongForce.Name}]<{Name}>的{person.Name}发现了人才->{target.Name}");
+                    Sango.Log.Info($"@内政@[{BelongForce.Name}]<{Name}>的{person.Name}发现了人才->{target.Name}");
 #endif
                     RemoveInvisiblePerson(target);
                     AddWildPerson(target);
@@ -3049,7 +3052,7 @@ namespace Sango.Core
             troops += rs;
             woundedTroops -= rs;
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]<{Name}>进行了士兵治愈!共治愈到{rs}人, 当前士兵提升到了:{troops}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]<{Name}>进行了士兵治愈!共治愈到{rs}人, 当前士兵提升到了:{troops}");
 #endif
             return true;
         }
@@ -3179,7 +3182,7 @@ namespace Sango.Core
             Render?.ShowInfo(totalValue, (int)InfoType.Troop);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了招募!共招募到{troops - lastTroops}人, 当前士兵人数提升到了:{troops}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了招募!共招募到{troops - lastTroops}人, 当前士兵人数提升到了:{troops}");
 #endif
             ClearJobFeature();
             return totalValue;
@@ -3311,7 +3314,7 @@ namespace Sango.Core
                 Render?.ShowInfo(totalValue, itemType.Id);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了生产兵装!共生产了{totalValue}{itemType.Name}, 当前数量:{exsistNumber}, 建筑:{building.Name}");
+            Sango.Log.Info($"@内政@[{BelongForce.Name}]{stringBuilder}对<{Name}>进行了生产兵装!共生产了{totalValue}{itemType.Name}, 当前数量:{exsistNumber}, 建筑:{building.Name}");
 #endif
             ClearJobFeature();
             return totalValue;
@@ -3372,7 +3375,7 @@ namespace Sango.Core
                 Render?.ShowInfo(-goldNum, (int)InfoType.Gold);
                 Render?.ShowInfo(totalValue, (int)InfoType.Food);
 #if SANGO_DEBUG
-                Sango.Log.Print($"@内政@[{BelongForce.Name}]{person.Name}在<{Name}>花费{goldNum}交易到了{totalValue}粮食, 现有粮食:{food}");
+                Sango.Log.Info($"@内政@[{BelongForce.Name}]{person.Name}在<{Name}>花费{goldNum}交易到了{totalValue}粮食, 现有粮食:{food}");
 #endif
             }
             else
@@ -3387,7 +3390,7 @@ namespace Sango.Core
                 Render?.ShowInfo(totalValue, (int)InfoType.Food);
 
 #if SANGO_DEBUG
-                Sango.Log.Print($"@内政@[{BelongForce.Name}]{person.Name}在<{Name}>花费{-goldNum}交易到了{totalValue}资金, 现有资金:{gold}");
+                Sango.Log.Info($"@内政@[{BelongForce.Name}]{person.Name}在<{Name}>花费{-goldNum}交易到了{totalValue}资金, 现有资金:{gold}");
 #endif
             }
 

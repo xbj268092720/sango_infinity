@@ -8,6 +8,7 @@ using Sango;
 using System.Collections.Generic;
 using DG.Tweening.Plugins.Core.PathCore;
 using Sango.Core;
+using Sango.Tools.UndoRedo;
 
 namespace Sango.Tools
 {
@@ -42,12 +43,182 @@ namespace Sango.Tools
         private UnityEngine.Color brushColor;
         EditorWindow contentWindow;
         UnityEngine.Rect InitWindowRect = new UnityEngine.Rect(0, 0, 100, 100);
+        
+        // 拖拽相关变量
+        private Dictionary<int, TerrainEditCommand.VertexDataChange> dragChangesMap = new Dictionary<int, TerrainEditCommand.VertexDataChange>();
+        private TerrainEditCommand.EditType dragEditType;
+        private string dragDescription;
+        private Rect dragBounds;
         public TerrainBrush(MapEditor e) : base(e)
         {
             if (brushType == BrushType.Unknown)
                 brushType = BrushType.RaiseHeight;
+        }
+        
+        /// <summary>
+        /// 拖拽开始
+        /// </summary>
+        /// <param name="center">中心点</param>
+        public override void OnDragStart(Vector3 center)
+        {
+            // 清空之前的拖拽数据
+            dragChangesMap.Clear();
+            
+            // 初始化拖拽边界
+            dragBounds = GetBounds(center);
+            
+            // 设置编辑类型和描述
+            switch (brushType)
+            {
+                case BrushType.RaiseHeight:
+                    dragEditType = TerrainEditCommand.EditType.Height;
+                    dragDescription = "升高地形";
+                    break;
+                case BrushType.LowerHeight:
+                    dragEditType = TerrainEditCommand.EditType.Height;
+                    dragDescription = "降低地形";
+                    break;
+                case BrushType.PullHeight:
+                    dragEditType = TerrainEditCommand.EditType.Height;
+                    dragDescription = "平整地形";
+                    break;
+                case BrushType.SmoothHeight:
+                    dragEditType = TerrainEditCommand.EditType.Height;
+                    dragDescription = "平滑地形";
+                    break;
+                case BrushType.Texture:
+                    dragEditType = TerrainEditCommand.EditType.Texture;
+                    dragDescription = "修改纹理";
+                    break;
+                case BrushType.Water:
+                    dragEditType = TerrainEditCommand.EditType.Water;
+                    dragDescription = "修改水面";
+                    break;
+                default:
+                    return;
+            }
+        }
+        
+        /// <summary>
+        /// 拖拽过程
+        /// </summary>
+        /// <param name="center">中心点</param>
+        public override void OnDrag(Vector3 center)
+        {
+            if (brushType == BrushType.BaseMap)
+                return;
+                
+            // 获取当前笔刷边界并扩展拖拽边界
+            Rect currentBounds = GetBounds(center);
+            dragBounds.xMin = Mathf.Min(dragBounds.xMin, currentBounds.xMin);
+            dragBounds.yMin = Mathf.Min(dragBounds.yMin, currentBounds.yMin);
+            dragBounds.xMax = Mathf.Max(dragBounds.xMax, currentBounds.xMax);
+            dragBounds.yMax = Mathf.Max(dragBounds.yMax, currentBounds.yMax);
+                
+            int xStart = Mathf.FloorToInt(center.z - size) / editor.mapData.quadSize;
+            int yStart = Mathf.FloorToInt(center.x - size) / editor.mapData.quadSize;
+            Vector3 cPos = center;
+            int length = Mathf.FloorToInt(size * 2 / editor.mapData.quadSize) + 1;
+            int xEnd = xStart + length;
+            int yEnd = yStart + length;
+            
+            // 收集当前笔刷影响范围内的顶点变化
+            for (int x = xStart; x < xEnd; x++)
+            {
+                for (int y = yStart; y < yEnd; y++)
+                {
+                    if (x >= 0 && x <= editor.mapData.vertex_width && y >= 0 && y <= editor.mapData.vertex_height)
+                    {
+                        // 使用数学公式计算唯一key：x + width * y
+                        int vertexKey = x + editor.mapData.vertex_width * y;
+                        
+                        MapData.VertexData vertexData = editor.vertexMapData[x][y];
+                        byte oldValue = 0;
+                        
+                        switch (dragEditType)
+                        {
+                            case TerrainEditCommand.EditType.Height:
+                                oldValue = vertexData.height;
+                                break;
+                            case TerrainEditCommand.EditType.Texture:
+                                oldValue = vertexData.textureIndex;
+                                break;
+                            case TerrainEditCommand.EditType.Water:
+                                oldValue = vertexData.water;
+                                break;
+                        }
+                        
+                        // 创建临时副本进行修改
+                        MapData.VertexData tempData = vertexData;
+                        if (Do(cPos, ref tempData, x, y))
+                        {
+                            byte newValue = 0;
+                            switch (dragEditType)
+                            {
+                                case TerrainEditCommand.EditType.Height:
+                                    newValue = tempData.height;
+                                    break;
+                                case TerrainEditCommand.EditType.Texture:
+                                    newValue = tempData.textureIndex;
+                                    break;
+                                case TerrainEditCommand.EditType.Water:
+                                    newValue = tempData.water;
+                                    break;
+                            }
+                            
+                            // 检查是否已经有记录
+                            if (dragChangesMap.ContainsKey(vertexKey))
+                            {
+                                // 更新现有记录的新值为最终值
+                                TerrainEditCommand.VertexDataChange existingChange = dragChangesMap[vertexKey];
+                                existingChange.newValue = newValue;
+                                dragChangesMap[vertexKey] = existingChange;
+                            }
+                            else
+                            {
+                                // 创建新记录
+                                TerrainEditCommand.VertexDataChange change = new TerrainEditCommand.VertexDataChange();
+                                change.x = x;
+                                change.y = y;
+                                change.oldValue = oldValue;
+                                change.newValue = newValue;
+                                dragChangesMap.Add(vertexKey, change);
+                            }
+                        }
+                    }
+                }
+            }
 
-           
+            for (int i = 0; i < editor.map.mapTerrain.terrainCells.Length; i++)
+            {
+                MapCell cell = editor.map.mapTerrain.terrainCells[i];
+                if (cell != null)
+                {
+                    if (cell.Overlaps(currentBounds))
+                    {
+                        cell.PrepareDatas(false);
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 拖拽结束
+        /// </summary>
+        /// <param name="center">中心点</param>
+        public override void OnDragEnd(Vector3 center)
+        {
+            // 如果有变化，创建批量命令并执行
+            if (dragChangesMap.Count > 0)
+            {
+                List<TerrainEditCommand.VertexDataChange> finalChanges = new List<TerrainEditCommand.VertexDataChange>(dragChangesMap.Values);
+                TerrainEditCommand command = new TerrainEditCommand(editor, dragEditType, finalChanges, dragDescription, dragBounds);
+                editor.undoRedoManager.AddCommand(command);
+            }
+            
+            // 清空拖拽数据
+            dragChangesMap.Clear();
         }
         public override void OnEnter()
         {
@@ -281,24 +452,105 @@ namespace Sango.Tools
                         int length = Mathf.FloorToInt(size * 2 / editor.mapData.quadSize) + 1;
                         int xEnd = xStart + length;
                         int yEnd = yStart + length;
+                        
+                        // 记录变化前的数据
+                        List<TerrainEditCommand.VertexDataChange> changes = new List<TerrainEditCommand.VertexDataChange>();
+                        TerrainEditCommand.EditType editType = TerrainEditCommand.EditType.Height;
+                        string description = "";
+                        
+                        switch (brushType)
+                        {
+                            case BrushType.RaiseHeight:
+                                editType = TerrainEditCommand.EditType.Height;
+                                description = "升高地形";
+                                break;
+                            case BrushType.LowerHeight:
+                                editType = TerrainEditCommand.EditType.Height;
+                                description = "降低地形";
+                                break;
+                            case BrushType.PullHeight:
+                                editType = TerrainEditCommand.EditType.Height;
+                                description = "平整地形";
+                                break;
+                            case BrushType.SmoothHeight:
+                                editType = TerrainEditCommand.EditType.Height;
+                                description = "平滑地形";
+                                break;
+                            case BrushType.Texture:
+                                editType = TerrainEditCommand.EditType.Texture;
+                                description = "修改纹理";
+                                break;
+                            case BrushType.Water:
+                                editType = TerrainEditCommand.EditType.Water;
+                                description = "修改水面";
+                                break;
+                        }
+                        
+                        // 收集变化数据
                         for (int x = xStart; x < xEnd; x++)
                             for (int y = yStart; y < yEnd; y++)
                             {
                                 if (x >= 0 && x <= editor.mapData.vertex_width && y >= 0 && y <= editor.mapData.vertex_height)
                                 {
                                     MapData.VertexData vertexData = editor.vertexMapData[x][y];
-                                    if (Do(cPos, ref vertexData, x, y))
+                                    byte oldValue = 0;
+                                    
+                                    switch (editType)
                                     {
-                                        //Vector3 normal = editor.map.mapData.VertexNormal(vertexData, x, y);
-                                        //vertexData.normal = normal;
-                                        editor.vertexMapData[x][y] = vertexData;
+                                        case TerrainEditCommand.EditType.Height:
+                                            oldValue = vertexData.height;
+                                            break;
+                                        case TerrainEditCommand.EditType.Texture:
+                                            oldValue = vertexData.textureIndex;
+                                            break;
+                                        case TerrainEditCommand.EditType.Water:
+                                            oldValue = vertexData.water;
+                                            break;
+                                    }
+                                    
+                                    // 创建临时副本进行修改
+                                    MapData.VertexData tempData = vertexData;
+                                    if (Do(cPos, ref tempData, x, y))
+                                    {
+                                        byte newValue = 0;
+                                        switch (editType)
+                                        {
+                                            case TerrainEditCommand.EditType.Height:
+                                                newValue = tempData.height;
+                                                break;
+                                            case TerrainEditCommand.EditType.Texture:
+                                                newValue = tempData.textureIndex;
+                                                break;
+                                            case TerrainEditCommand.EditType.Water:
+                                                newValue = tempData.water;
+                                                break;
+                                        }
+                                        
+                                        // 只有值发生变化时才记录
+                                        if (oldValue != newValue)
+                                        {
+                                            TerrainEditCommand.VertexDataChange change = new TerrainEditCommand.VertexDataChange();
+                                            change.x = x;
+                                            change.y = y;
+                                            change.oldValue = oldValue;
+                                            change.newValue = newValue;
+                                            changes.Add(change);
+                                        }
                                     }
                                 }
                             }
 
-
                         // 判断哪些cell需要重新刷新
                         Rect rect = GetBounds(center);
+
+                        // 如果有变化，创建命令并执行
+                        if (changes.Count > 0)
+                        {
+                            TerrainEditCommand command = new TerrainEditCommand(editor, editType, changes, description, rect);
+                            editor.undoRedoManager.AddCommand(command);
+                           
+                        }
+                       
                         for (int i = 0; i < editor.map.mapTerrain.terrainCells.Length; i++)
                         {
                             MapCell cell = editor.map.mapTerrain.terrainCells[i];
@@ -306,9 +558,7 @@ namespace Sango.Tools
                             {
                                 if (cell.Overlaps(rect))
                                 {
-                                    float time = Time.realtimeSinceStartup;
                                     cell.PrepareDatas(false);
-                                    //Debug.LogError(Time.realtimeSinceStartup - time);
                                 }
                             }
                         }

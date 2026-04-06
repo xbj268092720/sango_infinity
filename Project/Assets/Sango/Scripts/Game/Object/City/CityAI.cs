@@ -35,7 +35,7 @@ namespace Sango.Core
                             city.CurActiveTroop = troop;
 #if SANGO_DEBUG
 
-                            Sango.Log.Print($"{scenario.GetDateStr()}{city.BelongForce.Name}3势力在{city.Name}由{troop.Leader.Name}率领{troop.TroopType.Name}军队出城 进攻{targetCity.BelongForce?.Name}的{targetCity.Name}!");
+                            Sango.Log.Info($"{scenario.GetDateStr()}{city.BelongForce.Name}3势力在{city.Name}由{troop.Leader.Name}率领{troop.TroopType.Name}军队出城 进攻{targetCity.BelongForce?.Name}的{targetCity.Name}!");
 #endif
                         }
                     }
@@ -52,7 +52,7 @@ namespace Sango.Core
                                 troop = city.EnsureTroop(troop, scenario);
                                 city.CurActiveTroop = troop;
 #if SANGO_DEBUG
-                                Sango.Log.Print($"{city.BelongForce.Name}势力在{city.Name}由{troop.Leader.Name}率领军队出城防守!");
+                                Sango.Log.Info($"{city.BelongForce.Name}势力在{city.Name}由{troop.Leader.Name}率领军队出城防守!");
 #endif
                             }
                         }
@@ -325,7 +325,7 @@ namespace Sango.Core
             troop = city.EnsureTroop(troop, scenario);
             city.CurActiveTroop = troop;
 #if SANGO_DEBUG
-            Sango.Log.Print($"{scenario.GetDateStr()}{city.BelongForce.Name}势力在{city.Name}由{troop.Leader.Name}率领运输队出城 向{target.BelongForce?.Name}的{target.Name}运输物资!");
+            Sango.Log.Info($"{scenario.GetDateStr()}{city.BelongForce.Name}势力在{city.Name}由{troop.Leader.Name}率领运输队出城 向{target.BelongForce?.Name}的{target.Name}运输物资!");
 #endif
             troop.SetMission(MissionType.TroopTransformGoodsToCity, target.Id);
             return true;
@@ -408,7 +408,7 @@ namespace Sango.Core
                     city.CurActiveTroop = transport;
                     target.Render?.UpdateRender();
 #if SANGO_DEBUG
-                    Sango.Log.Print($"{scenario.GetDateStr()}{target.BelongForce.Name}势力在{target.Name}由{transport.Leader.Name}率领运输队出城 向{city.BelongForce?.Name}的{city.Name}运输物资!");
+                    Sango.Log.Info($"{scenario.GetDateStr()}{target.BelongForce.Name}势力在{target.Name}由{transport.Leader.Name}率领运输队出城 向{city.BelongForce?.Name}的{city.Name}运输物资!");
 #endif
                 }
                 return true;
@@ -447,7 +447,7 @@ namespace Sango.Core
                 city.CurActiveTroop = troop;
                 city.Render?.UpdateRender();
 #if SANGO_DEBUG
-                Sango.Log.Print($"{scenario.GetDateStr()}{city.BelongForce.Name}势力在{city.Name}由{troop.Leader.Name}率领运输队出城 向{target.BelongForce?.Name}的{target.Name}运输物资!");
+                Sango.Log.Info($"{scenario.GetDateStr()}{city.BelongForce.Name}势力在{city.Name}由{troop.Leader.Name}率领运输队出城 向{target.BelongForce?.Name}的{target.Name}运输物资!");
 #endif
             }
             return true;

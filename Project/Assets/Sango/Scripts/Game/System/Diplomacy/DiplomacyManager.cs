@@ -322,7 +322,7 @@ namespace Sango.Core
             diplomat.BelongCity.freePersons.Remove(diplomat);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{sender.Name} 对 {receiver.Name} 派遣了使者 {diplomat.Name} 执行{GetActionName(actionType)}行动！");
+            Sango.Log.Info($"@外交@{sender.Name} 对 {receiver.Name} 派遣了使者 {diplomat.Name} 执行{GetActionName(actionType)}行动！");
 #endif
             return true;
         }
@@ -421,7 +421,7 @@ namespace Sango.Core
             AddRelation(forceA, forceB, variables.diplomacyAllianceRelationIncrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{forceA.Name} 与 {forceB.Name} 达成了{variables.diplomacyAllianceDuration / 3}个月的结盟 Id={alliance.Id}!!");
+            Sango.Log.Info($"@外交@{forceA.Name} 与 {forceB.Name} 达成了{variables.diplomacyAllianceDuration / 3}个月的结盟 Id={alliance.Id}!!");
 #endif
 
             // 触发事件
@@ -467,7 +467,7 @@ namespace Sango.Core
             AddRelation(forceA, forceB, variables.diplomacyTruceRelationIncrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{forceA.Name} 与 {forceB.Name} 达成了{variables.diplomacyTruceDuration / 3}个月的停战协议!!");
+            Sango.Log.Info($"@外交@{forceA.Name} 与 {forceB.Name} 达成了{variables.diplomacyTruceDuration / 3}个月的停战协议!!");
 #endif
 
             // 触发事件
@@ -497,7 +497,7 @@ namespace Sango.Core
             ReduceRelation(forceA, forceB, Scenario.Cur.Variables.diplomacyDeclareWarRelationDecrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{forceA.Name} 向 {forceB.Name} 宣战!!");
+            Sango.Log.Info($"@外交@{forceA.Name} 向 {forceB.Name} 宣战!!");
 #endif
 
             // 触发事件
@@ -529,7 +529,7 @@ namespace Sango.Core
             AddRelation(sender, receiver, relationIncrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{sender.Name} 向 {receiver.Name} 赠送了 {giftValue} 金，关系增加了 {relationIncrease}!!");
+            Sango.Log.Info($"@外交@{sender.Name} 向 {receiver.Name} 赠送了 {giftValue} 金，关系增加了 {relationIncrease}!!");
 #endif
 
             // 触发事件
@@ -665,7 +665,7 @@ namespace Sango.Core
 
 #if SANGO_DEBUG
             Technique tech = Scenario.Cur.GetObject<Technique>(techId);
-            Sango.Log.Print($"@外交@{sender.Name} 从 {receiver.Name} 处学到了技术 {tech?.Name}!!");
+            Sango.Log.Info($"@外交@{sender.Name} 从 {receiver.Name} 处学到了技术 {tech?.Name}!!");
 #endif
 
             // 触发事件
@@ -715,7 +715,7 @@ namespace Sango.Core
             ReduceRelation(sender, receiver, Scenario.Cur.Variables.diplomacyRequestTroopsRelationDecrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{receiver.Name} 向 {sender.Name} 提供了 {troopCount} 兵力!!");
+            Sango.Log.Info($"@外交@{receiver.Name} 向 {sender.Name} 提供了 {troopCount} 兵力!!");
 #endif
 
             // 触发事件
@@ -774,7 +774,7 @@ namespace Sango.Core
             AddRelation(sender, receiver, variables.diplomacyTradeRelationIncrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{sender.Name} 与 {receiver.Name} 达成了{variables.diplomacyTradeDuration / 3}个月的通商协议，双方城市的黄金收入增加了!!");
+            Sango.Log.Info($"@外交@{sender.Name} 与 {receiver.Name} 达成了{variables.diplomacyTradeDuration / 3}个月的通商协议，双方城市的黄金收入增加了!!");
 #endif
 
             // 触发事件
@@ -804,7 +804,7 @@ namespace Sango.Core
             }
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{sender.Name} 与 {receiver.Name} 达成了和亲，关系大幅提升!!");
+            Sango.Log.Info($"@外交@{sender.Name} 与 {receiver.Name} 达成了和亲，关系大幅提升!!");
 #endif
 
             // 触发事件
@@ -857,7 +857,7 @@ namespace Sango.Core
             AddRelation(sender.BelongForce, receiver, relationIncrease);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@外交@{sender.Name} 向 {receiver.Name} 支付了 {ransomValue} 金赎回了俘虏 {captive.Name}，关系增加了 {relationIncrease}!!");
+            Sango.Log.Info($"@外交@{sender.Name} 向 {receiver.Name} 支付了 {ransomValue} 金赎回了俘虏 {captive.Name}，关系增加了 {relationIncrease}!!");
 #endif
 
             // 触发事件
@@ -930,7 +930,7 @@ namespace Sango.Core
                 AddRelation(sender, receiver, variables.diplomacyAllianceRequestRelationIncrease);
 
 #if SANGO_DEBUG
-                Sango.Log.Print($"@外交@{sender.Name} 请求与 {receiver.Name} 结盟，但被拒绝了，不过关系有所改善!!");
+                Sango.Log.Info($"@外交@{sender.Name} 请求与 {receiver.Name} 结盟，但被拒绝了，不过关系有所改善!!");
 #endif
 
                 // 触发事件
@@ -971,7 +971,7 @@ namespace Sango.Core
                 AddRelation(sender, receiver, variables.diplomacyTruceRequestRelationIncrease);
 
 #if SANGO_DEBUG
-                Sango.Log.Print($"@外交@{sender.Name} 请求与 {receiver.Name} 停战，但被拒绝了，不过关系有所改善!!");
+                Sango.Log.Info($"@外交@{sender.Name} 请求与 {receiver.Name} 停战，但被拒绝了，不过关系有所改善!!");
 #endif
 
                 // 触发事件
@@ -1027,7 +1027,7 @@ namespace Sango.Core
 
 #if SANGO_DEBUG
             string treatyType = alliance.allianceType == AllianceType.Alliance ? "同盟" : (alliance.allianceType == AllianceType.Truce ? "停战协议" : "通商协议");
-            Sango.Log.Print($"@外交@{forceA.Name} 撕毁了与 {forceB.Name} 的{treatyType}，关系减少了 {relationDecrease}！");
+            Sango.Log.Info($"@外交@{forceA.Name} 撕毁了与 {forceB.Name} 的{treatyType}，关系减少了 {relationDecrease}！");
 #endif
 
             // 触发事件
@@ -1145,13 +1145,13 @@ namespace Sango.Core
             if (success)
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动成功了！成功率: {successRate}%");
+                Sango.Log.Info($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动成功了！成功率: {successRate}%");
 #endif
             }
             else
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动失败了！成功率: {successRate}%");
+                Sango.Log.Info($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动失败了！成功率: {successRate}%");
 #endif
                 // 外交失败减少关系
                 int relationDecrease = 0;
@@ -1188,7 +1188,7 @@ namespace Sango.Core
                 ReduceRelation(person.BelongForce, receiverForce, relationDecrease);
 
 #if SANGO_DEBUG
-                Sango.Log.Print($"@外交@{person.BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
+                Sango.Log.Info($"@外交@{person.BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
 #endif
             }
         }
@@ -1241,13 +1241,13 @@ namespace Sango.Core
             if (success)
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动成功了！");
+                Sango.Log.Info($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动成功了！");
 #endif
             }
             else
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动失败了！");
+                Sango.Log.Info($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动失败了！");
 #endif
                 // 外交失败减少关系
                 int relationDecrease = 0;
@@ -1284,7 +1284,7 @@ namespace Sango.Core
                 ReduceRelation(person.BelongForce, receiverForce, relationDecrease);
 
 #if SANGO_DEBUG
-                Sango.Log.Print($"@外交@{person.BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
+                Sango.Log.Info($"@外交@{person.BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
 #endif
             }
         }

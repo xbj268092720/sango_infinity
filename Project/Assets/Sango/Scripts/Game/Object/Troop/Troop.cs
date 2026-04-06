@@ -482,7 +482,7 @@ namespace Sango.Core
                 {
                     person.Escape(EscapeType.Escape);
 #if SANGO_DEBUG
-                    Sango.Log.Print($"{person.Name}逃跑!");
+                    Sango.Log.Info($"{person.Name}逃跑!");
 #endif
                     GameEvent.OnPersonEscape?.Invoke(person, this);
                 }
@@ -1210,7 +1210,7 @@ namespace Sango.Core
             if (!IsAlive)
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 溃灭!!");
+                Sango.Log.Info($"{BelongForce.Name}的[{Name} 部队 溃灭!!");
 #endif
                 OnDestroy(atk);
 
@@ -1262,7 +1262,7 @@ namespace Sango.Core
                 if (criticalFactor > 100)
                 {
 #if SANGO_DEBUG
-                    Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 技能: {skill.Name} =>({spellCell.x},{spellCell.y})]  暴击判定成功!  暴击伤害倍率{criticalFactor}!!");
+                    Sango.Log.Info($"{BelongForce.Name}的[{Name} 部队 技能: {skill.Name} =>({spellCell.x},{spellCell.y})]  暴击判定成功!  暴击伤害倍率{criticalFactor}!!");
 #endif
                     TroopSpellSkillCriticalEvent @event = RenderEvent.Instance.Create<TroopSpellSkillCriticalEvent>();
                     @event.Init(this, skill, spellCell, criticalFactor);
@@ -1280,7 +1280,7 @@ namespace Sango.Core
             else
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 技能: {skill.Name} =>({spellCell.x},{spellCell.y})]  判定失败! 释放不成功!!");
+                Sango.Log.Info($"{BelongForce.Name}的[{Name} 部队 技能: {skill.Name} =>({spellCell.x},{spellCell.y})]  判定失败! 释放不成功!!");
 #endif
                 TroopSpellSkillFailEvent @event = RenderEvent.Instance.Create<TroopSpellSkillFailEvent>();
                 @event.Init(this, skill, spellCell);
@@ -1506,7 +1506,7 @@ namespace Sango.Core
 
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 移动=> ({destCell.x},{destCell.y})]");
+            Sango.Log.Info($"{BelongForce.Name}的[{Name} 部队 移动=> ({destCell.x},{destCell.y})]");
 #endif
 
             if (destCell.fire != null)
@@ -1569,7 +1569,7 @@ namespace Sango.Core
             {
                 Clear();
 #if SANGO_DEBUG
-                Sango.Log.Print($"{BelongForce.Name}的[{Name}]部队回到{city.BelongForce?.Name}的城池:<{city.Name}>");
+                Sango.Log.Info($"{BelongForce.Name}的[{Name}]部队回到{city.BelongForce?.Name}的城池:<{city.Name}>");
 #endif
                 return;
             }
@@ -1595,7 +1595,7 @@ namespace Sango.Core
             Clear();
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"{BelongForce.Name}的[{Name}]部队进入{city.BelongForce?.Name}的城池:<{city.Name}>");
+            Sango.Log.Info($"{BelongForce.Name}的[{Name}]部队进入{city.BelongForce?.Name}的城池:<{city.Name}>");
 #endif
         }
 
@@ -1715,7 +1715,7 @@ namespace Sango.Core
         public void SetMission(MissionType missionType, int missionTarget)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"{BelongForce.Name}的[{Name} 部队 任务变更:{missionType} -> {missionTarget}!!");
+            Sango.Log.Info($"{BelongForce.Name}的[{Name} 部队 任务变更:{missionType} -> {missionTarget}!!");
 #endif
             this.missionType = (int)missionType;
             this.missionTarget = missionTarget;
@@ -1845,7 +1845,7 @@ namespace Sango.Core
         public Person AddCaptive(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> captiveList 添加 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> captiveList 添加 {person.Name} ");
 #endif
             person.state = (int)PersonStateType.Prisoner;
             captiveList.Add(person);
@@ -1862,7 +1862,7 @@ namespace Sango.Core
         public Person RemoveCaptive(Person person)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{Name} -> captiveList 删除 {person.Name} ");
+            Sango.Log.Info($"*{Name} -> captiveList 删除 {person.Name} ");
 #endif
             captiveList.Remove(person);
             person.BelongForce?.BeCaptiveList.Remove(person);

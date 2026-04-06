@@ -1,5 +1,6 @@
 using Sango.Core;
 using Sango.Render;
+using Sango.Tools.UndoRedo;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -65,7 +66,7 @@ namespace Sango.Tools
                 {
                     brush.SelectModel(bindConfig);
                 }
-                if (GUILayout.Button("ĞŞ¸Ä", GUILayout.Width(48)))
+                if (GUILayout.Button("ä¿®æ”¹", GUILayout.Width(48)))
                 {
                     brush.ModifyModelConfig(bindConfig);
                 }
@@ -90,15 +91,15 @@ namespace Sango.Tools
                 }
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Ñ¡Ôñ", GUILayout.Width(48)))
+                if (GUILayout.Button("é€‰æ‹©", GUILayout.Width(48)))
                 {
-                    // ¾µÍ·ÇĞ»»ÖÁÄ£ĞÍ´¦,²¢Ñ¡ÔñÄ£ĞÍ
+                    // é•œå¤´åˆ‡æ¢è‡³æ¨¡å‹å¤„,å¹¶é€‰æ‹©æ¨¡å‹
                     brush.editor.ForceCameraToGameObject(bidMapObject.GetGameObject());
                 }
                 GUILayout.Space(3);
-                // ¿ÉÊÖ¶¯ĞŞ¸ÄbindId,¿ÉÒÔÓÃÓÚ°ó¶¨³Ç³Ø
+                // å¯æ‰‹åŠ¨ä¿®æ”¹bindId,å¯ä»¥ç”¨äºç»‘å®šåŸæ± 
                 GUI.changed = false;
-                GUILayout.Label("°ó¶¨ID:", GUILayout.Width(48));
+                GUILayout.Label("ç»‘å®šID:", GUILayout.Width(48));
                 string bindIdStr = GUILayout.TextField(showContent[0], GUILayout.Width(40));
                 if (GUI.changed)
                 {
@@ -127,7 +128,7 @@ namespace Sango.Tools
         public ModelConfig modelConfig = null;
         public bool anchorByGrid = false;
 
-        private string[] objectTypeTitle = new string[] { "ËùÓĞ", "³Ç", "¹Ø", "¸Û", "ÄÚ", "¾ü", "Ö²", "ÆäËû" };
+        private string[] objectTypeTitle = new string[] { "æ‰€æœ‰", "åŸ", "å…³", "æ¸¯", "å†…", "å†›", "æ¤", "å…¶ä»–" };
         private int currentObjectType = 1;
         private UnityEngine.Rect windowRect = new UnityEngine.Rect(20, 20, 120, 50);
 
@@ -153,7 +154,7 @@ namespace Sango.Tools
 
         public void ExportConfigTo()
         {
-            WindowDialog.SaveFileDialog("±£´æ", System.IO.Path.GetDirectoryName(default_data_save_path), "ModelConfig.xml", "Êı¾İÎÄ¼ş(*.xml)|*.xml\0");
+            WindowDialog.SaveFileDialog("ä¿å­˜", System.IO.Path.GetDirectoryName(default_data_save_path), "ModelConfig.xml", "æ•°æ®æ–‡ä»¶(*.xml)|*.xml\0");
         }
         public void SaveConfig()
         {
@@ -171,7 +172,7 @@ namespace Sango.Tools
             //sb.AppendLine("return data_model");
 
             //using (StreamWriter textWriter = new StreamWriter(fileName, false, new UTF8Encoding(false))) {
-            //    // È¥BOM
+            //    // å»BOM
             //    string s = sb.ToString();
             //    byte[] bs = Encoding.UTF8.GetBytes(s);
             //    byte[] bomBuffer = new byte[] { 0xef, 0xbb, 0xbf };
@@ -231,14 +232,6 @@ namespace Sango.Tools
 
         public override void Modify(Vector3 center, MapEditor editor)
         {
-            //if (GUILayout.Button("¼ÓÔØÄ£ĞÍ"))
-            //{
-            //    string[] path = WindowDialog.OpenFileDialog("Ä£ĞÍ", Path.GetDirectoryName(Tools.MapEditor.lastOpenFilePath), "Ä£ĞÍÎÄ¼ş(*.obj)|*.obj\0");
-            //    if (path != null)
-            //    {
-            //        string fName = path[0];
-            //    }
-            //}
             if (modelConfig == null) return;
 
             MapObject mapObj = MapObject.Create(modelConfig.Id.ToString());
@@ -258,8 +251,9 @@ namespace Sango.Tools
 
             mapObj.CreateModel(model);
 
-            editor.map.AddStatic(mapObj);
-            //modelConfig.instanceList.Add(mapObj);
+            // åˆ›å»ºæ·»åŠ æ¨¡å‹å‘½ä»¤å¹¶æ‰§è¡Œ
+            ModelEditCommand command = new ModelEditCommand(editor, mapObj, "æ·»åŠ æ¨¡å‹");
+            editor.undoRedoManager.AddCommand(command, true);
 
             if (!Input.GetKey(KeyCode.LeftShift))
             {
@@ -270,7 +264,7 @@ namespace Sango.Tools
         Vector2 scrollPos;
         public override void OnGUI()
         {
-            //GUILayout.Label(String.Format("±ÊË¢´óĞ¡ [{0}]", size));
+            //GUILayout.Label(String.Format("ç¬”åˆ·å¤§å° [{0}]", size));
             //float _size = GUILayout.HorizontalSlider(size, 0f, 12f);
             //if ((int)_size != size)
             //{
@@ -286,7 +280,7 @@ namespace Sango.Tools
                 OnObjectTypeChange();
             }
             GUI.backgroundColor = lastColor;
-            if (GUILayout.Button("¼ÓÔØÔ­À´Ä£ĞÍ"))
+            if (GUILayout.Button("åŠ è½½åŸæ¥æ¨¡å‹"))
             {
                 editor.map.mapModels.ClearAllModels();
                 //editor.CallFunction("LoadDefaultModel");
@@ -315,8 +309,8 @@ namespace Sango.Tools
 
             }
 
-            anchorByGrid = GUILayout.Toggle(anchorByGrid, "ÌùºÏ¸ñ×ÓÖĞĞÄ");
-            randomDir = GUILayout.Toggle(randomDir, "Ëæ»ú·½Ïò");
+            anchorByGrid = GUILayout.Toggle(anchorByGrid, "è´´åˆæ ¼å­ä¸­å¿ƒ");
+            randomDir = GUILayout.Toggle(randomDir, "éšæœºæ–¹å‘");
             if (isShowModelConfig)
             {
 
@@ -325,7 +319,7 @@ namespace Sango.Tools
 
                 if (currentConfigList != null)
                 {
-                    if (GUILayout.Button("²é¿´¿É°ó¶¨Ä£ĞÍ"))
+                    if (GUILayout.Button("æŸ¥çœ‹å¯ç»‘å®šæ¨¡å‹"))
                     {
                         isShowModelConfig = false;
                         scrollPos = new Vector2();
@@ -351,7 +345,7 @@ namespace Sango.Tools
             }
             else
             {
-                if (GUILayout.Button("ÇĞ»»ÖÁÄ£ĞÍ¿â"))
+                if (GUILayout.Button("åˆ‡æ¢è‡³æ¨¡å‹åº“"))
                 {
                     isShowModelConfig = true;
                     scrollPos = new Vector2();
@@ -472,7 +466,7 @@ namespace Sango.Tools
 
             if (model != null)
             {
-                // ÓÒ¼ü»òÕßEscÈ¡ÏûÄ£ĞÍ
+                // å³é”®æˆ–è€…Escå–æ¶ˆæ¨¡å‹
                 if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
                 {
                     ClearModel();
@@ -495,6 +489,33 @@ namespace Sango.Tools
                     }
                 }
             }
+        }
+        
+        /// <summary>
+        /// æ‹–æ‹½å¼€å§‹ï¼ˆæ¨¡å‹æ”¾ç½®ä¸æ”¯æŒæ‹–æ‹½ï¼‰
+        /// </summary>
+        /// <param name="center">ä¸­å¿ƒç‚¹</param>
+        public override void OnDragStart(Vector3 center)
+        {
+            // æ¨¡å‹æ”¾ç½®åªæ”¯æŒç‚¹å‡»æ“ä½œï¼Œä¸æ”¯æŒæ‹–æ‹½
+        }
+        
+        /// <summary>
+        /// æ‹–æ‹½è¿‡ç¨‹ï¼ˆæ¨¡å‹æ”¾ç½®ä¸æ”¯æŒæ‹–æ‹½ï¼‰
+        /// </summary>
+        /// <param name="center">ä¸­å¿ƒç‚¹</param>
+        public override void OnDrag(Vector3 center)
+        {
+            // æ¨¡å‹æ”¾ç½®åªæ”¯æŒç‚¹å‡»æ“ä½œï¼Œä¸æ”¯æŒæ‹–æ‹½
+        }
+        
+        /// <summary>
+        /// æ‹–æ‹½ç»“æŸï¼ˆæ¨¡å‹æ”¾ç½®ä¸æ”¯æŒæ‹–æ‹½ï¼‰
+        /// </summary>
+        /// <param name="center">ä¸­å¿ƒç‚¹</param>
+        public override void OnDragEnd(Vector3 center)
+        {
+            // æ¨¡å‹æ”¾ç½®åªæ”¯æŒç‚¹å‡»æ“ä½œï¼Œä¸æ”¯æŒæ‹–æ‹½
         }
     }
 

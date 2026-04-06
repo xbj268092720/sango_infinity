@@ -59,12 +59,12 @@ namespace Sango.Mod
             Directory.EnumFiles(path, "*.json", SearchOption.AllDirectories, (file) =>
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"LoadData: {file}");
+                Sango.Log.Info($"LoadData: {file}");
 #endif
             });
             //Directory.EnumFiles(path, "*.txt", SearchOption.AllDirectories, (file) =>
             //{
-            //    Sango.Log.Print($"LoadData: {file}");
+            //    Sango.Log.Info($"LoadData: {file}");
             //    Game.GameData.Load(file);
             //});
 
@@ -81,13 +81,13 @@ namespace Sango.Mod
             Directory.EnumFiles(path, "*.dll", SearchOption.AllDirectories, (file) =>
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"LoadMetadataAssembly: {file}");
+                Sango.Log.Info($"LoadMetadataAssembly: {file}");
 #endif
                 byte[] dllBytes = File.ReadAllBytes(file);
                 // 加载assembly对应的dll，会自动为它hook。一旦aot泛型函数的native函数不存在，用解释器版本代码
                 LoadImageErrorCode err = RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, mode);
 #if SANGO_DEBUG
-                Sango.Log.Print($"LoadMetadataForAOTAssembly:{file}. mode:{mode} ret:{err}");
+                Sango.Log.Info($"LoadMetadataForAOTAssembly:{file}. mode:{mode} ret:{err}");
 #endif
             });
 
@@ -111,7 +111,7 @@ namespace Sango.Mod
             Directory.EnumFiles(path, "*.bytes", SearchOption.AllDirectories, (file) =>
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"LoadUI: {file}");
+                Sango.Log.Info($"LoadUI: {file}");
 #endif
                 string packageName = System.IO.Path.GetFileNameWithoutExtension(file).Split('_')[0];
                 Window.Instance.AddPackage(file, packageName);
@@ -123,7 +123,7 @@ namespace Sango.Mod
             Directory.EnumFiles(path, "*.pkg", SearchOption.AllDirectories, (file) =>
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"LoadPackage: {file}");
+                Sango.Log.Info($"LoadPackage: {file}");
 #endif
                 string packageName = System.IO.Path.GetFileNameWithoutExtension(file).Split('_')[0];
                 PackageManager.Instance.AddPackage(packageName, file, true);
@@ -136,7 +136,7 @@ namespace Sango.Mod
             Directory.EnumFiles(path, "*.json", SearchOption.AllDirectories, (file) =>
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"Find Language File: {file}");
+                Sango.Log.Info($"Find Language File: {file}");
 #endif
                 GameLanguage.AddFile(file);
             });
@@ -147,7 +147,7 @@ namespace Sango.Mod
             Directory.EnumFiles(path, "*.json", SearchOption.AllDirectories, (file) =>
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"Find Scenario: {file}");
+                Sango.Log.Info($"Find Scenario: {file}");
 #endif
                 ShortScenario.Add(file);
             });

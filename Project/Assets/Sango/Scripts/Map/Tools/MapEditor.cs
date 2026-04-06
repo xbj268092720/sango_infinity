@@ -1,5 +1,6 @@
 using RTEditor;
 using Sango.Render;
+using Sango.Tools.UndoRedo;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +22,11 @@ namespace Sango.Tools
         public string DefaultContentName { get { return "Default"; } }
 
         public static Sango.Hexagon.Coord SelectedCoord { get; set; }
+        
+        /// <summary>
+        /// 撤销/重做管理器
+        /// </summary>
+        public UndoRedoManager undoRedoManager { get; private set; }
 
         /// <summary>
         /// 编辑模式
@@ -66,6 +72,9 @@ namespace Sango.Tools
             Path.AddSearchPath(assetsPath, false);
 
             IsEditOn = true;
+            
+            // 初始化撤销/重做管理器
+            undoRedoManager = new UndoRedoManager();
 
             // 创建笔刷
             terrain_brush = new TerrainBrush(this);
@@ -85,6 +94,9 @@ namespace Sango.Tools
             editorToolsBarWindow.canClose = false;
             editorContentWindow = EditorWindow.AddWindow(1, windowRect, DrawContentWindow, "属性窗口");
             editorContentWindow.canClose = false;
+
+            Sango.Core.GameController.Instance.DragMoveViewEnabled = false;
+
         }
 
         public Render.MapRender CreateEmptyMap(int w, int h)
@@ -165,7 +177,9 @@ namespace Sango.Tools
                 MapObject mapObject = o.GetComponent<MapObject>();
                 if (mapObject != null)
                 {
-                    map.RemoveStatic(mapObject);
+                    // 创建删除模型命令并执行
+                    ModelEditCommand command = new ModelEditCommand(this, mapObject, "删除模型");
+                    undoRedoManager.AddCommand(command);
                 }
             }
         }
@@ -297,6 +311,16 @@ namespace Sango.Tools
 
             while (currentTime >= timeInterval)
                 currentTime = currentTime - timeInterval;
+
+            // 处理撤销/重做快捷键
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z))
+            {
+                undoRedoManager.Undo();
+            }
+            else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Y))
+            {
+                undoRedoManager.Redo();
+            }
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;

@@ -109,7 +109,7 @@ namespace Sango.Core.Player
                 if (File.Exists(fileName))
                 {
 #if SANGO_DEBUG
-                    Sango.Log.Print($"Find Saved data : {fileName}");
+                    Sango.Log.Info($"Find Saved data : {fileName}");
 #endif
                     ShortScenario scenario = new ShortScenario(fileName);
                     all_saved_scenario_list[i - 1] = scenario;
@@ -124,7 +124,7 @@ namespace Sango.Core.Player
                 if (File.Exists(fileName))
                 {
 #if SANGO_DEBUG
-                    Sango.Log.Print($"Find Saved data : {fileName}");
+                    Sango.Log.Info($"Find Saved data : {fileName}");
 #endif
                     ShortScenario scenario = new ShortScenario(fileName);
                     if (scenario.Info.dateTime > autoSaveTime)

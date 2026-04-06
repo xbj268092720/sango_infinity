@@ -36,7 +36,7 @@ namespace Sango.Render
                     if (atk.BelongForce.Governor.JobRecruitPerson(person, targetCity, recruitType))
                     {
 #if SANGO_DEBUG
-                        Sango.Log.Print($"{person.Name} 加入了 {atk.BelongForce} 势力!!!");
+                        Sango.Log.Info($"{person.Name} 加入了 {atk.BelongForce} 势力!!!");
 #endif
                         captiveList.RemoveAt(i);
                     }

@@ -151,7 +151,7 @@ namespace Sango.Core
             set
             {
                 _state = value;
-                Sango.Log.Print($"{Name}改变状态=> {PersonSortFunction.SortByState.GetValueStr(this)}");
+                Sango.Log.Info($"{Name}改变状态=> {PersonSortFunction.SortByState.GetValueStr(this)}");
             }
         }
         private int _state;
@@ -979,7 +979,7 @@ namespace Sango.Core
                             // 重置停留时间
                             stayTurnCount = 0;
 #if SANGO_DEBUG
-                            Sango.Log.Print($"@人才@在野武将{Name}从{BelongCity.Name}移动到{targetCity.Name}");
+                            Sango.Log.Info($"@人才@在野武将{Name}从{BelongCity.Name}移动到{targetCity.Name}");
 #endif
                         }
                     }
@@ -998,7 +998,7 @@ namespace Sango.Core
             SetMission(MissionType.PersonReturn, dest);
             ActionOver = true;
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{BelongForce?.Name}的{Name}从{BelongCity.Name}向{dest.Name}转移*");
+            Sango.Log.Info($"*{BelongForce?.Name}的{Name}从{BelongCity.Name}向{dest.Name}转移*");
 #endif
         }
 
@@ -1029,7 +1029,7 @@ namespace Sango.Core
             {
                 last = BelongCity;
 #if SANGO_DEBUG
-                Sango.Log.Print($"*{BelongForce?.Name}的{Name} 改变所属城市 {BelongCity.Name} => {city.Name}");
+                Sango.Log.Info($"*{BelongForce?.Name}的{Name} 改变所属城市 {BelongCity.Name} => {city.Name}");
 #endif
                 if (!IsWild)
                 {
@@ -1067,7 +1067,7 @@ namespace Sango.Core
             City last = CurrentCity;
             CurrentCity = city;
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{BelongForce?.Name}的{Name} 改变所在城市 {last.Name} -> {city.Name}");
+            Sango.Log.Info($"*{BelongForce?.Name}的{Name} 改变所在城市 {last.Name} -> {city.Name}");
 #endif
             GameEvent.OnPersonChangCurrentCity?.Invoke(this, city, last);
             return last;
@@ -1083,7 +1083,7 @@ namespace Sango.Core
             City last = BelongCity;
             BelongCity = city;
 #if SANGO_DEBUG
-            Sango.Log.Print($"*{BelongForce?.Name}的{Name} 改变所属城市 {last.Name} -> {city.Name}");
+            Sango.Log.Info($"*{BelongForce?.Name}的{Name} 改变所属城市 {last.Name} -> {city.Name}");
 #endif
             if (BelongCorps != city.BelongCorps)
                 BelongCorps = city.BelongCorps;
@@ -1098,7 +1098,7 @@ namespace Sango.Core
         {
             int probability = GameFormula.Instance.RecruitPersonProbability(this, person, type);
 #if SANGO_DEBUG
-            Sango.Log.Print($"[{BelongForce.Name}]<{Name}>登庸 -> {person.Name} 成功率:{probability}");
+            Sango.Log.Info($"[{BelongForce.Name}]<{Name}>登庸 -> {person.Name} 成功率:{probability}");
 #endif
             //TODO: 招募成功概率计算
             bool success = GameRandom.Chance(probability);
@@ -1124,7 +1124,7 @@ namespace Sango.Core
         public void BeRecruit(Person person, City targetCity)
         {
 #if SANGO_DEBUG
-            Sango.Log.Print($"[{person.BelongForce.Name}]<{person.Name}>登庸成功, {Name}加入了势力{person.BelongForce.Name}");
+            Sango.Log.Info($"[{person.BelongForce.Name}]<{person.Name}>登庸成功, {Name}加入了势力{person.BelongForce.Name}");
 #endif
             loyalty = 80;
             if (IsPrisoner)
@@ -1211,7 +1211,7 @@ namespace Sango.Core
             {
                 BelongCity = CurrentCity;
 #if SANGO_DEBUG
-                Sango.Log.Print($"@人才@<{Name}>失去势力,进入囚犯下野状态");
+                Sango.Log.Info($"@人才@<{Name}>失去势力,进入囚犯下野状态");
 #endif
             }
             else
@@ -1223,7 +1223,7 @@ namespace Sango.Core
                 BelongCity.wildPersons.Add(this);
 
 #if SANGO_DEBUG
-                Sango.Log.Print($"@人才@[{BelongForce.Name}]的<{Name}>下野至{BelongCity.Name}");
+                Sango.Log.Info($"@人才@[{BelongForce.Name}]的<{Name}>下野至{BelongCity.Name}");
 #endif
             }
 
@@ -1237,7 +1237,7 @@ namespace Sango.Core
             Official = Scenario.Cur.CommonData.Officials.Get(0);
             city.AddCaptive(this);
 #if SANGO_DEBUG
-            Sango.Log.Print($"@人才@[{Name}]被<{city.BelongForce.Name}>俘虏至{city.Name}");
+            Sango.Log.Info($"@人才@[{Name}]被<{city.BelongForce.Name}>俘虏至{city.Name}");
 #endif
             return this;
         }
@@ -1247,7 +1247,7 @@ namespace Sango.Core
             Official = Scenario.Cur.CommonData.Officials.Get(0);
             troop.AddCaptive(this);
 #if SANGO_DEBUG
-            Sango.Log.Print($"@人才@[{Name}]被<{troop.BelongForce.Name}>俘虏至{troop.Name}");
+            Sango.Log.Info($"@人才@[{Name}]被<{troop.BelongForce.Name}>俘虏至{troop.Name}");
 #endif
             return this;
         }
@@ -1288,14 +1288,14 @@ namespace Sango.Core
             if (escapeType == EscapeType.Escape)
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"@人才@[{Name}]逃亡!");
+                Sango.Log.Info($"@人才@[{Name}]逃亡!");
 #endif
                 GameEvent.OnPersonEscape?.Invoke(this, BelongCity);
             }
             else if (escapeType == EscapeType.Released)
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"@人才@[{Name}]被释放!");
+                Sango.Log.Info($"@人才@[{Name}]被释放!");
 #endif
                 // 被释放的逻辑已经在PersonRecruit.ReleaseTarget中处理
                 GameEvent.OnPersonRelease?.Invoke(this, sangoObject as Force);
@@ -1303,7 +1303,7 @@ namespace Sango.Core
             else if (escapeType == EscapeType.TroopDestroyed)
             {
 #if SANGO_DEBUG
-                Sango.Log.Print($"@人才@[{Name}]逃亡!");
+                Sango.Log.Info($"@人才@[{Name}]逃亡!");
 #endif
                 // 部队灭亡的情况可以在这里处理
                 GameEvent.OnPersonEscape?.Invoke(this, BelongCity);
@@ -1327,7 +1327,7 @@ namespace Sango.Core
                     Exp = Level.exp - Exp;
                     Level = Level.Next;
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@个人@{Name}升级到{Level.Id}级");
+                    Sango.Log.Info($"@个人@{Name}升级到{Level.Id}级");
 #endif
                     GameEvent.OnPersonLevelUp?.Invoke(this);
                 }

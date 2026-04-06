@@ -437,7 +437,7 @@ namespace Sango.Core
                 Force targetForce = Scenario.Cur?.forceSet.Get(targetForceId);
                 if (targetForce != null)
                 {
-                    Sango.Log.Print($"@外交@{force.Name} 对 {targetForce.Name} 的外交连续失败3次，进入30天外交免疫期！");
+                    Sango.Log.Info($"@外交@{force.Name} 对 {targetForce.Name} 的外交连续失败3次，进入30天外交免疫期！");
                 }
 #endif
             }
@@ -771,7 +771,7 @@ namespace Sango.Core
                 captive.ChangeCity(force.Governor?.BelongCity);
                 captive.SetMission(MissionType.PersonReturn, captive.BelongCity);
 #if SANGO_DEBUG
-                Sango.Log.Print($"{force.Name}成功招降了{captive.BelongForce?.Name}的{captive.Name}！");
+                Sango.Log.Info($"{force.Name}成功招降了{captive.BelongForce?.Name}的{captive.Name}！");
 #endif
                 return true;
 
@@ -815,7 +815,7 @@ namespace Sango.Core
             captive.Escape(EscapeType.Released, force);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"{force.Name}释放了{captive.BelongForce?.Name}的{captive.Name}！");
+            Sango.Log.Info($"{force.Name}释放了{captive.BelongForce?.Name}的{captive.Name}！");
 #endif
         }
 
@@ -854,7 +854,7 @@ namespace Sango.Core
                                 city.freePersons.Remove(person);
                                 hasSend = true;
 #if SANGO_DEBUG
-                                Sango.Log.Print($"{captive.BelongForce?.Name}派遣{person.Name}前往{captive.CurrentCity.BelongForce.Name}赎回我方俘虏{captive.Name}！");
+                                Sango.Log.Info($"{captive.BelongForce?.Name}派遣{person.Name}前往{captive.CurrentCity.BelongForce.Name}赎回我方俘虏{captive.Name}！");
 #endif          
                                 return;
                             }
@@ -1055,7 +1055,7 @@ namespace Sango.Core
             force.ResearchLeftCounter = researchDays;
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"{force.Name}开始研发科技{technique.Name}，预计需要{researchDays}天！");
+            Sango.Log.Info($"{force.Name}开始研发科技{technique.Name}，预计需要{researchDays}天！");
 #endif
         }
 

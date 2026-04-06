@@ -411,7 +411,7 @@ namespace Sango.Render
                 MoveCameraKeyBoard();
                 ZoomCamera();
                 RotateCamera();
-                MouseDragWorld();
+                //MouseDragWorld();
 #else
             MoveCameraKeyBoard();
             ZoomCameraMobile();

@@ -596,7 +596,7 @@ namespace Sango.Core
             //totalValue = GameRandom.Random(totalValue, 0.05f);
             city.AddFood(totalValue);
 #if SANGO_DEBUG
-            Sango.Log.Print($"城市：{city.Name}, 收获粮食：{totalValue}, 现有粮食: {city.food}");
+            Sango.Log.Info($"城市：{city.Name}, 收获粮食：{totalValue}, 现有粮食: {city.food}");
 #endif
             city.Render?.ShowInfo(totalValue, (int)InfoType.Food);
         }
@@ -637,7 +637,7 @@ namespace Sango.Core
             city.AddGold(totalValue);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"城市：{city.Name},  收获资金：{totalValue}, 现有资金: {city.gold}");
+            Sango.Log.Info($"城市：{city.Name},  收获资金：{totalValue}, 现有资金: {city.gold}");
 #endif
             city.Render?.ShowInfo(totalValue, (int)InfoType.Gold);
 

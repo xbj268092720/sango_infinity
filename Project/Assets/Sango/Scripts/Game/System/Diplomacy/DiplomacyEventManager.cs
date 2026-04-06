@@ -71,7 +71,7 @@ namespace Sango.Core
                         PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{receiver.Name} 的使者访问了 {sender.Name}，关系增加了50点！");
+                    Sango.Log.Info($"@外交事件@{receiver.Name} 的使者访问了 {sender.Name}，关系增加了50点！");
 #endif
                 }
             });
@@ -95,7 +95,7 @@ namespace Sango.Core
                         PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 在边境发生了冲突，关系减少了100点！");
+                    Sango.Log.Info($"@外交事件@{sender.Name} 与 {receiver.Name} 在边境发生了冲突，关系减少了100点！");
 #endif
                 }
             });
@@ -192,7 +192,7 @@ namespace Sango.Core
                                 PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
 #if SANGO_DEBUG
-                            Sango.Log.Print($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了技术交流，{sender.Name} 获得了技术 {tech.Name}！");
+                            Sango.Log.Info($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了技术交流，{sender.Name} 获得了技术 {tech.Name}！");
 #endif
                         }
                     }
@@ -264,7 +264,7 @@ namespace Sango.Core
                         PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 发生了领土争端，关系减少了150点！");
+                    Sango.Log.Info($"@外交事件@{sender.Name} 与 {receiver.Name} 发生了领土争端，关系减少了150点！");
 #endif
                 }
             });
@@ -288,7 +288,7 @@ namespace Sango.Core
                         PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 发现了共同的敌人，关系增加了100点！");
+                    Sango.Log.Info($"@外交事件@{sender.Name} 与 {receiver.Name} 发现了共同的敌人，关系增加了100点！");
 #endif
                 }
             });
@@ -327,12 +327,12 @@ namespace Sango.Core
                                 PlayerMessage.AddTextMessage(techMessage, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
 #if SANGO_DEBUG
-                            Sango.Log.Print($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了文化交流，{sender.Name} 获得了技术 {tech.Name}！");
+                            Sango.Log.Info($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了文化交流，{sender.Name} 获得了技术 {tech.Name}！");
 #endif
                         }
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了文化交流，关系增加了80点！");
+                    Sango.Log.Info($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了文化交流，关系增加了80点！");
 #endif
                 }
             });
@@ -356,7 +356,7 @@ namespace Sango.Core
                         PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{sender.Name} 的使者被 {receiver.Name} 扣留，关系减少了200点！");
+                    Sango.Log.Info($"@外交事件@{sender.Name} 的使者被 {receiver.Name} 扣留，关系减少了200点！");
 #endif
                 }
             });
@@ -389,7 +389,7 @@ namespace Sango.Core
                         PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 共同举办了庆典，关系增加了100点，双方各获得了1000金！");
+                    Sango.Log.Info($"@外交事件@{sender.Name} 与 {receiver.Name} 共同举办了庆典，关系增加了100点，双方各获得了1000金！");
 #endif
                 }
             });
@@ -422,7 +422,7 @@ namespace Sango.Core
                         PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 在边境开展了贸易活动，关系增加了60点，双方各获得了500金！");
+                    Sango.Log.Info($"@外交事件@{sender.Name} 与 {receiver.Name} 在边境开展了贸易活动，关系增加了60点，双方各获得了500金！");
 #endif
                 }
             });
@@ -447,7 +447,7 @@ namespace Sango.Core
                         PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{receiver.Name} 在边境集结军队，对 {sender.Name} 构成威胁，关系减少了150点！");
+                    Sango.Log.Info($"@外交事件@{receiver.Name} 在边境集结军队，对 {sender.Name} 构成威胁，关系减少了150点！");
 #endif
                 }
             });
@@ -479,7 +479,7 @@ namespace Sango.Core
                                 PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
 #if SANGO_DEBUG
-                            Sango.Log.Print($"@外交事件@{receiver.Name} 向 {sender.Name} 提供了技术援助，{sender.Name} 获得了技术 {tech.Name}！");
+                            Sango.Log.Info($"@外交事件@{receiver.Name} 向 {sender.Name} 提供了技术援助，{sender.Name} 获得了技术 {tech.Name}！");
 #endif
                         }
                     }
@@ -519,7 +519,7 @@ namespace Sango.Core
                             PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
 #if SANGO_DEBUG
-                        Sango.Log.Print($"@外交事件@{receiver.Name} 向 {sender.Name} 提供了 {aidAmount} 金的经济援助，关系增加了100点！");
+                        Sango.Log.Info($"@外交事件@{receiver.Name} 向 {sender.Name} 提供了 {aidAmount} 金的经济援助，关系增加了100点！");
 #endif
                     }
                     else
@@ -553,7 +553,7 @@ namespace Sango.Core
                         PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
-                    Sango.Log.Print($"@外交事件@{sender.Name} 发现 {receiver.Name} 在其领土上进行间谍活动，关系减少了180点！");
+                    Sango.Log.Info($"@外交事件@{sender.Name} 发现 {receiver.Name} 在其领土上进行间谍活动，关系减少了180点！");
 #endif
                 }
             });
@@ -652,7 +652,7 @@ namespace Sango.Core
                         _diplomacyEvents.RemoveAll(x => x.Id == ev.Id);
 
 #if SANGO_DEBUG
-                        Sango.Log.Print($"加载外交事件文件: {file}, id: {ev.Id}, name: {ev.Name}");
+                        Sango.Log.Info($"加载外交事件文件: {file}, id: {ev.Id}, name: {ev.Name}");
 #endif
 
                         // 添加到事件列表

@@ -159,7 +159,7 @@ namespace Sango.Core
             city.BelongCorps.ReduceActionPoint(JobType.GetJobCostAP(jobId));
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"@内政@[{city.BelongForce.Name}]{stringBuilder}在<{city.Name}>开始研究科技: [{technique.Name}], 研究需要{turnCount}回合!");
+            Sango.Log.Info($"@内政@[{city.BelongForce.Name}]{stringBuilder}在<{city.Name}>开始研究科技: [{technique.Name}], 研究需要{turnCount}回合!");
 #endif
 
             city.ClearJobFeature();

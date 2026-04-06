@@ -67,7 +67,7 @@ namespace Sango.Core
 
 #if SANGO_DEBUG
                 string allianceTypeStr = allianceType == AllianceType.Alliance ? "同盟" : (allianceType == AllianceType.Truce ? "停战协议" : "通商协议");
-                Sango.Log.Print($"@外交@{stringBuilder.ToString()} 的{allianceTypeStr} {Id} 于{scenario.GetDateStr()} 结束!!");
+                Sango.Log.Info($"@外交@{stringBuilder.ToString()} 的{allianceTypeStr} {Id} 于{scenario.GetDateStr()} 结束!!");
 #endif
 
             }

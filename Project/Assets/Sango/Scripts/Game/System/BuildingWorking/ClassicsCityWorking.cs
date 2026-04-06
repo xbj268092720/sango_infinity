@@ -200,7 +200,7 @@ namespace Sango.Core
             city.Render?.ShowInfo(harvest, (int)InfoType.Food);
             city.food += harvest;
 #if SANGO_DEBUG
-            Sango.Log.Print($"城市：{city.Name}, 收获粮食：{harvest}, 现有粮食: {city.food}");
+            Sango.Log.Info($"城市：{city.Name}, 收获粮食：{harvest}, 现有粮食: {city.food}");
 #endif
             if (city.IsCity())
             {
@@ -229,7 +229,7 @@ namespace Sango.Core
             city.AddGold(inComingGold);
 
 #if SANGO_DEBUG
-            Sango.Log.Print($"城市：{city.Name}, 武将人数:{city.allPersons.Count}, 收入<-- 金钱:{inComingGold},  现有金钱: {city.gold}");
+            Sango.Log.Info($"城市：{city.Name}, 武将人数:{city.allPersons.Count}, 收入<-- 金钱:{inComingGold},  现有金钱: {city.gold}");
 #endif
             city.Render?.UpdateRender();
         }

@@ -575,7 +575,7 @@ namespace Sango.Core
             PersonCount = 0;
             CityCount = 0;
 #if SANGO_DEBUG
-            Sango.Log.Print($"==={Name} 回合===");
+            Sango.Log.Info($"==={Name} 回合===");
 #endif
             prepareTechniqueList(scenario);
 
@@ -822,7 +822,7 @@ namespace Sango.Core
             {
                 person.loyalty -= v;
 #if SANGO_DEBUG
-                Sango.Log.Print($"势力：{Name}, 武将：{person.Name}, 忠诚度下降: {v}, 现有忠诚度:{person.loyalty}");
+                Sango.Log.Info($"势力：{Name}, 武将：{person.Name}, 忠诚度下降: {v}, 现有忠诚度:{person.loyalty}");
 #endif
             });
         }
