@@ -68,7 +68,7 @@ namespace Sango.Core
                     string message = $"{receiver.ColorName}派遣使者访问{sender.ColorName}，带来了友好的问候，关系增加了50点！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{receiver.Name} 的使者访问了 {sender.Name}，关系增加了50点！");
@@ -92,7 +92,7 @@ namespace Sango.Core
                     string message = $"{sender.ColorName}与{receiver.ColorName}在边境发生了冲突，关系减少了100点！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 在边境发生了冲突，关系减少了100点！");
@@ -118,7 +118,7 @@ namespace Sango.Core
                         string message = $"{receiver.ColorName}向{sender.ColorName}提出了贸易合作的提议，双方达成了通商协议！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     }
                 }
@@ -140,7 +140,7 @@ namespace Sango.Core
                     string message = $"{receiver.ColorName}邀请{sender.ColorName}结成同盟！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
                 }
             });
@@ -161,7 +161,7 @@ namespace Sango.Core
                     string message = $"{receiver.ColorName}请求与{sender.ColorName}停战！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
                 }
             });
@@ -189,7 +189,7 @@ namespace Sango.Core
                             string message = $"{sender.ColorName}与{receiver.ColorName}进行了技术交流，{sender.ColorName}获得了技术{tech.Name}！";
                             if (sender.Governor?.BelongCity != null)
                             {
-                                PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
 #if SANGO_DEBUG
                             Sango.Log.Print($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了技术交流，{sender.Name} 获得了技术 {tech.Name}！");
@@ -216,7 +216,7 @@ namespace Sango.Core
                     string message = $"{receiver.ColorName}请求{sender.ColorName}提供军事援助，请求兵力{troopCount}！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
                 }
             });
@@ -239,7 +239,7 @@ namespace Sango.Core
                         string message = $"{sender.ColorName}与{receiver.ColorName}达成了和亲，关系得到了加强！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     }
                 }
@@ -261,7 +261,7 @@ namespace Sango.Core
                     string message = $"{sender.ColorName}与{receiver.ColorName}发生了领土争端，关系减少了150点！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 发生了领土争端，关系减少了150点！");
@@ -285,7 +285,7 @@ namespace Sango.Core
                     string message = $"{sender.ColorName}与{receiver.ColorName}发现了共同的敌人，关系增加了100点！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 发现了共同的敌人，关系增加了100点！");
@@ -310,7 +310,7 @@ namespace Sango.Core
                     string message = $"{sender.ColorName}与{receiver.ColorName}进行了文化交流，促进了相互了解，关系增加了80点！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
                     // 有一定概率获得技术
                     if (GameRandom.Chance(20) && receiver.Techniques.Count > 0)
@@ -324,7 +324,7 @@ namespace Sango.Core
                             string techMessage = $"{sender.ColorName}与{receiver.ColorName}进行了文化交流，{sender.ColorName}获得了技术{tech.Name}！";
                             if (sender.Governor?.BelongCity != null)
                             {
-                                PlayerMessage.AddTextMessage(techMessage, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                PlayerMessage.AddTextMessage(techMessage, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
 #if SANGO_DEBUG
                             Sango.Log.Print($"@外交事件@{receiver.Name} 与 {sender.Name} 进行了文化交流，{sender.Name} 获得了技术 {tech.Name}！");
@@ -353,7 +353,7 @@ namespace Sango.Core
                     string message = $"{sender.ColorName}的使者被{receiver.ColorName}扣留，引发外交危机，关系减少了200点！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 的使者被 {receiver.Name} 扣留，关系减少了200点！");
@@ -376,17 +376,17 @@ namespace Sango.Core
                     // 增加双方的黄金
                     if (sender.Governor?.BelongCity != null)
                     {
-                        sender.Governor.BelongCity.gold += 1000;
+                        sender.CapitalCity.gold += 1000;
                     }
                     if (receiver.Governor?.BelongCity != null)
                     {
-                        receiver.Governor.BelongCity.gold += 1000;
+                        receiver.CapitalCity.gold += 1000;
                     }
                     // 添加玩家消息
                     string message = $"{sender.ColorName}与{receiver.ColorName}共同举办了庆典，增进了友谊，关系增加了100点，双方各获得了1000金！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 共同举办了庆典，关系增加了100点，双方各获得了1000金！");
@@ -409,17 +409,17 @@ namespace Sango.Core
                     // 增加双方的黄金
                     if (sender.Governor?.BelongCity != null)
                     {
-                        sender.Governor.BelongCity.gold += 500;
+                        sender.CapitalCity.gold += 500;
                     }
                     if (receiver.Governor?.BelongCity != null)
                     {
-                        receiver.Governor.BelongCity.gold += 500;
+                        receiver.CapitalCity.gold += 500;
                     }
                     // 添加玩家消息
                     string message = $"{sender.ColorName}与{receiver.ColorName}在边境开展了贸易活动，促进了经济发展，关系增加了60点，双方各获得了500金！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 与 {receiver.Name} 在边境开展了贸易活动，关系增加了60点，双方各获得了500金！");
@@ -444,7 +444,7 @@ namespace Sango.Core
                     string message = $"{receiver.ColorName}在边境集结军队，对{sender.ColorName}构成威胁，关系减少了150点！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{receiver.Name} 在边境集结军队，对 {sender.Name} 构成威胁，关系减少了150点！");
@@ -476,7 +476,7 @@ namespace Sango.Core
                             string message = $"{receiver.ColorName}向{sender.ColorName}提供了技术援助，{sender.ColorName}获得了技术{tech.Name}，关系增加了80点！";
                             if (sender.Governor?.BelongCity != null)
                             {
-                                PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
 #if SANGO_DEBUG
                             Sango.Log.Print($"@外交事件@{receiver.Name} 向 {sender.Name} 提供了技术援助，{sender.Name} 获得了技术 {tech.Name}！");
@@ -489,7 +489,7 @@ namespace Sango.Core
                         string message = $"{receiver.ColorName}向{sender.ColorName}提供了技术援助，关系增加了80点！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     }
                 }
@@ -511,12 +511,12 @@ namespace Sango.Core
                     if (sender.Governor?.BelongCity != null)
                     {
                         int aidAmount = Random.Range(1000, 3000);
-                        sender.Governor.BelongCity.gold += aidAmount;
+                        sender.CapitalCity.gold += aidAmount;
                         // 添加玩家消息
                         string message = $"{receiver.ColorName}向{sender.ColorName}提供了{aidAmount}金的经济援助，帮助{sender.ColorName}度过难关，关系增加了100点！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
 #if SANGO_DEBUG
                         Sango.Log.Print($"@外交事件@{receiver.Name} 向 {sender.Name} 提供了 {aidAmount} 金的经济援助，关系增加了100点！");
@@ -528,7 +528,7 @@ namespace Sango.Core
                         string message = $"{receiver.ColorName}向{sender.ColorName}提供了经济援助，关系增加了100点！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     }
                 }
@@ -550,7 +550,7 @@ namespace Sango.Core
                     string message = $"{sender.ColorName}发现{receiver.ColorName}在其领土上进行间谍活动，关系减少了180点！";
                     if (sender.Governor?.BelongCity != null)
                     {
-                        PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                     }
 #if SANGO_DEBUG
                     Sango.Log.Print($"@外交事件@{sender.Name} 发现 {receiver.Name} 在其领土上进行间谍活动，关系减少了180点！");
@@ -941,7 +941,7 @@ namespace Sango.Core
                         string message = $"{receiver.ColorName}派遣使者访问{sender.ColorName}，带来了友好的问候，关系增加了{value}点！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     };
                     break;
@@ -958,7 +958,7 @@ namespace Sango.Core
                         string message = $"{sender.ColorName}与{receiver.ColorName}在边境发生了冲突，关系减少了{value}点！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     };
                     break;
@@ -972,7 +972,7 @@ namespace Sango.Core
                             string message = $"{receiver.ColorName}向{sender.ColorName}提出了贸易合作的提议，双方达成了通商协议！";
                             if (sender.Governor?.BelongCity != null)
                             {
-                                PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
                         }
                     };
@@ -985,7 +985,7 @@ namespace Sango.Core
                         string message = $"{receiver.ColorName}邀请{sender.ColorName}结成同盟！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     };
                     break;
@@ -997,7 +997,7 @@ namespace Sango.Core
                         string message = $"{receiver.ColorName}请求与{sender.ColorName}停战！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     };
                     break;
@@ -1016,7 +1016,7 @@ namespace Sango.Core
                                 string message = $"{sender.ColorName}与{receiver.ColorName}进行了技术交流，{sender.ColorName}获得了技术{tech.Name}！";
                                 if (sender.Governor?.BelongCity != null)
                                 {
-                                    PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                    PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                                 }
                             }
                         }
@@ -1040,7 +1040,7 @@ namespace Sango.Core
                         string message = $"{receiver.ColorName}请求{sender.ColorName}提供军事援助，请求兵力{troopCount}！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     };
                     break;
@@ -1054,7 +1054,7 @@ namespace Sango.Core
                             string message = $"{sender.ColorName}与{receiver.ColorName}达成了和亲，关系得到了加强！";
                             if (sender.Governor?.BelongCity != null)
                             {
-                                PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
                         }
                     };
@@ -1072,7 +1072,7 @@ namespace Sango.Core
                         string message = $"{sender.ColorName}与{receiver.ColorName}进行了文化交流，促进了相互了解，关系增加了{relationValue}点！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                         if (GameRandom.Chance(20) && receiver.Techniques.Count > 0)
                         {
@@ -1084,7 +1084,7 @@ namespace Sango.Core
                                 string techMessage = $"{sender.ColorName}与{receiver.ColorName}进行了文化交流，{sender.ColorName}获得了技术{tech.Name}！";
                                 if (sender.Governor?.BelongCity != null)
                                 {
-                                    PlayerMessage.AddTextMessage(techMessage, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                    PlayerMessage.AddTextMessage(techMessage, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                                 }
                             }
                         }
@@ -1106,16 +1106,16 @@ namespace Sango.Core
                         DiplomacyManager.Instance.AddRelation(sender, receiver, relationValue);
                         if (sender.Governor?.BelongCity != null)
                         {
-                            sender.Governor.BelongCity.gold += goldValue;
+                            sender.CapitalCity.gold += goldValue;
                         }
                         if (receiver.Governor?.BelongCity != null)
                         {
-                            receiver.Governor.BelongCity.gold += goldValue;
+                            receiver.CapitalCity.gold += goldValue;
                         }
                         string message = $"{sender.ColorName}与{receiver.ColorName}共同举办了庆典，增进了友谊，关系增加了{relationValue}点，双方各获得了{goldValue}金！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     };
                     break;
@@ -1135,16 +1135,16 @@ namespace Sango.Core
                         DiplomacyManager.Instance.AddRelation(sender, receiver, relationValue);
                         if (sender.Governor?.BelongCity != null)
                         {
-                            sender.Governor.BelongCity.gold += goldValue;
+                            sender.CapitalCity.gold += goldValue;
                         }
                         if (receiver.Governor?.BelongCity != null)
                         {
-                            receiver.Governor.BelongCity.gold += goldValue;
+                            receiver.CapitalCity.gold += goldValue;
                         }
                         string message = $"{sender.ColorName}与{receiver.ColorName}在边境开展了贸易活动，促进了经济发展，关系增加了{relationValue}点，双方各获得了{goldValue}金！";
                         if (sender.Governor?.BelongCity != null)
                         {
-                            PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                            PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                         }
                     };
                     break;
@@ -1168,7 +1168,7 @@ namespace Sango.Core
                                 string message = $"{receiver.ColorName}向{sender.ColorName}提供了技术援助，{sender.ColorName}获得了技术{tech.Name}，关系增加了{relationValue}点！";
                                 if (sender.Governor?.BelongCity != null)
                                 {
-                                    PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                    PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                                 }
                             }
                         }
@@ -1177,7 +1177,7 @@ namespace Sango.Core
                             string message = $"{receiver.ColorName}向{sender.ColorName}提供了技术援助，关系增加了{relationValue}点！";
                             if (sender.Governor?.BelongCity != null)
                             {
-                                PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
                         }
                     };
@@ -1202,11 +1202,11 @@ namespace Sango.Core
                         if (sender.Governor?.BelongCity != null)
                         {
                             int aidAmount = Random.Range(minGold, maxGold);
-                            sender.Governor.BelongCity.gold += aidAmount;
+                            sender.CapitalCity.gold += aidAmount;
                             string message = $"{receiver.ColorName}向{sender.ColorName}提供了{aidAmount}金的经济援助，帮助{sender.ColorName}度过难关，关系增加了{relationValue}点！";
                             if (sender.Governor?.BelongCity != null)
                             {
-                                PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
                         }
                         else
@@ -1214,7 +1214,7 @@ namespace Sango.Core
                             string message = $"{receiver.ColorName}向{sender.ColorName}提供了经济援助，关系增加了{relationValue}点！";
                             if (sender.Governor?.BelongCity != null)
                             {
-                                PlayerMessage.AddTextMessage(message, sender, sender.Governor.BelongCity.x, sender.Governor.BelongCity.y);
+                                PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
                             }
                         }
                     };

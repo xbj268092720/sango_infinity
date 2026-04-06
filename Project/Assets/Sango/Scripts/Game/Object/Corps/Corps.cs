@@ -67,6 +67,10 @@ namespace Sango.Core
         /// </summary>
         [JsonProperty] public int ActionPoint { get; set; }
 
+        /// <summary>
+        /// 创建时候的缓存城市列表
+        /// </summary>
+        public List<City> inti_cities;
 
         static Color[] colors = new Color[]
         {
@@ -95,9 +99,9 @@ namespace Sango.Core
         public Queue<System.Func<Corps, Scenario, bool>> AICommandQueue = new Queue<Func<Corps, Scenario, bool>>();
 
 
-        public override void OnScenarioPrepare(Scenario scenario)
+        public override void Init(Scenario scenario)
         {
-
+            PrepareCityInfo();
         }
 
         public override bool OnForceTurnStart(Scenario scenario)
@@ -107,8 +111,33 @@ namespace Sango.Core
             PrepareCityPersonHole(scenario);
             AddActionPoint(scenario);
             ActionOver = false;
+            PrepareCityInfo();
             return true;
         }
+
+        public int cityCount;
+        public int personCount;
+        public int gold;
+        public int troops;
+        public int food;
+
+        public void PrepareCityInfo()
+        {
+            cityCount = 0;
+            personCount = 0;
+            gold = 0;
+            troops = 0;
+            food = 0;
+            ForEachCity(x =>
+            {
+                cityCount++;
+                personCount += x.allPersons.Count;
+                gold += x.gold;
+                troops += x.troops;
+                food += x.food;
+            });
+        }
+
         public void AddActionPoint(Scenario scenario)
         {
             /*

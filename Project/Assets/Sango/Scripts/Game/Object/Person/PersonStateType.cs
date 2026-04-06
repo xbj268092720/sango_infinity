@@ -18,7 +18,7 @@ namespace Sango.Core
         /// <summary>
         /// 都督
         /// </summary>
-        Dudu,
+        Commander,
 
         /// <summary>
         /// 太守

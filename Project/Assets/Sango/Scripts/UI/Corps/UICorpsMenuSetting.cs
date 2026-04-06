@@ -7,7 +7,7 @@ using Sango.Core; namespace Sango.UI
     /// <summary>
     /// 军团菜单UI类
     /// </summary>
-    public class UICorpsMenu : UGUIWindow
+    public class UICorpsMenuSetting : UGUIWindow
     {
         /// <summary>
         /// 窗口标题

@@ -43,7 +43,7 @@ namespace Sango.UI
             {
                 target.text = targetForce.Name;
                 relationship.text = Scenario.Cur.GetRelation(TargetCity.BelongForce, targetForce).ToString();
-                days.text = $"{TargetCity.Distance(targetForce.Governor.BelongCity)}0日";
+                days.text = $"{TargetCity.Distance(targetForce.CapitalCity)}0日";
             }
             else
             {

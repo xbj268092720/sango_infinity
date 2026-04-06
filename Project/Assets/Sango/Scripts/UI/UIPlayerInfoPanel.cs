@@ -109,7 +109,7 @@ using Sango.Core; namespace Sango.UI
             {
                 case ShowType.City:
                     {
-                        governorObj = force.Governor.BelongCity;
+                        governorObj = force.CapitalCity;
                         force.ForEachCityBase(obj =>
                         {
                             if (governorObj != obj)

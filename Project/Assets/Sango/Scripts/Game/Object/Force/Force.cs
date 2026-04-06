@@ -69,6 +69,16 @@ namespace Sango.Core
         public virtual string ColorName => Governor?.ColorName;
 
         /// <summary>
+        /// 首都
+        /// </summary>
+        public City CapitalCity => Governor.BelongCity;
+
+        /// <summary>
+        /// 第一军团
+        /// </summary>
+        public Corps CapitalCorps => Governor.BelongCorps;
+
+        /// <summary>
         /// 主公
         /// </summary>
         [JsonConverter(typeof(Id2ObjConverter<Person>))]
@@ -1034,6 +1044,64 @@ namespace Sango.Core
             GameEvent.OnCorpsCreate?.Invoke(corps, Scenario.Cur);
         }
 
+        public void CreateCorps(Corps corps)
+        {
+            corps.BelongForce = this;
+            Scenario.Cur.Add(corps);
+            corps.Init(Scenario.Cur);
+            corps.Comander.state = (int)PersonStateType.Commander;
+            foreach (var city in corps.inti_cities)
+            {
+                city.BelongCorps = corps;
+                foreach (Person person in city.allPersons)
+                {
+                    person.BelongCorps = corps;
+
+                }
+                foreach (Building building in city.allBuildings)
+                {
+                    building.BelongCorps = corps;
+                }
+            }
+            corps.inti_cities = null;
+            GameEvent.OnCorpsCreate?.Invoke(corps, Scenario.Cur);
+        }
+
+        public void ResetCorps(Corps corps, Corps copy)
+        {
+            corps.Comander.state = (int)PersonStateType.Normal;
+            corps.Comander = copy.Comander;
+            corps.Comander.state = (int)PersonStateType.Commander;
+            ForEachCity(x =>
+            {
+                if (x.BelongCorps == corps)
+                    x.BelongCorps = CapitalCorps;
+            });
+            ForEachPerson(x =>
+            {
+                if (x.BelongCorps == corps)
+                    x.BelongCorps = CapitalCorps;
+            });
+            ForEachBuilding(x =>
+            {
+                if (x.BelongCorps == corps)
+                    x.BelongCorps = CapitalCorps;
+            });
+            foreach (var city in copy.inti_cities)
+            {
+                city.BelongCorps = corps;
+                foreach (Person person in city.allPersons)
+                {
+                    person.BelongCorps = corps;
+                }
+                foreach (Building building in city.allBuildings)
+                {
+                    building.BelongCorps = corps;
+                }
+            }
+            GameEvent.OnCorpsCreate?.Invoke(corps, Scenario.Cur);
+        }
+
         /// <summary>
         /// 解散军团
         /// </summary>
@@ -1059,7 +1127,7 @@ namespace Sango.Core
         {
             if (corps.BelongForce != this) return;
 
-            Corps governorCorps = Governor.BelongCorps;
+            Corps governorCorps = CapitalCorps;
             Scenario scenario = Scenario.Cur;
             scenario.citySet.ForEach(x =>
             {

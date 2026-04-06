@@ -758,8 +758,8 @@ namespace Sango.Core
                         City dest = scenario.citySet.Get(missionTarget);
                         if (!this.IsSameForce(dest))
                         {
-                            ChangeCity(BelongForce.Governor.BelongCity);
-                            SetMission(MissionType.PersonReturn, BelongForce.Governor.BelongCity);
+                            ChangeCity(BelongForce.CapitalCity);
+                            SetMission(MissionType.PersonReturn, BelongForce.CapitalCity);
                             return;
                         }
 
@@ -831,7 +831,7 @@ namespace Sango.Core
                         {
                             // 执行外交行动
                             Force receiverForce = scenario.forceSet.Get(missionParams1);
-                            if (receiverForce == null || !receiverForce.IsAlive || receiverForce.Governor.BelongCity != targetCity)
+                            if (receiverForce == null || !receiverForce.IsAlive || receiverForce.CapitalCity != targetCity)
                             {
                                 // 完成任务，返回原城市
                                 SetMission(MissionType.PersonReturn, BelongCity);

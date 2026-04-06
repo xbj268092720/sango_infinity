@@ -23,8 +23,8 @@ namespace Sango.Core.Player
             Person person = force.Counsellor;
             if (person == null || person.BelongForce != force)
             {
-                int max = force.Governor.BelongCity.allPersons.Count;
-                person = force.Governor.BelongCity.allPersons.Get(GameRandom.Range(0, max));
+                int max = force.CapitalCity.allPersons.Count;
+                person = force.CapitalCity.allPersons.Get(GameRandom.Range(0, max));
             }
       
             PlayerMessage.AddPersonMessage($"下一步，我们该干些什么呢？。", person);

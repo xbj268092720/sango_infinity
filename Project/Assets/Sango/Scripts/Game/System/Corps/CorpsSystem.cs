@@ -16,6 +16,8 @@ namespace Sango.Core.Player
         public int targetNumber = 0;
         public List<Corps> corps_list = new List<Corps>();
         public List<Corps> target_corps_list = new List<Corps>();
+        Corps targetCorps;
+        int showType = 0;
         public CorpsSystem()
         {
             customTitleName = "军团";
@@ -51,7 +53,7 @@ namespace Sango.Core.Player
             {
                 if (x.BelongForce == TargetCity.BelongForce)
                 {
-                    has[x.number-1] = true;
+                    has[x.number - 1] = true;
                     if (x.number > 1)
                     {
                         corps_list.Add(x);
@@ -63,7 +65,7 @@ namespace Sango.Core.Player
             {
                 if (!has[i])
                 {
-                    targetNumber = i+1;
+                    targetNumber = i + 1;
                     break;
                 }
             }
@@ -77,11 +79,13 @@ namespace Sango.Core.Player
             // 解散军团菜单
             menuData.Add("解散军团", 12, this, OnClickMenuItem_DisbandCorps, corps_list.Count > 0);
 
-            ContextMenu.Show(menuData, UnityEngine.Input.mousePosition);
+            ContextMenu.CloseAll();
+            ContextMenu.Show(menuData, UnityEngine.Input.mousePosition, ContextMenuType.Other);
         }
 
         public override void OnDestroy()
         {
+            ContextMenu.CloseAll();
             ContextMenu.Show(ContextMenuData.MenuData, ContextMenuData.MenuData.startPosition);
         }
 
@@ -90,7 +94,12 @@ namespace Sango.Core.Player
         /// </summary>
         private void OnClickMenuItem_CreateCorps(IContextMenuItem contextMenuItem)
         {
-            Window.Instance.Open("window_corps_setting", this);
+            showType = 1;
+            targetCorps = new Corps();
+            targetCorps.BelongForce = TargetCity.BelongForce;
+            targetCorps.number = targetNumber;
+            targetCorps.policy = 0;
+            Window.Instance.Open("window_corps_setting", targetCorps, "军团", (System.Action)CreateCorps);
         }
 
         /// <summary>
@@ -98,9 +107,27 @@ namespace Sango.Core.Player
         /// </summary>
         private void OnClickMenuItem_RearrangeCorps(IContextMenuItem contextMenuItem)
         {
-            //GameSystem.GetSystem<CorpsSelectSystem>().Start(corps_list,
-            //target_corps_list, 1, OnCityChange, currentSystem.citySortTitleList, "目的城池选择");
-
+            showType = 2;
+            GameSystem.GetSystem<CorpsSelectSystem>().Start(corps_list,
+            target_corps_list, 1, (x) =>
+            {
+                Corps exsist = x[0];
+                targetCorps = new Corps();
+                targetCorps.Id = exsist.Id;
+                targetCorps.BelongForce = exsist.BelongForce;
+                targetCorps.number = exsist.number;
+                targetCorps.policy = exsist.policy;
+                targetCorps.Comander = exsist.Comander;
+                List<City> targetCityList = new List<City>();
+                exsist.BelongForce.ForEachCity(x =>
+                {
+                    if (x.BelongCorps == exsist)
+                        targetCityList.Add(x);
+                });
+                targetCorps.inti_cities = targetCityList;
+                Window.Instance.Open("window_corps_setting", targetCorps, "军团", (System.Action)ResetCorps);
+            },
+            CorpsSortFunction.DefaultSortList, "重編军团");
         }
 
         /// <summary>
@@ -108,6 +135,7 @@ namespace Sango.Core.Player
         /// </summary>
         private void OnClickMenuItem_DisbandCorps(IContextMenuItem contextMenuItem)
         {
+            showType = 3;
             GameSystem.GetSystem<CorpsSelectSystem>().Start(corps_list,
             target_corps_list, 1, (x) =>
             {
@@ -130,6 +158,31 @@ namespace Sango.Core.Player
             CorpsSortFunction.DefaultSortList, "解散军团");
         }
 
+        public void CreateCorps()
+        {
+            TargetCity.BelongForce.CreateCorps(targetCorps);
+            GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"{targetCorps.ColorName}就交给我了。", () =>
+            {
+                GameDialog.Close();
+                Done();
+            }).SetPerson(targetCorps.Comander);
+            GameMedia.Instance.PlayDoAcitonSfx();
+        }
+
+        public void ResetCorps()
+        {
+            Corps dest = corps_list.Find(x => x.number == targetCorps.number);
+            if (dest == null)
+                return;
+            TargetCity.BelongForce.ResetCorps(dest, targetCorps);
+            GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"{dest.ColorName}就交给我了。", () =>
+            {
+                GameDialog.Close();
+                Done();
+            }).SetPerson(dest.Comander);
+            GameMedia.Instance.PlayDoAcitonSfx();
+        }
+
         public void CreateCorps(int number, Person commander, List<City> cities)
         {
             TargetCity.BelongForce.CreateCorps(number, commander, cities);
@@ -143,6 +196,26 @@ namespace Sango.Core.Player
         public void DeleteCorps(Corps corps)
         {
             TargetCity.BelongForce.DeleteCorps(corps);
+        }
+        public override void HandleEvent(CommandEventType eventType, Cell cell, UnityEngine.Vector3 clickPosition, bool isOverUI)
+        {
+            switch (eventType)
+            {
+                case CommandEventType.Cancel:
+                case CommandEventType.RClickUp:
+                    {
+                        if (showType == 1 || showType == 2)
+                        {
+                            Window.Instance.Close("window_corps_setting");
+                            showType = 0;
+                        }
+                        else
+                        {
+                            Back();
+                        }
+                        break;
+                    }
+            }
         }
     }
 }

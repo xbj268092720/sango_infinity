@@ -58,9 +58,9 @@ namespace Sango.Core
             if (scenario.TurnCount < 10) return true;
             if (force.IsPlayer) return true;
             if (force.Governor == null) return true;
-            if (force.Governor.BelongCity == null) return true;
+            if (force.CapitalCity == null) return true;
 
-            City centerCity = force.Governor.BelongCity;
+            City centerCity = force.CapitalCity;
             if (centerCity.freePersons.Count == 0)
                 return true;
 
@@ -359,7 +359,7 @@ namespace Sango.Core
             if (force.Governor?.BelongCity == null) return null;
 
             // 使用ForceAI中的外交推荐方法选择合适的武将
-            Person[] recommendedDiplomats = CounsellorRecommendDiplomacy(force.Governor.BelongCity.freePersons);
+            Person[] recommendedDiplomats = CounsellorRecommendDiplomacy(force.CapitalCity.freePersons);
             if (recommendedDiplomats != null && recommendedDiplomats.Length > 0)
             {
                 return recommendedDiplomats[0];
@@ -595,7 +595,7 @@ namespace Sango.Core
         /// <returns>资源价值</returns>
         private static int CalculateDiplomacyResourceValue(Force force, Force targetForce, int relation, DiplomacyActionType actionType, AIPersonalityType personality)
         {
-            City centerCity = force.Governor.BelongCity;
+            City centerCity = force.CapitalCity;
             if (centerCity == null) return 0;
 
             int baseValue = 0;

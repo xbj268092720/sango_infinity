@@ -152,7 +152,6 @@ namespace Sango.Core
             return "";
         }
 
-
         public static SortTitle SortByName = new SortTitle()
         {
             name = "武将",
@@ -808,6 +807,18 @@ namespace Sango.Core
             valueGetCall = x => x.workingBuilding?.Name ?? "-",
             personSortFunc = (a, b) => Building.Compare(a.workingBuilding, b.workingBuilding),
         };
+
+
+        public static List<ObjectSortTitle> DefaultSortList = new List<ObjectSortTitle>
+        {
+            SortByName,
+            SortByBelongCity,
+            SortByState,
+            SortByLoyalty,
+            SortByMerit,
+            SortByLevel,
+        };
+
     }
 
 }

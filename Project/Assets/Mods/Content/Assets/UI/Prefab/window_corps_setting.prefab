@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 5973749658295835790}
   - component: {fileID: 174056003858870177}
   - component: {fileID: 576643473640125865}
-  - component: {fileID: 2740896269070568929}
+  - component: {fileID: 2802091189401369872}
   m_Layer: 5
   m_Name: window_corps_setting
   m_TagString: Untagged
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 32
---- !u!114 &2740896269070568929
+--- !u!114 &2802091189401369872
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -239,17 +239,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 9039031632039893254}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74c1ac453ecc8f7448fc8188f57786a8, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a119999b41dbd4448f27bad2de5f402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  windiwTitle: {fileID: 3789918412727178981}
-  personItems:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  targetValue: {fileID: 0}
-  action_value: {fileID: 0}
+  windowTitle: {fileID: 3789918412727178981}
+  cityCountText: {fileID: 1944885079355175933}
+  policyText: {fileID: 2600037968580869449}
+  corpsNameText: {fileID: 1497238921539262681}
+  targetText: {fileID: 4228154506607451791}
+  commander: {fileID: 8883597802684336267}
+  commanderStatus: {fileID: 7909606799552817560}
+  commanderButton: {fileID: 8492825861415663688}
   sureButton: {fileID: 2615132759251461884}
+  targetButton: {fileID: 1788017481286994309}
 --- !u!1 &9167501678661684136
 GameObject:
   m_ObjectHideFlags: 0
@@ -337,6 +339,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8734080045334747305}
     m_Modifications:
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2802091189401369872}
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnTargetClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sango.UI.UICorpsSetting, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1435482676807624152, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_Text
       value: "\u653B\u7565\u5BF9\u8C61"
@@ -439,10 +453,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8260065158287165226, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_Name
-      value: item_select_person_btn_2
+      value: set_target_btn
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+--- !u!114 &1788017481286994309 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+  m_PrefabInstance: {fileID: 799861325799500690}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &2394037069995894185 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3035700634333662779, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
@@ -457,7 +482,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3773685364177456905, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
       propertyPath: m_Name
-      value: cities_1
+      value: policy
       objectReference: {fileID: 0}
     - target: {fileID: 4427523327541437159, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
       propertyPath: m_Text
@@ -565,6 +590,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
+--- !u!114 &2600037968580869449 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3047893051244007579, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
+  m_PrefabInstance: {fileID: 1033992096409562578}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0dfa7c71c9f7146a307ef80a4b6f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8881333169823134799 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8437967942657644957, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
@@ -579,7 +615,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3773685364177456905, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
       propertyPath: m_Name
-      value: cities_2
+      value: target
       objectReference: {fileID: 0}
     - target: {fileID: 4427523327541437159, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
       propertyPath: m_Text
@@ -687,6 +723,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
+--- !u!114 &4228154506607451791 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3047893051244007579, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
+  m_PrefabInstance: {fileID: 1216295756383260180}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0dfa7c71c9f7146a307ef80a4b6f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7347774150682089353 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8437967942657644957, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
@@ -699,6 +746,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8734080045334747305}
     m_Modifications:
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2802091189401369872}
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnOrganizeCityButtonClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sango.UI.UICorpsSetting, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1435482676807624152, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_Text
       value: "\u7F16\u5236\u90FD\u5E02"
@@ -801,7 +860,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8260065158287165226, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_Name
-      value: item_select_person_btn_4
+      value: sel_city_btn
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
@@ -824,14 +883,14 @@ PrefabInstance:
     - target: {fileID: 4047078994823135925, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2740896269070568929}
+      objectReference: {fileID: 2802091189401369872}
     - target: {fileID: 4047078994823135925, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnSure
       objectReference: {fileID: 0}
     - target: {fileID: 4047078994823135925, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Sango.Game.Render.UI.UICityTrainTroops, Assembly-CSharp
+      value: Sango.UI.UICorpsSetting, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4864162001864629904, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -840,14 +899,14 @@ PrefabInstance:
     - target: {fileID: 5788964857443963546, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2740896269070568929}
+      objectReference: {fileID: 2802091189401369872}
     - target: {fileID: 5788964857443963546, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnCancel
       objectReference: {fileID: 0}
     - target: {fileID: 5788964857443963546, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Sango.Game.Render.UI.UICityTrainTroops, Assembly-CSharp
+      value: Sango.UI.UICorpsSetting, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6062729483653480700, guid: eba30dda6e43fa247845faa58e681a84, type: 3}
       propertyPath: m_Pivot.x
@@ -977,6 +1036,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8734080045334747305}
     m_Modifications:
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2802091189401369872}
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnPolicyButtonClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sango.UI.UICorpsSetting, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1435482676807624152, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_Text
       value: "\u519B\u56E2\u65B9\u9488"
@@ -1079,7 +1150,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8260065158287165226, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_Name
-      value: item_select_person_btn_1
+      value: set_policy_btn
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
@@ -1205,6 +1276,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
+--- !u!114 &1944885079355175933 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3047893051244007579, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
+  m_PrefabInstance: {fileID: 3508818922540098406}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0dfa7c71c9f7146a307ef80a4b6f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5019397140784741115 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8437967942657644957, guid: 2fc8cb3a70b889d4ea5deebea1eb47ef, type: 3}
@@ -1312,6 +1394,37 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5217147751592262683, guid: 94849880cca6b194b995a8dcdf2bc736, type: 3}
   m_PrefabInstance: {fileID: 6276383477724997754}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4238543075338393840 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7910684880853364874, guid: 94849880cca6b194b995a8dcdf2bc736, type: 3}
+  m_PrefabInstance: {fileID: 6276383477724997754}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &4805225577373460348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1564339724638392070, guid: 94849880cca6b194b995a8dcdf2bc736, type: 3}
+  m_PrefabInstance: {fileID: 6276383477724997754}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1497238921539262681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4805225577373460348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0dfa7c71c9f7146a307ef80a4b6f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: {fileID: 4238543075338393840}
+  image: {fileID: 0}
+  titleLabel: {fileID: 0}
 --- !u!1001 &7339788798309369932
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1403,6 +1516,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1153131622752677892, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2802091189401369872}
+    - target: {fileID: 1153131622752677892, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnSelectCommanderButtonClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153131622752677892, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sango.UI.UICorpsSetting, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1162660103250245579, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
       propertyPath: m_Text
       value: "\u90FD\u7763\u6B66\u5C06"
@@ -1477,11 +1602,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+--- !u!114 &7909606799552817560 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 583421193512755668, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+  m_PrefabInstance: {fileID: 7339788798309369932}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 516c1b7e074591847ba05bfbd5cdf6d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7942641890070856392 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 857308670807018116, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
   m_PrefabInstance: {fileID: 7339788798309369932}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8492825861415663688 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1153131622752677892, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+  m_PrefabInstance: {fileID: 7339788798309369932}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8883597802684336267 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2203608375503077575, guid: f35490186f8300e4da2a0442b97cce04, type: 3}
+  m_PrefabInstance: {fileID: 7339788798309369932}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f1b13101022d974c8ca3a58c01c9a58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8221107738471339394
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1489,6 +1647,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8734080045334747305}
     m_Modifications:
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2802091189401369872}
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnAppointmentButtonClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 1425949819747623447, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sango.UI.UICorpsSetting, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1435482676807624152, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_Text
       value: "\u59D4\u4EFB\u5185\u5BB9"
@@ -1591,7 +1761,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8260065158287165226, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}
       propertyPath: m_Name
-      value: item_select_person_btn_3
+      value: set_appoint
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 858db238e248ff140b5a3e0183cfacc9, type: 3}

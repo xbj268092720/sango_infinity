@@ -46,7 +46,7 @@ namespace Sango.Core
             public override string GetValueStr(SangoObject obj)
             {
                 return valueStrGetCall.Invoke((City)obj);
-            } 
+            }
 
             public override int Sort(SangoObject a, SangoObject b)
             {
@@ -120,6 +120,8 @@ namespace Sango.Core
 
             return "";
         }
+
+       
 
 
         public static SortTitle SortByName = new SortTitle()
@@ -218,7 +220,7 @@ namespace Sango.Core
             valueSortFunc = (a, b) => a.captiveList.Count.CompareTo(b.captiveList.Count),
         };
 
-        public static SortTitle SortByWildCount= new SortTitle()
+        public static SortTitle SortByWildCount = new SortTitle()
         {
             name = "在野",
             width = 60,
@@ -369,6 +371,19 @@ namespace Sango.Core
             width = 60,
             valueStrGetCall = x => $"兵粮{x.hasBusiness}=资金1",
             valueSortFunc = (a, b) => a.hasBusiness.CompareTo(b.hasBusiness),
+        };
+
+
+        public static List<ObjectSortTitle> DefaultSortList = new List<ObjectSortTitle>
+        {
+            SortByName,
+            SortByPersonCount,
+            SortByBelongCity,
+            SortByTroops,
+            SortByGold,
+            SortByFood,
+            SortByLevel,
+
         };
     }
 }

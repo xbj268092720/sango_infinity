@@ -125,7 +125,7 @@ namespace Sango.Core
 
         public static SortTitle SortByNumber = new SortTitle()
         {
-            name = "番号",
+            name = "军团",
             width = 100,
             valueStrGetCall = x => $"第{x.number}军团",
             valueSortFunc = (a, b) => a.number.CompareTo(b.number),
@@ -133,17 +133,61 @@ namespace Sango.Core
 
         public static SortTitle SortByLeader = new SortTitle()
         {
-            name = "军团长",
-            width = 100,
+            name = "都督",
+            width = 70,
             valueStrGetCall = x => x.Comander?.Name ?? "---",
             valueSortFunc = (a, b) => SangoObject.Compare(a.Comander, b.Comander),
         };
 
+        public static SortTitle SortByCityCount = new SortTitle()
+        {
+            name = "都市",
+            width = 50,
+            valueStrGetCall = x => x.cityCount.ToString(),
+            valueSortFunc = (a, b) => a.cityCount.CompareTo(b.cityCount),
+        };
+
+        public static SortTitle SortByPersonCount = new SortTitle()
+        {
+            name = "武将",
+            width = 50,
+            valueStrGetCall = x => x.personCount.ToString(),
+            valueSortFunc = (a, b) => a.personCount.CompareTo(b.personCount),
+        };
+
+        public static SortTitle SortByGold = new SortTitle()
+        {
+            name = "资金",
+            width = 100,
+            valueStrGetCall = x => x.gold.ToString(),
+            valueSortFunc = (a, b) => a.gold.CompareTo(b.gold),
+        };
+
+        public static SortTitle SortByFood = new SortTitle()
+        {
+            name = "粮食",
+            width = 100,
+            valueStrGetCall = x => x.food.ToString(),
+            valueSortFunc = (a, b) => a.food.CompareTo(b.food),
+        };
+
+        public static SortTitle SortByTroop = new SortTitle()
+        {
+            name = "士兵",
+            width = 100,
+            valueStrGetCall = x => x.troops.ToString(),
+            valueSortFunc = (a, b) => a.troops.CompareTo(b.troops),
+        };
+
         public static List<ObjectSortTitle> DefaultSortList = new List<ObjectSortTitle>()
         {
-            SortByName,
             SortByNumber,
-            SortByLeader
+            SortByLeader,
+            SortByCityCount,
+            SortByPersonCount,
+            SortByTroop,
+            SortByGold,
+            SortByFood,
         };
     }
 }

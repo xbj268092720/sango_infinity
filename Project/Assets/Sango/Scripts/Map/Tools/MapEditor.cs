@@ -10,6 +10,9 @@ namespace Sango.Tools
     /// </summary>
     public class MapEditor : Behaviour
     {
+        int frameLimit = 60;
+        float timeInterval;
+        float currentTime;
         /// <summary>
         /// 编辑器是否启用
         /// </summary>
@@ -56,6 +59,7 @@ namespace Sango.Tools
         EditorWindow editorContentWindow;
         private void Awake()
         {
+            timeInterval = 1.0f / frameLimit;
             Path.Init();
             //Path.AddSearchPath("D:/project_tk/Build/Mods/CoreMap");
             string assetsPath = $"{Application.dataPath}/Mods/Content/Assets/Map/Default";
@@ -287,6 +291,13 @@ namespace Sango.Tools
 
         public void Update()
         {
+            currentTime += Time.deltaTime;
+            if (currentTime < timeInterval)
+                return;
+
+            while (currentTime >= timeInterval)
+                currentTime = currentTime - timeInterval;
+
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, map.showLimitLength + 2000, rayCastLayer))

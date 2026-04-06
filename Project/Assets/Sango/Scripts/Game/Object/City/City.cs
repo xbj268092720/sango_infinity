@@ -8,16 +8,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using TKNewtonsoft.Json;
-using Sango.Core.Action;
+using Sango.Core.Player;
 using Sango.Render;
-using Sango.Core.Tools;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using TKNewtonsoft.Json;
 using UnityEngine;
-using Sango.Core.Player;
 
 namespace Sango.Core
 {
@@ -1548,10 +1544,10 @@ namespace Sango.Core
             City escapeCity = null;
             if (BelongForce.CityCount != 0 || !IsCity())
             {
-                if (this == BelongForce.Governor.BelongCity)
+                if (this == BelongForce.CapitalCity)
                     escapeCity = GetNearnestForceCity();
                 else
-                    escapeCity = BelongForce.Governor.BelongCity;
+                    escapeCity = BelongForce.CapitalCity;
             }
 
 #if SANGO_DEBUG

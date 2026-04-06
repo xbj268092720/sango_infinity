@@ -98,7 +98,7 @@ namespace Sango.Core
         {
             int currentRelation = GetRelation(forceA, forceB);
             SetRelation(forceA, forceB, currentRelation + value);
-            Player.PlayerMessage.AddTextMessage($"{forceA.ColorName}与{forceB.ColorName}的关系得到了提升!!", forceA, forceB.Governor.BelongCity.x, forceB.Governor.BelongCity.y);
+            Player.PlayerMessage.AddTextMessage($"{forceA.ColorName}与{forceB.ColorName}的关系得到了提升!!", forceA, forceB.CapitalCity.x, forceB.CapitalCity.y);
         }
 
         /// <summary>
@@ -370,12 +370,12 @@ namespace Sango.Core
         /// <returns>合适的武将</returns>
         private Person FindSuitableDiplomat(Force force)
         {
-            if (force == null || force.Governor == null || force.Governor.BelongCity == null)
+            if (force == null || force.Governor == null || force.CapitalCity == null)
             {
                 return null;
             }
             // 使用ForceAI中的外交推荐方法选择合适的武将
-            Person[] recommendedDiplomats = ForceAI.CounsellorRecommendDiplomacy(force.Governor.BelongCity.freePersons);
+            Person[] recommendedDiplomats = ForceAI.CounsellorRecommendDiplomacy(force.CapitalCity.freePersons);
             if (recommendedDiplomats != null && recommendedDiplomats.Length > 0)
             {
                 return recommendedDiplomats[0];
@@ -520,7 +520,7 @@ namespace Sango.Core
                 return false;
 
             // 扣除资金
-            sender.Governor.BelongCity.gold -= giftValue;
+            sender.CapitalCity.gold -= giftValue;
 
             // 计算关系增加量（考虑多种因素）
             int relationIncrease = CalculateDynamicRelationIncrease(sender, receiver, giftValue);
@@ -708,7 +708,7 @@ namespace Sango.Core
             // 增加到发送方的首都
             if (sender.Governor?.BelongCity != null)
             {
-                sender.Governor.BelongCity.troops += troopCount;
+                sender.CapitalCity.troops += troopCount;
             }
 
             // 减少关系
