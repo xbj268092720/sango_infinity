@@ -84,6 +84,14 @@ namespace Sango.Tools
                                     // 快速点击，执行单次操作
                                     Modify(hit.point, editor);
                                 }
+                                else
+                                {
+                                    float distance = Vector2.Distance(Input.mousePosition, initialMousePosition);
+                                    if (distance <= 5f) // 使用5像素作为拖拽阈值
+                                    {
+                                        Modify(hit.point, editor);
+                                    }
+                                }
                             }
                         }
                         // 检查是否应该进入拖拽模式

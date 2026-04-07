@@ -16,17 +16,17 @@ namespace Sango.Tools
     public class TerrainBrush : BrushBase
     {
         public enum BrushType : int
-    {
-        RaiseHeight = 0,
-        LowerHeight,
-        PullHeight,
-        SmoothHeight,
-        Texture,
-        Water,
-        BaseMap,         // BaseMap画笔
-        BaseMapEraser,   // BaseMap橡皮擦
-        Unknown,
-    }
+        {
+            RaiseHeight = 0,
+            LowerHeight,
+            PullHeight,
+            SmoothHeight,
+            Texture,
+            Water,
+            BaseMap,         // BaseMap画笔
+            BaseMapEraser,   // BaseMap橡皮擦
+            Unknown,
+        }
         public float size = 5f;
         public float opacity;
         private string[] toolbarTitle = new string[] { "升高", "降低", "平整", "平滑", "贴图", "水面", "BaseMap画笔", "BaseMap橡皮擦" };
@@ -36,6 +36,7 @@ namespace Sango.Tools
         private int textureIndex = 0;
         private Vector2 scrollPos;
         public RenderTexture[] baseMap;
+        public RenderTexture temp_baseMap;
         private int brushIndex = 0;
         private Material brushMat;
         private Material blitMat;
@@ -44,7 +45,7 @@ namespace Sango.Tools
         private UnityEngine.Color brushColor;
         EditorWindow contentWindow;
         UnityEngine.Rect InitWindowRect = new UnityEngine.Rect(0, 0, 100, 100);
-        
+
         // 拖拽相关变量
         private Dictionary<int, TerrainEditCommand.VertexDataChange> dragChangesMap = new Dictionary<int, TerrainEditCommand.VertexDataChange>();
         private TerrainEditCommand.EditType dragEditType;
@@ -55,12 +56,12 @@ namespace Sango.Tools
             if (brushType == BrushType.Unknown)
                 brushType = BrushType.RaiseHeight;
         }
-        
+
         // BaseMap拖拽相关变量
         private Texture2D dragStartTexture;
         private string dragBaseMapDescription;
         private BaseMapEditCommand.EditType dragBaseMapEditType;
-        
+
         /// <summary>
         /// 拖拽开始
         /// </summary>
@@ -69,10 +70,10 @@ namespace Sango.Tools
         {
             // 清空之前的拖拽数据
             dragChangesMap.Clear();
-            
+
             // 初始化拖拽边界
             dragBounds = GetBounds(center);
-            
+
             // 设置编辑类型和描述
             switch (brushType)
             {
@@ -105,6 +106,15 @@ namespace Sango.Tools
                     dragStartTexture = CaptureBaseMapTexture(editor.map.curSeason);
                     dragBaseMapEditType = BaseMapEditCommand.EditType.Brush;
                     dragBaseMapDescription = "BaseMap画笔";
+
+                    if (brushBlendMode == 1)
+                    {
+                        int width = Math.Min(4096, editor.map.mapData.vertex_width);
+                        int height = Math.Min(4096, editor.map.mapData.vertex_height);
+                        temp_baseMap = RenderTexture.GetTemporary(width, height, 32, RenderTextureFormat.ARGB32, 0);
+                        UnityEngine.Graphics.Blit(baseMap[editor.map.curSeason], temp_baseMap);
+                    }
+
                     break;
                 case BrushType.BaseMapEraser:
                     // 保存拖拽开始时的纹理
@@ -116,7 +126,7 @@ namespace Sango.Tools
                     return;
             }
         }
-        
+
         /// <summary>
         /// 拖拽过程
         /// </summary>
@@ -139,12 +149,18 @@ namespace Sango.Tools
                 }
                 else
                 {
-                    // 画笔模式
-                    UnityEngine.Graphics.Blit(Texture2D.whiteTexture, baseMap[editor.map.curSeason], brushMat);
+                    if (brushBlendMode == 1)
+                    {
+                        UnityEngine.Graphics.Blit(temp_baseMap, baseMap[editor.map.curSeason], brushMat);
+                    }
+                    else
+
+                        // 画笔模式
+                        UnityEngine.Graphics.Blit(Texture2D.whiteTexture, baseMap[editor.map.curSeason], brushMat);
                 }
                 return;
             }
-                
+
             // 其他类型的拖拽处理
             // 获取当前笔刷边界并扩展拖拽边界
             Rect currentBounds = GetBounds(center);
@@ -152,14 +168,14 @@ namespace Sango.Tools
             dragBounds.yMin = Mathf.Min(dragBounds.yMin, currentBounds.yMin);
             dragBounds.xMax = Mathf.Max(dragBounds.xMax, currentBounds.xMax);
             dragBounds.yMax = Mathf.Max(dragBounds.yMax, currentBounds.yMax);
-                
+
             int xStart = Mathf.FloorToInt(center.z - size) / editor.mapData.quadSize;
             int yStart = Mathf.FloorToInt(center.x - size) / editor.mapData.quadSize;
             Vector3 cPos = center;
             int length = Mathf.FloorToInt(size * 2 / editor.mapData.quadSize) + 1;
             int xEnd = xStart + length;
             int yEnd = yStart + length;
-            
+
             // 收集当前笔刷影响范围内的顶点变化
             for (int x = xStart; x < xEnd; x++)
             {
@@ -169,10 +185,10 @@ namespace Sango.Tools
                     {
                         // 使用数学公式计算唯一key：x + width * y
                         int vertexKey = x + editor.mapData.vertex_width * y;
-                        
+
                         MapData.VertexData vertexData = editor.vertexMapData[x][y];
                         byte oldValue = 0;
-                        
+
                         switch (dragEditType)
                         {
                             case TerrainEditCommand.EditType.Height:
@@ -185,7 +201,7 @@ namespace Sango.Tools
                                 oldValue = vertexData.water;
                                 break;
                         }
-                        
+
                         // 创建临时副本进行修改
                         MapData.VertexData tempData = vertexData;
                         if (Do(cPos, ref tempData, x, y))
@@ -203,7 +219,7 @@ namespace Sango.Tools
                                     newValue = tempData.water;
                                     break;
                             }
-                            
+
                             // 检查是否已经有记录
                             if (dragChangesMap.ContainsKey(vertexKey))
                             {
@@ -252,19 +268,24 @@ namespace Sango.Tools
             {
                 // 保存拖拽结束时的纹理
                 Texture2D dragEndTexture = CaptureBaseMapTexture(editor.map.curSeason);
-                
+
                 // 创建Undo/Redo命令
                 if (dragStartTexture != null && dragEndTexture != null)
                 {
                     BaseMapEditCommand command = new BaseMapEditCommand(editor, dragBaseMapEditType, editor.map.curSeason, dragStartTexture, dragEndTexture, dragBounds, dragBaseMapDescription);
                     editor.undoRedoManager.AddCommand(command);
                 }
-                
+
+                if (brushBlendMode == 1)
+                {
+                    RenderTexture.ReleaseTemporary(temp_baseMap);
+                }
+
                 // 清空拖拽数据
                 dragStartTexture = null;
                 return;
             }
-            
+
             // 其他类型的拖拽结束处理
             // 如果有变化，创建批量命令并执行
             if (dragChangesMap.Count > 0)
@@ -273,7 +294,7 @@ namespace Sango.Tools
                 TerrainEditCommand command = new TerrainEditCommand(editor, dragEditType, finalChanges, dragDescription, dragBounds);
                 editor.undoRedoManager.AddCommand(command);
             }
-            
+
             // 清空拖拽数据
             dragChangesMap.Clear();
         }
@@ -404,6 +425,8 @@ namespace Sango.Tools
         }
 
         public float brushOpacity = 1.0f; // 画笔透明度
+        public int brushBlendMode = 0; // 画笔混合模式：0=正常, 1=正片叠底
+        public bool pressureEnabled = true; // 是否启用压感
         public override void OnBrushTypeChange()
         {
             if (brushType == BrushType.BaseMap || brushType == BrushType.BaseMapEraser || brushType == BrushType.Texture)
@@ -452,11 +475,13 @@ namespace Sango.Tools
                     if (picker != null)
                         picker.gameObject.SetActive(true);
                 }
-                
+
                 Shader.SetGlobalFloat("_BrushType", 1);
                 Shader.SetGlobalFloat("_BrushSize", mapSize.x / size);
                 Shader.SetGlobalTexture("_BrushTex", brushTexture[brushIndex]);
                 Shader.SetGlobalFloat("_BrushOpacity", brushOpacity);
+                Shader.SetGlobalInt("_BlendMode", brushBlendMode);
+                Shader.SetGlobalFloat("_Pressure", 1.0f);
             }
             else
             {
@@ -505,19 +530,19 @@ namespace Sango.Tools
                         // 吸取目标值
                         if (SuckValue(center, editor))
                             return;
-                        
+
                         int xStart = Mathf.FloorToInt(center.z - size) / editor.mapData.quadSize;
                         int yStart = Mathf.FloorToInt(center.x - size) / editor.mapData.quadSize;
                         Vector3 cPos = center;
                         int length = Mathf.FloorToInt(size * 2 / editor.mapData.quadSize) + 1;
                         int xEnd = xStart + length;
                         int yEnd = yStart + length;
-                        
+
                         // 记录变化前的数据
                         List<TerrainEditCommand.VertexDataChange> changes = new List<TerrainEditCommand.VertexDataChange>();
                         TerrainEditCommand.EditType editType = TerrainEditCommand.EditType.Height;
                         string description = "";
-                        
+
                         switch (brushType)
                         {
                             case BrushType.RaiseHeight:
@@ -545,7 +570,7 @@ namespace Sango.Tools
                                 description = "修改水面";
                                 break;
                         }
-                        
+
                         // 收集变化数据
                         for (int x = xStart; x < xEnd; x++)
                             for (int y = yStart; y < yEnd; y++)
@@ -554,7 +579,7 @@ namespace Sango.Tools
                                 {
                                     MapData.VertexData vertexData = editor.vertexMapData[x][y];
                                     byte oldValue = 0;
-                                    
+
                                     switch (editType)
                                     {
                                         case TerrainEditCommand.EditType.Height:
@@ -567,7 +592,7 @@ namespace Sango.Tools
                                             oldValue = vertexData.water;
                                             break;
                                     }
-                                    
+
                                     // 创建临时副本进行修改
                                     MapData.VertexData tempData = vertexData;
                                     if (Do(cPos, ref tempData, x, y))
@@ -585,7 +610,7 @@ namespace Sango.Tools
                                                 newValue = tempData.water;
                                                 break;
                                         }
-                                        
+
                                         // 只有值发生变化时才记录
                                         if (oldValue != newValue)
                                         {
@@ -608,9 +633,9 @@ namespace Sango.Tools
                         {
                             TerrainEditCommand command = new TerrainEditCommand(editor, editType, changes, description, rect);
                             editor.undoRedoManager.AddCommand(command);
-                           
+
                         }
-                       
+
                         for (int i = 0; i < editor.map.mapTerrain.terrainCells.Length; i++)
                         {
                             MapCell cell = editor.map.mapTerrain.terrainCells[i];
@@ -631,7 +656,7 @@ namespace Sango.Tools
                     {
                         // 保存操作前的纹理
                         Texture2D oldTexture = CaptureBaseMapTexture(editor.map.curSeason);
-                        
+
                         // 执行绘制操作
                         if (brushType == BrushType.BaseMapEraser)
                         {
@@ -645,13 +670,24 @@ namespace Sango.Tools
                         }
                         else
                         {
-                            // 画笔模式
-                            UnityEngine.Graphics.Blit(Texture2D.whiteTexture, baseMap[editor.map.curSeason], brushMat);
+                            if (brushBlendMode == 1)
+                            {
+                                int width = Math.Min(4096, editor.map.mapData.vertex_width);
+                                int height = Math.Min(4096, editor.map.mapData.vertex_height);
+                                RenderTexture rt = RenderTexture.GetTemporary(width, height, 32, RenderTextureFormat.ARGB32, 0);
+                                UnityEngine.Graphics.Blit(baseMap[editor.map.curSeason], rt);
+                                UnityEngine.Graphics.Blit(rt, baseMap[editor.map.curSeason], brushMat);
+                                RenderTexture.ReleaseTemporary(rt);
+                            }
+                            else
+
+                                // 画笔模式
+                                UnityEngine.Graphics.Blit(Texture2D.whiteTexture, baseMap[editor.map.curSeason], brushMat);
                         }
-                        
+
                         // 保存操作后的纹理
                         Texture2D newTexture = CaptureBaseMapTexture(editor.map.curSeason);
-                        
+
                         // 创建Undo/Redo命令
                         string description = brushType == BrushType.BaseMapEraser ? "BaseMap橡皮擦" : "BaseMap画笔";
                         BaseMapEditCommand.EditType editType = brushType == BrushType.BaseMapEraser ? BaseMapEditCommand.EditType.Eraser : BaseMapEditCommand.EditType.Brush;
@@ -665,7 +701,7 @@ namespace Sango.Tools
                     break;
             }
         }
-        
+
         private Dictionary<int, Texture2D> captureTextures = new Dictionary<int, Texture2D>();
         /// <summary>
         /// 捕获BaseMap纹理到Texture2D
@@ -676,11 +712,11 @@ namespace Sango.Tools
         {
             if (baseMap == null || season < 0 || season >= baseMap.Length || baseMap[season] == null)
                 return null;
-            
+
             RenderTexture renderTexture = baseMap[season];
             int width = renderTexture.width;
             int height = renderTexture.height;
-            
+
             // 复用Texture2D对象以减少内存开销
             Texture2D texture2D;
             if (!captureTextures.TryGetValue(season, out texture2D) || texture2D.width != width || texture2D.height != height)
@@ -697,17 +733,17 @@ namespace Sango.Tools
                 texture2D = new Texture2D(width, height, TextureFormat.RGB24, false);
                 captureTextures[season] = texture2D;
             }
-            
+
             RenderTexture.active = renderTexture;
             texture2D.ReadPixels(new UnityEngine.Rect(0, 0, width, height), 0, 0);
             texture2D.Apply();
             RenderTexture.active = null;
-            
+
             // 创建副本以确保Undo/Redo状态的独立性
             Texture2D copyTexture = new Texture2D(width, height, TextureFormat.RGB24, false);
             copyTexture.SetPixels(texture2D.GetPixels());
             copyTexture.Apply();
-            
+
             return copyTexture;
         }
 
@@ -900,6 +936,32 @@ namespace Sango.Tools
                     Shader.SetGlobalFloat("_BrushOpacity", brushOpacity);
                 }
                 GUILayout.EndHorizontal();
+
+                // 混合模式选择
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("混合模式", GUILayout.Width(80));
+                string[] blendModes = new string[] { "正常", "正片叠底" };
+                int _blendMode = GUILayout.SelectionGrid(brushBlendMode, blendModes, 2);
+                if (_blendMode != brushBlendMode)
+                {
+                    brushBlendMode = _blendMode;
+                    Shader.SetGlobalInt("_BlendMode", brushBlendMode);
+                }
+                GUILayout.EndHorizontal();
+
+                // 压感控制
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("启用压感", GUILayout.Width(80));
+                bool _pressureEnabled = GUILayout.Toggle(pressureEnabled, "");
+                if (_pressureEnabled != pressureEnabled)
+                {
+                    pressureEnabled = _pressureEnabled;
+                    if (!pressureEnabled)
+                    {
+                        Shader.SetGlobalFloat("_Pressure", 1.0f);
+                    }
+                }
+                GUILayout.EndHorizontal();
             }
             else
             {
@@ -926,7 +988,7 @@ namespace Sango.Tools
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
             }
-            
+
             GUILayout.Space(8);
             UnityEngine.Color lastColor = GUI.backgroundColor;
             GUI.backgroundColor = UnityEngine.Color.cyan;
@@ -938,7 +1000,7 @@ namespace Sango.Tools
                 OnBrushTypeChange();
             }
             GUI.backgroundColor = lastColor;
-            
+
             switch (brushType)
             {
                 case BrushType.RaiseHeight:
@@ -1081,7 +1143,7 @@ namespace Sango.Tools
                             }
                         }
                         GUILayout.EndHorizontal();
-                        
+
                         // 笔刷选择
                         int brushRow = textures.Length > 0 ? (textures.Length - 1) / 4 + 1 : 1;
                         int sel = GUILayout.SelectionGrid(brushIndex, textures, 4, GUILayout.MaxWidth(224), GUILayout.MaxHeight(brushRow * 56));
@@ -1126,6 +1188,24 @@ namespace Sango.Tools
                     if (size < 15f)
                         size = 15f;
                     OnBrushSizeChange();
+                }
+
+                // 检查并获取绘画板压感
+                if (pressureEnabled)
+                {
+                    float pressure = 1.0f;
+
+                    // 使用Unity3D的Touch API获取压感数据
+                    if (Input.touchCount > 0)
+                    {
+                        Touch touch = Input.GetTouch(0);
+                        if (touch.pressure > 0)
+                        {
+                            pressure = touch.pressure;
+                        }
+                    }
+
+                    Shader.SetGlobalFloat("_Pressure", pressure);
                 }
             }
             else
@@ -1192,7 +1272,7 @@ namespace Sango.Tools
             string[][] seasonfiles = new string[4][];
             int maxCount = 0;
             for (int j = 0; j < 4; ++j)
-            { 
+            {
                 seasonfiles[j] = new string[100];
                 string seasonName = MapRender.SeasonNames[j];
                 for (int i = 0; i < 100; i++)
@@ -1284,7 +1364,7 @@ namespace Sango.Tools
                 SaveBaseTexture(final_file_name, i);
             }
         }
-        
+
         /// <summary>
         /// 清理资源
         /// </summary>
@@ -1303,7 +1383,7 @@ namespace Sango.Tools
                 }
             }
             captureTextures.Clear();
-            
+
             // 清理baseMap RenderTexture
             if (baseMap != null)
             {

@@ -1,12 +1,14 @@
 Shader "Sango/brush"
 {
 	Properties{
-		_BaseMap("Texture", 2D) = "white" {}
-		//_BrushTex("Brush Texture",2D)= "white" {}
-		//_Color("Color",Color)=(1,1,1,1)
-		//_UV("UV",Vector)=(0,0,0,0)
-		//_Size("Size",Range(1,1000))=1
-		}
+		_MainTex("Texture", 2D) = "white" {}
+		//[HideInInspector] _BrushTex("Brush Texture", 2D) = "white" {}
+		//[HideInInspector] _BrushColor("Brush Color", Color) = (1,1,1,1)
+		//[HideInInspector] _BrushSize("Brush Size", Range(1, 1000)) = 1
+		//[HideInInspector] _BrushUV("Brush UV", Vector) = (0,0,0,0)
+		//[HideInInspector] _BlendMode("Blend Mode", Int) = 0 // 0: Normal, 1: Multiply
+		//[HideInInspector] _Pressure("Pressure", Range(0, 1)) = 1.0
+		} 
 
 	SubShader{
 		Tags { "RenderType"="UniversalPipeline" }
@@ -35,12 +37,14 @@ Shader "Sango/brush"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseMap_ST;
+			float4 _MainTex_ST;
 			CBUFFER_END
 			float4 _Brush;
 			half4 _BrushUV;
 			float _BrushSize;
 			half4 _BrushColor;
+			int _BlendMode;
+			float _Pressure;
 			TEXTURE2D(_MainTex);
 			TEXTURE2D(_BrushTex);
 
@@ -51,34 +55,46 @@ Shader "Sango/brush"
 			{
 				v2f o;
 				o.vertex = TransformObjectToHClip(v.vertex.xyz);
-				o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
+				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				return o;
 			}
 			half4 frag (v2f i) : SV_Target
 			{
-				// sample the texture
-				float size = _BrushSize;
+				// 应用压感到画笔大小
+				float pressure = _Pressure;
+				float size = _BrushSize * pressure;
+				
+				// 采样画笔纹理
 				float2 uv = i.uv + (0.5f/size);
 				uv = uv - _BrushUV.xy;
 				uv *= size;
-				half4 col = SAMPLE_TEXTURE2D(_BrushTex, smp, uv);
-				//half4 srcColor = SAMPLE_TEXTURE2D(_MainTex,smp, i.uv);
-				col.rgb = 1;
-                    //float3 gammaToLinear8 = GammaToLinearSpace(temp_cast_2);
-                   
-
-				if(col.a<0.1)
+				half4 brushCol = SAMPLE_TEXTURE2D(_BrushTex, smp, uv);
+				
+				// 采样目标纹理（BaseMap）
+				half4 baseCol = SAMPLE_TEXTURE2D(_MainTex, smp, i.uv);
+				
+				// 计算画笔颜色，应用压感到透明度
+				brushCol.rgb = _BrushColor.rgb;
+				brushCol.a *= _BrushColor.a * pressure;
+				
+				// 根据混合模式计算最终颜色
+				half4 finalCol = brushCol;
+				if (_BlendMode == 1) // Multiply
 				{
-					col.a = 0;
+					// 正片叠底混合模式
+					finalCol.rgb = baseCol.rgb * brushCol.rgb;
+					finalCol.a = brushCol.a;
 				}
-				col  *= _BrushColor;
-				 //float3 gammaToLinear8 = LinearToSRGB(col.rgb);
-				/*float3 gammaToLinear8 = SRGBToLinear(col.rgb);
-                col.rgb = gammaToLinear8;*/
-				//col.a = 1;
-				return col;
+				
+				// 透明度阈值
+				if (finalCol.a < 0.1f)
+				{
+					finalCol.a = 0.0;
+				}
+				
+				return finalCol;
 			}
-							
+						
 			ENDHLSL
 		}
 
