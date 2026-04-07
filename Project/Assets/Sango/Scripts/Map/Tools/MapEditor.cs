@@ -57,7 +57,7 @@ namespace Sango.Tools
         internal UnityEngine.Rect windowRect = new UnityEngine.Rect(500, 400, 240, 100);
 
         BrushBase[] brushes;
-        internal TerrainBrush terrain_brush;
+        public TerrainBrush terrain_brush;
         internal GridBrush grid_brush;
         internal ModelBrush model_brush;
 
