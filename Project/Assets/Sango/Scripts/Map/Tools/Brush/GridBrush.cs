@@ -580,6 +580,13 @@ namespace Sango.Tools
                 }
             }
 
+            if (terrainTypeMaskTex == null)
+            {
+                terrainTypeMaskTex = new Texture2D(editor.map.mapGrid.bounds.x, editor.map.mapGrid.bounds.y, TextureFormat.ARGB32, false);
+                terrainTypeMaskTex.wrapMode = TextureWrapMode.Clamp;
+                terrainTypeMaskTex.filterMode = FilterMode.Point;
+            }
+
             if (needCreateTex)
                 Game.Instance.StartCoroutine(CreateLayerTexture());
         }
@@ -670,12 +677,6 @@ namespace Sango.Tools
 
         public void UpdateTerrainMaskTex(BrushType b)
         {
-            if (terrainTypeMaskTex == null)
-            {
-                terrainTypeMaskTex = new Texture2D(editor.map.mapGrid.bounds.x, editor.map.mapGrid.bounds.y, TextureFormat.ARGB32, false);
-                terrainTypeMaskTex.wrapMode = TextureWrapMode.Clamp;
-                terrainTypeMaskTex.filterMode = FilterMode.Point;
-            }
 
             switch (b)
             {

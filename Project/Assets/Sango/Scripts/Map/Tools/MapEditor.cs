@@ -80,6 +80,7 @@ namespace Sango.Tools
 
         EditorWindow editorToolsBarWindow;
         EditorWindow editorContentWindow;
+        private OperationHistoryWindow operationHistoryWindow;
         private void Awake()
         {
             timeInterval = 1.0f / frameLimit;
@@ -111,6 +112,9 @@ namespace Sango.Tools
             editorToolsBarWindow.canClose = false;
             editorContentWindow = EditorWindow.AddWindow(1, windowRect, DrawContentWindow, "属性窗口");
             editorContentWindow.canClose = false;
+            
+            // 初始化操作历史窗口
+            operationHistoryWindow = new OperationHistoryWindow(this);
 
             Sango.Core.GameController.Instance.DragMoveViewEnabled = false;
 
@@ -682,6 +686,13 @@ namespace Sango.Tools
                 editorContentWindow.visible = true;
             }
             GUI.backgroundColor = lastColor;
+            
+            // 操作历史按钮
+            GUILayout.Space(10);
+            if (GUILayout.Button("操作历史", GUILayout.Height(30)))
+            {
+                operationHistoryWindow.ToggleWindow();
+            }
             
             // 快捷键提示
             GUILayout.Space(10);

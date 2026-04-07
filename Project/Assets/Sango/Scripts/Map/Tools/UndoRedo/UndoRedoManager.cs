@@ -19,6 +19,26 @@ namespace Sango.Tools.UndoRedo
         private Stack<IUndoableCommand> redoStack = new Stack<IUndoableCommand>();
         
         /// <summary>
+        /// 获取撤销栈（用于操作历史窗口）
+        /// </summary>
+        public Stack<IUndoableCommand> UndoStack { get { return undoStack; } }
+        
+        /// <summary>
+        /// 获取重做栈（用于操作历史窗口）
+        /// </summary>
+        public Stack<IUndoableCommand> RedoStack { get { return redoStack; } }
+        
+        /// <summary>
+        /// 命令添加事件
+        /// </summary>
+        public event System.Action<IUndoableCommand> CommandAdded;
+        
+        /// <summary>
+        /// 历史记录变化事件
+        /// </summary>
+        public event System.Action HistoryChanged;
+        
+        /// <summary>
         /// 最大历史记录数量
         /// </summary>
         public int MaxHistoryCount { get; set; } = 100;
@@ -73,6 +93,12 @@ namespace Sango.Tools.UndoRedo
                     undoStack.Push(tempStack.Pop());
                 }
             }
+            
+            // 触发命令添加事件
+            CommandAdded?.Invoke(command);
+            
+            // 触发历史记录变化事件
+            HistoryChanged?.Invoke();
         }
         
         /// <summary>
@@ -85,6 +111,10 @@ namespace Sango.Tools.UndoRedo
                 IUndoableCommand command = undoStack.Pop();
                 command.Undo();
                 redoStack.Push(command);
+                
+                // 触发历史记录变化事件
+                HistoryChanged?.Invoke();
+                
                 return true;
             }
             return false;
@@ -100,6 +130,10 @@ namespace Sango.Tools.UndoRedo
                 IUndoableCommand command = redoStack.Pop();
                 command.Redo();
                 undoStack.Push(command);
+                
+                // 触发历史记录变化事件
+                HistoryChanged?.Invoke();
+                
                 return true;
             }
             return false;
@@ -112,6 +146,9 @@ namespace Sango.Tools.UndoRedo
         {
             undoStack.Clear();
             redoStack.Clear();
+            
+            // 触发历史记录变化事件
+            HistoryChanged?.Invoke();
         }
         
         /// <summary>
