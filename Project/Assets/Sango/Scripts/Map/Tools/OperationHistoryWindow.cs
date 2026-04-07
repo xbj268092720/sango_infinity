@@ -10,7 +10,7 @@ namespace Sango.Tools
     public class OperationHistoryWindow
     {
         private MapEditor editor;
-        private EditorWindow window;
+        public EditorWindow window;
         private UnityEngine.Rect windowRect = new UnityEngine.Rect(850, 100, 150, 400);
         private Vector2 scrollPosition = Vector2.zero;
         private int selectedIndex = -1;
@@ -29,12 +29,34 @@ namespace Sango.Tools
         public OperationHistoryWindow(MapEditor editor)
         {
             this.editor = editor;
+            
+            // 限制窗口在屏幕范围内
+            windowRect = ConstrainWindowToScreen(windowRect);
+            
             window = EditorWindow.AddWindow(2, windowRect, DrawWindow, "操作历史");
             window.visible = showWindow;
             
             // 订阅事件
             editor.undoRedoManager.CommandAdded += OnCommandAdded;
             editor.undoRedoManager.HistoryChanged += OnHistoryChanged;
+        }
+        
+        /// <summary>
+        /// 将窗口限制在屏幕范围内
+        /// </summary>
+        /// <param name="windowRect">原始窗口位置</param>
+        /// <returns>限制后的窗口位置</returns>
+        private UnityEngine.Rect ConstrainWindowToScreen(UnityEngine.Rect windowRect)
+        {
+            // 获取屏幕尺寸
+            float screenWidth = UnityEngine.Screen.width;
+            float screenHeight = UnityEngine.Screen.height;
+            
+            // 限制窗口位置，确保不超出屏幕边界
+            float x = UnityEngine.Mathf.Clamp(windowRect.x, 0, screenWidth - windowRect.width);
+            float y = UnityEngine.Mathf.Clamp(windowRect.y, 0, screenHeight - windowRect.height);
+            
+            return new UnityEngine.Rect(x, y, windowRect.width, windowRect.height);
         }
         
         /// <summary>

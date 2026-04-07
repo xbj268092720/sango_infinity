@@ -1,4 +1,4 @@
-﻿using HSVPicker;
+using HSVPicker;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -401,7 +401,7 @@ namespace Sango.Tools
             GUIContent guiContent = new GUIContent(text, saveTex);
             return guiContent;
         }
-        static private ColorPicker picker;
+        static public ColorPicker picker;
         static public void ColorField(Color v, string name, UnityAction<Color> changeCall)
         {
             if (colorTex == null)

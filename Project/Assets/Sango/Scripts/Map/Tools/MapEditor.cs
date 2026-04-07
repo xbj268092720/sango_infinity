@@ -78,9 +78,10 @@ namespace Sango.Tools
         internal GridBrush grid_brush;
         internal ModelBrush model_brush;
 
-        EditorWindow editorToolsBarWindow;
-        EditorWindow editorContentWindow;
-        private OperationHistoryWindow operationHistoryWindow;
+        public EditorWindow editorToolsBarWindow;
+        public EditorWindow editorContentWindow;
+        public OperationHistoryWindow operationHistoryWindow;
+        private LayoutManager layoutManager;
         private void Awake()
         {
             timeInterval = 1.0f / frameLimit;
@@ -108,13 +109,22 @@ namespace Sango.Tools
             EditorObjectSelection.Instance.SelectionDeleted += SelectionDeletedHandler;
             EditorObjectSelection.Instance.SelectionChanged += SelectionChangedHandler;
 
+            // 创建工具栏窗口并限制在屏幕范围内
+            windowRect = ConstrainWindowToScreen(windowRect);
             editorToolsBarWindow = EditorWindow.AddWindow(0, windowRect, DrawToolbarWindow, "地图编辑器");
             editorToolsBarWindow.canClose = false;
+            
+            // 创建属性窗口并限制在屏幕范围内
+            windowRect = ConstrainWindowToScreen(windowRect);
             editorContentWindow = EditorWindow.AddWindow(1, windowRect, DrawContentWindow, "属性窗口");
             editorContentWindow.canClose = false;
             
             // 初始化操作历史窗口
             operationHistoryWindow = new OperationHistoryWindow(this);
+
+            // 初始化布局管理器并加载布局
+            layoutManager = new LayoutManager(this);
+            layoutManager.LoadLayout();
 
             Sango.Core.GameController.Instance.DragMoveViewEnabled = false;
 
@@ -694,6 +704,16 @@ namespace Sango.Tools
                 operationHistoryWindow.ToggleWindow();
             }
             
+            // 布局管理按钮
+            GUILayout.Space(10);
+            if (GUILayout.Button("保存布局", GUILayout.Height(30)))
+            {
+                layoutManager.SaveLayout();
+                string message = "布局已保存";
+                Sango.Log.Info(message);
+                ShowSaveNotification(message);
+            }
+            
             // 快捷键提示
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
@@ -858,6 +878,24 @@ namespace Sango.Tools
         public void ForceCameraToPosition(Vector3 position)
         {
             map.mapCamera.position = position;
+        }
+        
+        /// <summary>
+        /// 将窗口限制在屏幕范围内
+        /// </summary>
+        /// <param name="windowRect">原始窗口位置</param>
+        /// <returns>限制后的窗口位置</returns>
+        private UnityEngine.Rect ConstrainWindowToScreen(UnityEngine.Rect windowRect)
+        {
+            // 获取屏幕尺寸
+            float screenWidth = Screen.width;
+            float screenHeight = Screen.height;
+            
+            // 限制窗口位置，确保不超出屏幕边界
+            float x = Mathf.Clamp(windowRect.x, 0, screenWidth - windowRect.width);
+            float y = Mathf.Clamp(windowRect.y, 0, screenHeight - windowRect.height);
+            
+            return new UnityEngine.Rect(x, y, windowRect.width, windowRect.height);
         }
     }
 }
