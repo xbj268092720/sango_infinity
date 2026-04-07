@@ -183,19 +183,19 @@ namespace Sango.Tools
                 EditorObjectSelection.Instance.SelectionChanged -= SelectionChangedHandler;
             
             // 编辑器关闭时自动保存
-            if (!string.IsNullOrEmpty(lastSavedPath))
-            {
-                try
-                {
-                    map.SaveMap(lastSavedPath);
-                    SaveBaseMap(lastSavedPath);
-                    Sango.Log.Info($"编辑器关闭时自动保存到: {lastSavedPath}");
-                }
-                catch (System.Exception e)
-                {
-                    Sango.Log.Error($"编辑器关闭时自动保存失败: {e.Message}");
-                }
-            }
+            //if (!string.IsNullOrEmpty(lastSavedPath))
+            //{
+            //    try
+            //    {
+            //        map.SaveMap(lastSavedPath);
+            //        SaveBaseMap(lastSavedPath);
+            //        Sango.Log.Info($"编辑器关闭时自动保存到: {lastSavedPath}");
+            //    }
+            //    catch (System.Exception e)
+            //    {
+            //        Sango.Log.Error($"编辑器关闭时自动保存失败: {e.Message}");
+            //    }
+            //}
         }
 
         /// <summary>
@@ -560,11 +560,22 @@ namespace Sango.Tools
         bool viewIs311Camera = true;
         void DrawToolbarWindow(int windowID, EditorWindow window)
         {
+            // 绘制保存通知（放在最顶层，避免遮挡）
+            if (showSaveNotification)
+            {
+                GUILayout.BeginArea(new UnityEngine.Rect(10, 10, 400, 60), GUI.skin.box);
+                GUILayout.Label(saveNotificationMessage, GUILayout.ExpandWidth(true));
+                GUILayout.EndArea();
+            }
+            
+            // 当前鼠标格子信息
             GUILayout.Label($"当前鼠标格子:{{{SelectedCoord.col},{SelectedCoord.row}}}");
+            GUILayout.Space(10);
 
+            // 季节和视角控制组
             GUILayout.BeginHorizontal();
-
-            int season = GUILayout.Toolbar(map.curSeason, toolbarSeason);
+            GUILayout.Label("季节:", GUILayout.Width(40));
+            int season = GUILayout.Toolbar(map.curSeason, toolbarSeason, GUILayout.ExpandWidth(false));
             if (season != map.curSeason)
             {
                 map.curSeason = season;
@@ -573,7 +584,8 @@ namespace Sango.Tools
                     brush.OnSeasonChanged(season);
                 }
             }
-
+            
+            GUILayout.Space(20);
             bool viewTpye = GUILayout.Toggle(viewIs311Camera, "固定视角");
             if (viewTpye != viewIs311Camera)
             {
@@ -583,8 +595,8 @@ namespace Sango.Tools
                 else
                     SetCameraControlType(0);
             }
-
-            if (GUILayout.Button("重置相机"))
+            
+            if (GUILayout.Button("重置相机", GUILayout.ExpandWidth(false)))
             {
                 map.mapCamera.position = new Vector3(0, 500, 0);
                 map.mapCamera.lookRotate = new Vector3(90, -90, 0);
@@ -593,10 +605,16 @@ namespace Sango.Tools
                 Camera.main.gameObject.transform.position = map.mapCamera.position;
                 Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
             }
-
-            if (GUILayout.Button("加载地图"))
+            GUILayout.EndHorizontal();
+            
+            GUILayout.Space(10);
+            
+            // 地图操作组
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("地图操作:", GUILayout.Width(60));
+            
+            if (GUILayout.Button("加载地图", GUILayout.ExpandWidth(true)))
             {
-
                 string[] path = WindowDialog.OpenFileDialog("地图文件(*.bin)\0*.bin;\0\0");
                 if (path != null)
                 {
@@ -620,9 +638,8 @@ namespace Sango.Tools
                 }
             }
 
-            if (GUILayout.Button("保存地图"))
+            if (GUILayout.Button("保存地图", GUILayout.ExpandWidth(true)))
             {
-
                 string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
                 if (path != null)
                 {
@@ -635,22 +652,22 @@ namespace Sango.Tools
                 }
             }
 
-            if (GUILayout.Button("放大2倍保存"))
+            if (GUILayout.Button("放大2倍保存", GUILayout.ExpandWidth(true)))
             {
-
                 string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
                 if (path != null)
                 {
                     map.SaveScaleMap(path, 2);
                 }
             }
-
             GUILayout.EndHorizontal();
 
+            GUILayout.Space(15);
 
+            // 编辑模式切换
             Color lastColor = GUI.backgroundColor;
-            GUI.backgroundColor = Color.cyan;
-            int editMode = GUILayout.Toolbar(currentEditMode, toolbarTitle, GUILayout.Height(30));
+            GUI.backgroundColor = new Color(0.3f, 0.7f, 1f); // 更美观的蓝色
+            int editMode = GUILayout.Toolbar(currentEditMode, toolbarTitle, GUILayout.Height(35));
             if (editMode != currentEditMode)
             {
                 editorContentWindow.windowRect.size = windowRect.size;
@@ -666,13 +683,14 @@ namespace Sango.Tools
             }
             GUI.backgroundColor = lastColor;
             
-            // 绘制保存通知
-            if (showSaveNotification)
-            {
-                GUILayout.BeginArea(new UnityEngine.Rect(10, 10, 400, 50), GUI.skin.box);
-                GUILayout.Label(saveNotificationMessage, GUILayout.ExpandWidth(true));
-                GUILayout.EndArea();
-            }
+            // 快捷键提示
+            GUILayout.Space(10);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("快捷键:", GUILayout.Width(60));
+            GUILayout.Label("Ctrl+S 保存", GUILayout.Width(80));
+            GUILayout.Label("Ctrl+Z 撤销", GUILayout.Width(80));
+            GUILayout.Label("Ctrl+Y 重做", GUILayout.Width(80));
+            GUILayout.EndHorizontal();
         }
 
         void DrawContentWindow(int windowID, EditorWindow window)
@@ -733,20 +751,47 @@ namespace Sango.Tools
 
         void OnGUI_Setting()
         {
-            GUILayout.Label("鼠标中键拖拽地图移动");
-            GUILayout.Label("地形编辑模式下: Ctrl按住可以连续绘制 Shift在推平模式下可以以鼠标点高度推平");
-            GUILayout.Label("地格编辑模式下: Alt按住可以取到鼠标点格子的值 Ctrl按住可以连续绘制");
-            GUILayout.Label("模型编辑模式下: 选中模型 Q(无) W(平移) E(旋转) R(缩放)快捷键  鼠标右键或ESC取消选择 Delete删除选中的模型");
-            GUILayout.Label("快捷保存: Ctrl+S 快速保存地图到上次保存的路径");
-            GUILayout.Label("自动保存: 每5分钟自动保存地图到带auto_save后缀的文件");
-            GUILayout.Label("自动保存限制: 最多保存5个自动保存文件，超出后自动删除最旧的文件");
+            // 操作说明部分
+            GUILayout.BeginVertical("Box");
+            GUILayout.Label("操作说明", GUILayout.ExpandWidth(true));
+            GUILayout.Space(5);
+            GUILayout.Label("• 鼠标中键拖拽地图移动");
+            GUILayout.Label("• 地形编辑模式: Ctrl按住连续绘制, Shift推平模式以鼠标点高度推平");
+            GUILayout.Label("• 地格编辑模式: Alt取鼠标点格子值, Ctrl按住连续绘制");
+            GUILayout.Label("• 模型编辑模式: 选中模型后 Q(无) W(平移) E(旋转) R(缩放)");
+            GUILayout.Label("• 模型编辑模式: 鼠标右键或ESC取消选择, Delete删除选中模型");
+            GUILayout.EndVertical();
             
+            GUILayout.Space(15);
+            
+            // 快捷键部分
+            GUILayout.BeginVertical("Box");
+            GUILayout.Label("快捷键", GUILayout.ExpandWidth(true));
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("保存:", GUILayout.Width(60));
+            GUILayout.Label("Ctrl+S");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("撤销:", GUILayout.Width(60));
+            GUILayout.Label("Ctrl+Z");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("重做:", GUILayout.Width(60));
+            GUILayout.Label("Ctrl+Y");
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+            
+            GUILayout.Space(15);
+            
+            // 自动保存设置部分
+            GUILayout.BeginVertical("Box");
+            GUILayout.Label("自动保存设置", GUILayout.ExpandWidth(true));
             GUILayout.Space(10);
-            GUILayout.Label("自动保存设置:");
             
             // 自动保存启用/禁用
             GUILayout.BeginHorizontal();
-            GUILayout.Label("启用自动保存", GUILayout.Width(100));
+            GUILayout.Label("启用自动保存", GUILayout.Width(120));
             bool _autoSaveEnabled = GUILayout.Toggle(autoSaveEnabled, "");
             if (_autoSaveEnabled != autoSaveEnabled)
             {
@@ -756,8 +801,8 @@ namespace Sango.Tools
             
             // 自动保存间隔
             GUILayout.BeginHorizontal();
-            GUILayout.Label("自动保存间隔(分钟)", GUILayout.Width(120));
-            float _autoSaveInterval = EditorUtility.FloatField(autoSaveInterval / 60f, GUILayout.MaxWidth(50));
+            GUILayout.Label("自动保存间隔(分钟)", GUILayout.Width(140));
+            float _autoSaveInterval = EditorUtility.FloatField(autoSaveInterval / 60f, GUILayout.MaxWidth(60));
             if (GUI.changed)
             {
                 _autoSaveInterval = Mathf.Clamp(_autoSaveInterval, 1f, 60f);
@@ -767,14 +812,20 @@ namespace Sango.Tools
             
             // 自动保存数量限制
             GUILayout.BeginHorizontal();
-            GUILayout.Label("自动保存数量限制", GUILayout.Width(120));
-            int _autoSaveLimit = EditorUtility.IntField(autoSaveLimit, GUILayout.MaxWidth(50));
+            GUILayout.Label("自动保存数量限制", GUILayout.Width(140));
+            int _autoSaveLimit = EditorUtility.IntField(autoSaveLimit, GUILayout.MaxWidth(60));
             if (GUI.changed)
             {
                 _autoSaveLimit = Mathf.Clamp(_autoSaveLimit, 1, 20);
                 autoSaveLimit = _autoSaveLimit;
             }
             GUILayout.EndHorizontal();
+            
+            // 自动保存说明
+            GUILayout.Space(10);
+            GUILayout.Label("• 自动保存文件会添加_auto_save后缀");
+            GUILayout.Label("• 超出数量限制时会自动删除最旧的文件");
+            GUILayout.EndVertical();
         }
 
 
