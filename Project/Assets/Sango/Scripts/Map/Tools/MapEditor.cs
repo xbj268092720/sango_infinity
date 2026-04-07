@@ -21,13 +21,22 @@ namespace Sango.Tools
         public string WorkContent { set; get; }
         public string DefaultContentName { get { return "Default"; } }
         
-        // 自动保存相关
+        /// <summary>
+        /// 自动保存相关变量
+        /// </summary>
         private float autoSaveInterval = 5 * 60f; // 自动保存间隔（秒）
-        private float autoSaveTimer = 0f;
+        private float autoSaveTimer = 0f; // 自动保存计时器
         private bool autoSaveEnabled = true; // 是否启用自动保存
         private string lastSavedPath = ""; // 上次保存的路径
         private int autoSaveLimit = 5; // 自动保存文件数量限制
         private List<string> autoSavePaths = new List<string>(); // 自动保存文件路径列表
+        
+        /// <summary>
+        /// UI反馈相关变量
+        /// </summary>
+        private float saveNotificationTimer = 0f; // 保存通知显示时间
+        private string saveNotificationMessage = ""; // 保存通知消息
+        private bool showSaveNotification = false; // 是否显示保存通知
 
         public static Sango.Hexagon.Coord SelectedCoord { get; set; }
         
@@ -172,6 +181,21 @@ namespace Sango.Tools
                 EditorObjectSelection.Instance.SelectionDeleted -= SelectionDeletedHandler;
             if (EditorObjectSelection.Instance != null)
                 EditorObjectSelection.Instance.SelectionChanged -= SelectionChangedHandler;
+            
+            // 编辑器关闭时自动保存
+            if (!string.IsNullOrEmpty(lastSavedPath))
+            {
+                try
+                {
+                    map.SaveMap(lastSavedPath);
+                    SaveBaseMap(lastSavedPath);
+                    Sango.Log.Info($"编辑器关闭时自动保存到: {lastSavedPath}");
+                }
+                catch (System.Exception e)
+                {
+                    Sango.Log.Error($"编辑器关闭时自动保存失败: {e.Message}");
+                }
+            }
         }
 
         /// <summary>
@@ -345,6 +369,18 @@ namespace Sango.Tools
                     autoSaveTimer = 0f;
                 }
             }
+            
+            // 保存通知更新
+            if (showSaveNotification)
+            {
+                saveNotificationTimer += Time.deltaTime;
+                if (saveNotificationTimer >= 3f) // 显示3秒
+                {
+                    showSaveNotification = false;
+                    saveNotificationMessage = "";
+                    saveNotificationTimer = 0f;
+                }
+            }
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -360,14 +396,20 @@ namespace Sango.Tools
         
         /// <summary>
         /// 快捷保存
+        /// 功能：使用Ctrl+S快捷键快速保存地图到上次保存的路径
+        /// 如果没有上次保存的路径，会自动弹出保存对话框
         /// </summary>
         private void QuickSave()
         {
             if (!string.IsNullOrEmpty(lastSavedPath))
             {
+                // 保存地图和底图
                 map.SaveMap(lastSavedPath);
                 SaveBaseMap(lastSavedPath);
-                Sango.Log.Info($"地图已快捷保存到: {lastSavedPath}");
+                // 显示保存通知
+                string message = $"地图已快捷保存到: {System.IO.Path.GetFileName(lastSavedPath)}";
+                Sango.Log.Info(message);
+                ShowSaveNotification(message);
             }
             else
             {
@@ -375,32 +417,41 @@ namespace Sango.Tools
                 string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
                 if (path != null)
                 {
+                    // 更新上次保存路径并保存
                     lastSavedPath = path;
                     map.SaveMap(path);
                     SaveBaseMap(path);
-                    Sango.Log.Info($"地图已保存到: {path}");
+                    // 显示保存通知
+                    string message = $"地图已保存到: {System.IO.Path.GetFileName(path)}";
+                    Sango.Log.Info(message);
+                    ShowSaveNotification(message);
                 }
             }
         }
         
         /// <summary>
         /// 自动保存
+        /// 功能：定期自动保存地图到带auto_save后缀的文件
+        /// 自动管理保存文件数量，超出限制时删除最旧的文件
         /// </summary>
         private void AutoSave()
         {
             if (!string.IsNullOrEmpty(lastSavedPath))
             {
-                // 生成带auto_save后缀的文件名
+                // 生成带auto_save后缀的文件名，包含时间戳确保唯一性
                 string directory = System.IO.Path.GetDirectoryName(lastSavedPath);
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(lastSavedPath);
                 string extension = System.IO.Path.GetExtension(lastSavedPath);
                 string timestamp = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 string autoSavePath = System.IO.Path.Combine(directory, $"{fileName}_auto_save_{timestamp}{extension}");
                 
-                // 保存地图
+                // 保存地图和底图
                 map.SaveMap(autoSavePath);
                 SaveBaseMap(autoSavePath);
-                Sango.Log.Info($"地图已自动保存到: {autoSavePath}");
+                // 显示保存通知
+                string message = $"地图已自动保存到: {System.IO.Path.GetFileName(autoSavePath)}";
+                Sango.Log.Info(message);
+                ShowSaveNotification(message);
                 
                 // 添加到自动保存列表
                 autoSavePaths.Add(autoSavePath);
@@ -434,37 +485,67 @@ namespace Sango.Tools
         /// <param name="mapPath">地图文件路径</param>
         private void SaveBaseMap(string mapPath)
         {
-            try
+            int maxRetries = 3;
+            int retryCount = 0;
+            bool saveSuccess = false;
+            
+            while (!saveSuccess && retryCount < maxRetries)
             {
-                // 计算底图保存路径
-                string mapDirectory = System.IO.Path.GetDirectoryName(mapPath);
-                string mapName = System.IO.Path.GetFileNameWithoutExtension(mapPath);
-                // 移除_auto_save后缀（如果有）
-                if (mapName.Contains("_auto_save"))
+                try
                 {
-                    mapName = mapName.Substring(0, mapName.IndexOf("_auto_save"));
-                }
-                string baseMapPath = System.IO.Path.Combine(mapDirectory, "..", "Assets", "Map", mapName, "BaseTex");
-                
-                // 创建目录
-                System.IO.Directory.CreateDirectory(baseMapPath);
-                
-                // 保存每个季节的底图
-                for (int season = 0; season < 4; season++)
-                {
-                    if (terrain_brush != null && terrain_brush.baseMap != null && terrain_brush.baseMap[season] != null)
+                    // 计算底图保存路径
+                    string mapDirectory = System.IO.Path.GetDirectoryName(mapPath);
+                    string mapName = System.IO.Path.GetFileNameWithoutExtension(mapPath);
+                    // 移除_auto_save后缀（如果有）
+                    if (mapName.Contains("_auto_save"))
                     {
-                        string baseMapFileName = System.IO.Path.Combine(baseMapPath, $"BaseMap{season}.png");
-                        terrain_brush.SaveBaseTexture(baseMapFileName, season);
+                        mapName = mapName.Substring(0, mapName.IndexOf("_auto_save"));
+                    }
+                    string baseMapPath = System.IO.Path.Combine(mapDirectory, "..", "Assets", "Map", mapName, "BaseTex");
+                    
+                    // 创建目录
+                    System.IO.Directory.CreateDirectory(baseMapPath);
+                    
+                    // 保存每个季节的底图
+                    for (int season = 0; season < 4; season++)
+                    {
+                        if (terrain_brush != null && terrain_brush.baseMap != null && terrain_brush.baseMap[season] != null)
+                        {
+                            string baseMapFileName = System.IO.Path.Combine(baseMapPath, $"BaseMap{season}.png");
+                            terrain_brush.SaveBaseTexture(baseMapFileName, season);
+                        }
+                    }
+                    
+                    Sango.Log.Info($"底图已保存到: {baseMapPath}");
+                    saveSuccess = true;
+                }
+                catch (System.Exception e)
+                {
+                    retryCount++;
+                    Sango.Log.Error($"保存底图失败 (尝试 {retryCount}/{maxRetries}): {e.Message}");
+                    
+                    if (retryCount >= maxRetries)
+                    {
+                        Sango.Log.Error("保存底图失败，已达到最大重试次数");
+                    }
+                    else
+                    {
+                        // 等待一小段时间后重试
+                        System.Threading.Thread.Sleep(500);
                     }
                 }
-                
-                Sango.Log.Info($"底图已保存到: {baseMapPath}");
             }
-            catch (System.Exception e)
-            {
-                Sango.Log.Error($"保存底图失败: {e.Message}");
-            }
+        }
+        
+        /// <summary>
+        /// 显示保存通知
+        /// </summary>
+        /// <param name="message">通知消息</param>
+        private void ShowSaveNotification(string message)
+        {
+            saveNotificationMessage = message;
+            showSaveNotification = true;
+            saveNotificationTimer = 0f;
         }
 
         int currentEditMode = 0;
@@ -548,7 +629,9 @@ namespace Sango.Tools
                     lastSavedPath = path;
                     map.SaveMap(path);
                     SaveBaseMap(path);
-                    Sango.Log.Info($"地图已保存到: {path}");
+                    string message = $"地图已保存到: {System.IO.Path.GetFileName(path)}";
+                    Sango.Log.Info(message);
+                    ShowSaveNotification(message);
                 }
             }
 
@@ -582,6 +665,14 @@ namespace Sango.Tools
                 editorContentWindow.visible = true;
             }
             GUI.backgroundColor = lastColor;
+            
+            // 绘制保存通知
+            if (showSaveNotification)
+            {
+                GUILayout.BeginArea(new UnityEngine.Rect(10, 10, 400, 50), GUI.skin.box);
+                GUILayout.Label(saveNotificationMessage, GUILayout.ExpandWidth(true));
+                GUILayout.EndArea();
+            }
         }
 
         void DrawContentWindow(int windowID, EditorWindow window)
@@ -649,6 +740,41 @@ namespace Sango.Tools
             GUILayout.Label("快捷保存: Ctrl+S 快速保存地图到上次保存的路径");
             GUILayout.Label("自动保存: 每5分钟自动保存地图到带auto_save后缀的文件");
             GUILayout.Label("自动保存限制: 最多保存5个自动保存文件，超出后自动删除最旧的文件");
+            
+            GUILayout.Space(10);
+            GUILayout.Label("自动保存设置:");
+            
+            // 自动保存启用/禁用
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("启用自动保存", GUILayout.Width(100));
+            bool _autoSaveEnabled = GUILayout.Toggle(autoSaveEnabled, "");
+            if (_autoSaveEnabled != autoSaveEnabled)
+            {
+                autoSaveEnabled = _autoSaveEnabled;
+            }
+            GUILayout.EndHorizontal();
+            
+            // 自动保存间隔
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("自动保存间隔(分钟)", GUILayout.Width(120));
+            float _autoSaveInterval = EditorUtility.FloatField(autoSaveInterval / 60f, GUILayout.MaxWidth(50));
+            if (GUI.changed)
+            {
+                _autoSaveInterval = Mathf.Clamp(_autoSaveInterval, 1f, 60f);
+                autoSaveInterval = _autoSaveInterval * 60f;
+            }
+            GUILayout.EndHorizontal();
+            
+            // 自动保存数量限制
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("自动保存数量限制", GUILayout.Width(120));
+            int _autoSaveLimit = EditorUtility.IntField(autoSaveLimit, GUILayout.MaxWidth(50));
+            if (GUI.changed)
+            {
+                _autoSaveLimit = Mathf.Clamp(_autoSaveLimit, 1, 20);
+                autoSaveLimit = _autoSaveLimit;
+            }
+            GUILayout.EndHorizontal();
         }
 
 
