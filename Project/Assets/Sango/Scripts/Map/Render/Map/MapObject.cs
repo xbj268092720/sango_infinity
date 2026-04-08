@@ -1,6 +1,7 @@
 
 using Sango.Core;
 using Sango.Loader;
+using Sango.Tools;
 using System.Collections;
 using UnityEngine;
 
@@ -30,6 +31,7 @@ namespace Sango.Render
         /// 用于绑定物件的ID
         /// </summary>
         public int objId { get; set; }
+        public bool isAdded { get; set; }
 
         /// <summary>
         /// 绑定Id
@@ -288,6 +290,21 @@ namespace Sango.Render
                 model.transform.SetParent(transCache, false);
                 model.transform.localPosition = Vector3.zero;
                 model.transform.localRotation = Quaternion.identity;
+
+                if(MapEditor.IsEditOn)
+                {
+                    UnityTools.SetLayer(gameObject, model.layer);
+                    BoxCollider box = gameObject.GetComponent<BoxCollider>();
+                    if (box == null)
+                        box = gameObject.AddComponent<BoxCollider>();
+                    BoxCollider box_model = model.GetComponent<BoxCollider>();
+                    if(box_model != null)
+                    {
+                        box.size = box_model.size;
+                        box.center = box_model.center;
+                        box_model.enabled = false;
+                    }
+                }
                 // model.transform.localScale = Vector3.one;
                 //UnityTools.SetLayer(model, gameObject.layer);
 
@@ -465,6 +482,42 @@ namespace Sango.Render
         public Transform GetTransform() { return transCache; }
         public void SetParent(Transform parent) { transCache.SetParent(parent); }
         public void SetParent(Transform parent, bool worldPositionStays) { transCache.SetParent(parent, worldPositionStays); }
+
+        public void OnDisable()
+        {
+            if(MapEditor.IsEditOn)
+            {
+                if(isAdded && manager != null)
+                {
+                    if(isStatic)
+                    {
+                        manager.RemoveStatic(this);
+                    }
+                    else
+                    {
+                        manager.RemoveDynamic(this);
+                    }
+                }
+            }
+        }
+
+        public void OnEnable()
+        {
+            if (MapEditor.IsEditOn)
+            {
+                if (!isAdded && manager != null)
+                {
+                    if (isStatic)
+                    {
+                        manager.AddStatic(this);
+                    }
+                    else
+                    {
+                        manager.AddDynamic(this);
+                    }
+                }
+            }
+        }
 
         public void AddToMap(bool isStatic)
         {

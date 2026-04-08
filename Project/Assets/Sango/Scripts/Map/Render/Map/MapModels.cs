@@ -184,6 +184,7 @@ namespace Sango.Render
         {
             obj.manager = map;
             obj.isStatic = false;
+            obj.isAdded = true;
             dynamicObjects.Add(obj);
             obj.visible = obj.Overlaps(curViewRect);
         }
@@ -193,6 +194,7 @@ namespace Sango.Render
             //if (staticObjectMap.TryAdd(obj.objId, obj)) {
             staticObjects.Add(obj);
             obj.isStatic = true;
+            obj.isAdded = true;
             obj.manager = map;
             staticObjectsQuadTree.Add(obj, obj.worldBounds);
             obj.visible = obj.Overlaps(curViewRect);

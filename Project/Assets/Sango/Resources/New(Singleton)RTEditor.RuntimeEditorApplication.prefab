@@ -489,7 +489,7 @@ MonoBehaviour:
     _useMouseButtons: 0
     _useStrictMouseCheck: 0
     _name: Scroll grid up/down (STEP)
-  _useUnityColliders: 1
+  _useUnityColliders: 0
   _enableUndoRedo: 1
   _useCustomCamera: 0
   _customCamera: {fileID: 0}

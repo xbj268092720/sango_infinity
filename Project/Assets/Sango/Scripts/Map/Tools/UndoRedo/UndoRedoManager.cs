@@ -87,7 +87,14 @@ namespace Sango.Tools.UndoRedo
                     }
                 }
                 
-                undoStack.Clear();
+                // 销毁被舍弃的命令
+                while (undoStack.Count > 0)
+                {
+                    IUndoableCommand cmd = undoStack.Pop();
+                    cmd.Destroy();
+                }
+                
+                // 重新填充栈
                 while (tempStack.Count > 0)
                 {
                     undoStack.Push(tempStack.Pop());
@@ -144,8 +151,17 @@ namespace Sango.Tools.UndoRedo
         /// </summary>
         public void ClearHistory()
         {
-            undoStack.Clear();
-            redoStack.Clear();
+            // 销毁所有命令
+            while (undoStack.Count > 0)
+            {
+                IUndoableCommand cmd = undoStack.Pop();
+                cmd.Destroy();
+            }
+            while (redoStack.Count > 0)
+            {
+                IUndoableCommand cmd = redoStack.Pop();
+                cmd.Destroy();
+            }
             
             // 触发历史记录变化事件
             HistoryChanged?.Invoke();

@@ -128,9 +128,15 @@ namespace Sango.Core
             LoadInfo();
             task = Task.Run(() =>
             {
-                LoadContent();
+                try {
+                    LoadContent();
+                }catch(System.Exception e)
+                {
+                    Debug.LogError(e+e.StackTrace);
+                }
                 loadOK = true;
-            });
+            }
+            );
         }
 
         public ShortScenario(string filePath, bool notask)

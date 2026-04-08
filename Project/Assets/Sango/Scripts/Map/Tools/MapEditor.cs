@@ -20,7 +20,7 @@ namespace Sango.Tools
         public static bool IsEditOn { get; set; }
         public string WorkContent { set; get; }
         public string DefaultContentName { get { return "Default"; } }
-        
+
         /// <summary>
         /// 自动保存相关变量
         /// </summary>
@@ -28,9 +28,9 @@ namespace Sango.Tools
         private float autoSaveTimer = 0f; // 自动保存计时器
         private bool autoSaveEnabled = true; // 是否启用自动保存
         private string lastSavedPath = ""; // 上次保存的路径
-        private int autoSaveLimit = 5; // 自动保存文件数量限制
+        private int autoSaveLimit = 20; // 自动保存文件数量限制
         private List<string> autoSavePaths = new List<string>(); // 自动保存文件路径列表
-        
+
         /// <summary>
         /// UI反馈相关变量
         /// </summary>
@@ -39,7 +39,7 @@ namespace Sango.Tools
         private bool showSaveNotification = false; // 是否显示保存通知
 
         public static Sango.Hexagon.Coord SelectedCoord { get; set; }
-        
+
         /// <summary>
         /// 撤销/重做管理器
         /// </summary>
@@ -91,7 +91,7 @@ namespace Sango.Tools
             Path.AddSearchPath(assetsPath, false);
 
             IsEditOn = true;
-            
+
             // 初始化撤销/重做管理器
             undoRedoManager = new UndoRedoManager();
 
@@ -106,19 +106,20 @@ namespace Sango.Tools
 
             // 加载模型编辑工具, 设置监听
             GameObject.Instantiate(Resources.Load("New(Singleton)RTEditor.RuntimeEditorApplication"));
-            EditorObjectSelection.Instance.SelectionDeleted += SelectionDeletedHandler;
-            EditorObjectSelection.Instance.SelectionChanged += SelectionChangedHandler;
+
+            // 监听Gizmo变换消息，用于Undo/Redo
+            EditorUndoRedoSystem.Instance.overrideAction = RegisterUndoRedoAction;
 
             // 创建工具栏窗口并限制在屏幕范围内
             windowRect = ConstrainWindowToScreen(windowRect);
             editorToolsBarWindow = EditorWindow.AddWindow(0, windowRect, DrawToolbarWindow, "地图编辑器");
             editorToolsBarWindow.canClose = false;
-            
+
             // 创建属性窗口并限制在屏幕范围内
             windowRect = ConstrainWindowToScreen(windowRect);
             editorContentWindow = EditorWindow.AddWindow(1, windowRect, DrawContentWindow, "属性窗口");
             editorContentWindow.canClose = false;
-            
+
             // 初始化操作历史窗口
             operationHistoryWindow = new OperationHistoryWindow(this);
 
@@ -171,6 +172,8 @@ namespace Sango.Tools
             SetGizmoCameraEnable(false);
             EditorCameraExtend.Instance.Camera.farClipPlane = 30000;
 
+            //EditorUndoRedoSystem.Instance.overrideAction = 
+
             Invoke("DelaySetFreeCamera", 0.1f);
         }
 
@@ -191,11 +194,6 @@ namespace Sango.Tools
         {
             IsEditOn = false;
             Shader.DisableKeyword("SANGO_EDITOR");
-            if (EditorObjectSelection.Instance != null)
-                EditorObjectSelection.Instance.SelectionDeleted -= SelectionDeletedHandler;
-            if (EditorObjectSelection.Instance != null)
-                EditorObjectSelection.Instance.SelectionChanged -= SelectionChangedHandler;
-            
             // 编辑器关闭时自动保存
             //if (!string.IsNullOrEmpty(lastSavedPath))
             //{
@@ -210,35 +208,6 @@ namespace Sango.Tools
             //        Sango.Log.Error($"编辑器关闭时自动保存失败: {e.Message}");
             //    }
             //}
-        }
-
-        /// <summary>
-        /// 删除模型时的回调
-        /// </summary>
-        /// <param name="deletedObjects"></param>
-        void SelectionDeletedHandler(List<GameObject> deletedObjects)
-        {
-            foreach (GameObject o in deletedObjects)
-            {
-                MapObject mapObject = o.GetComponent<MapObject>();
-                if (mapObject != null)
-                {
-                    // 创建删除模型命令并执行
-                    ModelEditCommand command = new ModelEditCommand(this, mapObject, "删除模型");
-                    undoRedoManager.AddCommand(command);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 选择模型时的回调
-        /// </summary>
-        /// <param name="selectionChangedEventArgs"></param>
-        public void SelectionChangedHandler(ObjectSelectionChangedEventArgs selectionChangedEventArgs)
-        {
-            // 这里处理模型的相关数据展示
-
-
         }
 
         public void SetModelSelectionMod(bool b)
@@ -258,6 +227,21 @@ namespace Sango.Tools
         void SetGizmoCameraEnable(bool b)
         {
             EditorCameraExtend.Instance.enabled = b;
+        }
+
+        public void RegisterUndoRedoAction(IUndoableAndRedoableAction action)
+        {
+            string desc = action.GetType().Name;
+            if (action is PostObjectSelectionChangedAction)
+                desc = "选取模型";
+            else if (action is PostGizmoTransformedObjectsAction)
+                desc = "移动模型";
+            else if (action is ObjectDuplicationAction)
+                desc = "复制模型";
+            else if (action is DeleteSelectedObjectsAction)
+                desc = "删除模型";
+            ModelEditCommand command = new ModelEditCommand(this, action, desc);
+            undoRedoManager.AddCommand(command);
         }
 
         /// <summary>
@@ -383,7 +367,7 @@ namespace Sango.Tools
                     autoSaveTimer = 0f;
                 }
             }
-            
+
             // 保存通知更新
             if (showSaveNotification)
             {
@@ -407,7 +391,7 @@ namespace Sango.Tools
             if (brush == null) return;
             brush.Update();
         }
-        
+
         /// <summary>
         /// 快捷保存
         /// 功能：使用Ctrl+S快捷键快速保存地图到上次保存的路径
@@ -442,7 +426,7 @@ namespace Sango.Tools
                 }
             }
         }
-        
+
         /// <summary>
         /// 自动保存
         /// 功能：定期自动保存地图到带auto_save后缀的文件
@@ -458,7 +442,7 @@ namespace Sango.Tools
                 string extension = System.IO.Path.GetExtension(lastSavedPath);
                 string timestamp = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 string autoSavePath = System.IO.Path.Combine(directory, $"{fileName}_auto_save_{timestamp}{extension}");
-                
+
                 // 保存地图和底图
                 map.SaveMap(autoSavePath);
                 SaveBaseMap(autoSavePath);
@@ -466,17 +450,17 @@ namespace Sango.Tools
                 string message = $"地图已自动保存到: {System.IO.Path.GetFileName(autoSavePath)}";
                 Sango.Log.Info(message);
                 ShowSaveNotification(message);
-                
+
                 // 添加到自动保存列表
                 autoSavePaths.Add(autoSavePath);
-                
+
                 // 清理超出限制的旧文件
                 while (autoSavePaths.Count > autoSaveLimit)
                 {
                     string oldestPath = autoSavePaths[0];
                     autoSavePaths.RemoveAt(0);
-                    
-                    // 删除旧文件
+
+                    // 删除旧地图文件
                     if (System.IO.File.Exists(oldestPath))
                     {
                         try
@@ -489,10 +473,33 @@ namespace Sango.Tools
                             Sango.Log.Error($"删除旧自动保存文件失败: {e.Message}");
                         }
                     }
+
+                    // 删除对应的底图文件
+                    try
+                    {
+                        string oldDir = System.IO.Path.GetDirectoryName(oldestPath);
+                        string oldFileName = System.IO.Path.GetFileNameWithoutExtension(oldestPath);
+                        // 移除_auto_save_时间戳后缀，获取基础地图名
+                        int autoSaveIndex = oldFileName.LastIndexOf("_auto_save_");
+                        if (autoSaveIndex > 0)
+                        {
+                            string baseMapName = oldFileName.Substring(0, autoSaveIndex);
+                            string baseTexPath = System.IO.Path.Combine(oldDir, "..", "Assets", "Map", baseMapName, "BaseTex");
+                            if (System.IO.Directory.Exists(baseTexPath))
+                            {
+                                System.IO.Directory.Delete(baseTexPath, true);
+                                Sango.Log.Info($"已删除旧的自动保存底图文件夹: {baseTexPath}");
+                            }
+                        }
+                    }
+                    catch (System.Exception e)
+                    {
+                        Sango.Log.Error($"删除旧自动保存底图失败: {e.Message}");
+                    }
                 }
             }
         }
-        
+
         /// <summary>
         /// 保存底图
         /// </summary>
@@ -502,7 +509,7 @@ namespace Sango.Tools
             int maxRetries = 3;
             int retryCount = 0;
             bool saveSuccess = false;
-            
+
             while (!saveSuccess && retryCount < maxRetries)
             {
                 try
@@ -516,10 +523,10 @@ namespace Sango.Tools
                         mapName = mapName.Substring(0, mapName.IndexOf("_auto_save"));
                     }
                     string baseMapPath = System.IO.Path.Combine(mapDirectory, "..", "Assets", "Map", mapName, "BaseTex");
-                    
+
                     // 创建目录
                     System.IO.Directory.CreateDirectory(baseMapPath);
-                    
+
                     // 保存每个季节的底图
                     for (int season = 0; season < 4; season++)
                     {
@@ -529,7 +536,7 @@ namespace Sango.Tools
                             terrain_brush.SaveBaseTexture(baseMapFileName, season);
                         }
                     }
-                    
+
                     Sango.Log.Info($"底图已保存到: {baseMapPath}");
                     saveSuccess = true;
                 }
@@ -537,7 +544,7 @@ namespace Sango.Tools
                 {
                     retryCount++;
                     Sango.Log.Error($"保存底图失败 (尝试 {retryCount}/{maxRetries}): {e.Message}");
-                    
+
                     if (retryCount >= maxRetries)
                     {
                         Sango.Log.Error("保存底图失败，已达到最大重试次数");
@@ -550,7 +557,7 @@ namespace Sango.Tools
                 }
             }
         }
-        
+
         /// <summary>
         /// 显示保存通知
         /// </summary>
@@ -581,7 +588,7 @@ namespace Sango.Tools
                 GUILayout.Label(saveNotificationMessage, GUILayout.ExpandWidth(true));
                 GUILayout.EndArea();
             }
-            
+
             // 当前鼠标格子信息
             GUILayout.Label($"当前鼠标格子:{{{SelectedCoord.col},{SelectedCoord.row}}}");
             GUILayout.Space(10);
@@ -598,7 +605,7 @@ namespace Sango.Tools
                     brush.OnSeasonChanged(season);
                 }
             }
-            
+
             GUILayout.Space(20);
             bool viewTpye = GUILayout.Toggle(viewIs311Camera, "固定视角");
             if (viewTpye != viewIs311Camera)
@@ -609,7 +616,7 @@ namespace Sango.Tools
                 else
                     SetCameraControlType(0);
             }
-            
+
             if (GUILayout.Button("重置相机", GUILayout.ExpandWidth(false)))
             {
                 map.mapCamera.position = new Vector3(0, 500, 0);
@@ -620,13 +627,13 @@ namespace Sango.Tools
                 Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
             }
             GUILayout.EndHorizontal();
-            
+
             GUILayout.Space(10);
-            
+
             // 地图操作组
             GUILayout.BeginHorizontal();
             GUILayout.Label("地图操作:", GUILayout.Width(60));
-            
+
             if (GUILayout.Button("加载地图", GUILayout.ExpandWidth(true)))
             {
                 string[] path = WindowDialog.OpenFileDialog("地图文件(*.bin)\0*.bin;\0\0");
@@ -638,7 +645,7 @@ namespace Sango.Tools
                     EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
                     if (editorfree != null)
                         editorfree.lookAt = map.mapCamera.GetCenterTransform();
-                    
+
                     BrushBase brush = CheckBrush();
                     if (brush == null) return;
                     brush.OnEnter();
@@ -647,7 +654,7 @@ namespace Sango.Tools
                         SetCameraControlType(1);
                     else
                         SetCameraControlType(0);
-                    
+
                     Sango.Log.Info($"地图已加载: {fName}");
                 }
             }
@@ -696,14 +703,14 @@ namespace Sango.Tools
                 editorContentWindow.visible = true;
             }
             GUI.backgroundColor = lastColor;
-            
+
             // 操作历史按钮
             GUILayout.Space(10);
             if (GUILayout.Button("操作历史", GUILayout.Height(30)))
             {
                 operationHistoryWindow.ToggleWindow();
             }
-            
+
             // 布局管理按钮
             GUILayout.Space(10);
             if (GUILayout.Button("保存布局", GUILayout.Height(30)))
@@ -713,7 +720,7 @@ namespace Sango.Tools
                 Sango.Log.Info(message);
                 ShowSaveNotification(message);
             }
-            
+
             // 快捷键提示
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
@@ -792,9 +799,9 @@ namespace Sango.Tools
             GUILayout.Label("• 模型编辑模式: 选中模型后 Q(无) W(平移) E(旋转) R(缩放)");
             GUILayout.Label("• 模型编辑模式: 鼠标右键或ESC取消选择, Delete删除选中模型");
             GUILayout.EndVertical();
-            
+
             GUILayout.Space(15);
-            
+
             // 快捷键部分
             GUILayout.BeginVertical("Box");
             GUILayout.Label("快捷键", GUILayout.ExpandWidth(true));
@@ -812,14 +819,14 @@ namespace Sango.Tools
             GUILayout.Label("Ctrl+Y");
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-            
+
             GUILayout.Space(15);
-            
+
             // 自动保存设置部分
             GUILayout.BeginVertical("Box");
             GUILayout.Label("自动保存设置", GUILayout.ExpandWidth(true));
             GUILayout.Space(10);
-            
+
             // 自动保存启用/禁用
             GUILayout.BeginHorizontal();
             GUILayout.Label("启用自动保存", GUILayout.Width(120));
@@ -829,7 +836,7 @@ namespace Sango.Tools
                 autoSaveEnabled = _autoSaveEnabled;
             }
             GUILayout.EndHorizontal();
-            
+
             // 自动保存间隔
             GUILayout.BeginHorizontal();
             GUILayout.Label("自动保存间隔(分钟)", GUILayout.Width(140));
@@ -840,7 +847,7 @@ namespace Sango.Tools
                 autoSaveInterval = _autoSaveInterval * 60f;
             }
             GUILayout.EndHorizontal();
-            
+
             // 自动保存数量限制
             GUILayout.BeginHorizontal();
             GUILayout.Label("自动保存数量限制", GUILayout.Width(140));
@@ -851,10 +858,11 @@ namespace Sango.Tools
                 autoSaveLimit = _autoSaveLimit;
             }
             GUILayout.EndHorizontal();
-            
+
             // 自动保存说明
             GUILayout.Space(10);
             GUILayout.Label("• 自动保存文件会添加_auto_save后缀");
+            GUILayout.Label("• 默认最多保存20个自动保存文件");
             GUILayout.Label("• 超出数量限制时会自动删除最旧的文件");
             GUILayout.EndVertical();
         }
@@ -879,7 +887,7 @@ namespace Sango.Tools
         {
             map.mapCamera.position = position;
         }
-        
+
         /// <summary>
         /// 将窗口限制在屏幕范围内
         /// </summary>
@@ -890,11 +898,11 @@ namespace Sango.Tools
             // 获取屏幕尺寸
             float screenWidth = Screen.width;
             float screenHeight = Screen.height;
-            
+
             // 限制窗口位置，确保不超出屏幕边界
             float x = Mathf.Clamp(windowRect.x, 0, screenWidth - windowRect.width);
             float y = Mathf.Clamp(windowRect.y, 0, screenHeight - windowRect.height);
-            
+
             return new UnityEngine.Rect(x, y, windowRect.width, windowRect.height);
         }
     }

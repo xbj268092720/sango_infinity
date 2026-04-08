@@ -151,5 +151,20 @@ namespace Sango.Tools.UndoRedo
             gridBrush.terrainTypeMaskTex.Apply(false);
 
         }
+        
+        /// <summary>
+        /// 销毁命令，在命令被舍弃时调用
+        /// </summary>
+        public void Destroy()
+        {
+            // 释放资源
+            if (changes != null)
+            {
+                changes.Clear();
+                changes = null;
+            }
+            editor = null;
+            gridBrush = null;
+        }
     }
 }

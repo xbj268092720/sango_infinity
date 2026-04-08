@@ -22,6 +22,7 @@ namespace Sango.Core
         /// 变换组件
         /// </summary>
         UnityEngine.Transform transform { get; }
+
         /// <summary>
         /// 对象ID
         /// </summary>
@@ -38,6 +39,11 @@ namespace Sango.Core
         /// 模型资源
         /// </summary>
         string modelAsset { get; set; }
+
+        /// <summary>
+        /// 是否已经添加
+        /// </summary>
+        bool isAdded { get; set; }
 
         /// <summary>
         /// 模型ID

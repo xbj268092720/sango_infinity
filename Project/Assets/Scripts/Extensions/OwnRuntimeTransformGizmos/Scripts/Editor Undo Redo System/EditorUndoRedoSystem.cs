@@ -59,12 +59,20 @@ namespace RTEditor
             _actionStackPointer = -1;
         }
 
+        public System.Action<IUndoableAndRedoableAction> overrideAction;
+
         /// <summary>
         /// Registers an action with the undo/redo system. When an action is registered
         /// with the undo/redo system, it can be undone and redone as needed.
         /// </summary>
         public void RegisterAction(IUndoableAndRedoableAction action)
         {
+            if(overrideAction != null)
+            {
+                overrideAction.Invoke(action);
+                return;
+            }
+
             // Is this the first action registered?
             if(_actionStackPointer < 0)
             {

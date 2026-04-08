@@ -17,6 +17,7 @@ namespace Sango.Render
         public MeshCollider[] meshCollider;
         public Mesh[] lodMesh;
         public GameObject gameObject;
+        public bool isAdded { get; set; }
         public Transform transform => gameObject.transform;
 
 #if UNITY_ANDROID || UNITY_IPHONE

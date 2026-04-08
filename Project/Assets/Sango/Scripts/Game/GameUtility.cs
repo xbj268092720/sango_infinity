@@ -2,6 +2,7 @@
 using Sango.Core.Tools;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 namespace Sango.Core
@@ -356,6 +357,72 @@ namespace Sango.Core
                 sJobActions[i].Clear();
             sJobActions.Clear();
         }
+        public static void HexToColor(string hex, out Color color)
+        {
+            // 移除 # 或 0x 前缀
+            int start = 0;
+            if (hex.StartsWith("#")) start++;
+            color = new Color();
+            color.a = 1;
+            // 解析 R、G、B、A
+            byte r = byte.Parse(hex.Substring(start, 2), NumberStyles.HexNumber);
+            byte g = byte.Parse(hex.Substring(2 + start, 2), NumberStyles.HexNumber);
+            byte b = byte.Parse(hex.Substring(4 + start, 2), NumberStyles.HexNumber);
+            color.r = r / 255f;
+            color.g = g / 255f;
+            color.b = b / 255f;
+        }
 
+        public static Color HexToColorA(string hex)
+        {
+            // 移除 # 或 0x 前缀
+            if (hex.StartsWith("#")) hex = hex.Substring(1);
+            if (hex.StartsWith("0x") || hex.StartsWith("0X")) hex = hex.Substring(2);
+
+            // 默认不透明
+            if (hex.Length == 6) hex = "FF" + hex; // 补全 alpha
+            if (hex.Length != 8) throw new ArgumentException("十六进制颜色长度必须为 6 或 8");
+
+            // 解析 R、G、B、A
+            byte a = byte.Parse(hex.Substring(0, 2), NumberStyles.HexNumber);
+            byte r = byte.Parse(hex.Substring(2, 2), NumberStyles.HexNumber);
+            byte g = byte.Parse(hex.Substring(4, 2), NumberStyles.HexNumber);
+            byte b = byte.Parse(hex.Substring(6, 2), NumberStyles.HexNumber);
+
+            return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+        }
+
+
+        public static Color StringToColor(string colorStr)
+        {
+            if (string.IsNullOrEmpty(colorStr))
+            {
+                return new Color();
+            }
+            int colorInt = int.Parse(colorStr, System.Globalization.NumberStyles.AllowHexSpecifier);
+            return IntToColor(colorInt);
+        }
+
+        private static Color IntToColor(int int64Value)
+        {
+            float basenum = 255;
+            var a = System.Convert.ToByte((int64Value >> 24) & 255);
+            var r = System.Convert.ToByte((int64Value >> 16) & 255);
+            var g = System.Convert.ToByte((int64Value >> 8) & 255);
+            var b = System.Convert.ToByte((int64Value >> 0) & 255);
+            return new Color((float)r / basenum, (float)g / basenum, (float)b / basenum, (float)a / basenum);
+        }
+
+        private static int ColorToInt(Color color)
+        {
+            int argb = (int)(color.a * 255) << 24;
+            argb += (int)(color.r * 255) << 16;
+            argb += (int)(color.g * 255) << 8;
+            argb += (int)(color.b * 255) << 0;
+            return argb;
+        }
     }
+
+
+
 }

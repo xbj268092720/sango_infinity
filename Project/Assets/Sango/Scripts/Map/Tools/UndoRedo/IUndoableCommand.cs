@@ -26,5 +26,10 @@ namespace Sango.Tools.UndoRedo
         /// 命令描述
         /// </summary>
         string Description { get; }
+        
+        /// <summary>
+        /// 销毁命令，在命令被舍弃时调用
+        /// </summary>
+        void Destroy();
     }
 }

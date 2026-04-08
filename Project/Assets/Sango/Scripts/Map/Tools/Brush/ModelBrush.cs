@@ -252,7 +252,7 @@ namespace Sango.Tools
             mapObj.CreateModel(model);
 
             // 创建添加模型命令并执行
-            ModelEditCommand command = new ModelEditCommand(editor, mapObj, "添加模型");
+            ModelEditCommand command = new ModelEditCommand(editor, new ModelEditCommand.ObjectCreateAction(mapObj), "添加模型");
             editor.undoRedoManager.AddCommand(command, true);
 
             if (!Input.GetKey(KeyCode.LeftShift))

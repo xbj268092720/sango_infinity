@@ -95,5 +95,26 @@ namespace Sango.Tools.UndoRedo
                 Shader.SetGlobalTexture("_BaseTex", renderTexture);
             }
         }
+        
+        /// <summary>
+        /// 销毁命令，在命令被舍弃时调用
+        /// </summary>
+        public void Destroy()
+        {
+            // 释放Texture2D资源
+            if (oldTexture != null)
+            {
+                UnityEngine.Object.Destroy(oldTexture);
+                oldTexture = null;
+            }
+            if (newTexture != null)
+            {
+                UnityEngine.Object.Destroy(newTexture);
+                newTexture = null;
+            }
+            
+            // 释放其他资源
+            editor = null;
+        }
     }
 }
