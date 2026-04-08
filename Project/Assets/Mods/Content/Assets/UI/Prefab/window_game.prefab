@@ -1695,6 +1695,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragRect: {fileID: 4994049678424664718}
+  uiCamera: {fileID: 0}
 --- !u!114 &2122005816099659063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10637,6 +10638,7 @@ GameObject:
   - component: {fileID: 174056003858870177}
   - component: {fileID: 576643473640125865}
   - component: {fileID: 2224359408337266762}
+  - component: {fileID: 5194520198746896857}
   m_Layer: 5
   m_Name: window_game
   m_TagString: Untagged
@@ -10752,6 +10754,18 @@ MonoBehaviour:
   endTurnButton: {fileID: 6258386600210117206}
   fpaObj:
   - {fileID: 4072546484029418320}
+--- !u!114 &5194520198746896857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9039031632039893254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4773211a3f57b4b82af2a4e97d8225, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9202377228863463931
 GameObject:
   m_ObjectHideFlags: 0
@@ -11023,6 +11037,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4717106743255183795, guid: bcdd1c32b23820243b4d431b102f7499, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 168.8941
+      objectReference: {fileID: 0}
+    - target: {fileID: 4717106743255183795, guid: bcdd1c32b23820243b4d431b102f7499, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 86.85289
+      objectReference: {fileID: 0}
     - target: {fileID: 4926488867757425050, guid: bcdd1c32b23820243b4d431b102f7499, type: 3}
       propertyPath: m_SpriteState.m_PressedSprite
       value: 
@@ -11062,6 +11084,10 @@ PrefabInstance:
     - target: {fileID: 5436712418936234603, guid: bcdd1c32b23820243b4d431b102f7499, type: 3}
       propertyPath: m_Color.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5436712418936234603, guid: bcdd1c32b23820243b4d431b102f7499, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 5449869254770133771, guid: bcdd1c32b23820243b4d431b102f7499, type: 3}
       propertyPath: m_Pivot.x
