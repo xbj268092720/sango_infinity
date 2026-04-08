@@ -37,6 +37,7 @@ Shader "Sango/water_urp" {
 				#pragma multi_compile _ _MAIN_LIGHT_SHADOWS //主光源阴影
 				#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE //级联阴影(多张阴影贴图, 近处分辨率高, 远处分辨率低)
 				#pragma multi_compile _ _SHADOWS_SOFT //阴影抗锯齿
+				#pragma multi_compile_fog
 
 
 				#pragma skip_variants FOG_EXP FOG_EXP2

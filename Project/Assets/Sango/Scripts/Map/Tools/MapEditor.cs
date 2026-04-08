@@ -127,6 +127,9 @@ namespace Sango.Tools
             layoutManager = new LayoutManager(this);
             layoutManager.LoadLayout();
 
+            // 初始化自动保存路径列表
+            InitializeAutoSavePaths();
+
             Sango.Core.GameController.Instance.DragMoveViewEnabled = false;
 
         }
@@ -437,11 +440,24 @@ namespace Sango.Tools
             if (!string.IsNullOrEmpty(lastSavedPath))
             {
                 // 生成带auto_save后缀的文件名，包含时间戳确保唯一性
-                string directory = System.IO.Path.GetDirectoryName(lastSavedPath);
+                // 获取原始文件名和扩展名
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(lastSavedPath);
                 string extension = System.IO.Path.GetExtension(lastSavedPath);
                 string timestamp = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string autoSavePath = System.IO.Path.Combine(directory, $"{fileName}_auto_save_{timestamp}{extension}");
+                
+                // 创建AutoSaveMap目录路径（与Map平级）
+                string mapDirectory = System.IO.Path.GetDirectoryName(lastSavedPath);
+                string contentDirectory = System.IO.Path.GetDirectoryName(mapDirectory);
+                string autoSaveDirectory = System.IO.Path.Combine(contentDirectory, "AutoSaveMap");
+                
+                // 确保AutoSaveMap目录存在
+                if (!System.IO.Directory.Exists(autoSaveDirectory))
+                {
+                    System.IO.Directory.CreateDirectory(autoSaveDirectory);
+                }
+                
+                // 构建自动保存文件路径
+                string autoSavePath = System.IO.Path.Combine(autoSaveDirectory, $"{fileName}_auto_save_{timestamp}{extension}");
 
                 // 保存地图和底图
                 map.SaveMap(autoSavePath);
@@ -495,6 +511,84 @@ namespace Sango.Tools
                     catch (System.Exception e)
                     {
                         Sango.Log.Error($"删除旧自动保存底图失败: {e.Message}");
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 初始化自动保存路径列表
+        /// </summary>
+        private void InitializeAutoSavePaths()
+        {
+            autoSavePaths.Clear();
+            
+            // 如果有上次保存的路径，查找对应的AutoSaveMap目录
+            if (!string.IsNullOrEmpty(lastSavedPath))
+            {
+                string mapDirectory = System.IO.Path.GetDirectoryName(lastSavedPath);
+                string contentDirectory = System.IO.Path.GetDirectoryName(mapDirectory);
+                string autoSaveDirectory = System.IO.Path.Combine(contentDirectory, "AutoSaveMap");
+                
+                if (System.IO.Directory.Exists(autoSaveDirectory))
+                {
+                    // 获取AutoSaveMap目录下的所有自动保存文件
+                    string[] autoSaveFiles = System.IO.Directory.GetFiles(autoSaveDirectory, "*_auto_save_*.bin");
+                    
+                    if (autoSaveFiles.Length > 0)
+                    {
+                        // 按文件修改时间排序（最新的在最后）
+                        System.Array.Sort(autoSaveFiles, (a, b) => 
+                            System.IO.File.GetLastWriteTime(a).CompareTo(System.IO.File.GetLastWriteTime(b)));
+                        
+                        // 添加到自动保存路径列表
+                        autoSavePaths.AddRange(autoSaveFiles);
+                        
+                        // 清理超出限制的旧文件
+                        while (autoSavePaths.Count > autoSaveLimit)
+                        {
+                            string oldestPath = autoSavePaths[0];
+                            autoSavePaths.RemoveAt(0);
+                            
+                            // 删除旧地图文件
+                            if (System.IO.File.Exists(oldestPath))
+                            {
+                                try
+                                {
+                                    System.IO.File.Delete(oldestPath);
+                                    Sango.Log.Info($"已删除旧的自动保存文件: {oldestPath}");
+                                }
+                                catch (System.Exception e)
+                                {
+                                    Sango.Log.Error($"删除旧自动保存文件失败: {e.Message}");
+                                }
+                            }
+                            
+                            // 删除对应的底图文件
+                            try
+                            {
+                                string oldDir = System.IO.Path.GetDirectoryName(oldestPath);
+                                string oldFileName = System.IO.Path.GetFileNameWithoutExtension(oldestPath);
+                                // 移除_auto_save_时间戳后缀，获取基础地图名
+                                int autoSaveIndex = oldFileName.LastIndexOf("_auto_save_");
+                                if (autoSaveIndex > 0)
+                                {
+                                    string baseMapName = oldFileName.Substring(0, autoSaveIndex);
+                                    string baseTexPath = System.IO.Path.Combine(oldDir, "..", "Assets", "Map", baseMapName, "BaseTex");
+                                    if (System.IO.Directory.Exists(baseTexPath))
+                                    {
+                                        System.IO.Directory.Delete(baseTexPath, true);
+                                        Sango.Log.Info($"已删除旧的自动保存底图文件夹: {baseTexPath}");
+                                    }
+                                }
+                            }
+                            catch (System.Exception e)
+                            {
+                                Sango.Log.Error($"删除旧自动保存底图失败: {e.Message}");
+                            }
+                        }
+                        
+                        Sango.Log.Info($"已加载 {autoSavePaths.Count} 个自动保存文件");
                     }
                 }
             }

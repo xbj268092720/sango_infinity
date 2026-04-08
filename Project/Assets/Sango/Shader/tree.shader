@@ -30,7 +30,7 @@ Shader "Sango/tree_urp" {
 				#define SANGO_TERRAIN_TYPE 1
 				#include "sango_outlineLib.hlsl"
 				//#pragma multi_compile_fwdbase
-				//#pragma multi_compile_fog
+				#pragma multi_compile_fog
 				#pragma skip_variants SHADOWS_SOFT DIRLIGHTMAP_COMBINED
 				//#pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON
 				#pragma multi_compile _ SANGO_EDITOR

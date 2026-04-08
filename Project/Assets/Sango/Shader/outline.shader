@@ -20,7 +20,7 @@ Shader "Sango/outline_urp" {
 				HLSLPROGRAM
 				#include "sango_outlineLib.hlsl"
 				//#pragma multi_compile_fwdbase
-				//#pragma multi_compile_fog
+				#pragma multi_compile_fog
 				#pragma skip_variants DIRLIGHTMAP_COMBINED
 				//#pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON
 				#pragma multi_compile _ SANGO_EDITOR

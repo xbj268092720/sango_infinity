@@ -303,22 +303,22 @@ namespace Sango.Render
 
         private void MoveCameraKeyBoard()
         {
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))//(Input.GetAxis("Horizontal")<0)
+            if (/*Input.GetKey(KeyCode.A) ||*/ Input.GetKey(KeyCode.LeftArrow))//(Input.GetAxis("Horizontal")<0)
             {
                 position += -transform.right * keyBoardMoveSpeed * Time.unscaledDeltaTime;
             }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            if (/*Input.GetKey(KeyCode.D) ||*/ Input.GetKey(KeyCode.RightArrow))
             {
                 position += transform.right * keyBoardMoveSpeed * Time.unscaledDeltaTime;
             }
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            if (/*Input.GetKey(KeyCode.W) ||*/ Input.GetKey(KeyCode.UpArrow))
             {
                 Vector3 forward = transform.forward;
                 forward.y = 0;
                 forward.Normalize();
                 position += forward * keyBoardMoveSpeed * Time.unscaledDeltaTime;
             }
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            if (/*Input.GetKey(KeyCode.S) ||*/ Input.GetKey(KeyCode.DownArrow))
             {
                 Vector3 forward = transform.forward;
                 forward.y = 0;
