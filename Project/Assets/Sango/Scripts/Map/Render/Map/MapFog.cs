@@ -48,10 +48,13 @@ namespace Sango.Render
 
         public override void UpdateRender()
         {
-            Shader.SetGlobalColor("_FogColor", fog_color[curSeason]);
-            Shader.SetGlobalFloat("_MixBegin", fog_start[curSeason]);
-            Shader.SetGlobalFloat("_MixEnd", fog_end[curSeason]);
-            Shader.SetGlobalFloat("_MixPower", fog_density[curSeason]);
+            //Shader.SetGlobalColor("_FogColor", fog_color[curSeason]);
+            RenderSettings.fogColor = fog_color[curSeason];
+            RenderSettings.fogStartDistance = fog_start[curSeason];
+            RenderSettings.fogEndDistance = fog_end[curSeason];
+            //Shader.SetGlobalFloat("_MixBegin", fog_start[curSeason]);
+            //Shader.SetGlobalFloat("_MixEnd", fog_end[curSeason]);
+            //Shader.SetGlobalFloat("_MixPower", fog_density[curSeason]);
         }
         public Color fogColor
         {
@@ -59,7 +62,7 @@ namespace Sango.Render
             set
             {
                 fog_color[curSeason] = value;
-                Shader.SetGlobalColor("_FogColor", fog_color[curSeason]);
+                RenderSettings.fogColor = fog_color[curSeason];
             }
         }
         public float fogStart
@@ -68,7 +71,7 @@ namespace Sango.Render
             set
             {
                 fog_start[curSeason] = value;
-                Shader.SetGlobalFloat("_MixBegin", fog_start[curSeason]);
+                RenderSettings.fogStartDistance = fog_start[curSeason];
             }
         }
         public float fogEnd
@@ -77,7 +80,7 @@ namespace Sango.Render
             set
             {
                 fog_end[curSeason] = value;
-                Shader.SetGlobalFloat("_MixEnd", fog_end[curSeason]);
+                RenderSettings.fogEndDistance = fog_end[curSeason];
             }
         }
         public float fogDensity
@@ -86,7 +89,7 @@ namespace Sango.Render
             set
             {
                 fog_density[curSeason] = value;
-                Shader.SetGlobalFloat("_MixPower", fog_density[curSeason]);
+                //Shader.SetGlobalFloat("_MixPower", fog_density[curSeason]);
             }
         }
         public bool fogEnabled

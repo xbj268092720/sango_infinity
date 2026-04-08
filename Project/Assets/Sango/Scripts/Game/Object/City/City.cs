@@ -248,9 +248,9 @@ namespace Sango.Core
         /// <summary>
         /// 所属州
         /// </summary>
-        [JsonConverter(typeof(Id2ObjConverter<State>))]
+        [JsonConverter(typeof(Id2ObjConverter<Province>))]
         [JsonProperty]
-        public State State;
+        public Province province;
 
         /// <summary>
         /// 相邻城市

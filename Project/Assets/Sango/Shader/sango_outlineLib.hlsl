@@ -73,6 +73,8 @@ struct VertexOutput
 	float4 pos : SV_POSITION;
 	float4 screenPos : TEXCOORD2;
 	float2 uv : TEXCOORD0;
+	half fogCoord: TEXCOORD3;
+
 };
 
 VertexOutput outline_vert(VertexInput v)
@@ -90,7 +92,9 @@ VertexOutput outline_vert(VertexInput v)
 	o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
 
 	o.pos = TransformObjectToHClip(v.vertex.xyz);
-	o.screenPos = ComputeScreenPos(o.pos);
+	o.fogCoord = ComputeFogFactor(o.pos.z);
+
+	//o.screenPos = ComputeScreenPos(o.pos);
 	UNITY_TRANSFER_INSTANCE_ID(v, o);
 
 	return o;
@@ -101,16 +105,20 @@ half4 outline_frag(VertexOutput i) : SV_TARGET
 {
 	UNITY_SETUP_INSTANCE_ID(i);
 
-	float2 screenPos = i.screenPos.xy / i.screenPos.w;
+	/*float2 screenPos = i.screenPos.xy / i.screenPos.w;
 	float depth = SAMPLE_TEXTURE2D_X(_CameraDepthTexture, sampler_CameraDepthTexture, screenPos).r;
 	float depthValue = Linear01Depth(depth, _ZBufferParams);
-	float linear01Depth = pow(saturate((depthValue * 980 - _MixBegin) / (_MixEnd - _MixBegin)), _MixPower);
+	float linear01Depth = pow(saturate((depthValue * 980 - _MixBegin) / (_MixEnd - _MixBegin)), _MixPower);*/
+
 	half4 _MainTex_var = SAMPLE_TEXTURE2D(_BaseMap, smp, i.uv);
 
 	clip(_MainTex_var.a - 0.5);
 
 	half4 finalRGBA = 1;
-	finalRGBA.rgb = lerp(_FogColor.rgb, 0, saturate(1 - linear01Depth));//saturate(1-linear01Depth));
+
+	finalRGBA.rgb = MixFog(0, i.fogCoord);
+
+	//finalRGBA.rgb = lerp(_FogColor.rgb, 0, saturate(1 - linear01Depth));//saturate(1-linear01Depth));
 	//UNITY_APPLY_FOG(i.fogCoord, finalRGBA);
 	return finalRGBA;
 }

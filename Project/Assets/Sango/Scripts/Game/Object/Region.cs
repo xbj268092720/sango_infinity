@@ -5,8 +5,8 @@ namespace Sango.Core
     /// 州
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class State : SangoObject
+    public class Region : SangoObject
     {
-        
+
     }
 }

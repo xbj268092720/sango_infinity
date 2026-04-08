@@ -178,6 +178,7 @@ struct SangoVertexOutput
 #if SANGO_TEXT
 	float2 ouv : TEXCOORD5;
 #endif
+	half fogCoord: TEXCOORD6;
 };
 
 float2 SangoWaterTransofromUV(SangoVertexOutput i)
@@ -222,8 +223,10 @@ SangoVertexOutput sango_vert(SangoVertexInput v)
 
 	o.vertColor = v.vertColor;
 
+	o.fogCoord = ComputeFogFactor(vertexInput.positionCS.z);
+
 	o.shadowCoord = GetShadowCoord(vertexInput);
-	o.screenPos = ComputeScreenPos(o.pos);
+	//o.screenPos = ComputeScreenPos(o.pos);
 	UNITY_TRANSFER_INSTANCE_ID(v, o);
 	return o;
 }
@@ -393,11 +396,13 @@ float4 sango_frag(SangoVertexOutput i) : COLOR
 	#endif
 
 	#if SANGO_FOG && APPLY_FOG
-		float2 screenPos= i.screenPos .xy / i.screenPos .w;
+		finalRGBA.rgb = MixFog(finalRGBA.rgb, i.fogCoord);
+
+		/*float2 screenPos= i.screenPos .xy / i.screenPos .w;
 		float depth = SAMPLE_TEXTURE2D_X(_CameraDepthTexture, sampler_CameraDepthTexture, screenPos).r;
 		float depthValue = LinearEyeDepth(depth, _ZBufferParams);
 		float linear01Depth = pow(saturate((depthValue - _MixBegin) / (_MixEnd - _MixBegin)), _MixPower);
-		finalRGBA = lerp(finalRGBA, _FogColor, linear01Depth * _FogColor.a);
+		finalRGBA = lerp(finalRGBA, _FogColor, linear01Depth * _FogColor.a);*/
 		//finalRGBA = float4(depthValue,depthValue,depthValue,1);
 	#endif
 

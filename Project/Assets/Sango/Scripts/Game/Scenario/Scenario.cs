@@ -198,9 +198,17 @@ namespace Sango.Core
             {
                 return CommonData.Flags as Database<T>;
             }
-            else if (tType == typeof(State))
+            else if (tType == typeof(Province))
             {
-                return CommonData.States as Database<T>;
+                return CommonData.Provinces as Database<T>;
+            }
+            else if (tType == typeof(Region))
+            {
+                return CommonData.Regions as Database<T>;
+            }
+            else if (tType == typeof(Title))
+            {
+                return CommonData.Titles as Database<T>;
             }
             else if (tType == typeof(CityLevelType))
             {
@@ -320,9 +328,17 @@ namespace Sango.Core
             {
                 return CommonData.Flags.Get(id);
             }
-            else if (tType == typeof(State))
+            else if (tType == typeof(Province))
             {
-                return CommonData.States.Get(id);
+                return CommonData.Provinces.Get(id);
+            }
+            else if (tType == typeof(Region))
+            {
+                return CommonData.Regions.Get(id);
+            }
+            else if (tType == typeof(Title))
+            {
+                return CommonData.Titles.Get(id);
             }
             else if (tType == typeof(CityLevelType))
             {

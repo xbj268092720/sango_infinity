@@ -79,9 +79,23 @@ namespace Sango.Core
         /// <summary>
         /// 州
         /// </summary>
-        [JsonConverter(typeof(SangoObjectSetConverter<State>))]
+        [JsonConverter(typeof(SangoObjectSetConverter<Province>))]
         [JsonProperty]
-        public SangoObjectSet<State> States = new SangoObjectSet<State>();
+        public SangoObjectSet<Province> Provinces = new SangoObjectSet<Province>();
+
+        /// <summary>
+        /// 州
+        /// </summary>
+        [JsonConverter(typeof(SangoObjectSetConverter<Region>))]
+        [JsonProperty]
+        public SangoObjectSet<Region> Regions = new SangoObjectSet<Region>();
+
+        /// <summary>
+        /// 爵位称号
+        /// </summary>
+        [JsonConverter(typeof(SangoObjectSetConverter<Title>))]
+        [JsonProperty]
+        public SangoObjectSet<Title> Titles = new SangoObjectSet<Title>();
 
         /// <summary>
         /// 官职

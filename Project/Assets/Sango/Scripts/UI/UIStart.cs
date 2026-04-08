@@ -16,7 +16,7 @@ using Sango.Core; namespace Sango.UI
         {
             version.text = $"版本: {Application.version}";
             AudioManager.Instance.PlayBgm("Assets/Sound/2238.ogg");
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
             mapEditorBtn.SetActive(false);
 #endif
         }

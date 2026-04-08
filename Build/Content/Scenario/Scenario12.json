@@ -20,7 +20,6 @@
       "NeighborList": [
         2
       ],
-      "StateId": 1,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -43,6 +42,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 1,
       "rot": 0.0,
       "security": 80,
       "specialty": 4,
@@ -68,7 +68,6 @@
         12,
         13
       ],
-      "StateId": 3,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -97,6 +96,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 3,
       "rot": 0.0,
       "security": 80,
       "specialty": 5,
@@ -123,7 +123,6 @@
         23,
         26
       ],
-      "StateId": 3,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -146,6 +145,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 3,
       "rot": 0.0,
       "security": 80,
       "specialty": 3,
@@ -171,7 +171,6 @@
         10,
         13
       ],
-      "StateId": 4,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -200,6 +199,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 4,
       "rot": 0.0,
       "security": 80,
       "specialty": 1,
@@ -227,7 +227,6 @@
         16,
         17
       ],
-      "StateId": 4,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -260,6 +259,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 4,
       "rot": 0.0,
       "security": 80,
       "specialty": 5,
@@ -285,7 +285,6 @@
         16,
         17
       ],
-      "StateId": 4,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -322,6 +321,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 4,
       "rot": 0.0,
       "security": 80,
       "specialty": 0,
@@ -346,7 +346,6 @@
         14,
         29
       ],
-      "StateId": 4,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -377,6 +376,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 4,
       "rot": 0.0,
       "security": 80,
       "specialty": 2,
@@ -402,7 +402,6 @@
         17,
         18
       ],
-      "StateId": 5,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -435,6 +434,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 5,
       "rot": 0.0,
       "security": 80,
       "specialty": 0,
@@ -462,7 +462,6 @@
         29,
         13
       ],
-      "StateId": 6,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -495,6 +494,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 6,
       "rot": 0.0,
       "security": 80,
       "specialty": 1,
@@ -520,7 +520,6 @@
         20,
         37
       ],
-      "StateId": 6,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -553,6 +552,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 6,
       "rot": 0.0,
       "security": 80,
       "specialty": 0,
@@ -577,7 +577,6 @@
         29,
         37
       ],
-      "StateId": 6,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -600,6 +599,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 6,
       "rot": 0.0,
       "security": 80,
       "specialty": 5,
@@ -624,7 +624,6 @@
         3,
         4
       ],
-      "StateId": 1,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -651,6 +650,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 1,
       "rot": 0.0,
       "security": 80,
       "specialty": 4,
@@ -675,7 +675,6 @@
         21,
         22
       ],
-      "StateId": 7,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -698,6 +697,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 7,
       "rot": 0.0,
       "security": 80,
       "specialty": 4,
@@ -722,7 +722,6 @@
         22,
         37
       ],
-      "StateId": 7,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -755,6 +754,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 7,
       "rot": 0.0,
       "security": 80,
       "specialty": 4,
@@ -778,7 +778,6 @@
         20,
         21
       ],
-      "StateId": 7,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -805,6 +804,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 7,
       "rot": 0.0,
       "security": 80,
       "specialty": 4,
@@ -830,7 +830,6 @@
         26,
         27
       ],
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -861,6 +860,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 0.0,
       "security": 80,
       "specialty": 0,
@@ -884,7 +884,6 @@
         23,
         25
       ],
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -919,6 +918,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 0.0,
       "security": 80,
       "specialty": 6,
@@ -941,7 +941,6 @@
       "NeighborList": [
         24
       ],
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -964,6 +963,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 0.0,
       "security": 80,
       "specialty": 3,
@@ -989,7 +989,6 @@
         27,
         28
       ],
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1012,6 +1011,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 0.0,
       "security": 80,
       "specialty": 6,
@@ -1038,7 +1038,6 @@
         31,
         32
       ],
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1061,6 +1060,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 0.0,
       "security": 80,
       "specialty": 6,
@@ -1087,7 +1087,6 @@
         31,
         32
       ],
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1116,6 +1115,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 0.0,
       "security": 80,
       "specialty": 2,
@@ -1141,7 +1141,6 @@
         19,
         30
       ],
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1164,6 +1163,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 0.0,
       "security": 80,
       "specialty": 1,
@@ -1188,7 +1188,6 @@
         4,
         6
       ],
-      "StateId": 1,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1221,6 +1220,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 1,
       "rot": 0.0,
       "security": 80,
       "specialty": 2,
@@ -1245,7 +1245,6 @@
         29,
         31
       ],
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1276,6 +1275,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 0.0,
       "security": 80,
       "specialty": 0,
@@ -1303,7 +1303,6 @@
         33,
         36
       ],
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1326,6 +1325,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 0.0,
       "security": 80,
       "specialty": 6,
@@ -1352,7 +1352,6 @@
         33,
         34
       ],
-      "StateId": 10,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1383,6 +1382,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 10,
       "rot": 0.0,
       "security": 80,
       "specialty": 6,
@@ -1408,7 +1408,6 @@
         35,
         36
       ],
-      "StateId": 10,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1431,6 +1430,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 10,
       "rot": 0.0,
       "security": 80,
       "specialty": 2,
@@ -1454,7 +1454,6 @@
         32,
         35
       ],
-      "StateId": 10,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1477,6 +1476,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 10,
       "rot": 0.0,
       "security": 80,
       "specialty": 1,
@@ -1500,7 +1500,6 @@
         33,
         34
       ],
-      "StateId": 10,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1523,6 +1522,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 10,
       "rot": 0.0,
       "security": 80,
       "specialty": 3,
@@ -1547,7 +1547,6 @@
         33,
         39
       ],
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1570,6 +1569,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 0.0,
       "security": 80,
       "specialty": 3,
@@ -1595,7 +1595,6 @@
         21,
         38
       ],
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1618,6 +1617,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 0.0,
       "security": 80,
       "specialty": 2,
@@ -1642,7 +1642,6 @@
         39,
         40
       ],
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1671,6 +1670,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 0.0,
       "security": 80,
       "specialty": 3,
@@ -1696,7 +1696,6 @@
         40,
         41
       ],
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1725,6 +1724,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 0.0,
       "security": 80,
       "specialty": 1,
@@ -1750,7 +1750,6 @@
         5,
         7
       ],
-      "StateId": 2,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1783,6 +1782,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 2,
       "rot": 0.0,
       "security": 80,
       "specialty": 5,
@@ -1807,7 +1807,6 @@
         39,
         41
       ],
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1830,6 +1829,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 0.0,
       "security": 80,
       "specialty": 0,
@@ -1854,7 +1854,6 @@
         42,
         39
       ],
-      "StateId": 12,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1877,6 +1876,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 12,
       "rot": 0.0,
       "security": 80,
       "specialty": 1,
@@ -1899,7 +1899,6 @@
       "NeighborList": [
         41
       ],
-      "StateId": 12,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1922,6 +1921,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 12,
       "rot": 0.0,
       "security": 80,
       "specialty": 5,
@@ -1942,7 +1942,6 @@
       "CityLevelType": 1,
       "Id": 43,
       "Name": "壺關",
-      "StateId": 2,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -1966,6 +1965,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 2,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -1984,7 +1984,6 @@
       "CityLevelType": 1,
       "Id": 44,
       "Name": "虎牢關",
-      "StateId": 5,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2008,6 +2007,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 5,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2026,7 +2026,6 @@
       "CityLevelType": 1,
       "Id": 45,
       "Name": "潼關",
-      "StateId": 6,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2050,6 +2049,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 6,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2068,7 +2068,6 @@
       "CityLevelType": 1,
       "Id": 46,
       "Name": "函谷關",
-      "StateId": 6,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2092,6 +2091,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 6,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2110,7 +2110,6 @@
       "CityLevelType": 1,
       "Id": 47,
       "Name": "武關",
-      "StateId": 6,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2134,6 +2133,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 6,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2152,7 +2152,6 @@
       "CityLevelType": 1,
       "Id": 48,
       "Name": "陽平關",
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2172,6 +2171,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2190,7 +2190,6 @@
       "CityLevelType": 1,
       "Id": 49,
       "Name": "劍閣",
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2214,6 +2213,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2237,7 +2237,6 @@
         8,
         12
       ],
-      "StateId": 2,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2270,6 +2269,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 2,
       "rot": 0.0,
       "security": 80,
       "specialty": 3,
@@ -2290,7 +2290,6 @@
       "CityLevelType": 1,
       "Id": 50,
       "Name": "葭萌關",
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2314,6 +2313,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2332,7 +2332,6 @@
       "CityLevelType": 1,
       "Id": 51,
       "Name": "涪水關",
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2352,6 +2351,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2370,7 +2370,6 @@
       "CityLevelType": 1,
       "Id": 52,
       "Name": "綿竹關",
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2390,6 +2389,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2408,7 +2408,6 @@
       "CityLevelType": 1,
       "Id": 53,
       "Name": "安平港",
-      "StateId": 1,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2428,6 +2427,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 1,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2446,7 +2446,6 @@
       "CityLevelType": 1,
       "Id": 54,
       "Name": "高唐港",
-      "StateId": 2,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2470,6 +2469,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 2,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2488,7 +2488,6 @@
       "CityLevelType": 1,
       "Id": 55,
       "Name": "西河港",
-      "StateId": 2,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2512,6 +2511,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 2,
       "rot": 4.71238899230957,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2530,7 +2530,6 @@
       "CityLevelType": 1,
       "Id": 56,
       "Name": "白馬港",
-      "StateId": 2,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2550,6 +2549,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 2,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2568,7 +2568,6 @@
       "CityLevelType": 1,
       "Id": 57,
       "Name": "昌陽港",
-      "StateId": 3,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2592,6 +2591,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 3,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2610,7 +2610,6 @@
       "CityLevelType": 1,
       "Id": 58,
       "Name": "臨濟港",
-      "StateId": 3,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2634,6 +2633,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 3,
       "rot": 4.71238899230957,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2652,7 +2652,6 @@
       "CityLevelType": 1,
       "Id": 59,
       "Name": "海陵港",
-      "StateId": 3,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2676,6 +2675,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 3,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2697,7 +2697,6 @@
         3,
         7
       ],
-      "StateId": 2,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2730,6 +2729,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 2,
       "rot": 0.0,
       "security": 80,
       "specialty": 4,
@@ -2750,7 +2750,6 @@
       "CityLevelType": 1,
       "Id": 60,
       "Name": "江都港",
-      "StateId": 3,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2774,6 +2773,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 3,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2792,7 +2792,6 @@
       "CityLevelType": 1,
       "Id": 61,
       "Name": "濡須港",
-      "StateId": 3,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2812,6 +2811,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 3,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2830,7 +2830,6 @@
       "CityLevelType": 1,
       "Id": 62,
       "Name": "頓丘港",
-      "StateId": 4,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2854,6 +2853,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 4,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2872,7 +2872,6 @@
       "CityLevelType": 1,
       "Id": 63,
       "Name": "官渡港",
-      "StateId": 4,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2896,6 +2895,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 4,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2914,7 +2914,6 @@
       "CityLevelType": 1,
       "Id": 64,
       "Name": "孟津港",
-      "StateId": 5,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2938,6 +2937,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 5,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2956,7 +2956,6 @@
       "CityLevelType": 1,
       "Id": 65,
       "Name": "解縣港",
-      "StateId": 5,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -2980,6 +2979,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 5,
       "rot": 4.71238899230957,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -2998,7 +2998,6 @@
       "CityLevelType": 1,
       "Id": 66,
       "Name": "新豐港",
-      "StateId": 6,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3022,6 +3021,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 6,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3040,7 +3040,6 @@
       "CityLevelType": 1,
       "Id": 67,
       "Name": "夏陽港",
-      "StateId": 6,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3064,6 +3063,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 6,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3082,7 +3082,6 @@
       "CityLevelType": 1,
       "Id": 68,
       "Name": "房陵港",
-      "StateId": 6,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3102,6 +3101,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 6,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3120,7 +3120,6 @@
       "CityLevelType": 1,
       "Id": 69,
       "Name": "蕪湖港",
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3144,6 +3143,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 4.71238899230957,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3168,7 +3168,6 @@
         12,
         13
       ],
-      "StateId": 2,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3191,6 +3190,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 2,
       "rot": 0.0,
       "security": 80,
       "specialty": 0,
@@ -3211,7 +3211,6 @@
       "CityLevelType": 1,
       "Id": 70,
       "Name": "虎林港",
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3235,6 +3234,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3253,7 +3253,6 @@
       "CityLevelType": 1,
       "Id": 71,
       "Name": "曲阿港",
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3279,6 +3278,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3297,7 +3297,6 @@
       "CityLevelType": 1,
       "Id": 72,
       "Name": "句章港",
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3317,6 +3316,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3335,7 +3335,6 @@
       "CityLevelType": 1,
       "Id": 73,
       "Name": "皖口港",
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3355,6 +3354,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3373,7 +3373,6 @@
       "CityLevelType": 1,
       "Id": 74,
       "Name": "九江港",
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3393,6 +3392,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3411,7 +3411,6 @@
       "CityLevelType": 1,
       "Id": 75,
       "Name": "陸口港",
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3431,6 +3430,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 4.71238899230957,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3449,7 +3449,6 @@
       "CityLevelType": 1,
       "Id": 76,
       "Name": "鄱陽港",
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3469,6 +3468,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 4.71238899230957,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3487,7 +3487,6 @@
       "CityLevelType": 1,
       "Id": 77,
       "Name": "盧陵港",
-      "StateId": 8,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3507,6 +3506,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 8,
       "rot": 4.71238899230957,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3525,7 +3525,6 @@
       "CityLevelType": 1,
       "Id": 78,
       "Name": "夏口港",
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3549,6 +3548,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3567,7 +3567,6 @@
       "CityLevelType": 1,
       "Id": 79,
       "Name": "湖陽港",
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3587,6 +3586,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3608,7 +3608,6 @@
         5,
         9
       ],
-      "StateId": 3,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3641,6 +3640,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 3,
       "rot": 0.0,
       "security": 80,
       "specialty": 2,
@@ -3661,7 +3661,6 @@
       "CityLevelType": 1,
       "Id": 80,
       "Name": "中廬港",
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3685,6 +3684,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3703,7 +3703,6 @@
       "CityLevelType": 1,
       "Id": 81,
       "Name": "烏林港",
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3723,6 +3722,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3741,7 +3741,6 @@
       "CityLevelType": 1,
       "Id": 82,
       "Name": "漢津港",
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3761,6 +3760,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3779,7 +3779,6 @@
       "CityLevelType": 1,
       "Id": 83,
       "Name": "江津港",
-      "StateId": 9,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3799,6 +3798,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 9,
       "rot": 4.71238899230957,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3817,7 +3817,6 @@
       "CityLevelType": 1,
       "Id": 84,
       "Name": "羅縣港",
-      "StateId": 10,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3841,6 +3840,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 10,
       "rot": 4.71238899230957,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3859,7 +3859,6 @@
       "CityLevelType": 1,
       "Id": 85,
       "Name": "洞庭港",
-      "StateId": 10,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3879,6 +3878,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 10,
       "rot": 1.5707963705062866,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3897,7 +3897,6 @@
       "CityLevelType": 1,
       "Id": 86,
       "Name": "公安港",
-      "StateId": 10,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3917,6 +3916,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 10,
       "rot": 0.0,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3935,7 +3935,6 @@
       "CityLevelType": 1,
       "Id": 87,
       "Name": "巫縣港",
-      "StateId": 11,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -3955,6 +3954,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 11,
       "rot": 3.1415927410125732,
       "storeLimit": 500000,
       "troopPopulation": 0,
@@ -3977,7 +3977,6 @@
         10,
         11
       ],
-      "StateId": 3,
       "actionFlag": 0,
       "agriculture": 0,
       "agricultureLimit": 200,
@@ -4008,6 +4007,7 @@
       "outsideSlot": 10,
       "popularSupport": 100,
       "population": 0,
+      "province": 3,
       "rot": 0.0,
       "security": 80,
       "specialty": 0,
@@ -4312,6 +4312,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數勢力同樣，以擊潰何進為目標。領地之陳留於洛陽近處，難逃首當其衝何進軍之正面攻擊。於初期可託付重任部下僅夏侯惇、夏侯淵、深感人才短缺。招攬曹家、夏侯家之一族武將、陳留之在野武將加入旗下，充實人才基層是矣。直至整頓完成國力及人才為止，可否承受何進之猛攻一事為勝敗關鍵。",
       "like": [
@@ -4365,8 +4366,7 @@
       ],
       "policy": 1,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "10": {
       "Counsellor": 22,
@@ -4386,6 +4386,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數勢力相同，以打倒何進為目標。領地為小沛，部下僅張衛、閻圃二人。人才擴充可謂當務之急。縱使傾出全力亦毫無勝算可言，故於尚未捲入中原之爭前，進軍淮南為唯一解決之道。留心袁術動向，與劉焉維持友好關係以割據為目標。",
       "like": [
@@ -4439,8 +4440,7 @@
       ],
       "policy": 2,
       "policy_target": 5,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "12": {
       "Counsellor": 112,
@@ -4464,6 +4464,7 @@
         14,
         15
       ],
+      "Title": 2,
       "allies": [
         2
       ],
@@ -4519,8 +4520,7 @@
       ],
       "policy": 2,
       "policy_target": 1,
-      "stateName?": 0,
-      "title": 9
+      "stateName?": 0
     },
     "17": {
       "Counsellor": 60,
@@ -4540,6 +4540,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 2,
       "allies": [
         37
       ],
@@ -4595,8 +4596,7 @@
       ],
       "policy": 2,
       "policy_target": 1,
-      "stateName?": 0,
-      "title": 9
+      "stateName?": 0
     },
     "19": {
       "Counsellor": 0,
@@ -4616,6 +4616,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 2,
       "allies": [],
       "desc": "與大多數勢力相同，以打倒何進為目標。領地僅擁建業一地。部下有曹豹、笮融、張闓等惡名昭彰之武將齊聚一堂，其資質低劣，令人咋舌。縱使全力奮鬥，恐難圓稱霸天下美夢。留意鄰接勢孫堅之動向，紮實整頓國力及開發人材。可登庸多少江東能人志士將成為勝負關鍵。",
       "like": [
@@ -4669,8 +4670,7 @@
       ],
       "policy": 4,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 9
+      "stateName?": 0
     },
     "2": {
       "Counsellor": 99,
@@ -4690,6 +4690,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [
         12
       ],
@@ -4745,8 +4746,7 @@
       ],
       "policy": 1,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "22": {
       "Counsellor": 0,
@@ -4770,6 +4770,7 @@
         13,
         17
       ],
+      "Title": 1,
       "allies": [
         29,
         40
@@ -4826,8 +4827,7 @@
       ],
       "policy": 2,
       "policy_target": 1,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "29": {
       "Counsellor": 0,
@@ -4850,6 +4850,7 @@
         1,
         17
       ],
+      "Title": 1,
       "allies": [
         22,
         40
@@ -4906,8 +4907,7 @@
       ],
       "policy": 2,
       "policy_target": 2,
-      "stateName?": 6,
-      "title": 10
+      "stateName?": 6
     },
     "3": {
       "Counsellor": 467,
@@ -4929,6 +4929,7 @@
       "Techniques": [
         9
       ],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數之勢力相同，以打倒何進為目標。不過，因領地之吳距中央甚遠，佔領周遭空白都市以圖制霸江東可謂上策。部下有程普，黃蓋、韓當、祖茂等眾良將雲集，無話可說。若可早日擊潰建業之陶謙進而奠定地盤，勢必利於日後發展。",
       "like": [
@@ -4982,8 +4983,7 @@
       ],
       "policy": 1,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "30": {
       "Counsellor": 19,
@@ -5003,6 +5003,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 10,
       "allies": [],
       "desc": "陷於四面楚歌之境地。佔領有洛陽、長安、宛３都市。遭受重圍之形勢雖危急，其國力及人才之豐，足以傲視其他諸侯。若能善用皇甫嵩、盧植、袁紹、顏良、文醜等文武雙全人才，縱使面臨多方作戰仍可輕鬆迎戰。其中應特別留意陳留之曹操，盼於其尚處弱小時期予以殲滅實屬上策。",
       "like": [
@@ -5056,8 +5057,7 @@
       ],
       "policy": 1,
       "policy_target": 0,
-      "stateName?": 7,
-      "title": 1
+      "stateName?": 7
     },
     "31": {
       "Counsellor": 0,
@@ -5077,6 +5077,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 2,
       "allies": [],
       "desc": "與多數勢力相同，以打倒何進為目標。領地僅晉陽一地。雖說部下之質、量皆低，但因天下無雙之豪傑‧呂布隸屬旗下故得以振奮人心。若能加以善用，勢必可加強國力且行有餘力。故此確保智略人才可謂為當務之急。預測未來之發展性，先行壓制鄴一計亦不失為良策一則。",
       "like": [
@@ -5130,8 +5131,7 @@
       ],
       "policy": 2,
       "policy_target": 1,
-      "stateName?": 0,
-      "title": 9
+      "stateName?": 0
     },
     "36": {
       "Counsellor": 533,
@@ -5151,6 +5151,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數勢力相同，以打倒何進為目標。領地為下邳，部之下之質、量皆低。縱使奮力苦鬥亦毫無勝算可言，故理應及早放棄逐鹿中原一事。無需執著下邳一地，若可於北海之管亥侵略而至前，轉移陣地至淮南即可樂觀未來。留意袁術之動向，立志割據。",
       "like": [
@@ -5204,8 +5205,7 @@
       ],
       "policy": 4,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "37": {
       "Counsellor": 260,
@@ -5228,6 +5228,7 @@
         21,
         25
       ],
+      "Title": 1,
       "allies": [
         17
       ],
@@ -5283,8 +5284,7 @@
       ],
       "policy": 2,
       "policy_target": 2,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "39": {
       "Counsellor": 55,
@@ -5304,6 +5304,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數勢力相同，以打倒何進為目標。領地為襄陽，部下僅蒯良、蒯越兄弟。論智略方面雖君主婁圭之實力雄厚不在話下，惜部下之基本所需人數及武人官員不足。先行登庸荊州優秀人才可謂為當務之急。於招攬人數達相當程度後，盼能進擊江陵及荊南。",
       "like": [
@@ -5357,8 +5358,7 @@
       ],
       "policy": 4,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "4": {
       "Counsellor": 110,
@@ -5381,6 +5381,7 @@
         13,
         14
       ],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數勢力同樣地，以打倒何進為目標。除何進外並無顯著敵對勢力。領地為武威，鄰近勢力僅董卓。因武將之質、量不敵董卓軍，若能於其整頓完成國力前先予以擊潰是為上策。於西北整備戰力，覬覦中原之爭轉激烈化，一股作氣進攻長安。",
       "like": [
@@ -5434,8 +5435,7 @@
       ],
       "policy": 2,
       "policy_target": 3,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "40": {
       "Counsellor": 0,
@@ -5455,6 +5455,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [
         22,
         29
@@ -5511,8 +5512,7 @@
       ],
       "policy": 2,
       "policy_target": 4,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "41": {
       "Counsellor": 0,
@@ -5532,6 +5532,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數勢力相同，以打倒何進為目標。領地為梓潼，部下僅楊懷一人。無法否認較其他勢力顯著貧弱。縱使欲力圖奮發爭奪天下亦毫無希望可言。遠離中原一地之故，避免捲入諸侯之爭可謂為唯一有利點。除留心注意董卓南下行動，及不惜耗費時日著實整頓國力、人才外別無他法。",
       "like": [
@@ -5585,8 +5586,7 @@
       ],
       "policy": 4,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "42": {
       "Counsellor": 167,
@@ -5606,6 +5606,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數勢力相同，以打倒何進為目標。領地為江州，部下僅黃權一人。基本人數大為不足。盼能善加利用遠離戰亂之地之有利點，首先紮實整頓國力及人才。若能耐心等候至益州之優秀武將於在野登場，則應漸次可見制霸天下之曙光。期能策劃長期性之戰略為是。",
       "like": [
@@ -5659,8 +5660,7 @@
       ],
       "policy": 4,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "43": {
       "Counsellor": 0,
@@ -5682,6 +5682,7 @@
       "Techniques": [
         13
       ],
+      "Title": 1,
       "allies": [],
       "desc": "",
       "like": [
@@ -5735,8 +5736,7 @@
       ],
       "policy": 0,
       "policy_target": 0,
-      "stateName?": 39,
-      "title": 10
+      "stateName?": 39
     },
     "44": {
       "Counsellor": 0,
@@ -5758,6 +5758,7 @@
       "Techniques": [
         6
       ],
+      "Title": 1,
       "allies": [],
       "desc": "",
       "like": [
@@ -5811,8 +5812,7 @@
       ],
       "policy": 0,
       "policy_target": 0,
-      "stateName?": 40,
-      "title": 10
+      "stateName?": 40
     },
     "45": {
       "Counsellor": 0,
@@ -5834,6 +5834,7 @@
       "Techniques": [
         15
       ],
+      "Title": 1,
       "allies": [],
       "desc": "",
       "like": [
@@ -5887,8 +5888,7 @@
       ],
       "policy": 0,
       "policy_target": 0,
-      "stateName?": 38,
-      "title": 10
+      "stateName?": 38
     },
     "46": {
       "Counsellor": 0,
@@ -5910,6 +5910,7 @@
       "Techniques": [
         5
       ],
+      "Title": 1,
       "allies": [],
       "desc": "",
       "like": [
@@ -5963,8 +5964,7 @@
       ],
       "policy": 0,
       "policy_target": 0,
-      "stateName?": 41,
-      "title": 10
+      "stateName?": 41
     },
     "47": {
       "Counsellor": 0,
@@ -5984,6 +5984,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [],
       "desc": "",
       "like": [
@@ -6037,8 +6038,7 @@
       ],
       "policy": 0,
       "policy_target": 0,
-      "stateName?": 42,
-      "title": 10
+      "stateName?": 42
     },
     "5": {
       "Counsellor": 0,
@@ -6058,6 +6058,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 2,
       "allies": [],
       "desc": "與大多數之勢力相同，以打倒何進為目標。領地為江夏，部下僅劉璋、吳懿二人。擴充人才可謂當務之急。縱使發奮圖強亦毫無勝算，故理應捨棄江夏遷移柴桑亦為解決之道。盼可於捲入中原之爭前下決斷，進出江東或荊南以求鞏固地盤。",
       "like": [
@@ -6111,8 +6112,7 @@
       ],
       "policy": 4,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 9
+      "stateName?": 0
     },
     "6": {
       "Counsellor": 605,
@@ -6134,6 +6134,7 @@
       "Techniques": [
         13
       ],
+      "Title": 2,
       "allies": [],
       "desc": "與大多數勢力相同，以打倒何進為目標。領地為天水，近鄰勢力僅武威之馬騰。以李儒為重心，武將之質、量略勝一籌，於馬騰完成整頓國力前予以擊潰，斷絕後顧之憂。爾後鞏固西北擴充戰力、若於中原有可趁之機則進軍長安，否則轉向巴蜀是為常理。",
       "like": [
@@ -6187,8 +6188,7 @@
       ],
       "policy": 1,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 9
+      "stateName?": 0
     },
     "7": {
       "Counsellor": 220,
@@ -6208,6 +6208,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數勢力相同，以打倒何進為目標。領地僅擁濮陽一地。部下有黃祖、蔡瑁、張允等眾名將雲集。最初時藉曹操為盾回避何進施加之壓力，盼可於其間攻擊北海之管亥。與張魯、陳珪等聯手及早斷絕後顧之憂。若能突破此難關，牽制中原東部可謂為遲早之事。",
       "like": [
@@ -6261,8 +6262,7 @@
       ],
       "policy": 4,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     },
     "9": {
       "Counsellor": 579,
@@ -6282,6 +6282,7 @@
       ],
       "TechniquePoint": 0,
       "Techniques": [],
+      "Title": 1,
       "allies": [],
       "desc": "與大多數勢力相同，以打倒何進為目標。領地僅擁汝南一地。部下資質雖低，但為數不少。不過，若捲入中原之爭勝算極微，首先壓制空白都市之壽春、廬江為當急之務。爾後與孫堅維持友好關係，以期進軍中原東部。",
       "like": [
@@ -6335,8 +6336,7 @@
       ],
       "policy": 1,
       "policy_target": 0,
-      "stateName?": 0,
-      "title": 10
+      "stateName?": 0
     }
   },
   "personSet": {

@@ -100,6 +100,13 @@ namespace Sango.Core
         public Flag Flag { get; set; }
 
         /// <summary>
+        /// 爵位
+        /// </summary>
+        [JsonConverter(typeof(Id2ObjConverter<Title>))]
+        [JsonProperty]
+        public Title Title { get; set; }
+
+        /// <summary>
         /// 联盟信息
         /// </summary>
         [JsonConverter(typeof(SangoObjectListIDConverter<Alliance>))]
