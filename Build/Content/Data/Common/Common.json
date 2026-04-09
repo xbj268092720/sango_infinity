@@ -5409,7 +5409,7 @@
       ],
       "skillEffects": [
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 5000,
           "values": [
             1,
@@ -5425,7 +5425,7 @@
           }
         },
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 5000,
           "values": [
             2,
@@ -5606,7 +5606,7 @@
       ],
       "skillEffects": [
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 5000,
           "values": [
             1,
@@ -5622,7 +5622,7 @@
           }
         },
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 5000,
           "values": [
             2,
@@ -5688,7 +5688,7 @@
       ],
       "skillEffects": [
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 5000,
           "values": [
             1,
@@ -5704,7 +5704,7 @@
           }
         },
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 5000,
           "values": [
             2,
@@ -5775,7 +5775,7 @@
       ],
       "skillEffects": [
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 5000,
           "values": [
             1,
@@ -5791,7 +5791,7 @@
           }
         },
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 5000,
           "values": [
             2,
@@ -5889,7 +5889,7 @@
       ],
       "skillEffects": [
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 10000,
           "values": [
             1,
@@ -5905,7 +5905,7 @@
           }
         },
         {
-          "class": "Burn",
+          "class": "SetFire",
           "probability": 10000,
           "values": [
             2,

@@ -65,7 +65,6 @@ namespace Sango.Render
         void ReturnToPool(IRenderEventBase renderEvent)
         {
             renderEvent.IsInited = false;
-            renderEvent.IsDone = false;
 
             string key = renderEvent.GetType().FullName;
             Stack<IRenderEventBase> stack;

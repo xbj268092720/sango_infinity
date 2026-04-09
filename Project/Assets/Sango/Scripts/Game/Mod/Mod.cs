@@ -108,7 +108,7 @@ namespace Sango.Mod
         public void LoadUI()
         {
             string path = GetFullPath("UI");
-            Directory.EnumFiles(path, "*.bytes", SearchOption.AllDirectories, (file) =>
+            Directory.EnumFiles(path, "*.bytes", SearchOption.TopDirectoryOnly, (file) =>
             {
 #if SANGO_DEBUG
                 Sango.Log.Info($"LoadUI: {file}");
@@ -120,7 +120,7 @@ namespace Sango.Mod
         public void LoadPackage()
         {
             string path = GetFullPath($"Package/{PlatformUtility.GetPlatformName()}");
-            Directory.EnumFiles(path, "*.pkg", SearchOption.AllDirectories, (file) =>
+            Directory.EnumFiles(path, "*.pkg", SearchOption.TopDirectoryOnly, (file) =>
             {
 #if SANGO_DEBUG
                 Sango.Log.Info($"LoadPackage: {file}");
@@ -133,7 +133,7 @@ namespace Sango.Mod
         public void LoadLanguage()
         {
             string path = GetFullPath("Language");
-            Directory.EnumFiles(path, "*.json", SearchOption.AllDirectories, (file) =>
+            Directory.EnumFiles(path, "*.json", SearchOption.TopDirectoryOnly, (file) =>
             {
 #if SANGO_DEBUG
                 Sango.Log.Info($"Find Language File: {file}");
@@ -144,7 +144,7 @@ namespace Sango.Mod
         public void LoadScenario()
         {
             string path = GetFullPath("Scenario");
-            Directory.EnumFiles(path, "*.json", SearchOption.AllDirectories, (file) =>
+            Directory.EnumFiles(path, "*.json", SearchOption.TopDirectoryOnly, (file) =>
             {
 #if SANGO_DEBUG
                 Sango.Log.Info($"Find Scenario: {file}");

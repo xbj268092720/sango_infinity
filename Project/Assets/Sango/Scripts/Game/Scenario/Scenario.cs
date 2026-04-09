@@ -535,6 +535,8 @@ namespace Sango.Core
         {
             GameEvent.OnWorldLoadEnd?.Invoke(this);
             this.Map.Init(this);
+            GameEvent.OnScenarioPrepare?.Invoke(this);
+            this.LoadModModify();
             this.Prepare();
             this.Init(this);
             GameController.Instance.Reset();
@@ -716,8 +718,7 @@ namespace Sango.Core
         /// </summary>
         public void Prepare()
         {
-            GameEvent.OnScenarioPrepare?.Invoke(this);
-
+            
             for (int i = 0; i < prepareList.Count; ++i)
             {
                 prepareList[i].ForEach(o => { o.OnScenarioPrepare(this); });
@@ -1256,6 +1257,12 @@ namespace Sango.Core
             {
                 serializer.Serialize(writer, this);
             }
+        }
+
+        void LoadModModify()
+        {
+            string modifyDir = FilePath.Remove(FilePath.Length - 5);
+            Sango.Log.Error(modifyDir);
         }
     }
 }
