@@ -56,13 +56,14 @@ namespace Sango.Render
 
                 CurEvent.Exit(scenario);
                 eventQueue.RemoveAt(0);
-                ReturnToPool(CurEvent);
+                // 这里没考虑到同一帧复用导致其他类判断失败的问题
+                //ReturnToPool(CurEvent);
                 CurEvent = null;
             }
             return true;
         }
 
-        void ReturnToPool(IRenderEventBase renderEvent)
+        public void ReturnToPool(IRenderEventBase renderEvent)
         {
             renderEvent.IsInited = false;
             renderEvent.IsDone = false;

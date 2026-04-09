@@ -888,6 +888,20 @@ namespace Sango.Core
         public bool TurnEnd()
         {
             if (HasTurnEnded) return true;
+             for (int i = 1; i < personSet.Count; i++)
+            {
+                Person person = personSet[i];
+                if (person != null && person.IsAlive)
+                    person.OnTurnEnd(this);
+            }
+
+            for (int i = 1; i < allianceSet.Count; i++)
+            {
+                Alliance a = allianceSet[i];
+                if (a != null && a.IsAlive)
+                    a.OnTurnEnd(this);
+            }
+
             for (int i = 1; i < fireSet.Count; i++)
             {
                 Fire a = fireSet[i];

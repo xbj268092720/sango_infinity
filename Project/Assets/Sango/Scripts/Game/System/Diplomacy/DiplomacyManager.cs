@@ -273,7 +273,7 @@ namespace Sango.Core
         /// <returns>行动是否成功</returns>
         public bool PerformDiplomacyAction(DiplomacyActionType actionType, Force sender, Force receiver, Person diplomat = null, object param = null, int captiveId = 0)
         {
-            if (!CanPerformDiplomacyAction(actionType, sender, receiver))
+            if (!sender.IsPlayer && !CanPerformDiplomacyAction(actionType, sender, receiver))
                 return false;
 
             // 如果没有指定武将，自动选择合适的武将
