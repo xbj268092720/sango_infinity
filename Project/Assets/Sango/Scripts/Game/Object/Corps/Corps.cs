@@ -18,9 +18,11 @@ namespace Sango.Core
         public virtual bool AIFinished { get; set; }
         public virtual bool AIPrepared { get; set; }
 
-        public readonly string[] numberTxt = { "一", "二", "三", "四", "五", "六", "七", "八" };
-        public override string Name { get { return $"第{numberTxt[number - 1]}军团"; } }
-        public string ColorName { get { return $"<color=#7CCADB>第{numberTxt[number - 1]}军团</color>"; } }
+        public readonly string[] numberTxt = { "零", "一", "二", "三", "四", "五", "六", "七", "八" };
+        public override string Name {
+            get { return $"第{numberTxt[number]}军团"; }
+        }
+        public string ColorName { get { return $"<color=#7CCADB>第{numberTxt[number]}军团</color>"; } }
 
         /// <summary>
         /// 所属势力
