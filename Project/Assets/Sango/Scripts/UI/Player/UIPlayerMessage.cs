@@ -288,6 +288,15 @@ using Sango.Core; namespace Sango.UI
             playerMessage.onVisibleChange += OnMessagePlaneVisible;
         }
 
+        public override void OnClose()
+        {
+            playerMessage.onTextMessageAdd -= OnTextMessageAdd;
+            playerMessage.onPersonMessageAdd -= OnPersonMessageAdd;
+
+            playerMessage.onVisibleChange -= OnMessagePlaneVisible;
+            base.OnClose();
+        }
+
         /// <summary>
         /// 消息窗口可见性变化回调
         /// </summary>

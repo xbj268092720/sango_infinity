@@ -274,8 +274,8 @@ using Sango.Core; namespace Sango.UI
             for (int i = 0; i < len; i++)
             {
                 ItemType itemType = ItemTypes[i];
-                int totalNum = itemStore.GetNumber(itemType.storeKind);
-                if (itemType.storeKind == (int)ItemSubKindType.Boat)
+                int totalNum = itemStore.GetNumber(itemType);
+                if (itemType.storeKind == (int)ItemStoreKindType.Boat)
                 {
                     boatItem.SetItemType(itemType).SetIndex(i).SetNum(totalNum);
                 }

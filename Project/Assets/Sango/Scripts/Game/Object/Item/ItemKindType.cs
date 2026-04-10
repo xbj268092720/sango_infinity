@@ -59,15 +59,15 @@ namespace Sango.Core
         戟	3
         弓	4
         军马	5
-        冲车	7
-        木兽	7
-        井阑	8
-        投石	8
-        走舸	9
-        楼船	9
-        斗舰	9
+        冲车	6
+        木兽	6
+        井阑	7
+        投石	7
+        走舸	8
+        楼船	8
+        斗舰	8
      * */
-    public enum ItemSubKindType : int
+    public enum ItemStoreKindType : int
     {
         None = 0,
 
@@ -80,16 +80,16 @@ namespace Sango.Core
         /// <summary>
         /// 冲车
         /// </summary>
-        Helepolis = 7,
+        Helepolis = 6,
 
         /// <summary>
         /// 投石
         /// </summary>
-        Catapult = 8,
+        Catapult = 7,
 
         /// <summary>
         /// 船
         /// </summary>
-        Boat = 9
+        Boat = 8
     }
 }

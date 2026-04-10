@@ -195,6 +195,7 @@ namespace Sango.Core.Player
         /// <param name="scenario">游戏场景实例</param>
         private void OnScenarioEnd(Scenario scenario)
         {
+
             Window.Instance.Close(windowName);
         }
 
@@ -242,6 +243,12 @@ namespace Sango.Core.Player
         private void _AddTextMessage(string text, Force force, int x, int y)
         {
             TextMessage message;
+            if(textMessages == null)
+            {
+                return;
+            }
+
+
             // 检查消息数量是否超过上限
             if (textMessages.Count >= maxSaveCount)
             {

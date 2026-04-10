@@ -55,14 +55,14 @@ namespace Sango.UI
         {
             id2UIItemType.Add(itemType.Id, uIItemType);
             uIItemType.SetItemType(itemType);
-            uIItemType.SetNumber(targetCity.itemStore.GetNumber(itemType.Id));
-            int troopHas = targetTroop.itemStore.GetNumber(itemType.Id);
+            uIItemType.SetNumber(targetCity.itemStore.GetNumber(itemType));
+            int troopHas = targetTroop.itemStore.GetNumber(itemType);
             uIItemType.SetUsed(troopHas);
         }
 
         void OnItemTypeSliderShow(ItemType itemType, UIItemTypeSlider uIItemTypeSlider)
         {
-            int itemNumber = targetCity.itemStore.GetNumber(itemType.Id);
+            int itemNumber = targetCity.itemStore.GetNumber(itemType);
             if (itemNumber <= 0)
             {
                 uIItemTypeSlider.SetValid(false);
@@ -72,7 +72,7 @@ namespace Sango.UI
             }
             uIItemTypeSlider.SetValid(true);
 
-            int troopHas = targetTroop.itemStore.GetNumber(itemType.Id);
+            int troopHas = targetTroop.itemStore.GetNumber(itemType);
             uIItemTypeSlider.numberSlider.SetValueWithoutNotify(troopHas / itemNumber);
             uIItemTypeSlider.numberLabel.text = $"{troopHas}/{itemNumber}";
             uIItemTypeSlider.numberSlider.onValueChanged.RemoveAllListeners();
@@ -80,7 +80,7 @@ namespace Sango.UI
             {
                 int num = (int)Math.Ceiling(itemNumber * p);
                 uIItemTypeSlider.numberLabel.text = $"{num}/{itemNumber}";
-                targetTroop.itemStore.Set(itemType.Id, num);
+                targetTroop.itemStore.Set(itemType, num);
 
                 UIItemType uIItemType = id2UIItemType[itemType.Id];
                 uIItemType.SetUsed(num);
@@ -206,7 +206,7 @@ namespace Sango.UI
                 ItemType itemType = Scenario.Cur.CommonData.ItemTypeList[i];
 
                 itemLabels[showIndex].gameObject.SetActive(true);
-                int has = targetCity.itemStore.GetNumber(itemType.storeKind);
+                int has = targetCity.itemStore.GetNumber(itemType);
                 int use = 0;
                 if (targetTroop.LandTroopType.costItems != null)
                 {

@@ -684,11 +684,11 @@ namespace Sango.Core
             float troopP = city.troops / targetTroop;
             int totalWeaponNum = city.itemStore.GetNumber(new int[] { 2, 3, 4 });
             float itemP = totalWeaponNum / targetItemNumber;
-            int totalHorseNum = city.itemStore.GetNumber(5);
+            int totalHorseNum = city.itemStore.GetNumber((int)ItemStoreKindType.Horse);
             float horseP = totalHorseNum / targetHorseNumber;
-            int totalBoatNum = city.itemStore.GetNumber(9);
+            int totalBoatNum = city.itemStore.GetNumber((int)ItemStoreKindType.Boat);
             float boatP = totalBoatNum / targetBoatNumber;
-            int totalMachineNum = city.itemStore.GetNumber(new int[] { 7, 8 });
+            int totalMachineNum = city.itemStore.GetNumber(new int[] { (int)ItemStoreKindType.Helepolis, (int)ItemStoreKindType.Catapult });
             float machineP = totalMachineNum / targetMachineNumber;
             float securityP = (city.security - 50) / (targetSecurity - 50);
             float moraleP = city.morale / targetMorale;
@@ -774,8 +774,8 @@ namespace Sango.Core
                             if (goldP > 1 || machineP < 1)
                             {
                                 pBuildings.Add(new PBuilding() { p = machineP, building = building });
-                                int monsterNum = city.itemStore.GetNumber(7);
-                                int towerNum = city.itemStore.GetNumber(9);
+                                int monsterNum = city.itemStore.GetNumber((int)ItemStoreKindType.Helepolis);
+                                int towerNum = city.itemStore.GetNumber((int)ItemStoreKindType.Catapult);
 
                                 int tagetItemId;
                                 int totalNum;

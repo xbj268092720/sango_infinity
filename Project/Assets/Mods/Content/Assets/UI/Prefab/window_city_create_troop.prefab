@@ -1487,8 +1487,8 @@ MonoBehaviour:
   - {fileID: 6776344018949132235}
   - {fileID: 4908063255012713956}
   - {fileID: 2923469568421964597}
-  - {fileID: 5326351399336424607}
   - {fileID: 9051649369040643087}
+  - {fileID: 5326351399336424607}
   - {fileID: 7823468784485738649}
   itemTroopsLabel: {fileID: 8586710066202825719}
   itemGoldLabel: {fileID: 6326703382682044354}
@@ -1554,6 +1554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragRect: {fileID: 9219872030424774454}
+  uiCamera: {fileID: 0}
 --- !u!114 &8160400502079262261
 MonoBehaviour:
   m_ObjectHideFlags: 0

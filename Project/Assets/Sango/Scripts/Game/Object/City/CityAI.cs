@@ -1253,7 +1253,7 @@ namespace Sango.Core
                 targetItemType = scenario.GetObject<ItemType>(11);
 
             // 获取总兵装
-            int totalNum = city.itemStore.GetNumber(targetItemType.storeKind);
+            int totalNum = city.itemStore.GetNumber(targetItemType);
             if (totalNum > (city.troops / 2) * targetItemType.p1 / 1000 + 1)
                 return true;
 
@@ -1283,8 +1283,8 @@ namespace Sango.Core
             if (city.allPersons.Find(x => x.missionType == (int)MissionType.PersonCreateMachine) != null)
                 return true;
 
-            int monsterNum = city.itemStore.GetNumber(7);
-            int towerNum = city.itemStore.GetNumber(9);
+            int monsterNum = city.itemStore.GetNumber((int)ItemStoreKindType.Helepolis);
+            int towerNum = city.itemStore.GetNumber((int)ItemStoreKindType.Catapult);
 
             int totalNum;
             ItemType targetItemType;

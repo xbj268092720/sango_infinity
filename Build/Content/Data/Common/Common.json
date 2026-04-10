@@ -1242,7 +1242,7 @@
       "effectAttrType": 3,
       "desc": "外交的所需行动力减半，用于亲善的必要资金也减半。",
       "limitDesc": "１个都市只能有１座",
-      "icon": "4846-6/4846-6_24",
+      "icon": "4846-6/4846-6_28",
       "model": "Assets/Model/Prefab/4680.prefab",
       "modelCreate": "Assets/Model/Prefab/4624.prefab",
       "modelBroken": "Assets/Model/Prefab/4624.prefab"
@@ -1270,7 +1270,7 @@
       "effectAttrType": 2,
       "desc": "计略的所需行动力减半，并提升流言的成功率",
       "limitDesc": "１个都市只能有１座",
-      "icon": "4846-6/4846-6_25",
+      "icon": "4846-6/4846-6_27",
       "model": "Assets/Model/Prefab/4685.prefab",
       "modelCreate": "Assets/Model/Prefab/4624.prefab",
       "modelBroken": "Assets/Model/Prefab/4624.prefab"
@@ -1331,7 +1331,7 @@
       "effectAttrType": 3,
       "desc": "市场２倍的资金收入",
       "limitDesc": "只限大都市，且１个都市只能有１座",
-      "icon": "4846-6/4846-6_27",
+      "icon": "4846-6/4846-6_29",
       "model": "Assets/Model/Prefab/4695.prefab",
       "modelCreate": "Assets/Model/Prefab/4624.prefab",
       "modelBroken": "Assets/Model/Prefab/4624.prefab"
@@ -1360,7 +1360,7 @@
       "effectAttrType": 3,
       "desc": "市场１.５倍的资金收入",
       "limitDesc": "只限有港的都市，且１个都市只能有１座",
-      "icon": "4846-6/4846-6_28",
+      "icon": "4846-6/4846-6_24",
       "model": "Assets/Model/Prefab/4697.prefab",
       "modelCreate": "Assets/Model/Prefab/4624.prefab",
       "modelBroken": "Assets/Model/Prefab/4624.prefab"
@@ -1387,7 +1387,7 @@
       "techGain": 0,
       "effectAttrType": 3,
       "desc": "市场的８成资金收入，无造币厂的效果；可于短期开发，但１月时将强制撤除",
-      "icon": "4846-6/4846-6_29",
+      "icon": "4846-6/4846-6_25",
       "model": "Assets/Model/Prefab/4699.prefab",
       "modelCreate": "Assets/Model/Prefab/4624.prefab",
       "modelBroken": "Assets/Model/Prefab/4624.prefab"
@@ -3377,7 +3377,7 @@
     },
     "3": {
       "Id": 3,
-      "Name": "刀",
+      "Name": "戟",
       "kind": 1,
       "storeKind": 3,
       "store": true,
@@ -3412,7 +3412,7 @@
       "Id": 6,
       "Name": "冲车",
       "kind": 3,
-      "storeKind": 7,
+      "storeKind": 6,
       "store": true,
       "nextId": 7,
       "desc": "直接攻击建筑物的兵器，可大大削弱建筑物的耐久",
@@ -3425,7 +3425,7 @@
       "Id": 7,
       "Name": "木兽",
       "kind": 3,
-      "storeKind": 7,
+      "storeKind": 6,
       "store": true,
       "validTechId": 1,
       "desc": "将冲车强化后的兵器，可削减建筑物的耐久，并放火",
@@ -3438,7 +3438,7 @@
       "Id": 8,
       "Name": "井阑",
       "kind": 3,
-      "storeKind": 8,
+      "storeKind": 7,
       "store": true,
       "nextId": 8,
       "desc": "以弓箭攻击建筑物的兵器，可大大削减士兵数",
@@ -3451,7 +3451,7 @@
       "Id": 9,
       "Name": "投石",
       "kind": 3,
-      "storeKind": 8,
+      "storeKind": 7,
       "store": true,
       "validTechId": 2,
       "desc": "强化井阑后的兵器，以投石攻击３区格外之敌方耐久与士兵",
@@ -3464,7 +3464,7 @@
       "Id": 10,
       "Name": "走舸",
       "kind": 4,
-      "storeKind": 9,
+      "storeKind": 8,
       "store": false,
       "desc": "标准装备的舰船。",
       "icon": "4846-8/4846-8_9",
@@ -3474,7 +3474,7 @@
       "Id": 11,
       "Name": "楼船",
       "kind": 4,
-      "storeKind": 9,
+      "storeKind": 8,
       "store": true,
       "nextId": 12,
       "desc": "大型船，移动力、装甲都比走舸强化许多",
@@ -3487,7 +3487,7 @@
       "Id": 12,
       "Name": "斗舰",
       "kind": 4,
-      "storeKind": 9,
+      "storeKind": 8,
       "store": true,
       "validTechId": 2,
       "desc": "将楼船强化后的舰船，可执行投石攻击",
@@ -9119,7 +9119,7 @@
         39
       ],
       "costItems": [
-        11,
+        8,
         10
       ],
       "foodCostFactor": 1.0,
@@ -9189,7 +9189,7 @@
         39
       ],
       "costItems": [
-        12,
+        8,
         8
       ],
       "foodCostFactor": 1.0,
@@ -9257,7 +9257,7 @@
       ],
       "validTechId": -1,
       "costItems": [
-        7,
+        6,
         10
       ],
       "foodCostFactor": 1.0,
@@ -9330,7 +9330,7 @@
       ],
       "validTechId": 1,
       "costItems": [
-        7,
+        6,
         10
       ],
       "foodCostFactor": 1.0,
@@ -9403,7 +9403,7 @@
       ],
       "validTechId": -2,
       "costItems": [
-        9,
+        7,
         10
       ],
       "foodCostFactor": 1.0,
@@ -9476,7 +9476,7 @@
       ],
       "validTechId": 2,
       "costItems": [
-        9,
+        7,
         10
       ],
       "foodCostFactor": 1.0,

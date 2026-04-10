@@ -46,7 +46,7 @@ using Sango.Core; namespace Sango.UI
             for (int i = 0; i < len; i++)
             {
                 CityCreateItems.ItemTypeInfo itemType = currentSystem.ItemTypes[i];
-                int totalNum = currentSystem.TargetCity.itemStore.GetNumber(itemType.itemType.Id);
+                int totalNum = currentSystem.TargetCity.itemStore.GetNumber(itemType.itemType);
                 UIBuildingTypeItem cityBuildingSlot = itemPool.Create();
                 cityBuildingSlot.onSelected = OnSelectItemType;
                 cityBuildingSlot.SetItemType(itemType.itemType).SetIndex(i).SetSelected(itemType == currentSystem.CurSelectedItemType).SetNum(totalNum);

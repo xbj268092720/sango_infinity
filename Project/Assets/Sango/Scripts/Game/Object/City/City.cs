@@ -2124,7 +2124,7 @@ namespace Sango.Core
                 person.ActionOver = true;
                 person.SetMission(MissionType.PersonCreateBoat, itemType, turnCount, building.Id, maxValue);
             }
-            building.Workers = sangoObjectList;
+            //building.Workers = sangoObjectList;
             building.LeftCounter = turnCount;
             building.isWorking = true;
 #if SANGO_DEBUG
@@ -2161,6 +2161,7 @@ namespace Sango.Core
             int techniquePointGain = JobType.GetJobTPGain(jobId);
 
             Building building = scenario.GetObject<Building>(buildingId);
+            building.isWorking = false;
 
 #if SANGO_DEBUG
             StringBuilder stringBuilder = new StringBuilder();
@@ -2327,7 +2328,7 @@ namespace Sango.Core
                 person.ActionOver = true;
                 person.SetMission(MissionType.PersonCreateMachine, itemType, turnCount, building.Id, maxValue);
             }
-            building.Workers = sangoObjectList;
+            //building.Workers = sangoObjectList;
             building.LeftCounter = turnCount;
             building.isWorking = true;
 
@@ -2384,7 +2385,7 @@ namespace Sango.Core
             }
 
             totalValue = GameUtility.Method_CreateItems(totalValue, building.BuildingType.level) / itemType.p1 / 3;
-
+            building.isWorking = false;
             Person[] personList = people.ToArray();
 
             Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(totalValue);

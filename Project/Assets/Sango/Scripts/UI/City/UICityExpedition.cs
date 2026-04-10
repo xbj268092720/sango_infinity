@@ -229,6 +229,7 @@ using Sango.Core; namespace Sango.UI
                 return;
 
             int troop = (int)Math.Ceiling(targetTroop.MaxTroops * p);
+            troop = Math.Max(1, troop);
             troop = Math.Min(troop, targetCity.troops);
             troop = targetCity.itemStore.CheckCostMin(targetTroop.LandTroopType.costItems, troop);
             troop = targetCity.itemStore.CheckCostMin(targetTroop.WaterTroopType.costItems, troop);
@@ -378,14 +379,14 @@ using Sango.Core; namespace Sango.UI
                 ItemType itemType = Scenario.Cur.CommonData.ItemTypeList[i];
 
                 itemLabels[showIndex].gameObject.SetActive(true);
-                int has = targetCity.itemStore.GetNumber(itemType.storeKind);
+                int has = targetCity.itemStore.GetNumber(itemType);
                 int use = 0;
                 if (targetTroop.LandTroopType.costItems != null)
                 {
                     for (int j = 0; j < targetTroop.LandTroopType.costItems.Length; j += 2)
                     {
                         int itemId = targetTroop.LandTroopType.costItems[j];
-                        if (itemId == i)
+                        if (itemId == itemType.Id)
                         {
                             int need = targetTroop.LandTroopType.costItems[j + 1];
                             use = need * targetTroop.troops / 1000;
@@ -397,7 +398,7 @@ using Sango.Core; namespace Sango.UI
                     for (int j = 0; j < targetTroop.WaterTroopType.costItems.Length; j += 2)
                     {
                         int itemId = targetTroop.WaterTroopType.costItems[j];
-                        if (itemId == i)
+                        if (itemId == itemType.Id)
                         {
                             int need = targetTroop.WaterTroopType.costItems[j + 1];
                             use = need * targetTroop.troops / 1000;

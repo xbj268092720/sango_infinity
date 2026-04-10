@@ -1009,8 +1009,8 @@ MonoBehaviour:
   - {fileID: 7628620527707840291}
   - {fileID: 8510084164403931382}
   - {fileID: 6634144774132015323}
-  - {fileID: 3451489717432934838}
   - {fileID: 6969942981405214394}
+  - {fileID: 3451489717432934838}
   - {fileID: 5036400040748110532}
 --- !u!1 &9099145230824279410
 GameObject:
@@ -1177,6 +1177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragRect: {fileID: 9219872030424774454}
+  uiCamera: {fileID: 0}
 --- !u!114 &8160400502079262261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1207,6 +1208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5d6125d06f1fef4aa9861c00314c119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scaleable: 0
 --- !u!1001 &85578975902710190
 PrefabInstance:
   m_ObjectHideFlags: 0

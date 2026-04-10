@@ -324,8 +324,8 @@ namespace Sango.Core
             {
                 name = itemType.Name,
                 width = 50,
-                valueStrGetCall = x => x.itemStore.GetNumber(itemType.storeKind).ToString(),
-                valueSortFunc = (a, b) => a.itemStore.GetNumber(itemType.storeKind).CompareTo(b.itemStore.GetNumber(itemType.storeKind)),
+                valueStrGetCall = x => x.itemStore.GetNumber(itemType).ToString(),
+                valueSortFunc = (a, b) => a.itemStore.GetNumber(itemType).CompareTo(b.itemStore.GetNumber(itemType)),
             };
         }
 
@@ -344,8 +344,8 @@ namespace Sango.Core
             {
                 name = itemType.Name,
                 width = 50,
-                valueStrGetCall = x => x.itemStore.GetNumber(itemType.storeKind).ToString(),
-                valueSortFunc = (a, b) => a.itemStore.GetNumber(itemType.storeKind).CompareTo(b.itemStore.GetNumber(itemType.storeKind)),
+                valueStrGetCall = x => x.itemStore.GetNumber(itemType).ToString(),
+                valueSortFunc = (a, b) => a.itemStore.GetNumber(itemType).CompareTo(b.itemStore.GetNumber(itemType)),
             };
         }
 

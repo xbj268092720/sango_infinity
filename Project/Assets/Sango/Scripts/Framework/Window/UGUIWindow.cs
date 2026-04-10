@@ -174,7 +174,6 @@ namespace Sango
             OnRefresh();
         }
 
-
         public virtual void OnClose()
         {
             OnCloseAction?.Invoke();

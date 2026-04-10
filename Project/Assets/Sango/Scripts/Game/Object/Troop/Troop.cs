@@ -384,7 +384,7 @@ namespace Sango.Core
             });
 
             buffManager.Init(this);
-            GameEvent.OnTroopEnterCell(this, cell, null);
+            GameEvent.OnTroopEnterCell?.Invoke(this, cell, null);
         }
 
         public virtual bool Run(Corps corps, Force force, Scenario scenario)

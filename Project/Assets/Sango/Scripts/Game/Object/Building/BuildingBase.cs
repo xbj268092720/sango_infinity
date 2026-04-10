@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Sango.Core
 {
+
     public abstract class BuildingBase : SangoObject
     {
         public virtual string ColorName => $"<color=#93C86D>{Name}</color>";
