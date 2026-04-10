@@ -22,14 +22,14 @@ namespace Sango.Core.Player
                 PersonSortFunction.SortByPolitics,
             };
 
-           
+
         }
 
         public override bool IsValid
         {
             get
             {
-                return TargetCity.freePersons.Count > 0 && TargetCity.BelongCorps.ActionPoint >= JobType.GetJobCostAP((int)CityJobType.Alliance) && TargetCity.gold >= 1000;
+                return TargetCity.freePersons.Count > 0 && TargetCity.BelongCorps.ActionPoint >= JobType.GetJobCostAP((int)CityJobType.Alliance) && TargetCity.gold >= 0;
             }
         }
 
@@ -59,7 +59,7 @@ namespace Sango.Core.Player
             if (personList.Count <= 0)
                 return;
 
-            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Alliance, TargetCity.BelongForce, targetForces[0], personList[0], gold);
+            DiplomacyManager.Instance.PlayerInitiateDiplomacyAction(DiplomacyActionType.Alliance, personList[0], targetForces[0], gold);
             GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"交给我吧, 保证完成任务!!", () =>
             {
                 // 暂时直接招募

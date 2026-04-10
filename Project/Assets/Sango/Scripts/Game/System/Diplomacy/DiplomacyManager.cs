@@ -273,7 +273,7 @@ namespace Sango.Core
         /// <returns>行动是否成功</returns>
         public bool PerformDiplomacyAction(DiplomacyActionType actionType, Force sender, Force receiver, Person diplomat = null, object param = null, int captiveId = 0)
         {
-            if (!sender.IsPlayer && !CanPerformDiplomacyAction(actionType, sender, receiver))
+            if (!CanPerformDiplomacyAction(actionType, sender, receiver))
                 return false;
 
             // 如果没有指定武将，自动选择合适的武将
@@ -515,13 +515,6 @@ namespace Sango.Core
         /// <returns>是否成功</returns>
         public bool PerformSendGift(Force sender, Force receiver, int giftValue)
         {
-            // 检查发送方是否有足够的资金
-            if (sender.Governor?.BelongCity?.gold < giftValue)
-                return false;
-
-            // 扣除资金
-            sender.CapitalCity.gold -= giftValue;
-
             // 计算关系增加量（考虑多种因素）
             int relationIncrease = CalculateDynamicRelationIncrease(sender, receiver, giftValue);
 
@@ -1191,6 +1184,73 @@ namespace Sango.Core
                 Sango.Log.Info($"@外交@{person.BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
 #endif
             }
+        }
+
+        /// <summary>
+        /// 玩家发起外交行动（直接执行，无判断）
+        /// </summary>
+        /// <param name="actionType">外交行动类型</param>
+        /// <param name="diplomat">执行外交的武将</param>
+        /// <param name="receiver">接收方势力</param>
+        /// <param name="cost">消耗资金</param>
+        /// <param name="param">行动参数</param>
+        /// <param name="captiveId">俘虏ID（仅用于赎回俘虏）</param>
+        /// <returns>是否成功</returns>
+        public bool PlayerInitiateDiplomacyAction(DiplomacyActionType actionType, Person diplomat, Force receiver, int cost, object param = null, int captiveId = 0)
+        {
+            City senderCity = diplomat.BelongCity;
+            if (senderCity == null || senderCity.BelongForce == null || receiver == null || senderCity.BelongForce == receiver || diplomat == null)
+                return false;
+
+            // 扣除资金
+            if (senderCity.gold >= cost)
+            {
+                senderCity.gold -= cost;
+                // 刷新城市Render
+                senderCity.Render?.UpdateRender();
+            }
+            else
+            {
+                return false; // 资金不足
+            }
+
+            // 处理附加参数
+            int paramValue = cost;
+
+            // 获取目标势力主公所在的城市
+            City targetCity = receiver.Governor?.BelongCity;
+            if (targetCity == null)
+                return false;
+
+            // 计算移动所需时间
+            int distance = diplomat.DistanceDays(targetCity);
+            if (distance <= 0)
+                distance = 1;
+
+            // 设置外交任务
+            if (actionType == DiplomacyActionType.Ransom)
+            {
+                // 对于赎回俘虏，传递俘虏ID
+                diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue, captiveId);
+            }
+            else
+            {
+                diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue);
+            }
+
+            // 将武将从城市的空闲武将列表中移除
+            if (diplomat.BelongCity != null)
+            {
+                diplomat.BelongCity.freePersons.Remove(diplomat);
+            }
+
+            // 设置武将为行动过了
+            diplomat.ActionOver = true;
+
+#if SANGO_DEBUG
+            Sango.Log.Info($"@玩家外交@{senderCity.BelongForce.Name} 对 {receiver.Name} 派遣了使者 {diplomat.Name} 执行{GetActionName(actionType)}行动，消耗了 {cost} 金！");
+#endif
+            return true;
         }
 
         public void DoPersonDiplomacyActionNoCheck(bool success, Person person, DiplomacyActionType actionType, Force receiverForce, int resourceValue, int captiveId)

@@ -1276,7 +1276,7 @@ namespace Sango.Core
         void LoadModModify()
         {
             string modifyDir = FilePath.Remove(FilePath.Length - 5);
-            Sango.Log.Error(modifyDir);
+            //Sango.Log.Error(modifyDir);
         }
     }
 }

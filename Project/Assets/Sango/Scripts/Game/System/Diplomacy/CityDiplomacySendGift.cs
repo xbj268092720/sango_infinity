@@ -54,7 +54,7 @@ namespace Sango.Core.Player
             if (personList.Count <= 0 || targetForces.Count <= 0)
                 return;
 
-            DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, TargetCity.BelongForce, targetForces[0], personList[0], JobType.GetJobCost((int)CityJobType.SendGift));
+            DiplomacyManager.Instance.PlayerInitiateDiplomacyAction(DiplomacyActionType.SendGift, personList[0], targetForces[0], JobType.GetJobCost((int)CityJobType.SendGift));
             GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"交给我吧, 保证完成任务!!", () =>
             {
                 // 暂时直接招募
