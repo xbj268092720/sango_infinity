@@ -135,8 +135,8 @@ namespace Sango.Core
             SkillVisualizer.Init();
 
             // 初始化外交管理器
-            DiplomacyManager.Instance.Init();
-            DiplomacyEventManager.Instance.Init();
+            //DiplomacyManager.Instance.Init();
+            //DiplomacyEventManager.Instance.Init();
             
             GameData.Instance.Init();
             while (true)

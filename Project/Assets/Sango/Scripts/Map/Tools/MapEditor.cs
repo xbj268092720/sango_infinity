@@ -3,6 +3,7 @@ using Sango.Render;
 using Sango.Tools.UndoRedo;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Sango.Tools
 {
@@ -82,6 +83,12 @@ namespace Sango.Tools
         public EditorWindow editorContentWindow;
         public OperationHistoryWindow operationHistoryWindow;
         private LayoutManager layoutManager;
+
+        public virtual bool IsPointerOverUI()
+        {
+            return EditorWindow.IsPointOverUI() || (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject());
+        }
+
         private void Awake()
         {
             timeInterval = 1.0f / frameLimit;
@@ -109,6 +116,7 @@ namespace Sango.Tools
 
             // 监听Gizmo变换消息，用于Undo/Redo
             EditorUndoRedoSystem.Instance.overrideAction = RegisterUndoRedoAction;
+            EditorObjectSelection.Instance.IsOverUIHandler += IsPointerOverUI;
 
             // 创建工具栏窗口并限制在屏幕范围内
             windowRect = ConstrainWindowToScreen(windowRect);
@@ -197,6 +205,9 @@ namespace Sango.Tools
         {
             IsEditOn = false;
             Shader.DisableKeyword("SANGO_EDITOR");
+            EditorUndoRedoSystem.Instance.overrideAction = null ;
+            EditorObjectSelection.Instance.IsOverUIHandler -= IsPointerOverUI;
+
             // 编辑器关闭时自动保存
             //if (!string.IsNullOrEmpty(lastSavedPath))
             //{
@@ -243,6 +254,8 @@ namespace Sango.Tools
                 desc = "复制模型";
             else if (action is DeleteSelectedObjectsAction)
                 desc = "删除模型";
+            else
+                return;
             ModelEditCommand command = new ModelEditCommand(this, action, desc);
             undoRedoManager.AddCommand(command);
         }

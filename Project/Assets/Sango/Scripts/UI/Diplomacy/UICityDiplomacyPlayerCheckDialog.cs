@@ -17,10 +17,12 @@ namespace Sango.UI
         Person person;
         Force receiverForce;
         int resourceValue;
+
+
         public override void OnOpen(params object[] objects)
         {
-            windowTitle.text = DiplomacyManager.Instance.GetActionName(actionType);
             actionType = (DiplomacyActionType)objects[0];
+            windowTitle.text = GameSystem.GetSystem<DiplomacyManager>().GetActionName(actionType);
             person = objects[1] as Person;
             receiverForce = objects[2] as Force;
             resourceValue = (int)objects[3];
@@ -33,7 +35,7 @@ namespace Sango.UI
         public void UpdateContent()
         {
             who.text = $"{person.BelongForce.Name}";
-            target.text = $"{DiplomacyManager.Instance.GetActionName(actionType)}";
+            target.text = $"{GameSystem.GetSystem<DiplomacyManager>().GetActionName(actionType)}";
             relationship.text = Scenario.Cur.GetRelation(person.BelongForce, receiverForce).ToString();
             gold.text = $"{resourceValue}";
         }

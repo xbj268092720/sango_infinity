@@ -7,6 +7,8 @@ namespace Sango.Core
 {
     public class ForceAI
     {
+
+
         /// <summary>
         /// AI个性类型
         /// </summary>
@@ -93,26 +95,29 @@ namespace Sango.Core
                         // 防御型AI更倾向于停战
                         int chance = personality == AIPersonalityType.Defensive ? 20 : 10;
                         if (GameRandom.Chance(chance))
-                        {
-                            // 计算附加金钱价值，关系越差，投入越多
-                            int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Truce, personality);
-
-                            // 计算成功率
-                            Person diplomat = FindSuitableDiplomat(force);
-                            if (diplomat != null)
                             {
-                                int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
-                                if (successRate >= 20)
+                                // 计算附加金钱价值，关系越差，投入越多
+                                int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Truce, personality);
+
+                                // 计算成功率
+                                Person diplomat = FindSuitableDiplomat(force);
+                                if (diplomat != null)
                                 {
-                                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
-                                    if (!success)
+                                    DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                                    // 创建外交行为实例并计算成功率
+                                    DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
+                                    int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
+                                    if (successRate >= 20)
                                     {
-                                        RecordDiplomacyFailure(force, neighbor.Id);
+                                        bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
+                                        if (!success)
+                                        {
+                                            RecordDiplomacyFailure(force, neighbor.Id);
+                                        }
+                                        return true;
                                     }
-                                    return true;
                                 }
                             }
-                        }
                     }
                 }
             }
@@ -143,10 +148,13 @@ namespace Sango.Core
                             Person diplomat = FindSuitableDiplomat(force);
                             if (diplomat != null)
                             {
-                                int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Alliance, force, neighbor, diplomat, additionalValue);
+                                DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                                // 创建外交行为实例并计算成功率
+                                DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.Alliance, force, neighbor, diplomat, additionalValue);
+                                int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
                                 if (successRate >= 20)
                                 {
-                                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Alliance, force, neighbor, diplomat, additionalValue);
+                                    bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.Alliance, force, neighbor, diplomat, additionalValue);
                                     if (!success)
                                     {
                                         RecordDiplomacyFailure(force, neighbor.Id);
@@ -180,10 +188,13 @@ namespace Sango.Core
                         Person diplomat = FindSuitableDiplomat(force);
                         if (diplomat != null)
                         {
-                            int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Trade, force, neighbor, diplomat, additionalValue);
+                            DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                            // 创建外交行为实例并计算成功率
+                            DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.Trade, force, neighbor, diplomat, additionalValue);
+                            int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
                             if (successRate >= 20)
                             {
-                                bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Trade, force, neighbor, diplomat, additionalValue);
+                                bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.Trade, force, neighbor, diplomat, additionalValue);
                                 if (!success)
                                 {
                                     RecordDiplomacyFailure(force, neighbor.Id);
@@ -218,10 +229,13 @@ namespace Sango.Core
                             Person diplomat = FindSuitableDiplomat(force);
                             if (diplomat != null)
                             {
-                                int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Marriage, force, neighbor, diplomat, additionalValue);
+                                DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                                // 创建外交行为实例并计算成功率
+                                DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.Marriage, force, neighbor, diplomat, additionalValue);
+                                int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
                                 if (successRate >= 20)
                                 {
-                                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.Marriage, force, neighbor, diplomat, additionalValue);
+                                    bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.Marriage, force, neighbor, diplomat, additionalValue);
                                     if (!success)
                                     {
                                         RecordDiplomacyFailure(force, neighbor.Id);
@@ -255,10 +269,13 @@ namespace Sango.Core
                             Person diplomat = FindSuitableDiplomat(force);
                             if (diplomat != null)
                             {
-                                int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.SendGift, force, neighbor, diplomat, giftValue);
+                                DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                                // 创建外交行为实例并计算成功率
+                                DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.SendGift, force, neighbor, diplomat, giftValue);
+                                int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
                                 if (successRate >= 20)
                                 {
-                                    bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, neighbor, diplomat, giftValue);
+                                    bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, neighbor, diplomat, giftValue);
                                     if (!success)
                                     {
                                         RecordDiplomacyFailure(force, neighbor.Id);
@@ -302,10 +319,13 @@ namespace Sango.Core
                                     Person diplomat = FindSuitableDiplomat(force);
                                     if (diplomat != null)
                                     {
-                                        int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.AllianceRequest, force, enemysenemy, diplomat, additionalValue);
+                                        DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                                        // 创建外交行为实例并计算成功率
+                                        DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.AllianceRequest, force, enemysenemy, diplomat, additionalValue);
+                                        int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
                                         if (successRate >= 20)
                                         {
-                                            bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.AllianceRequest, force, enemysenemy, diplomat, additionalValue);
+                                            bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.AllianceRequest, force, enemysenemy, diplomat, additionalValue);
                                             if (!success)
                                             {
                                                 RecordDiplomacyFailure(force, enemysenemy.Id);
@@ -328,10 +348,13 @@ namespace Sango.Core
                                     Person diplomat = FindSuitableDiplomat(force);
                                     if (diplomat != null)
                                     {
-                                        int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.SendGift, force, enemysenemy, diplomat, giftValue);
+                                        DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                                        // 创建外交行为实例并计算成功率
+                                        DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.SendGift, force, enemysenemy, diplomat, giftValue);
+                                        int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
                                         if (successRate >= 20)
                                         {
-                                            bool success = DiplomacyManager.Instance.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, enemysenemy, diplomat, giftValue);
+                                            bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.SendGift, force, enemysenemy, diplomat, giftValue);
                                             if (!success)
                                             {
                                                 RecordDiplomacyFailure(force, enemysenemy.Id);
@@ -484,7 +507,15 @@ namespace Sango.Core
             // 执行撕毁条约
             for (int i = 0; i < alliancesToBreak.Count; i++)
             {
-                DiplomacyManager.Instance.BreakAlliance(force, targetsToBreak[i]);
+                // 获取同盟关系并撕毁
+                Alliance alliance = force.CheckAlliance(targetsToBreak[i]);
+                if (alliance != null)
+                {
+                    alliance.IsAlive = false;
+                    // 从双方的同盟列表中移除
+                    force.AllianceList.Remove(alliance);
+                    targetsToBreak[i].AllianceList.Remove(alliance);
+                }
                 return true; // 一次只撕毁一个条约
             }
 
@@ -846,7 +877,10 @@ namespace Sango.Core
                         if (people != null && people.Length > 0)
                         {
                             Person person = people[0];
-                            int rate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(DiplomacyActionType.Ransom, force, captive.CurrentCity.BelongForce, person, ransom);
+                            DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                            // 创建外交行为实例并计算成功率
+                            DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.Ransom, force, captive.CurrentCity.BelongForce, person, ransom);
+                            int rate = diplomacyManager.CalculateDiplomacySuccessRate(action);
                             if (rate > 50)
                             {
                                 city.gold -= ransom;

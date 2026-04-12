@@ -17,6 +17,8 @@ using Sango.Core; namespace Sango.UI
         public Text successRateLabel;
         public Text actionResultLabel;
         public Button allianceButton;
+
+
         public Button truceButton;
         public Button declareWarButton;
         public Button sendGiftButton;
@@ -134,7 +136,7 @@ using Sango.Core; namespace Sango.UI
                 return;
 
             Force currentForce = Scenario.Cur.CurRunForce;
-            int relation = DiplomacyManager.Instance.GetRelation(currentForce, _selectedForce);
+            int relation = GameSystem.GetSystem<DiplomacyManager>().GetRelation(currentForce, _selectedForce);
             relationLabel.text = $"关系值: {relation}";
             relationStatusLabel.text = $"关系状态: {GetRelationStatus(relation)}";
         }
@@ -202,16 +204,17 @@ using Sango.Core; namespace Sango.UI
             }
 
             // 检查各种外交行动的可行性
-            allianceButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.Alliance, currentForce, _selectedForce);
-            truceButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.Truce, currentForce, _selectedForce);
-            declareWarButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.DeclareWar, currentForce, _selectedForce);
-            sendGiftButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.SendGift, currentForce, _selectedForce);
-            requestTechniqueButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.RequestTechnique, currentForce, _selectedForce);
-            requestTroopsButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.RequestTroops, currentForce, _selectedForce);
-            tradeButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.Trade, currentForce, _selectedForce);
-            marriageButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.Marriage, currentForce, _selectedForce);
-            allianceRequestButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.AllianceRequest, currentForce, _selectedForce);
-            truceRequestButton.interactable = DiplomacyManager.Instance.CanPerformDiplomacyAction(DiplomacyActionType.TruceRequest, currentForce, _selectedForce);
+            DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+            allianceButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.Alliance, currentForce, _selectedForce);
+            truceButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.Truce, currentForce, _selectedForce);
+            declareWarButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.DeclareWar, currentForce, _selectedForce);
+            sendGiftButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.SendGift, currentForce, _selectedForce);
+            requestTechniqueButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.RequestTechnique, currentForce, _selectedForce);
+            requestTroopsButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.RequestTroops, currentForce, _selectedForce);
+            tradeButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.Trade, currentForce, _selectedForce);
+            marriageButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.Marriage, currentForce, _selectedForce);
+            allianceRequestButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.AllianceRequest, currentForce, _selectedForce);
+            truceRequestButton.interactable = diplomacyManager.CanPerformDiplomacyAction(DiplomacyActionType.TruceRequest, currentForce, _selectedForce);
         }
 
         /// <summary>
@@ -227,7 +230,10 @@ using Sango.Core; namespace Sango.UI
             }
 
             Force currentForce = Scenario.Cur.CurRunForce;
-            int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(actionType, currentForce, _selectedForce, _selectedDiplomat);
+            DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+            // 创建外交行为实例并计算成功率
+            DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(actionType, currentForce, _selectedForce, _selectedDiplomat);
+            int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
             successRateLabel.text = $"成功率: {successRate}%";
         }
 

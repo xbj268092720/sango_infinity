@@ -18,7 +18,7 @@ using Sango.Core; namespace Sango.UI
             base.OnOpen();
             techniqueItem.SetTechnique(ps[0] as Technique);
             animation.Play();
-            Invoke("Hide", animation.clip.length);
+            Invoke("Close", animation.clip.length);
         }
     }
 }

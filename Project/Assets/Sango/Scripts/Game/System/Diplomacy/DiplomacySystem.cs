@@ -18,6 +18,8 @@ namespace Sango.Core
         /// </summary>
         public List<Force> AllForces { get; private set; }
 
+
+
         /// <summary>
         /// 窗口名称
         /// </summary>
@@ -55,7 +57,7 @@ namespace Sango.Core
                 return false;
 
             // 执行外交行动
-            return DiplomacyManager.Instance.PerformDiplomacyAction(actionType, sender, receiver, diplomat, param, captiveId);
+            return GameSystem.GetSystem<DiplomacyManager>().PerformDiplomacyAction(actionType, sender, receiver, diplomat, param, captiveId);
         }
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace Sango.Core
         /// <returns>关系值</returns>
         public int GetRelation(Force forceA, Force forceB)
         {
-            return DiplomacyManager.Instance.GetRelation(forceA, forceB);
+            return GameSystem.GetSystem<DiplomacyManager>().GetRelation(forceA, forceB);
         }
 
         /// <summary>
@@ -78,7 +80,7 @@ namespace Sango.Core
         /// <returns>是否可以执行</returns>
         public bool CanPerformDiplomacyAction(DiplomacyActionType actionType, Force sender, Force receiver)
         {
-            return DiplomacyManager.Instance.CanPerformDiplomacyAction(actionType, sender, receiver);
+            return GameSystem.GetSystem<DiplomacyManager>().CanPerformDiplomacyAction(actionType, sender, receiver);
         }
 
         /// <summary>

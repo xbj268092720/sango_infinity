@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace Sango.Core
@@ -8,7 +7,8 @@ namespace Sango.Core
     /// <summary>
     /// 外交管理器
     /// </summary>
-    public class DiplomacyManager : Singleton<DiplomacyManager>
+    [GameSystem(order = 100, nickName = "DiplomacyManager")]
+    public class DiplomacyManager : GameSystem
     {
         /// <summary>
         /// 势力关系字典
@@ -18,10 +18,10 @@ namespace Sango.Core
         /// <summary>
         /// 初始化外交管理器
         /// </summary>
-        public void Init()
+        public override void Init()
         {
             _forceRelations = new Dictionary<string, ForceRelation>();
-
+            
             // 注册每月开始事件
             GameEvent.OnMonthStart += HandleMonthlyRelationChanges;
         }
@@ -98,7 +98,6 @@ namespace Sango.Core
         {
             int currentRelation = GetRelation(forceA, forceB);
             SetRelation(forceA, forceB, currentRelation + value);
-            Player.PlayerMessage.AddTextMessage($"{forceA.ColorName}与{forceB.ColorName}的关系得到了提升!!", forceA, forceB.CapitalCity.x, forceB.CapitalCity.y);
         }
 
         /// <summary>
@@ -122,7 +121,7 @@ namespace Sango.Core
         private string GetForceRelationKey(Force forceA, Force forceB)
         {
             // 确保键的唯一性，使用较小的ID在前
-            if (forceA.Id < forceB.Id)
+            if (forceA.Id< forceB.Id)
             {
                 return $"{forceA.Id}_{forceB.Id}";
             }
@@ -141,124 +140,35 @@ namespace Sango.Core
         /// <returns>是否可以执行</returns>
         public bool CanPerformDiplomacyAction(DiplomacyActionType actionType, Force sender, Force receiver)
         {
-            if (sender == null || receiver == null || sender == receiver)
-                return false;
-
-            int relation = GetRelation(sender, receiver);
-            ScenarioVariables variables = Scenario.Cur.Variables;
-
-            switch (actionType)
-            {
-                case DiplomacyActionType.Alliance:
-                    return relation >= variables.diplomacyAllianceRelationThreshold && !sender.HasActiveAgreement(receiver);
-                case DiplomacyActionType.Truce:
-                    return relation >= variables.diplomacyTruceRelationThreshold && !sender.HasActiveAgreement(receiver);
-                case DiplomacyActionType.DeclareWar:
-                    return !sender.HasActiveAgreement(receiver);
-                case DiplomacyActionType.SendGift:
-                    return true;
-                case DiplomacyActionType.RequestTechnique:
-                    return relation >= variables.diplomacyRequestTechniqueRelationThreshold;
-                case DiplomacyActionType.RequestTroops:
-                    return relation >= variables.diplomacyRequestTroopsRelationThreshold;
-                case DiplomacyActionType.Trade:
-                    return relation >= variables.diplomacyTradeRelationThreshold && !sender.HasActiveAgreement(receiver);
-                case DiplomacyActionType.Marriage:
-                    return relation >= variables.diplomacyMarriageRelationThreshold;
-                case DiplomacyActionType.AllianceRequest:
-                    return relation >= variables.diplomacyAllianceRequestRelationThreshold && !sender.HasActiveAgreement(receiver);
-                case DiplomacyActionType.TruceRequest:
-                    return relation >= variables.diplomacyTruceRequestRelationThreshold && !sender.HasActiveAgreement(receiver);
-                case DiplomacyActionType.Ransom:
-                    return true; // 赎回俘虏总是可以尝试
-                default:
-                    return false;
-            }
+            DiplomacyActionBase action = CreateDiplomacyAction(actionType, sender, receiver);
+            return action != null && action.CanPerform();
         }
 
         /// <summary>
-        /// 计算外交行动的成功率
+        /// 创建外交行为实例
         /// </summary>
         /// <param name="actionType">外交行动类型</param>
         /// <param name="sender">发送方势力</param>
         /// <param name="receiver">接收方势力</param>
         /// <param name="diplomat">执行外交的武将</param>
-        /// <param name="resourceValue">金钱或道具的价值</param>
-        /// <returns>成功率（0-100）</returns>
-        public int CalculateDiplomacySuccessRate(DiplomacyActionType actionType, Force sender, Force receiver, Person diplomat = null, int resourceValue = 0)
+        /// <param name="resourceValue">资源价值</param>
+        /// <returns>外交行为实例</returns>
+        public DiplomacyActionBase CreateDiplomacyAction(DiplomacyActionType actionType, Force sender, Force receiver, Person diplomat = null, int resourceValue = 0)
         {
-            if (sender == null || receiver == null || sender == receiver)
-                return 0;
-
-            int relation = GetRelation(sender, receiver);
-            int baseSuccessRate = 0;
-            ScenarioVariables variables = Scenario.Cur.Variables;
-
             switch (actionType)
             {
                 case DiplomacyActionType.Alliance:
-                    // 关系值越高，成功率越高，最高90%
-                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyAllianceBaseSuccessRate + (relation - variables.diplomacyAllianceRelationThreshold) / variables.diplomacyAllianceRelationFactor, variables.diplomacyAllianceMinSuccessRate, variables.diplomacyAllianceMaxSuccessRate);
-                    break;
+                    return new DiplomacyActionAlliance(sender, receiver, diplomat, resourceValue);
                 case DiplomacyActionType.Truce:
-                    // 关系值越高，成功率越高，最高80%
-                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyTruceBaseSuccessRate + (relation - variables.diplomacyTruceRelationThreshold) / variables.diplomacyTruceRelationFactor, variables.diplomacyTruceMinSuccessRate, variables.diplomacyTruceMaxSuccessRate);
-                    break;
+                    return new DiplomacyActionTruce(sender, receiver, diplomat, resourceValue);
                 case DiplomacyActionType.DeclareWar:
-                    // 宣战总是成功
-                    return 100;
+                    return new DiplomacyActionDeclareWar(sender, receiver, diplomat);
                 case DiplomacyActionType.SendGift:
-                    // 送礼总是成功
-                    return 100;
-                case DiplomacyActionType.RequestTechnique:
-                    // 关系值越高，成功率越高，最高85%
-                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyRequestTechniqueBaseSuccessRate + (relation - variables.diplomacyRequestTechniqueRelationThreshold) / variables.diplomacyRequestTechniqueRelationFactor, variables.diplomacyRequestTechniqueMinSuccessRate, variables.diplomacyRequestTechniqueMaxSuccessRate);
-                    break;
-                case DiplomacyActionType.RequestTroops:
-                    // 关系值越高，成功率越高，最高80%
-                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyRequestTroopsBaseSuccessRate + (relation - variables.diplomacyRequestTroopsRelationThreshold) / variables.diplomacyRequestTroopsRelationFactor, variables.diplomacyRequestTroopsMinSuccessRate, variables.diplomacyRequestTroopsMaxSuccessRate);
-                    break;
-                case DiplomacyActionType.Trade:
-                    // 关系值越高，成功率越高，最高95%
-                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyTradeBaseSuccessRate + (relation - variables.diplomacyTradeRelationThreshold) / variables.diplomacyTradeRelationFactor, variables.diplomacyTradeMinSuccessRate, variables.diplomacyTradeMaxSuccessRate);
-                    break;
-                case DiplomacyActionType.Marriage:
-                    // 关系值越高，成功率越高，最高95%
-                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyMarriageBaseSuccessRate + (relation - variables.diplomacyMarriageRelationThreshold) / variables.diplomacyMarriageRelationFactor, variables.diplomacyMarriageMinSuccessRate, variables.diplomacyMarriageMaxSuccessRate);
-                    break;
-                case DiplomacyActionType.AllianceRequest:
-                    // 关系值越高，成功率越高，最高85%
-                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyAllianceRequestBaseSuccessRate + (relation - variables.diplomacyAllianceRequestRelationThreshold) / variables.diplomacyAllianceRequestRelationFactor, variables.diplomacyAllianceRequestMinSuccessRate, variables.diplomacyAllianceRequestMaxSuccessRate);
-                    break;
-                case DiplomacyActionType.TruceRequest:
-                    // 关系值越高，成功率越高，最高75%
-                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyTruceRequestBaseSuccessRate + (relation - variables.diplomacyTruceRequestRelationThreshold) / variables.diplomacyTruceRequestRelationFactor, variables.diplomacyTruceRequestMinSuccessRate, variables.diplomacyTruceRequestMaxSuccessRate);
-                    break;
-                case DiplomacyActionType.Ransom:
-                    // 关系值越高，成功率越高，最高90%
-                    baseSuccessRate = (int)Mathf.Clamp(variables.diplomacyRansomBaseSuccessRate + (relation + 1000) / variables.diplomacyRansomSuccessRelationFactor, variables.diplomacyRansomMinSuccessRate, variables.diplomacyRansomMaxSuccessRate);
-                    break;
+                    return new DiplomacyActionSendGift(sender, receiver, diplomat, resourceValue);
+                // 其他外交行为类型可以在这里添加
                 default:
-                    return 0;
+                    return null;
             }
-
-            // 使者能力加成
-            if (diplomat != null)
-            {
-                int diplomacyAbility = diplomat.Politics + diplomat.Glamour / 2;
-                int abilityBonus = Mathf.Min(diplomacyAbility / 10, Scenario.Cur.Variables.diplomacyAbilityBonusMax);
-                baseSuccessRate += abilityBonus;
-            }
-
-            // 金钱和道具价值加成
-            if (resourceValue > 0)
-            {
-                int resourceBonus = Mathf.Min(resourceValue / Scenario.Cur.Variables.diplomacyResourceBonusFactor, Scenario.Cur.Variables.diplomacyResourceBonusMax);
-                baseSuccessRate += resourceBonus;
-            }
-
-            // 确保成功率在合理范围内
-            return Mathf.Clamp(baseSuccessRate, 0, 100);
         }
 
         /// <summary>
@@ -273,58 +183,18 @@ namespace Sango.Core
         /// <returns>行动是否成功</returns>
         public bool PerformDiplomacyAction(DiplomacyActionType actionType, Force sender, Force receiver, Person diplomat = null, object param = null, int captiveId = 0)
         {
-            if (!CanPerformDiplomacyAction(actionType, sender, receiver))
-                return false;
-
-            // 如果没有指定武将，自动选择合适的武将
-            if (diplomat == null || !diplomat.IsFree)
+            int resourceValue = 0;
+            if (param != null && param is int intParam)
             {
-                diplomat = FindSuitableDiplomat(sender);
-                if (diplomat == null)
-                    return false;
+                resourceValue = intParam;
             }
 
-            // 处理附加参数
-            int paramValue = 0;
-            if (param != null)
+            DiplomacyActionBase action = CreateDiplomacyAction(actionType, sender, receiver, diplomat, resourceValue);
+            if (action != null)
             {
-                if (param is int intParam)
-                {
-                    paramValue = intParam;
-                }
+                return action.Perform();
             }
-
-            // 获取目标势力主公所在的城市
-            City targetCity = receiver.Governor?.BelongCity;
-            if (targetCity == null)
-                return false;
-
-            // 计算移动所需时间
-            int distance = diplomat.DistanceDays(targetCity);
-            if (distance <= 0)
-                distance = 1;
-
-            // 设置外交任务，使用新的重载函数传递参数
-            if (actionType == DiplomacyActionType.Ransom)
-            {
-                // 对于赎回俘虏，传递俘虏ID
-                diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue, captiveId);
-            }
-            else
-            {
-                diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue);
-            }
-            if (receiver.Id == diplomat.BelongForce.Id)
-            {
-                Sango.Log.Error($"@外交@{sender.Name} 对 {receiver.Name} 派遣了使者 {diplomat.Name} 执行{GetActionName(actionType)}行动！");
-            }
-            // 将武将从首都的空闲武将列表中移除
-            diplomat.BelongCity.freePersons.Remove(diplomat);
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"@外交@{sender.Name} 对 {receiver.Name} 派遣了使者 {diplomat.Name} 执行{GetActionName(actionType)}行动！");
-#endif
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -364,684 +234,18 @@ namespace Sango.Core
         }
 
         /// <summary>
-        /// 寻找合适的外交使者
-        /// </summary>
-        /// <param name="force">势力</param>
-        /// <returns>合适的武将</returns>
-        private Person FindSuitableDiplomat(Force force)
-        {
-            if (force == null || force.Governor == null || force.CapitalCity == null)
-            {
-                return null;
-            }
-            // 使用ForceAI中的外交推荐方法选择合适的武将
-            Person[] recommendedDiplomats = ForceAI.CounsellorRecommendDiplomacy(force.CapitalCity.freePersons);
-            if (recommendedDiplomats != null && recommendedDiplomats.Length > 0)
-            {
-                return recommendedDiplomats[0];
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// 执行结盟
-        /// </summary>
-        /// <param name="forceA">势力A</param>
-        /// <param name="forceB">势力B</param>
-        /// <returns>是否成功</returns>
-        public bool PerformAlliance(Force forceA, Force forceB)
-        {
-            // 检查是否已经结盟
-            if (forceA.CheckAlliance(forceB, AllianceType.Alliance) != null)
-                return false;
-
-            ScenarioVariables variables = Scenario.Cur.Variables;
-
-            // 创建联盟
-            Alliance alliance = new Alliance()
-            {
-                ForceList = new SangoObjectList<Force>(),
-                leftCount = variables.diplomacyAllianceDuration, // 12个月
-                allianceType = AllianceType.Alliance,
-                IsAlive = true
-            };
-
-            alliance.ForceList.Add(forceA);
-            alliance.ForceList.Add(forceB);
-
-            // 添加到场景
-            Scenario.Cur.Add(alliance);
-
-            // 添加到势力的联盟列表
-            forceA.AllianceList.Add(alliance);
-            forceB.AllianceList.Add(alliance);
-
-            // 增加关系
-            AddRelation(forceA, forceB, variables.diplomacyAllianceRelationIncrease);
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"@外交@{forceA.Name} 与 {forceB.Name} 达成了{variables.diplomacyAllianceDuration / 3}个月的结盟 Id={alliance.Id}!!");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacyAlliance?.Invoke(forceA, forceB, true);
-
-            return true;
-        }
-
-        /// <summary>
-        /// 执行停战
-        /// </summary>
-        /// <param name="forceA">势力A</param>
-        /// <param name="forceB">势力B</param>
-        /// <returns>是否成功</returns>
-        public bool PerformTruce(Force forceA, Force forceB)
-        {
-            // 检查是否已经有停战协议
-            if (forceA.CheckAlliance(forceB, AllianceType.Truce) != null)
-                return false;
-
-            ScenarioVariables variables = Scenario.Cur.Variables;
-
-            // 创建停战协议
-            Alliance truce = new Alliance()
-            {
-                ForceList = new SangoObjectList<Force>(),
-                leftCount = variables.diplomacyTruceDuration, // 6个月
-                allianceType = AllianceType.Truce, // 停战类型
-                IsAlive = true
-            };
-
-            truce.ForceList.Add(forceA);
-            truce.ForceList.Add(forceB);
-
-            // 添加到场景
-            Scenario.Cur.Add(truce);
-
-            // 添加到势力的联盟列表
-            forceA.AllianceList.Add(truce);
-            forceB.AllianceList.Add(truce);
-
-            // 增加关系
-            AddRelation(forceA, forceB, variables.diplomacyTruceRelationIncrease);
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"@外交@{forceA.Name} 与 {forceB.Name} 达成了{variables.diplomacyTruceDuration / 3}个月的停战协议!!");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacyTruce?.Invoke(forceA, forceB, true);
-
-            return true;
-        }
-
-        /// <summary>
-        /// 执行宣战
-        /// </summary>
-        /// <param name="forceA">势力A</param>
-        /// <param name="forceB">势力B</param>
-        /// <returns>是否成功</returns>
-        public bool PerformDeclareWar(Force forceA, Force forceB)
-        {
-            // 解除联盟
-            Alliance alliance = forceA.CheckAlliance(forceB);
-            if (alliance != null)
-            {
-                alliance.IsAlive = false;
-                forceA.AllianceList.Remove(alliance);
-                forceB.AllianceList.Remove(alliance);
-            }
-
-            // 减少关系
-            ReduceRelation(forceA, forceB, Scenario.Cur.Variables.diplomacyDeclareWarRelationDecrease);
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"@外交@{forceA.Name} 向 {forceB.Name} 宣战!!");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacyDeclareWar?.Invoke(forceA, forceB, true);
-
-            return true;
-        }
-
-        /// <summary>
-        /// 执行送礼
-        /// </summary>
-        /// <param name="sender">发送方</param>
-        /// <param name="receiver">接收方</param>
-        /// <param name="giftValue">礼物价值</param>
-        /// <returns>是否成功</returns>
-        public bool PerformSendGift(Force sender, Force receiver, int giftValue)
-        {
-            // 计算关系增加量（考虑多种因素）
-            int relationIncrease = CalculateDynamicRelationIncrease(sender, receiver, giftValue);
-
-            // 增加关系
-            AddRelation(sender, receiver, relationIncrease);
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"@外交@{sender.Name} 向 {receiver.Name} 赠送了 {giftValue} 金，关系增加了 {relationIncrease}!!");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacySendGift?.Invoke(sender, receiver, giftValue, true);
-
-            return true;
-        }
-
-        /// <summary>
-        /// 动态计算送礼的关系增加量
-        /// 考虑因素：对象势力的金钱、势力对比、主公喜好、性格等
-        /// </summary>
-        /// <param name="sender">发送方势力</param>
-        /// <param name="receiver">接收方势力</param>
-        /// <param name="giftValue">礼物价值</param>
-        /// <returns>关系增加量</returns>
-        private int CalculateDynamicRelationIncrease(Force sender, Force receiver, int giftValue)
-        {
-            ScenarioVariables variables = Scenario.Cur.Variables;
-
-            // 基础关系增加量（每10金增加1点关系）
-            int baseIncrease = giftValue / variables.diplomacySendGiftRelationFactor;
-
-            // 计算各种因素的修正系数
-            float factor = 1.0f;
-
-            // 1. 对象势力的金钱因素：越穷的势力越看重礼物
-            int receiverTotalGold = 0;
-            receiver.ForEachCity(city =>
-            {
-                receiverTotalGold += city.gold;
-            });
-
-            // 如果接收方很穷，增加礼物效果
-            if (receiverTotalGold < 5000)
-            {
-                factor += (5000 - receiverTotalGold) / 10000.0f; // 最多增加0.5倍效果
-            }
-            // 如果接收方很富，减少礼物效果
-            else if (receiverTotalGold > 50000)
-            {
-                factor -= (receiverTotalGold - 50000) / 200000.0f; // 最多减少0.25倍效果
-                factor = Mathf.Max(factor, 0.75f); // 最低保持0.75倍效果
-            }
-
-            // 2. 势力对比因素：弱小势力向强大势力送礼效果更好
-            int senderPower = sender.FightPower > 0 ? sender.FightPower : 1;
-            int receiverPower = receiver.FightPower > 0 ? receiver.FightPower : 1;
-            float powerRatio = (float)senderPower / receiverPower;
-
-            // 当发送方势力较弱时，增加礼物效果
-            if (powerRatio < 0.5f)
-            {
-                factor += (0.5f - powerRatio) * 0.4f; // 最多增加0.2倍效果
-            }
-            // 当发送方势力较强时，减少礼物效果
-            else if (powerRatio > 2.0f)
-            {
-                factor -= (powerRatio - 2.0f) * 0.1f; // 最多减少0.2倍效果
-                factor = Mathf.Max(factor, 0.8f); // 最低保持0.8倍效果
-            }
-
-            // 3. 主公喜好和性格因素
-            if (receiver.Governor != null)
-            {
-                Person governor = receiver.Governor;
-
-                // 性格影响：使用Personality类中的送礼效果加成参数
-                if (governor.personality != null)
-                {
-                    // 获取性格的送礼效果加成（百分比）
-                    int giftEffectBonus = governor.personality.giftEffectAdd;
-                    // 将百分比转换为系数（例如：10表示+10%，即0.1）
-                    float bonusFactor = giftEffectBonus / 100.0f;
-                    factor += bonusFactor;
-                }
-
-                // 相性影响：相性好的话效果更好
-                if (sender.Governor != null)
-                {
-                    int compatibilityDiff = System.Math.Abs(sender.Governor.compatibility - governor.compatibility);
-                    if (compatibilityDiff < 30)
-                    {
-                        factor += (30 - compatibilityDiff) / 300.0f; // 最多增加0.1倍效果
-                    }
-                }
-
-                // 政治属性影响：政治高的主公更看重外交
-                factor += governor.Politics / 1000.0f; // 最多增加0.1倍效果
-            }
-
-            // 4. 关系基础影响：关系越差，送礼效果越好
-            int currentRelation = GetRelation(sender, receiver);
-            if (currentRelation < 0)
-            {
-                factor += Mathf.Abs(currentRelation) / 2000.0f; // 最多增加0.5倍效果
-            }
-            else if (currentRelation > 1000)
-            {
-                factor -= currentRelation / 4000.0f; // 最多减少0.25倍效果
-                factor = Mathf.Max(factor, 0.75f); // 最低保持0.75倍效果
-            }
-
-            // 计算最终关系增加量
-            int finalIncrease = Mathf.RoundToInt(baseIncrease * factor);
-
-            // 确保关系增加量至少为1
-            return Mathf.Max(finalIncrease, 1);
-        }
-
-        /// <summary>
-        /// 执行请求技术
-        /// </summary>
-        /// <param name="sender">发送方</param>
-        /// <param name="receiver">接收方</param>
-        /// <param name="techId">技术ID</param>
-        /// <returns>是否成功</returns>
-        public bool PerformRequestTechnique(Force sender, Force receiver, int techId)
-        {
-            // 检查接收方是否拥有该技术
-            if (!receiver.HasTechnique(techId))
-                return false;
-
-            // 检查发送方是否已经拥有该技术
-            if (sender.HasTechnique(techId))
-                return false;
-
-            // 学习技术
-            sender.AddTechnique(techId);
-
-            // 减少关系
-            ReduceRelation(sender, receiver, Scenario.Cur.Variables.diplomacyRequestTechniqueRelationDecrease);
-
-#if SANGO_DEBUG
-            Technique tech = Scenario.Cur.GetObject<Technique>(techId);
-            Sango.Log.Info($"@外交@{sender.Name} 从 {receiver.Name} 处学到了技术 {tech?.Name}!!");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacyRequestTechnique?.Invoke(sender, receiver, techId, true);
-
-            return true;
-        }
-
-        /// <summary>
-        /// 执行请求兵力
-        /// </summary>
-        /// <param name="sender">发送方</param>
-        /// <param name="receiver">接收方</param>
-        /// <param name="troopCount">请求兵力</param>
-        /// <returns>是否成功</returns>
-        public bool PerformRequestTroops(Force sender, Force receiver, int troopCount)
-        {
-            // 检查接收方是否有足够的兵力
-            int totalTroops = 0;
-            receiver.ForEachCity(city =>
-            {
-                totalTroops += city.troops;
-            });
-
-            if (totalTroops < troopCount)
-                return false;
-
-            // 从接收方的城市中抽调兵力
-            int remainingTroops = troopCount;
-            receiver.ForEachCity(city =>
-            {
-                if (remainingTroops <= 0)
-                    return;
-
-                int troopsToTake = Mathf.Min(city.troops, remainingTroops);
-                city.troops -= troopsToTake;
-                remainingTroops -= troopsToTake;
-            });
-
-            // 增加到发送方的首都
-            if (sender.Governor?.BelongCity != null)
-            {
-                sender.CapitalCity.troops += troopCount;
-            }
-
-            // 减少关系
-            ReduceRelation(sender, receiver, Scenario.Cur.Variables.diplomacyRequestTroopsRelationDecrease);
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"@外交@{receiver.Name} 向 {sender.Name} 提供了 {troopCount} 兵力!!");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacyRequestTroops?.Invoke(sender, receiver, troopCount, true);
-
-            return true;
-        }
-
-        /// <summary>
-        /// 执行通商
-        /// </summary>
-        /// <param name="sender">发送方</param>
-        /// <param name="receiver">接收方</param>
-        /// <returns>是否成功</returns>
-        public bool PerformTrade(Force sender, Force receiver)
-        {
-            // 检查双方是否有足够的城市
-            int senderCityCount = 0;
-            sender.ForEachCity(city => senderCityCount++);
-            int receiverCityCount = 0;
-            receiver.ForEachCity(city => receiverCityCount++);
-
-            if (senderCityCount == 0 || receiverCityCount == 0)
-                return false;
-
-            // 检查是否已经有协议
-            if (sender.HasActiveAgreement(receiver))
-                return false;
-
-            ScenarioVariables variables = Scenario.Cur.Variables;
-
-            // 创建通商协议
-            Alliance tradeAlliance = new Alliance()
-            {
-                ForceList = new SangoObjectList<Force>(),
-                leftCount = variables.diplomacyTradeDuration, // 8个月
-                allianceType = AllianceType.Trade, // 通商类型
-                IsAlive = true
-            };
-
-            tradeAlliance.ForceList.Add(sender);
-            tradeAlliance.ForceList.Add(receiver);
-
-            // 添加到场景
-            Scenario.Cur.Add(tradeAlliance);
-
-            // 添加到势力的联盟列表
-            sender.AllianceList.Add(tradeAlliance);
-            receiver.AllianceList.Add(tradeAlliance);
-
-            // 增加双方的黄金收入
-            sender.ForEachCity(city => city.baseGainGold += variables.diplomacyTradeGoldIncrease);
-            receiver.ForEachCity(city => city.baseGainGold += variables.diplomacyTradeGoldIncrease);
-
-            // 增加关系
-            AddRelation(sender, receiver, variables.diplomacyTradeRelationIncrease);
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"@外交@{sender.Name} 与 {receiver.Name} 达成了{variables.diplomacyTradeDuration / 3}个月的通商协议，双方城市的黄金收入增加了!!");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacyTrade?.Invoke(sender, receiver, true);
-
-            return true;
-        }
-
-        /// <summary>
-        /// 执行和亲
-        /// </summary>
-        /// <param name="sender">发送方</param>
-        /// <param name="receiver">接收方</param>
-        /// <returns>是否成功</returns>
-        public bool PerformMarriage(Force sender, Force receiver)
-        {
-            ScenarioVariables variables = Scenario.Cur.Variables;
-
-            // 增加关系
-            AddRelation(sender, receiver, variables.diplomacyMarriageRelationIncrease);
-
-            // 提高双方的同盟概率
-            if (!sender.IsAlliance(receiver))
-            {
-                // 和亲后更容易结盟
-                AddRelation(sender, receiver, variables.diplomacyMarriageExtraRelationIncrease);
-            }
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"@外交@{sender.Name} 与 {receiver.Name} 达成了和亲，关系大幅提升!!");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacyMarriage?.Invoke(sender, receiver, true);
-
-            return true;
-        }
-
-        /// <summary>
-        /// 执行赎回俘虏
-        /// </summary>
-        /// <param name="sender">发送方</param>
-        /// <param name="receiver">接收方</param>
-        /// <param name="ransomValue">赎金</param>
-        /// <param name="captiveId">俘虏ID</param>
-        /// <returns>是否成功</returns>
-        public bool PerformRansom(Person sender, Force receiver, int ransomValue, int captiveId)
-        {
-            // 检查发送方是否有足够的资金
-            ransomValue = System.Math.Min(ransomValue, sender.BelongCity.gold);
-
-            // 查找指定的俘虏
-            Person captive = null;
-            City captiveCity = null;
-            Troop captiveTroop = null;
-
-            for (int i = 0; i < sender.BelongForce.BeCaptiveList.Count; i++)
-            {
-                Person person = sender.BelongForce.BeCaptiveList[i];
-                if (person.Id == captiveId)
-                {
-                    captive = person;
-                    captiveCity = person.CurrentCity;
-                    captiveTroop = person.BelongTroop;
-                    break;
-                }
-            }
-
-            if (captive == null)
-                return false;
-
-            // 扣除资金
-            sender.BelongCity.gold -= ransomValue;
-
-            // 释放俘虏
-            captive.Escape(EscapeType.Released, receiver);
-
-            // 增加关系
-            int relationIncrease = ransomValue / Scenario.Cur.Variables.diplomacyRansomRelationFactor; // 每20金增加1点关系
-            AddRelation(sender.BelongForce, receiver, relationIncrease);
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"@外交@{sender.Name} 向 {receiver.Name} 支付了 {ransomValue} 金赎回了俘虏 {captive.Name}，关系增加了 {relationIncrease}!!");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacyRansom?.Invoke(sender.BelongForce, receiver, ransomValue, true);
-
-            return true;
-        }
-
-        /// <summary>
-        /// 计算赎回俘虏的额外费用
-        /// </summary>
-        /// <param name="captive">俘虏</param>
-        /// <returns>额外费用</returns>
-        public int CalculateRansomExtraCost(Person captive)
-        {
-            if (captive == null)
-                return 0;
-
-            ScenarioVariables variables = Scenario.Cur.Variables;
-            int extraCost = 0;
-
-            // 基于等级的额外费用
-            extraCost += captive.Level.Id * variables.diplomacyRansomLevelCostFactor;
-
-            // 基于功绩的额外费用
-            extraCost += captive.merit / variables.diplomacyRansomMeritCostFactor;
-
-            // 基于官职的额外费用
-            if (captive.Official != null)
-            {
-                extraCost += captive.Official.level * variables.diplomacyRansomOfficialCostFactor;
-            }
-
-            // 基于属性的额外费用（统率、武力、智力、政治、魅力的平均值）
-            int avgAttribute = (captive.Command + captive.Strength + captive.Intelligence + captive.Politics + captive.Glamour) / 5;
-            extraCost += avgAttribute * variables.diplomacyRansomAttributeCostFactor;
-
-            return extraCost;
-        }
-
-        /// <summary>
-        /// 执行请求结盟
-        /// </summary>
-        /// <param name="sender">发送方</param>
-        /// <param name="receiver">接收方</param>
-        /// <returns>是否成功</returns>
-        public bool PerformAllianceRequest(Force sender, Force receiver)
-        {
-            // 检查关系是否足够
-            int relation = GetRelation(sender, receiver);
-            ScenarioVariables variables = Scenario.Cur.Variables;
-            if (relation < variables.diplomacyAllianceRequestSuccessRelationThreshold)
-                return false;
-
-            // 检查是否已经有协议
-            if (sender.HasActiveAgreement(receiver))
-                return false;
-
-            // 有一定概率成功
-            if (GameRandom.Chance(relation, variables.diplomacyAllianceRequestChanceDenominator))
-            {
-                bool success = PerformAlliance(sender, receiver);
-                // 触发事件
-                GameEvent.OnDiplomacyAllianceRequest?.Invoke(sender, receiver, success);
-                return success;
-            }
-            else
-            {
-                // 失败但关系略有提升
-                AddRelation(sender, receiver, variables.diplomacyAllianceRequestRelationIncrease);
-
-#if SANGO_DEBUG
-                Sango.Log.Info($"@外交@{sender.Name} 请求与 {receiver.Name} 结盟，但被拒绝了，不过关系有所改善!!");
-#endif
-
-                // 触发事件
-                GameEvent.OnDiplomacyAllianceRequest?.Invoke(sender, receiver, false);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 执行请求停战
-        /// </summary>
-        /// <param name="sender">发送方</param>
-        /// <param name="receiver">接收方</param>
-        /// <returns>是否成功</returns>
-        public bool PerformTruceRequest(Force sender, Force receiver)
-        {
-            // 检查关系是否足够
-            int relation = GetRelation(sender, receiver);
-            ScenarioVariables variables = Scenario.Cur.Variables;
-            if (relation < variables.diplomacyTruceRequestSuccessRelationThreshold)
-                return false;
-
-            // 检查是否已经有协议
-            if (sender.HasActiveAgreement(receiver))
-                return false;
-
-            // 有一定概率成功
-            if (GameRandom.Chance(relation + variables.diplomacyTruceRequestChanceOffset, variables.diplomacyTruceRequestChanceDenominator))
-            {
-                bool success = PerformTruce(sender, receiver);
-                // 触发事件
-                GameEvent.OnDiplomacyTruceRequest?.Invoke(sender, receiver, success);
-                return success;
-            }
-            else
-            {
-                // 失败但关系略有提升
-                AddRelation(sender, receiver, variables.diplomacyTruceRequestRelationIncrease);
-
-#if SANGO_DEBUG
-                Sango.Log.Info($"@外交@{sender.Name} 请求与 {receiver.Name} 停战，但被拒绝了，不过关系有所改善!!");
-#endif
-
-                // 触发事件
-                GameEvent.OnDiplomacyTruceRequest?.Invoke(sender, receiver, false);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 撕毁条约
-        /// </summary>
-        /// <param name="forceA">势力A</param>
-        /// <param name="forceB">势力B</param>
-        /// <returns>是否成功</returns>
-        public bool BreakAlliance(Force forceA, Force forceB)
-        {
-            // 检查是否有同盟或停战协议
-            Alliance alliance = forceA.CheckAlliance(forceB);
-            if (alliance == null)
-                return false;
-
-            // 标记条约为无效
-            alliance.IsAlive = false;
-
-            // 从双方的同盟列表中移除
-            forceA.AllianceList.Remove(alliance);
-            forceB.AllianceList.Remove(alliance);
-
-            ScenarioVariables variables = Scenario.Cur.Variables;
-
-            // 如果是通商协议，还原黄金收入
-            if (alliance.allianceType == AllianceType.Trade)
-            {
-                forceA.ForEachCity(city => city.baseGainGold -= variables.diplomacyTradeGoldIncrease);
-                forceB.ForEachCity(city => city.baseGainGold -= variables.diplomacyTradeGoldIncrease);
-            }
-
-            // 减少关系
-            int relationDecrease = 0;
-            switch (alliance.allianceType)
-            {
-                case AllianceType.Alliance: // 同盟
-                    relationDecrease = variables.diplomacyBreakAllianceRelationDecrease;
-                    break;
-                case AllianceType.Truce: // 停战
-                    relationDecrease = variables.diplomacyBreakTruceRelationDecrease;
-                    break;
-                case AllianceType.Trade: // 通商
-                    relationDecrease = variables.diplomacyBreakTradeRelationDecrease;
-                    break;
-            }
-            ReduceRelation(forceA, forceB, relationDecrease);
-
-#if SANGO_DEBUG
-            string treatyType = alliance.allianceType == AllianceType.Alliance ? "同盟" : (alliance.allianceType == AllianceType.Truce ? "停战协议" : "通商协议");
-            Sango.Log.Info($"@外交@{forceA.Name} 撕毁了与 {forceB.Name} 的{treatyType}，关系减少了 {relationDecrease}！");
-#endif
-
-            // 触发事件
-            GameEvent.OnDiplomacyBreakAlliance?.Invoke(forceA, forceB, true);
-
-            return true;
-        }
-
-        /// <summary>
         /// 处理每月关系变化
         /// </summary>
         /// <param name="scenario">场景</param>
         private void HandleMonthlyRelationChanges(Scenario scenario)
         {
-            if (scenario == null || scenario.forceSet.Count < 2)
+            if (scenario == null || scenario.forceSet.Count< 2)
                 return;
 
             int forceCount = scenario.forceSet.Count;
             ScenarioVariables variables = scenario.Variables;
-
-            for (int i = 0; i < forceCount; ++i)
+            
+            for (int i = 0; i< forceCount; ++i)
             {
                 Force forceA = scenario.forceSet[i];
                 if (forceA == null || !forceA.IsAlive)
@@ -1055,10 +259,10 @@ namespace Sango.Core
 
                     // 检查是否有同盟或停战协议
                     bool hasAlliance = forceA.IsAlliance(forceB);
-
+                    
                     // 关系变化概率
                     int chance = variables.relationChangeChance;
-
+                    
                     // 同盟关系变化概率降低，且变化值为正
                     if (hasAlliance)
                     {
@@ -1082,290 +286,862 @@ namespace Sango.Core
             }
         }
 
-        public void DoPersonDiplomacyAction(Person person, DiplomacyActionType actionType, Force receiverForce, int resourceValue, int captiveId)
+        /// <summary>
+        /// 步骤1：确定自势力是否需要外交
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <returns>是否需要外交</returns>
+        public bool DetermineIfDiplomacyNeeded(Force force)
         {
-            // 计算成功率
-            int successRate = CalculateDiplomacySuccessRate(actionType, person.BelongForce, receiverForce, person, resourceValue);
-            bool success = false;
+            if (force == null || !force.IsAlive)
+                return false;
 
-            // 根据成功率判断是否执行成功
-            if (GameRandom.Chance(successRate))
+            // 检查是否有足够的资金
+            if (force.CapitalCity == null || force.CapitalCity.gold< 500)
+                return false;
+
+            // 检查是否有空闲武将
+            bool hasFreePerson = false;
+            force.ForEachPerson(person =>
             {
-                switch (actionType)
+                if (person.IsFree && person.IsAlive)
                 {
-                    case DiplomacyActionType.Alliance:
-                        success = PerformAlliance(person.BelongForce, receiverForce);
-                        break;
-                    case DiplomacyActionType.Truce:
-                        success = PerformTruce(person.BelongForce, receiverForce);
-                        break;
-                    case DiplomacyActionType.DeclareWar:
-                        success = PerformDeclareWar(person.BelongForce, receiverForce);
-                        break;
-                    case DiplomacyActionType.SendGift:
-                        // 使用missionParams3存储礼物价值
-                        success = PerformSendGift(person.BelongForce, receiverForce, resourceValue);
-                        break;
-                    case DiplomacyActionType.RequestTechnique:
-                        // 使用missionParams3存储技术ID
-                        success = PerformRequestTechnique(person.BelongForce, receiverForce, resourceValue);
-                        break;
-                    case DiplomacyActionType.RequestTroops:
-                        // 使用missionParams3存储兵力数量
-                        success = PerformRequestTroops(person.BelongForce, receiverForce, resourceValue);
-                        break;
-                    case DiplomacyActionType.Trade:
-                        success = PerformTrade(person.BelongForce, receiverForce);
-                        break;
-                    case DiplomacyActionType.Marriage:
-                        success = PerformMarriage(person.BelongForce, receiverForce);
-                        break;
-                    case DiplomacyActionType.AllianceRequest:
-                        success = PerformAllianceRequest(person.BelongForce, receiverForce);
-                        break;
-                    case DiplomacyActionType.TruceRequest:
-                        success = PerformTruceRequest(person.BelongForce, receiverForce);
-                        break;
-                    case DiplomacyActionType.Ransom:
-
-                        // 使用missionParams3存储赎金，missionParams4存储俘虏ID
-                        success = PerformRansom(person, receiverForce, resourceValue, captiveId);
-                        break;
+                    hasFreePerson = true;
+                    return;
                 }
-            }
+            });
 
-            // 输出调试信息
-            if (success)
-            {
-#if SANGO_DEBUG
-                Sango.Log.Info($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动成功了！成功率: {successRate}%");
-#endif
-            }
-            else
-            {
-#if SANGO_DEBUG
-                Sango.Log.Info($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动失败了！成功率: {successRate}%");
-#endif
-                // 外交失败减少关系
-                int relationDecrease = 0;
-                switch (actionType)
-                {
-                    case DiplomacyActionType.Alliance:
-                    case DiplomacyActionType.AllianceRequest:
-                        relationDecrease = 50;
-                        break;
-                    case DiplomacyActionType.Truce:
-                    case DiplomacyActionType.TruceRequest:
-                        relationDecrease = 30;
-                        break;
-                    case DiplomacyActionType.RequestTechnique:
-                        relationDecrease = 100;
-                        break;
-                    case DiplomacyActionType.RequestTroops:
-                        relationDecrease = 150;
-                        break;
-                    case DiplomacyActionType.Trade:
-                        relationDecrease = 40;
-                        break;
-                    case DiplomacyActionType.Marriage:
-                        relationDecrease = 80;
-                        break;
-                    case DiplomacyActionType.Ransom:
-                        relationDecrease = 60;
-                        break;
-                    default:
-                        relationDecrease = 20;
-                        break;
-                }
-
-                ReduceRelation(person.BelongForce, receiverForce, relationDecrease);
-
-#if SANGO_DEBUG
-                Sango.Log.Info($"@外交@{person.BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
-#endif
-            }
+            return hasFreePerson;
         }
 
         /// <summary>
-        /// 玩家发起外交行动（直接执行，无判断）
+        /// 步骤2：选定外交对象
         /// </summary>
+        /// <param name="force">势力</param>
         /// <param name="actionType">外交行动类型</param>
-        /// <param name="diplomat">执行外交的武将</param>
-        /// <param name="receiver">接收方势力</param>
-        /// <param name="cost">消耗资金</param>
-        /// <param name="param">行动参数</param>
-        /// <param name="captiveId">俘虏ID（仅用于赎回俘虏）</param>
-        /// <returns>是否成功</returns>
-        public bool PlayerInitiateDiplomacyAction(DiplomacyActionType actionType, Person diplomat, Force receiver, int cost, object param = null, int captiveId = 0)
+        /// <returns>外交对象</returns>
+        public Force SelectDiplomacyTarget(Force force, DiplomacyActionType actionType)
         {
-            City senderCity = diplomat.BelongCity;
-            if (senderCity == null || senderCity.BelongForce == null || receiver == null || senderCity.BelongForce == receiver || diplomat == null)
+            if (force == null || !force.IsAlive)
+                return null;
+
+            // 获取所有其他势力
+            List<Force> potentialTargets = new List<Force>();
+            foreach (Force otherForce in Scenario.Cur.forceSet)
+            {
+                if (otherForce != force && otherForce.IsAlive)
+                {
+                    potentialTargets.Add(otherForce);
+                }
+            }
+
+            // 根据外交行动类型选择合适的目标
+            Force bestTarget = null;
+            int bestScore = -999999;
+
+            foreach (Force target in potentialTargets)
+            {
+                int score = CalculateTargetScore(force, target, actionType);
+                if (score >bestScore)
+                {
+                    bestScore = score;
+                    bestTarget = target;
+                }
+            }
+
+            return bestTarget;
+        }
+
+        /// <summary>
+        /// 计算目标势力的得分
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <param name="target">目标势力</param>
+        /// <param name="actionType">外交行动类型</param>
+        /// <returns>得分</returns>
+        private int CalculateTargetScore(Force force, Force target, DiplomacyActionType actionType)
+        {
+            int score = 0;
+            int relation = GetRelation(force, target);
+
+            switch (actionType)
+            {
+                case DiplomacyActionType.Alliance:
+                    // 寻找关系较好的势力
+                    score = relation;
+                    // 如果对方势力强大，结盟更有价值
+                    score += target.FightPower / 100;
+                    break;
+                    
+                case DiplomacyActionType.SendGift:
+                    // 寻找关系较差的势力，送礼效果更好
+                    score = -relation;
+                    // 如果对方势力贫穷，送礼效果更好
+                    int targetTotalGold = 0;
+                    target.ForEachCity(city => targetTotalGold += city.gold);
+                    score += (5000 - targetTotalGold) / 100;
+                    break;
+                    
+                case DiplomacyActionType.DeclareWar:
+                    // 寻找关系较差且实力较弱的势力
+                    score = -relation - target.FightPower / 100;
+                    break;
+                    
+                case DiplomacyActionType.Truce:
+                    // 寻找关系较差但有停战可能的势力
+                    score = Mathf.Abs(relation);
+                    break;
+                    
+                default:
+                    score = relation;
+                    break;
+            }
+
+            return score;
+        }
+
+        /// <summary>
+        /// 步骤3：选定执行外交的武将
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <param name="actionType">外交行动类型</param>
+        /// <returns>武将</returns>
+        public Person SelectDiplomat(Force force, DiplomacyActionType actionType)
+        {
+            if (force == null || !force.IsAlive)
+                return null;
+
+            Person bestDiplomat = null;
+            int bestScore = -999999;
+
+            force.ForEachPerson(person =>
+            {
+                if (!person.IsFree || !person.IsAlive)
+                    return;
+
+                int score = CalculateDiplomatScore(person, actionType);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestDiplomat = person;
+                }
+            });
+
+            return bestDiplomat;
+        }
+
+        /// <summary>
+        /// 计算武将的外交能力得分
+        /// </summary>
+        /// <param name="person">武将</param>
+        /// <param name="actionType">外交行动类型</param>
+        /// <returns>得分</returns>
+        private int CalculateDiplomatScore(Person person, DiplomacyActionType actionType)
+        {
+            int score = 0;
+
+            switch (actionType)
+            {
+                case DiplomacyActionType.Alliance:
+                case DiplomacyActionType.Truce:
+                case DiplomacyActionType.SendGift:
+                    // 外交类行动看重政治和魅力
+                    score = person.Politics * 2 + person.Glamour;
+                    break;
+                    
+                case DiplomacyActionType.DeclareWar:
+                    // 宣战看重统率和武力
+                    score = person.Command + person.Strength;
+                    break;
+                    
+                case DiplomacyActionType.RequestTechnique:
+                    // 请求技术看重智力
+                    score = person.Intelligence * 2;
+                    break;
+                    
+                default:
+                    // 默认看重政治
+                    score = person.Politics;
+                    break;
+            }
+
+            // 性格加成
+            if (person.personality != null)
+            {
+                score += person.personality.diplomacyTendencyAdd;
+            }
+
+            return score;
+        }
+
+        /// <summary>
+        /// 步骤4：计算外交可能性
+        /// </summary>
+        /// <param name="action">外交行为</param>
+        /// <returns>成功率</returns>
+        public int CalculateDiplomacySuccessRate(DiplomacyActionBase action)
+        {
+            if (action == null)
+                return 0;
+
+            return action.CalculateSuccessRate();
+        }
+
+        /// <summary>
+        /// 步骤5：派遣武将执行外交任务
+        /// </summary>
+        /// <param name="action">外交行为</param>
+        /// <returns>是否成功派遣</returns>
+        public bool DispatchDiplomat(DiplomacyActionBase action)
+        {
+            if (action == null || action.Diplomat == null)
                 return false;
 
-            // 扣除资金
-            if (senderCity.gold >= cost)
-            {
-                senderCity.gold -= cost;
-                // 刷新城市Render
-                senderCity.Render?.UpdateRender();
-            }
-            else
-            {
-                return false; // 资金不足
-            }
-
-            // 处理附加参数
-            int paramValue = cost;
-
             // 获取目标势力主公所在的城市
-            City targetCity = receiver.Governor?.BelongCity;
+            City targetCity = action.Receiver.Governor?.BelongCity;
             if (targetCity == null)
                 return false;
 
             // 计算移动所需时间
-            int distance = diplomat.DistanceDays(targetCity);
-            if (distance <= 0)
+            int distance = action.Diplomat.DistanceDays(targetCity);
+            if (distance<= 0)
                 distance = 1;
 
             // 设置外交任务
-            if (actionType == DiplomacyActionType.Ransom)
-            {
-                // 对于赎回俘虏，传递俘虏ID
-                diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue, captiveId);
-            }
-            else
-            {
-                diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, receiver.Id, (int)actionType, paramValue);
-            }
+            action.Diplomat.SetMission(MissionType.PersonDiplomacy, targetCity, distance, action.Receiver.Id, (int)action.ActionType, action.ResourceValue);
+            
+            // 将武将从首都的空闲武将列表中移除
+            action.Diplomat.BelongCity.freePersons.Remove(action.Diplomat);
 
-            // 将武将从城市的空闲武将列表中移除
-            if (diplomat.BelongCity != null)
-            {
-                diplomat.BelongCity.freePersons.Remove(diplomat);
-            }
-
-            // 设置武将为行动过了
-            diplomat.ActionOver = true;
+            // 调用外交行为的 OnDispatch 方法，用于对不同外交事件做不同处理
+            action.OnDispatch();
 
 #if SANGO_DEBUG
-            Sango.Log.Info($"@玩家外交@{senderCity.BelongForce.Name} 对 {receiver.Name} 派遣了使者 {diplomat.Name} 执行{GetActionName(actionType)}行动，消耗了 {cost} 金！");
+            Sango.Log.Info($"@外交@{action.Sender.Name} 对 {action.Receiver.Name} 派遣了使者 {action.Diplomat.Name} 执行{action.GetActionName()}行动！");
 #endif
+
             return true;
         }
 
-        public void DoPersonDiplomacyActionNoCheck(bool success, Person person, DiplomacyActionType actionType, Force receiverForce, int resourceValue, int captiveId)
+        /// <summary>
+        /// 步骤6和7：武将前往目标城池并返回（由任务系统处理）
+        /// </summary>
+        /// <param name="person">武将</param>
+        /// <param name="actionType">外交行动类型</param>
+        /// <param name="receiverForce">接收方势力</param>
+        /// <param name="resourceValue">资源价值</param>
+        /// <returns>外交结果</returns>
+        /// <summary>
+        /// 执行外交任务（指定执行结果）
+        /// </summary>
+        /// <param name="success">执行结果（true表示成功，false表示失败）</param>
+        /// <param name="person">执行外交的武将</param>
+        /// <param name="actionType">外交行动类型</param>
+        /// <param name="receiverForce">接收方势力</param>
+        /// <param name="resourceValue">资源价值</param>
+        public void ExecuteDiplomacyMission(bool success, Person person, DiplomacyActionType actionType, Force receiverForce, int resourceValue)
         {
-            switch (actionType)
-            {
-                case DiplomacyActionType.Alliance:
-                    PerformAlliance(person.BelongForce, receiverForce);
-                    break;
-                case DiplomacyActionType.Truce:
-                    PerformTruce(person.BelongForce, receiverForce);
-                    break;
-                case DiplomacyActionType.DeclareWar:
-                    PerformDeclareWar(person.BelongForce, receiverForce);
-                    break;
-                case DiplomacyActionType.SendGift:
-                    // 使用missionParams3存储礼物价值
-                    PerformSendGift(person.BelongForce, receiverForce, resourceValue);
-                    break;
-                case DiplomacyActionType.RequestTechnique:
-                    // 使用missionParams3存储技术ID
-                    PerformRequestTechnique(person.BelongForce, receiverForce, resourceValue);
-                    break;
-                case DiplomacyActionType.RequestTroops:
-                    // 使用missionParams3存储兵力数量
-                    PerformRequestTroops(person.BelongForce, receiverForce, resourceValue);
-                    break;
-                case DiplomacyActionType.Trade:
-                    PerformTrade(person.BelongForce, receiverForce);
-                    break;
-                case DiplomacyActionType.Marriage:
-                    PerformMarriage(person.BelongForce, receiverForce);
-                    break;
-                case DiplomacyActionType.AllianceRequest:
-                    PerformAllianceRequest(person.BelongForce, receiverForce);
-                    break;
-                case DiplomacyActionType.TruceRequest:
-                    PerformTruceRequest(person.BelongForce, receiverForce);
-                    break;
-                case DiplomacyActionType.Ransom:
+            if (person == null || receiverForce == null)
+                return;
 
-                    // 使用missionParams3存储赎金，missionParams4存储俘虏ID
-                    PerformRansom(person, receiverForce, resourceValue, captiveId);
-                    break;
-            }
+            Force senderForce = person.BelongForce;
+            if (senderForce == null)
+                return;
 
-            // 输出调试信息
-            if (success)
-            {
-#if SANGO_DEBUG
-                Sango.Log.Info($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动成功了！");
-#endif
-            }
-            else
-            {
-#if SANGO_DEBUG
-                Sango.Log.Info($"@外交@{person.BelongForce.Name} 对 {receiverForce.Name} 的{GetActionName(actionType)}行动失败了！");
-#endif
-                // 外交失败减少关系
-                int relationDecrease = 0;
-                switch (actionType)
-                {
-                    case DiplomacyActionType.Alliance:
-                    case DiplomacyActionType.AllianceRequest:
-                        relationDecrease = 50;
-                        break;
-                    case DiplomacyActionType.Truce:
-                    case DiplomacyActionType.TruceRequest:
-                        relationDecrease = 30;
-                        break;
-                    case DiplomacyActionType.RequestTechnique:
-                        relationDecrease = 100;
-                        break;
-                    case DiplomacyActionType.RequestTroops:
-                        relationDecrease = 150;
-                        break;
-                    case DiplomacyActionType.Trade:
-                        relationDecrease = 40;
-                        break;
-                    case DiplomacyActionType.Marriage:
-                        relationDecrease = 80;
-                        break;
-                    case DiplomacyActionType.Ransom:
-                        relationDecrease = 60;
-                        break;
-                    default:
-                        relationDecrease = 20;
-                        break;
-                }
+            // 创建外交行为
+            DiplomacyActionBase action = CreateDiplomacyAction(actionType, senderForce, receiverForce, person, resourceValue);
+            if (action == null)
+                return;
 
-                ReduceRelation(person.BelongForce, receiverForce, relationDecrease);
+            // 使用 PerformWithoutCheck 直接执行，不检查条件
+            action.PerformWithoutCheck(success);
 
-#if SANGO_DEBUG
-                Sango.Log.Info($"@外交@{person.BelongForce.Name} 与 {receiverForce.Name} 的关系减少了 {relationDecrease}！");
-#endif
-            }
+            // 武将返回所属城市（任务完成后自动返回）
         }
 
+        public bool ExecuteDiplomacyMission(Person person, DiplomacyActionType actionType, Force receiverForce, int resourceValue)
+        {
+            if (person == null || receiverForce == null)
+                return false;
+
+            Force senderForce = person.BelongForce;
+            if (senderForce == null)
+                return false;
+
+            // 创建外交行为
+            DiplomacyActionBase action = CreateDiplomacyAction(actionType, senderForce, receiverForce, person, resourceValue);
+            if (action == null)
+                return false;
+
+            // 执行外交行为
+            bool success = action.Perform();
+
+            // 武将返回所属城市（任务完成后自动返回）
+
+            return success;
+        }
+
+        /// <summary>
+        /// 执行完整的外交流程
+        /// </summary>
+        /// <param name="force">势力</param>
+        /// <param name="actionType">外交行动类型</param>
+        /// <returns>是否成功</returns>
+        public bool ExecuteDiplomacyProcess(Force force, DiplomacyActionType actionType)
+        {
+            // 步骤1：确定是否需要外交
+            if (!DetermineIfDiplomacyNeeded(force))
+                return false;
+
+            // 步骤2：选定外交对象
+            Force target = SelectDiplomacyTarget(force, actionType);
+            if (target == null)
+                return false;
+
+            // 步骤3：选定执行外交的武将
+            Person diplomat = SelectDiplomat(force, actionType);
+            if (diplomat == null)
+                return false;
+
+            // 创建外交行为
+            DiplomacyActionBase action = CreateDiplomacyAction(actionType, force, target, diplomat);
+            if (action == null)
+                return false;
+
+            // 步骤4：计算外交可能性
+            int successRate = CalculateDiplomacySuccessRate(action);
+
+            // 步骤5：派遣武将执行外交任务
+            if (!DispatchDiplomat(action))
+                return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// 完整外交流程执行方法（支持玩家决策）
+        /// </summary>
+        /// <param name="action">外交行为</param>
+        /// <param name="playerDecision">玩家决策（如果外交对象是玩家，需要玩家确定）</param>
+        /// <returns>外交结果</returns>
+        public DiplomacyResult ExecuteDiplomacyFlow(DiplomacyActionBase action, bool? playerDecision = null)
+        {
+            DiplomacyResult result = new DiplomacyResult();
+            result.Action = action;
+
+            // 步骤1: 检查大边界范围（金钱、概率等）
+            if (!CheckBoundaryConditions(action, result))
+            {
+                result.Success = false;
+                result.Message = "边界条件不满足";
+                return result;
+            }
+
+            // 步骤2: 检查是否有执行当前外交行为的需求
+            if (!CheckDiplomacyNeed(action, result))
+            {
+                result.Success = false;
+                result.Message = "没有执行此外交行为的需求";
+                return result;
+            }
+
+            // 步骤3: 细节判断决定外交对象
+            if (!CheckTargetValidity(action, result))
+            {
+                result.Success = false;
+                result.Message = "外交对象无效";
+                return result;
+            }
+
+            // 步骤4: 判断外交豁免与是否重复
+            if (!CheckDiplomacyExemption(action, result))
+            {
+                result.Success = false;
+                result.Message = "存在外交豁免或重复操作";
+                return result;
+            }
+
+            // 步骤5: 准备外交武将
+            if (!PrepareDiplomat(action, result))
+            {
+                result.Success = false;
+                result.Message = "无法准备外交武将";
+                return result;
+            }
+
+            // 步骤6: 派遣武将执行任务（玩家流程从这里开始）
+            if (!DispatchDiplomat(action))
+            {
+                result.Success = false;
+                result.Message = "派遣武将失败";
+                return result;
+            }
+
+            // 步骤7: 武将执行任务到达外交对象主公所在城市（由武将任务系统完成）
+            // 这里只是标记到达，实际移动由任务系统处理
+
+            // 步骤8: 外交对象根据所有外交数据计算外交同意概率
+            bool success = CalculateDiplomacyResult(action, playerDecision);
+            result.Success = success;
+
+            // 步骤9: 拿到外交结果执行外交逻辑
+            ExecuteDiplomacyLogic(action, success);
+
+            // 步骤10: 武将返回（由武将任务系统完成）
+            result.Message = success ? "外交成功" : "外交失败";
+            return result;
+        }
+
+        /// <summary>
+        /// 步骤1: 检查大边界范围（金钱、实力、边境状态、战争状态等）
+        /// </summary>
+        private bool CheckBoundaryConditions(DiplomacyActionBase action, DiplomacyResult result)
+        {
+            if (action == null || action.Sender == null || action.Receiver == null)
+                return false;
+
+            // 检查势力是否存活
+            if (!action.Sender.IsAlive || !action.Receiver.IsAlive)
+            {
+                result.ErrorCode = DiplomacyError.ForceNotAlive;
+                return false;
+            }
+
+            // 检查资金
+            int requiredGold = action.ResourceValue;
+            if (requiredGold > 0)
+            {
+                City paymentCity = action.Diplomat?.BelongCity ?? action.Sender.CapitalCity;
+                if (paymentCity == null || paymentCity.gold < requiredGold)
+                {
+                    result.ErrorCode = DiplomacyError.InsufficientFunds;
+                    return false;
+                }
+            }
+
+            // 检查自身实力（是否有足够的城市和兵力）
+            if (!CheckSelfStrength(action.Sender, result))
+                return false;
+
+            // 检查边境状态（是否有共同边界或邻近城市）
+            if (!CheckBorderStatus(action.Sender, action.Receiver, result))
+                return false;
+
+            // 检查战争状态
+            if (!CheckWarStatus(action.Sender, action.Receiver, action.ActionType, result))
+                return false;
+
+            // 检查弱势判断（弱势势力可能无法执行某些外交行为）
+            if (!CheckWeakForceStatus(action.Sender, action.Receiver, action.ActionType, result))
+                return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// 检查自身实力
+        /// </summary>
+        private bool CheckSelfStrength(Force force, DiplomacyResult result)
+        {
+            // 检查是否有足够的城市
+            if (force.CityCount == 0)
+            {
+                result.ErrorCode = DiplomacyError.NoCities;
+                return false;
+            }
+
+            // 检查是否有足够的兵力（至少需要有一些军队）
+            int totalTroops = 0;
+            int cityCount = 0;
+            force.ForEachCity(city =>
+            {
+                totalTroops += city.troops;
+                cityCount++;
+            });
+            
+            // 如果是弱小势力，可能无法执行某些外交行为
+            if (totalTroops == 0 && cityCount <= 1)
+            {
+                result.ErrorCode = DiplomacyError.TooWeak;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 检查边境状态（是否有共同边界或邻近城市）
+        /// </summary>
+        private bool CheckBorderStatus(Force sender, Force receiver, DiplomacyResult result)
+        {
+            // 如果是宣战行为，需要有共同边界或邻近城市
+            // 其他外交行为则不需要严格的边界要求
+
+            // 检查是否有共同边界
+            bool hasBorder = false;
+            sender.ForEachCity(senderCity =>
+            {
+                foreach (City neighbor in senderCity.NeighborList)
+                {
+                    if (neighbor.BelongForce == receiver)
+                    {
+                        hasBorder = true;
+                        return;
+                    }
+                }
+            });
+
+            // 如果没有共同边界，设置警告但不阻止
+            if (!hasBorder)
+            {
+                result.ErrorCode = DiplomacyError.NoBorder;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 检查战争状态
+        /// </summary>
+        private bool CheckWarStatus(Force sender, Force receiver, DiplomacyActionType actionType, DiplomacyResult result)
+        {
+            // 检查是否正在与目标势力交战
+            bool isAtWar = sender.IsEnemy(receiver);
+
+            switch (actionType)
+            {
+                case DiplomacyActionType.DeclareWar:
+                    // 如果已经在战争中，不能再次宣战
+                    if (isAtWar)
+                    {
+                        result.ErrorCode = DiplomacyError.AlreadyAtWar;
+                        return false;
+                    }
+                    break;
+
+                case DiplomacyActionType.Alliance:
+                    // 如果正在交战，不能结盟
+                    if (isAtWar)
+                    {
+                        result.ErrorCode = DiplomacyError.AtWarCannotAlliance;
+                        return false;
+                    }
+                    break;
+
+                case DiplomacyActionType.Truce:
+                    // 如果不在战争中，不需要停战
+                    if (!isAtWar)
+                    {
+                        result.ErrorCode = DiplomacyError.NotAtWarCannotTruce;
+                        return false;
+                    }
+                    break;
+
+                case DiplomacyActionType.SendGift:
+                    // 送礼在战争中也可以进行
+                    break;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 检查弱势判断
+        /// </summary>
+        private bool CheckWeakForceStatus(Force sender, Force receiver, DiplomacyActionType actionType, DiplomacyResult result)
+        {
+            // 计算双方实力对比
+            int senderStrength = CalculateForceStrength(sender);
+            int receiverStrength = CalculateForceStrength(receiver);
+
+            // 实力差距过大时的限制
+            float strengthRatio = (float)senderStrength / (float)receiverStrength;
+
+            switch (actionType)
+            {
+                case DiplomacyActionType.DeclareWar:
+                    // 弱势势力不能向强大势力宣战（实力差距超过5倍）
+                    if (strengthRatio < 0.2f)
+                    {
+                        result.ErrorCode = DiplomacyError.TooWeakToDeclareWar;
+                        return false;
+                    }
+                    break;
+
+                case DiplomacyActionType.Alliance:
+                    // 实力差距过大时结盟成功率会降低，但不阻止
+                    break;
+
+                case DiplomacyActionType.Truce:
+                    // 弱势势力更需要停战，允许
+                    break;
+
+                case DiplomacyActionType.SendGift:
+                    // 送礼总是允许
+                    break;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 计算势力实力
+        /// </summary>
+        private int CalculateForceStrength(Force force)
+        {
+            if (force == null)
+                return 0;
+
+            int strength = 0;
+
+            // 城市数量
+            strength += force.CityCount * 100;
+
+            // 兵力数量
+            force.ForEachCity(city =>
+            {
+                strength += city.troops;
+            });
+
+            // 武将数量（优秀武将加成）
+            force.ForEachPerson(person =>
+            {
+                if (person.IsFree && person.Politics > 80)
+                {
+                    strength += 50;
+                }
+            });
+
+            return strength;
+        }
+
+        /// <summary>
+        /// 步骤2: 检查是否有执行当前外交行为的需求
+        /// </summary>
+        private bool CheckDiplomacyNeed(DiplomacyActionBase action, DiplomacyResult result)
+        {
+            // 默认允许所有外交行为
+            // 子类可以重写此逻辑来实现特定需求检查
+            return true;
+        }
+
+        /// <summary>
+        /// 步骤3: 细节判断决定外交对象
+        /// </summary>
+        private bool CheckTargetValidity(DiplomacyActionBase action, DiplomacyResult result)
+        {
+            // 检查是否为自己
+            if (action.Sender.Id == action.Receiver.Id)
+            {
+                result.ErrorCode = DiplomacyError.SelfDiplomacy;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 步骤4: 判断外交豁免与是否重复
+        /// </summary>
+        private bool CheckDiplomacyExemption(DiplomacyActionBase action, DiplomacyResult result)
+        {
+            // 检查是否存在相同的外交任务正在进行
+            if (IsDiplomacyInProgress(action.Sender, action.Receiver, action.ActionType))
+            {
+                result.ErrorCode = DiplomacyError.DiplomacyInProgress;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 步骤5: 准备外交武将
+        /// </summary>
+        private bool PrepareDiplomat(DiplomacyActionBase action, DiplomacyResult result)
+        {
+            if (action.Diplomat != null)
+                return true;
+
+            // 如果没有指定武将，尝试自动选择
+            Person diplomat = SelectDiplomat(action.Sender);
+            if (diplomat != null)
+            {
+                action.Diplomat = diplomat;
+                return true;
+            }
+
+            result.ErrorCode = DiplomacyError.NoDiplomatAvailable;
+            return false;
+        }
+
+        /// <summary>
+        /// 步骤8: 根据所有外交数据计算外交同意概率
+        /// </summary>
+        /// <param name="action">外交行为</param>
+        /// <param name="playerDecision">玩家决策（如果外交对象是玩家）</param>
+        /// <returns>外交结果</returns>
+        public bool CalculateDiplomacyResult(DiplomacyActionBase action, bool? playerDecision = null)
+        {
+            // 如果外交对象是玩家，使用玩家的决策
+            if (playerDecision.HasValue)
+            {
+                return playerDecision.Value;
+            }
+
+            // 计算成功率
+            action.CalculateSuccessRate();
+            
+            // 根据成功率随机决定结果
+            return GameRandom.Chance(action.SuccessRate);
+        }
+
+        /// <summary>
+        /// 步骤9: 执行外交逻辑
+        /// </summary>
+        /// <param name="action">外交行为</param>
+        /// <param name="success">是否成功</param>
+        public void ExecuteDiplomacyLogic(DiplomacyActionBase action, bool success)
+        {
+            // 使用 PerformWithoutCheck 直接执行
+            action.PerformWithoutCheck(success);
+        }
+
+        /// <summary>
+        /// 检查是否有相同的外交任务正在进行
+        /// </summary>
+        private bool IsDiplomacyInProgress(Force sender, Force receiver, DiplomacyActionType actionType)
+        {
+            // 检查武将是否有正在进行的外交任务
+            bool inProgress = false;
+            sender.ForEachPerson(person =>
+            {
+                if (person.missionType == (int)MissionType.PersonDiplomacy && 
+                    person.missionTarget == receiver.Id &&
+                    (DiplomacyActionType)person.missionParams1 == actionType)
+                {
+                    inProgress = true;
+                }
+            });
+            return inProgress;
+        }
+
+        /// <summary>
+        /// 选择外交武将（无参数版本）
+        /// </summary>
+        private Person SelectDiplomat(Force force)
+        {
+            // 优先选择政治属性高的武将
+            Person bestDiplomat = null;
+            int bestPolitics = 0;
+
+            force.ForEachPerson(person =>
+            {
+                if (person.IsFree && person.Politics > bestPolitics)
+                {
+                    bestPolitics = person.Politics;
+                    bestDiplomat = person;
+                }
+            });
+
+            return bestDiplomat;
+        }
     }
 
     /// <summary>
-    /// 外交行动类型
+    /// 外交结果类
     /// </summary>
-    public enum DiplomacyActionType
+    public class DiplomacyResult
     {
-        Alliance = 1,        // 结盟
-        Truce = 2,          // 停战
-        DeclareWar = 3,      // 宣战
-        SendGift = 4,        // 送礼
-        RequestTechnique = 5, // 请求技术
-        RequestTroops = 6,    // 请求兵力
-        Trade = 7,           // 通商
-        Marriage = 8,        // 和亲
-        AllianceRequest = 9,  // 请求结盟
-        TruceRequest = 10,    // 请求停战
-        Ransom = 11           // 赎回俘虏
+        /// <summary>
+        /// 是否成功
+        /// </summary>
+        public bool Success { get; set; }
+
+        /// <summary>
+        /// 结果消息
+        /// </summary>
+        public string Message { get; set; }
+
+        /// <summary>
+        /// 执行的外交行为
+        /// </summary>
+        public DiplomacyActionBase Action { get; set; }
+
+        /// <summary>
+        /// 错误代码
+        /// </summary>
+        public DiplomacyError ErrorCode { get; set; }
+    }
+
+    /// <summary>
+    /// 外交错误枚举
+    /// </summary>
+    public enum DiplomacyError
+    {
+        /// <summary>
+        /// 无错误
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// 资金不足
+        /// </summary>
+        InsufficientFunds,
+
+        /// <summary>
+        /// 势力不存在或已灭亡
+        /// </summary>
+        ForceNotAlive,
+
+        /// <summary>
+        /// 不能对自己执行外交
+        /// </summary>
+        SelfDiplomacy,
+
+        /// <summary>
+        /// 外交任务正在进行中
+        /// </summary>
+        DiplomacyInProgress,
+
+        /// <summary>
+        /// 没有可用的外交武将
+        /// </summary>
+        NoDiplomatAvailable,
+
+        /// <summary>
+        /// 没有城市
+        /// </summary>
+        NoCities,
+
+        /// <summary>
+        /// 势力太弱
+        /// </summary>
+        TooWeak,
+
+        /// <summary>
+        /// 没有共同边界
+        /// </summary>
+        NoBorder,
+
+        /// <summary>
+        /// 已经在战争中
+        /// </summary>
+        AlreadyAtWar,
+
+        /// <summary>
+        /// 交战中不能结盟
+        /// </summary>
+        AtWarCannotAlliance,
+
+        /// <summary>
+        /// 不在战争中不能停战
+        /// </summary>
+        NotAtWarCannotTruce,
+
+        /// <summary>
+        /// 实力太弱无法宣战
+        /// </summary>
+        TooWeakToDeclareWar
     }
 }

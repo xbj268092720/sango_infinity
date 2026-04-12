@@ -12,6 +12,8 @@ namespace Sango.Render
         public int resourceValue;
         public int captiveId;
         private bool success;
+
+
         public void Init(Person person, DiplomacyActionType actionType, Force receiverForce, City targetCity, int resourceValue, int captiveId)
         {
             this.person = person;
@@ -72,7 +74,7 @@ namespace Sango.Render
                                         });
                                         GameDialog.StartTalk(talkDatas, () =>
                                         {
-                                            DiplomacyManager.Instance.DoPersonDiplomacyActionNoCheck(true, person, actionType, receiverForce, resourceValue, captiveId);
+                                            GameSystem.GetSystem<DiplomacyManager>().ExecuteDiplomacyMission(true, person, actionType, receiverForce, resourceValue);
                                             // 完成任务，返回原城市
                                             person.SetMission(MissionType.PersonReturn, person.BelongCity);
                                             IsDone = true;
@@ -88,7 +90,9 @@ namespace Sango.Render
                                         });
                                         GameDialog.StartTalk(talkDatas, () =>
                                         {
-                                            DiplomacyManager.Instance.DoPersonDiplomacyActionNoCheck(false, person, actionType, receiverForce, resourceValue, captiveId);
+                                            // 失败不需要执行外交任务
+                                            GameSystem.GetSystem<DiplomacyManager>().ExecuteDiplomacyMission(false, person, actionType, receiverForce, resourceValue);
+
                                             // 完成任务，返回原城市
                                             person.SetMission(MissionType.PersonReturn, person.BelongCity);
                                             IsDone = true;
@@ -99,8 +103,10 @@ namespace Sango.Render
                             }
                             else
                             {
-                                // 关系值越高，成功率越高，最高90%
-                                int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(actionType, person.BelongForce, receiverForce, person, resourceValue);
+                                DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                                // 创建外交行为实例并计算成功率
+                                DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(actionType, person.BelongForce, receiverForce, person, resourceValue);
+                                int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
                                 bool success = GameRandom.Chance(successRate);
 
                                 DelayEvent delay = RenderEvent.Instance.Create<DelayEvent>();
@@ -125,7 +131,8 @@ namespace Sango.Render
 
                                     GameDialog.StartTalk(talkDatas, () =>
                                     {
-                                        DiplomacyManager.Instance.DoPersonDiplomacyActionNoCheck(success, person, actionType, receiverForce, resourceValue, captiveId);
+                                        diplomacyManager.ExecuteDiplomacyMission(success, person, actionType, receiverForce, resourceValue);
+
                                         // 完成任务，返回原城市
                                         person.SetMission(MissionType.PersonReturn, person.BelongCity);
                                         IsDone = true;
@@ -166,7 +173,7 @@ namespace Sango.Render
                                 };
                                 GameDialog.StartTalk(talkDatas, () =>
                                 {
-                                    DiplomacyManager.Instance.DoPersonDiplomacyAction(person, actionType, receiverForce, resourceValue, captiveId);
+                                    GameSystem.GetSystem<DiplomacyManager>().ExecuteDiplomacyMission(true, person, actionType, receiverForce, resourceValue);
                                     // 完成任务，返回原城市
                                     person.SetMission(MissionType.PersonReturn, person.BelongCity);
                                     IsDone = true;
@@ -204,7 +211,7 @@ namespace Sango.Render
                 //if (receiverForce.IsPlayer)
                 //{
                 //    // 计算成功率
-                //    int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(actionType, person.BelongForce, receiverForce, person, resourceValue);
+                //    int successRate = GameSystem.GetSystem<DiplomacyManager>().CalculateDiplomacySuccessRate(actionType, person.BelongForce, receiverForce, person, resourceValue);
                 //    success = GameRandom.Chance(successRate);
 
 
@@ -212,7 +219,7 @@ namespace Sango.Render
                 //else
                 //{
                 //    // 计算成功率
-                //    int successRate = DiplomacyManager.Instance.CalculateDiplomacySuccessRate(actionType, person.BelongForce, receiverForce, person, resourceValue);
+                //    int successRate = GameSystem.GetSystem<DiplomacyManager>().CalculateDiplomacySuccessRate(actionType, person.BelongForce, receiverForce, person, resourceValue);
                 //    success = GameRandom.Chance(successRate);
                 //    switch (actionType)
                 //    {
@@ -280,7 +287,7 @@ namespace Sango.Render
             }
             else
             {
-                DiplomacyManager.Instance.DoPersonDiplomacyAction(person, actionType, receiverForce, resourceValue, captiveId);
+                GameSystem.GetSystem<DiplomacyManager>().ExecuteDiplomacyMission(person, actionType, receiverForce, resourceValue);
                 // 完成任务，返回原城市
                 person.SetMission(MissionType.PersonReturn, person.BelongCity);
                 IsDone = true;

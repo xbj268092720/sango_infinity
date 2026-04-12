@@ -846,7 +846,7 @@ namespace Sango.Core
                             }
                             else
                             {
-                                DiplomacyManager.Instance.DoPersonDiplomacyAction(this, actionType, receiverForce, missionParams3, missionParams4);
+                                GameSystem.GetSystem<DiplomacyManager>().ExecuteDiplomacyMission(this, actionType, receiverForce, missionParams3);
                             }
 
                             // 完成任务，返回原城市

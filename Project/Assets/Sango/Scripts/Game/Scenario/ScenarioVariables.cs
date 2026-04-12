@@ -800,6 +800,11 @@ namespace Sango.Core
         /// </summary>
         [JsonProperty] public int diplomacyTruceRequestChanceOffset = 1000;
 
+        /// <summary>
+        /// 外交失败基础惩罚值
+        /// </summary>
+        [JsonProperty] public int diplomacyFailedBasePenalty = 300;
+
         #endregion 外交系统参数
 
         #region 招募系统参数
