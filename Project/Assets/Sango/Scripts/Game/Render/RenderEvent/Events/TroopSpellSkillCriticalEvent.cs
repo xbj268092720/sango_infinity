@@ -11,6 +11,8 @@ namespace Sango.Render
         public int criticalFactor;
         private bool isAction = false;
         private float time = 0;
+        private bool isCritWindowShown = false;
+        private float critWindowTime = 0;
 
         public void Init(Troop troop, SkillInstance skill, Cell spellCell, int criticalFactor)
         {
@@ -26,16 +28,22 @@ namespace Sango.Render
         {
             isAction = false;
             time = 0;
+            isCritWindowShown = false;
+            critWindowTime = 0;
+
+            // 显示技能效果
             if (IsVisible())
             {
                 troop.Render.SetSmokeShow(true);
             }
-            if (skill.costEnergy > 0)
-                troop.Render.ShowSkill(skill, false, true);
+
+            // 打开暴击窗口
+            Sango.Window.Instance.Open("window_skill_crit", this);
         }
 
         public override void Exit(Scenario scenario)
         {
+            Sango.Window.Instance.Close("window_skill_crit");
             if (IsVisible())
             {
                 troop.Render.SetSmokeShow(false);
@@ -56,6 +64,21 @@ namespace Sango.Render
                 IsDone = true;
                 return IsDone;
             }
+            
+            // 处理暴击窗口显示
+            if (!isCritWindowShown)
+            {
+                critWindowTime += deltaTime;
+                if (critWindowTime >= 1.8f)
+                {
+                    isCritWindowShown = true;
+                   
+                    if (skill.costEnergy > 0)
+                        troop.Render.ShowSkill(skill, false, true);
+                }
+                return IsDone;
+            }
+            
             IsDone = skill.UpdateRender(troop, spellCell, scenario, time, Action);
             time += deltaTime;
             return IsDone;

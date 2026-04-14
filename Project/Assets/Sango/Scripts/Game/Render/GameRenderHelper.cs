@@ -11,6 +11,7 @@ namespace Sango.Core
         public static string TroopStatePath = "Assets/UI/AtlasTexture";
 
         public static string HeadIconPath = "Assets/Face";
+        public static string CriticalImagePath = "Assets/CriticalImage";
         public static string TroopHeadbarRes = "Assets/UI/Prefab/window_troop_bar.prefab";
         public static string CityHeadbarRes = "Assets/UI/Prefab/window_city_bar.prefab";
         public static string BuildingHeadbarRes = "Assets/UI/Prefab/window_building_bar.prefab";
@@ -59,6 +60,23 @@ namespace Sango.Core
         public static UnityEngine.Sprite LoadTroopStateIcon(string name)
         {
             return ObjectLoader.LoadObject<UnityEngine.Sprite>($"{TroopStatePath}/{name}.png");
+        }
+
+        /// <summary>
+        /// 加载暴击图
+        /// </summary>
+        /// <param name="id">暴击图ID</param>
+        /// <returns>暴击图纹理</returns>
+        public static Texture LoadCriticalImage(int id)
+        {
+            string criticalPath = $"{CriticalImagePath}/{id}.png";
+            Texture criticalTexture = ObjectLoader.LoadObject<Texture>(criticalPath, "CriticalImage");
+            if (criticalTexture == null)
+            {
+                criticalPath = $"{CriticalImagePath}/default.png";
+                criticalTexture = ObjectLoader.LoadObject<Texture>(criticalPath);
+            }
+            return criticalTexture;
         }
     }
 }
