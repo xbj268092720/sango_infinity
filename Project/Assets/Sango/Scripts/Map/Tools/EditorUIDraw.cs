@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace Sango.Tools
         public static void OnGUI(Render.MapData data)
         {
             GUI.changed = false;
-            string names = Tools.EditorUtility.TextField(data.map.WorkContent, "地图命名空间");
+            string names = Tools.EditorUtility.TextField(data.map.WorkContent, "MapKey");
             if (GUI.changed)
             {
                 data.map.WorkContent = names;

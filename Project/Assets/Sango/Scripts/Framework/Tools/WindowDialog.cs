@@ -8,6 +8,19 @@ using System.IO;
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
 
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+public class BrowseInfo
+{
+    public IntPtr hwndOwner = IntPtr.Zero;
+    public IntPtr pidlRoot = IntPtr.Zero;
+    public IntPtr pszDisplayName = IntPtr.Zero;
+    public string lpszTitle = null;
+    public uint ulFlags = 0;
+    public IntPtr lpfn = IntPtr.Zero;
+    public IntPtr lParam = IntPtr.Zero;
+    public int iImage = 0;
+}
+
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 public class DialogConfig
 {
     #region Config Field
@@ -82,6 +95,12 @@ public class WindowDialog
     static extern bool GetOpenFileName([In, Out] DialogConfig dialog);  //这个方法名称必须为GetOpenFileName
     [DllImport("Comdlg32.dll", SetLastError = true, ThrowOnUnmappableChar = true, CharSet = CharSet.Auto)]
     static extern bool GetSaveFileName([In, Out] DialogConfig dialog);  //这个方法名称必须为GetSaveFileName
+    
+    [DllImport("shell32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    static extern IntPtr SHBrowseForFolder([In, Out] BrowseInfo lpbi);
+    
+    [DllImport("shell32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    static extern bool SHGetPathFromIDList(IntPtr pidl, IntPtr pszPath);
     #endregion
 #endif
 
@@ -240,6 +259,69 @@ public class WindowDialog
 
         string file = Marshal.PtrToStringAuto(ofn.file);
         return file;
+#else
+        return null;
+#endif
+    }
+
+    /// <summary>
+    /// 打开文件夹选择窗口
+    /// </summary>
+    /// <returns>选中的文件夹路径，如果取消则返回null</returns>
+    public static string OpenFolderDialog()
+    {
+        return OpenFolderDialog("选择文件夹");
+    }
+
+    /// <summary>
+    /// 打开文件夹选择窗口
+    /// </summary>
+    /// <param name="title">窗口标题</param>
+    /// <returns>选中的文件夹路径，如果取消则返回null</returns>
+    public static string OpenFolderDialog(string title)
+    {
+        return OpenFolderDialog(title, null);
+    }
+
+    /// <summary>
+    /// 打开文件夹选择窗口
+    /// </summary>
+    /// <param name="title">窗口标题</param>
+    /// <param name="initDir">初始目录</param>
+    /// <returns>选中的文件夹路径，如果取消则返回null</returns>
+    public static string OpenFolderDialog(string title, string initDir)
+    {
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+        if (string.IsNullOrEmpty(lastOpenDir))
+            lastOpenDir = Sango.Path.ContentRootPath;
+
+        if (string.IsNullOrEmpty(initDir))
+            initDir = lastOpenDir;
+
+        const int MAX_PATH = 2048;
+
+        BrowseInfo bi = new BrowseInfo();
+        bi.hwndOwner = GetForegroundWindow();
+        bi.lpszTitle = title;
+        bi.ulFlags = 0x00000040 | 0x00000001;
+
+        IntPtr pidl = SHBrowseForFolder(bi);
+        if (pidl != IntPtr.Zero)
+        {
+            IntPtr pathPtr = Marshal.AllocCoTaskMem(MAX_PATH * 2);
+            if (SHGetPathFromIDList(pidl, pathPtr))
+            {
+                string selectedPath = Marshal.PtrToStringAuto(pathPtr);
+                Marshal.FreeCoTaskMem(pathPtr);
+                Marshal.FreeCoTaskMem(pidl);
+                lastOpenDir = selectedPath;
+                return selectedPath;
+            }
+            Marshal.FreeCoTaskMem(pathPtr);
+            Marshal.FreeCoTaskMem(pidl);
+        }
+
+        return null;
 #else
         return null;
 #endif

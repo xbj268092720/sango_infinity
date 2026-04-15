@@ -22,7 +22,7 @@ namespace Sango.UI
             cityName.text = (ps[0] as string);
             animation.Play();
             AudioManager.Instance.PlaySfx("Assets/Sound/2265.ogg");
-            Invoke("Hide", animation.clip.length);
+            Invoke("Close", animation.clip.length);
         }
     }
 }
