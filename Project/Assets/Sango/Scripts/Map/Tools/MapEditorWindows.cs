@@ -6,6 +6,9 @@ namespace Sango.Tools
     {
         private MapEditor editor;
         
+        // 顶部菜单高度常量
+        private const float MENU_BAR_HEIGHT = 30f;
+        
         private bool showSettingsWindow = false;
         private bool showNewMapWindow = false;
         private bool showLightWindow = false;
@@ -62,12 +65,19 @@ namespace Sango.Tools
             {
                 if (settingsWindowRect.width == 0)
                 {
+                    float windowY = Mathf.Max(MENU_BAR_HEIGHT, Screen.height / 2 - 280); // 确保窗口顶部至少距离顶部菜单，避免与顶部菜单重叠
                     settingsWindowRect = new UnityEngine.Rect(
                         Screen.width / 2 - 280,
-                        Screen.height / 2 - 250,
+                        windowY,
                         560,
-                        500
+                        560
                     );
+                }
+
+                // 确保窗口不会与顶部菜单重叠
+                if (settingsWindowRect.y < MENU_BAR_HEIGHT)
+                {
+                    settingsWindowRect.y = MENU_BAR_HEIGHT;
                 }
 
                 GUI.DrawTexture(settingsWindowRect, CreateWindowBackground());
@@ -85,7 +95,7 @@ namespace Sango.Tools
                 GUILayout.Label("", GUI.skin.horizontalSlider);
                 GUILayout.Space(15);
 
-                settingsScrollPosition = GUILayout.BeginScrollView(settingsScrollPosition, GUILayout.Height(380));
+                settingsScrollPosition = GUILayout.BeginScrollView(settingsScrollPosition, GUILayout.Height(410));
 
                 DrawSettingsSection("⌨️ 快捷键设置", () =>
                 {
@@ -186,12 +196,19 @@ namespace Sango.Tools
             {
                 if (newMapWindowRect.width == 0)
                 {
+                    float windowY = Mathf.Max(MENU_BAR_HEIGHT, Screen.height / 2 - 200); // 确保窗口顶部至少距离顶部菜单，避免与顶部菜单重叠
                     newMapWindowRect = new UnityEngine.Rect(
                         Screen.width / 2 - 250,
-                        Screen.height / 2 - 200,
+                        windowY,
                         500,
                         350
                     );
+                }
+
+                // 确保窗口不会与顶部菜单重叠
+                if (newMapWindowRect.y < MENU_BAR_HEIGHT)
+                {
+                    newMapWindowRect.y = MENU_BAR_HEIGHT;
                 }
 
                 GUI.DrawTexture(newMapWindowRect, CreateWindowBackground());
@@ -294,12 +311,19 @@ namespace Sango.Tools
             {
                 if (lightWindowRect.width == 0)
                 {
+                    float windowY = Mathf.Max(MENU_BAR_HEIGHT, Screen.height / 2 - 280); // 确保窗口顶部至少距离顶部菜单，避免与顶部菜单重叠
                     lightWindowRect = new UnityEngine.Rect(
                         Screen.width / 2 - 300,
-                        Screen.height / 2 - 280,
+                        windowY,
                         600,
                         560
                     );
+                }
+
+                // 确保窗口不会与顶部菜单重叠
+                if (lightWindowRect.y < MENU_BAR_HEIGHT)
+                {
+                    lightWindowRect.y = MENU_BAR_HEIGHT;
                 }
 
                 GUI.DrawTexture(lightWindowRect, CreateWindowBackground());
@@ -319,11 +343,24 @@ namespace Sango.Tools
 
                 string[] seasons = { "秋", "春", "夏", "冬" };
 
+                // 保存原始背景颜色
+                Color originalColor = GUI.backgroundColor;
+                
                 for (int i = 0; i < 4; i++)
                 {
                     GUILayout.BeginVertical(GUI.skin.box);
                     GUILayout.BeginHorizontal();
 
+                    // 如果是当前季节，设置较亮的颜色
+                    if (i == editor.map.curSeason)
+                    {
+                        GUI.backgroundColor = new Color(0.7f, 0.9f, 1.0f); // 亮蓝色
+                    }
+                    else
+                    {
+                        GUI.backgroundColor = originalColor;
+                    }
+                    
                     if (GUILayout.Button(seasons[i], GUILayout.Width(50), GUILayout.Height(30)))
                     {
                         editor.map.curSeason = i;
@@ -350,6 +387,9 @@ namespace Sango.Tools
                     GUILayout.EndVertical();
                     GUILayout.Space(10);
                 }
+                
+                // 恢复原始背景颜色
+                GUI.backgroundColor = originalColor;
 
                 GUILayout.Space(10);
                 GUILayout.Label("", GUI.skin.horizontalSlider);
@@ -381,12 +421,19 @@ namespace Sango.Tools
             {
                 if (fogWindowRect.width == 0)
                 {
+                    float windowY = Mathf.Max(MENU_BAR_HEIGHT, Screen.height / 2 - 280); // 确保窗口顶部至少距离顶部菜单，避免与顶部菜单重叠
                     fogWindowRect = new UnityEngine.Rect(
                         Screen.width / 2 - 300,
-                        Screen.height / 2 - 280,
+                        windowY,
                         600,
                         560
                     );
+                }
+
+                // 确保窗口不会与顶部菜单重叠
+                if (fogWindowRect.y < MENU_BAR_HEIGHT)
+                {
+                    fogWindowRect.y = MENU_BAR_HEIGHT;
                 }
 
                 GUI.DrawTexture(fogWindowRect, CreateWindowBackground());
@@ -416,11 +463,24 @@ namespace Sango.Tools
 
                 string[] seasons = { "秋", "春", "夏", "冬" };
 
+                // 保存原始背景颜色
+                Color originalColor = GUI.backgroundColor;
+                
                 for (int i = 0; i < 4; i++)
                 {
                     GUILayout.BeginVertical(GUI.skin.box);
                     GUILayout.BeginHorizontal();
 
+                    // 如果是当前季节，设置较亮的颜色
+                    if (i == editor.map.curSeason)
+                    {
+                        GUI.backgroundColor = new Color(0.7f, 0.9f, 1.0f); // 亮蓝色
+                    }
+                    else
+                    {
+                        GUI.backgroundColor = originalColor;
+                    }
+                    
                     if (GUILayout.Button(seasons[i], GUILayout.Width(50), GUILayout.Height(30)))
                     {
                         editor.map.curSeason = i;
@@ -448,6 +508,9 @@ namespace Sango.Tools
                     GUILayout.EndVertical();
                     GUILayout.Space(10);
                 }
+                
+                // 恢复原始背景颜色
+                GUI.backgroundColor = originalColor;
 
                 GUILayout.Space(10);
                 GUILayout.Label("", GUI.skin.horizontalSlider);

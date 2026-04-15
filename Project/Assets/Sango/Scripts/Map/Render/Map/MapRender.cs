@@ -1,4 +1,4 @@
-﻿
+
 using Sango.Core;
 using Sango.Loader;
 using System;
@@ -46,6 +46,7 @@ namespace Sango.Render
         public MapGrid mapGrid;
         public MapModels mapModels;
         public MapWater mapWater;
+        public MapLabelSet mapLabelSet;
         public OnSeasonChange onSeasonChange;
 
         // camera move
@@ -203,6 +204,7 @@ namespace Sango.Render
             mapSkyBox = new MapSkyBox(this);
             mapGrid = new MapGrid(this);
             mapModels = new MapModels(this);
+            mapLabelSet = new MapLabelSet(this);
 
             mapLayer.Init();
             // 必须在terrain之前
@@ -214,6 +216,7 @@ namespace Sango.Render
             mapCamera.Init();
             mapSkyBox.Init();
             mapGrid.Init();
+            mapLabelSet.Init();
         }
 
         public void AddDynamic(IMapManageObject obj)
@@ -289,6 +292,8 @@ namespace Sango.Render
                 mapSkyBox.Clear();
             if (mapGrid != null)
                 mapGrid.Clear();
+            if (mapLabelSet != null)
+                mapLabelSet.Clear();
 
             if (mapRoot != null)
             {
@@ -345,6 +350,7 @@ namespace Sango.Render
                 mapGrid.OnLoad(versionCode, binr);
             mapCamera.OnLoad(versionCode, binr);
             mapModels.OnLoad(versionCode, binr);
+            mapLabelSet.OnLoad(versionCode, binr);
             fs.Flush();
             binr.Close();
             fs.Close();
@@ -369,6 +375,7 @@ namespace Sango.Render
             mapSkyBox.OnSave(binr);
             mapCamera.OnSave(binr);
             mapModels.OnSave(binr);
+            mapLabelSet.OnSave(binr);
             fs.Flush();
             binr.Close();
             fs.Close();
@@ -392,6 +399,7 @@ namespace Sango.Render
             mapSkyBox.OnSaveScale(binr, scale);
             mapCamera.OnSaveScale(binr, scale);
             mapModels.OnSaveScale(binr, scale);
+            mapLabelSet.OnSaveScale(binr, scale);
             fs.Flush();
             binr.Close();
             fs.Close();

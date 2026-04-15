@@ -5,6 +5,9 @@ namespace Sango.Tools
 {
     public class EditorWindow : MonoBehaviour
     {
+        // 顶部菜单高度常量
+        private const float MENU_BAR_HEIGHT = 30f;
+        
         public delegate void WindowFunction(int winId, EditorWindow window);
 
         public bool visible;
@@ -207,9 +210,9 @@ namespace Sango.Tools
             float screenWidth = Screen.width;
             float screenHeight = Screen.height;
             
-            // 限制窗口位置，确保不超出屏幕边界
+            // 限制窗口位置，确保不超出屏幕边界，且不与顶部菜单重叠
             float x = Mathf.Clamp(windowRect.x, 0, screenWidth - windowRect.width);
-            float y = Mathf.Clamp(windowRect.y, 0, screenHeight - windowRect.height);
+            float y = Mathf.Clamp(windowRect.y, MENU_BAR_HEIGHT, screenHeight - windowRect.height);
             
             windowRect = new UnityEngine.Rect(x, y, windowRect.width, windowRect.height);
         }

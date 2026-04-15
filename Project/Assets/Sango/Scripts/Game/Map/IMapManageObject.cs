@@ -27,6 +27,7 @@ namespace Sango.Core
         /// 对象ID
         /// </summary>
         int objId { get; set; }
+ 
         /// <summary>
         /// 对象类型
         /// </summary>
