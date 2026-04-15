@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace UnityEngine.UI
 {
     [CustomEditor(typeof(AnimationText))]
-    public class AnimationTextEditor : Editor
+    public class AnimationTextEditor : UnityEditor.Editor
     {
         private float time = 0;
         public override void OnInspectorGUI()

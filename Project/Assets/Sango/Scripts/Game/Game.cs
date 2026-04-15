@@ -122,7 +122,7 @@ namespace Sango.Core
         /// <returns>协程迭代器</returns>
         IEnumerator GameInit()
         {
-            Window.Instance.Open("window_loading");
+            //Window.Instance.Open("window_loading");
             //yield return new WaitForSeconds(0.5f);
             yield return null;
             ModManager.Instance.InitMods();

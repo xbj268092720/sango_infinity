@@ -126,24 +126,15 @@ namespace Sango.Core
         {
             this.FilePath = filePath;
             LoadInfo();
-            task = Task.Run(() =>
-            {
-                try {
-                    LoadContent();
-                }catch(System.Exception e)
-                {
-                    Debug.LogError(e+e.StackTrace);
-                }
-                loadOK = true;
-            }
-            );
+            LoadContent();
+            loadOK = true;
         }
 
         public ShortScenario(string filePath, bool notask)
         {
             this.FilePath = filePath;
             LoadInfo();
-            if(!notask)
+            if (!notask)
             {
                 LoadContent();
                 loadOK = true;
@@ -207,7 +198,7 @@ namespace Sango.Core
                 CommonData = GameData.Instance.LoadNewCommonData();
             if (Variables == null)
                 Variables = new ScenarioVariables();
-           
+
             JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
 
             // 玩家确定
