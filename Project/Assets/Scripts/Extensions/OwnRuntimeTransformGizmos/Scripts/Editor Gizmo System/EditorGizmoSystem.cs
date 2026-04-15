@@ -24,7 +24,7 @@ namespace RTEditor
         [SerializeField]
         private ShortcutKeys _activateTranslationGizmoShortcut = new ShortcutKeys("Activate move gizmo", 1)
         {
-            Key0 = KeyCode.W,
+            Key0 = KeyCode.T,
             UseModifiers = false,
             UseMouseButtons = false,
             UseStrictMouseCheck = true
