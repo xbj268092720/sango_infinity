@@ -8,7 +8,7 @@ using Sango;
 
 [CanEditMultipleObjects]
 [CustomEditor(typeof(AssetReleaser))]
-public class AssetReleaserEditor : Editor
+public class AssetReleaserEditor : UnityEditor.Editor
 {
     public override void OnInspectorGUI()
     {

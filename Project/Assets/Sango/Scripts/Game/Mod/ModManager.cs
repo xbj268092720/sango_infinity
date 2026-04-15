@@ -2,6 +2,7 @@
 using Sango.Core;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Sango.Mod
 {
@@ -180,8 +181,21 @@ namespace Sango.Mod
             //最终可以通过MOD/Lua/名字去查代码
             for (int i = 0; i < mModList.Count; i++)
                 mModList[i].LoadLanguage();
-            for (int i = 0; i < mModList.Count; i++)
-                mModList[i].LoadScenario();
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    for (int i = 0; i < mModList.Count; i++)
+                        mModList[i].LoadScenario();
+                }
+                catch (System.Exception e)
+                {
+                    Sango.Log.Error(e + e.StackTrace);
+                }
+            }
+            );
+
             for (int i = 0; i < mModList.Count; i++)
                 mModList[i].LoadUI();
             for (int i = 0; i < mModList.Count; i++)

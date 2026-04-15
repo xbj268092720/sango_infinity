@@ -1,6 +1,7 @@
 using Sango;
 using Sango.Core;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,9 @@ public class GameStart : MonoBehaviour
     public RectTransform uiRoot;
     public CanvasScaler canvasScaler;
     public GameObject initObject;
+    public GameObject progressObject;
+    public Text zipInfo;
+    public Image zipProgress;
 
     void Awake()
     {
@@ -70,19 +74,53 @@ public class GameStart : MonoBehaviour
     IEnumerator GameInit()
     {
 #if (UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR
-
+        float pogress = 1f;
         bool appVersionNew = Sango.Platform.CheckAppVersion();
         if (!appVersionNew)
         {
+            progressObject.SetActive(true);
+
             if (Directory.Exists(Path.ContentRootPath))
                 Directory.Delete(Path.ContentRootPath);
             if (Directory.Exists(Path.ModRootPath))
                 Directory.Delete(Path.ModRootPath);
 
-            yield return Platform.ExtractContentAndModZipFile();
+            // 从streamingAssets中拷贝zip到存储盘
+            Platform.CopyContentAndModZipFile((f) =>
+            {
+                pogress = f * 0.4f;
+                zipInfo.text = $"第一次启动需要解压资源,请耐心等待解压完成: {(int)(pogress * 100)}%";
+                zipProgress.fillAmount = pogress;
+            });
+
+            // 开始解压zip
+            Task task = Task.Run(() =>
+            {
+                try
+                {
+                    Platform.ExtractContentAndModZipFile((f) => { pogress = 0.4f + 0.6f * f; });
+                }
+                catch (System.Exception e)
+                {
+                    Sango.Log.Error(e);
+                }
+            });
         }
+
+        while (pogress < 1f)
+        {
+            zipInfo.text = $"第一次启动需要解压资源,请耐心等待解压完成: {(int)(pogress * 100)}%";
+            zipProgress.fillAmount = pogress;
+            yield return null;
+        }
+
+        zipInfo.text = $"第一次启动需要解压资源,请耐心等待解压完成: 100%";
+        zipProgress.fillAmount = 1;
+
         Sango.Platform.SaveAppVersion();
 #endif
+
+        progressObject.SetActive(false);
 
         DontDestroyOnLoad(gameObject);
         //Sango.Tools.MapEditor.IsEditOn = true;

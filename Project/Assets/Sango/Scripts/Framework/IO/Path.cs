@@ -24,6 +24,8 @@ namespace Sango
         public static string ContentRootPath { get; private set; }
         public static string ModRootPath { get; private set; }
         public static string SaveRootPath { get; private set; }
+        public static string StreamingAssetsPath { get; private set; }
+        public static string PersistentDataPathPath { get; private set; }
 
         /// <summary>
         /// 从入口脚本解析资源目录
@@ -31,6 +33,8 @@ namespace Sango
         /// <param name="mainPath"></param>
         public static void Init()
         {
+            StreamingAssetsPath = Application.streamingAssetsPath;
+            PersistentDataPathPath = Application.persistentDataPath;
             SaveRootPath = Application.persistentDataPath.Replace("\\", "/");
             ContentRootPath = SaveRootPath + "/Content";
             ModRootPath = SaveRootPath + "/Mods";

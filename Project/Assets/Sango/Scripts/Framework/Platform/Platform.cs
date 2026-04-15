@@ -6,6 +6,7 @@
 using System.Collections;
 using System.IO;
 using System.IO.Compression;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -103,49 +104,145 @@ namespace Sango
             File.WriteAllText(versionFilePath, PlatformUtility.GetApplicationVersion());
         }
 
-        static public IEnumerator ExtractContentAndModZipFile()
+        static public void ExtractZipFile(string filePath, string savePath, System.Action<float> progress)
         {
+            progress?.Invoke(0);
+            using ZipArchive source = ZipFile.Open(filePath, ZipArchiveMode.Read, null);
+            DirectoryInfo directoryInfo = System.IO.Directory.CreateDirectory(savePath);
+            string text = directoryInfo.FullName;
+            int length = text.Length;
+            if (length != 0 && text[length - 1] != System.IO.Path.DirectorySeparatorChar)
             {
-                string path = System.IO.Path.Combine(Application.streamingAssetsPath, ContentZipFile);
-                string uri = new System.Uri(path).AbsoluteUri;
-                UnityWebRequest request = UnityWebRequest.Get(uri);
-                yield return request.SendWebRequest();
-
-                if (request.result == UnityWebRequest.Result.Success)
+                text += System.IO.Path.DirectorySeparatorChar;
+            }
+            int count = source.Entries.Count;
+            int cur_count = 0;
+            if (count > 0)
+            {
+                foreach (ZipArchiveEntry entry in source.Entries)
                 {
-                    string zipSavePath = System.IO.Path.Combine(Application.persistentDataPath, ContentZipFile);
-                    if (File.Exists(zipSavePath))
-                        File.Delete(zipSavePath);
-
-                    File.WriteAllBytes(zipSavePath, request.downloadHandler.data);
-                    ZipFile.ExtractToDirectory(zipSavePath, Application.persistentDataPath);
+                    string fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(text, entry.FullName));
+                    if (System.IO.Path.GetFileName(fullPath).Length == 0)
+                    {
+                        System.IO.Directory.CreateDirectory(fullPath);
+                    }
+                    else
+                    {
+                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath));
+                        entry.ExtractToFile(fullPath, overwrite: false);
+                    }
+                    cur_count++;
+                    progress?.Invoke(0.2f + (float)cur_count / count * 0.4f);
                 }
-                else
+            }
+            progress?.Invoke(1);
+        }
+
+        static public void CopyContentAndModZipFile(System.Action<float> progress)
+        {
+            string path = System.IO.Path.Combine(Sango.Path.StreamingAssetsPath, ContentZipFile);
+            string uri = new System.Uri(path).AbsoluteUri;
+            UnityWebRequest request = UnityWebRequest.Get(uri);
+            UnityWebRequestAsyncOperation unityWebRequestAsyncOperation = request.SendWebRequest();
+            while (!unityWebRequestAsyncOperation.isDone)
+            {
+                progress?.Invoke(unityWebRequestAsyncOperation.progress * 0.5f);
+                Thread.Sleep(10);
+            }
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string zipSavePath = System.IO.Path.Combine(Sango.Path.PersistentDataPathPath, ContentZipFile);
+                if (File.Exists(zipSavePath))
+                    File.Delete(zipSavePath);
+
+                File.WriteAllBytes(zipSavePath, request.downloadHandler.data);
+            }
+
+            path = System.IO.Path.Combine(Sango.Path.StreamingAssetsPath, ModZipFile);
+            uri = new System.Uri(path).AbsoluteUri;
+            request = UnityWebRequest.Get(uri);
+            unityWebRequestAsyncOperation = request.SendWebRequest();
+            while (!unityWebRequestAsyncOperation.isDone)
+            {
+                progress?.Invoke(0.5f + unityWebRequestAsyncOperation.progress * 0.5f);
+                Thread.Sleep(10);
+            }
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string zipSavePath = System.IO.Path.Combine(Sango.Path.PersistentDataPathPath, ModZipFile);
+                if (File.Exists(zipSavePath))
+                    File.Delete(zipSavePath);
+
+                File.WriteAllBytes(zipSavePath, request.downloadHandler.data);
+            }
+        }
+
+
+        static public void ExtractContentAndModZipFile(System.Action<float> progress)
+        {
+            progress?.Invoke(0);
+            string zipSavePath = System.IO.Path.Combine(Sango.Path.PersistentDataPathPath, ContentZipFile);
+            ZipArchive source = ZipFile.Open(zipSavePath, ZipArchiveMode.Read, null);
+            DirectoryInfo directoryInfo = System.IO.Directory.CreateDirectory(Sango.Path.PersistentDataPathPath);
+            string text = directoryInfo.FullName;
+            int length = text.Length;
+            if (length != 0 && text[length - 1] != System.IO.Path.DirectorySeparatorChar)
+            {
+                text += System.IO.Path.DirectorySeparatorChar;
+            }
+            int count = source.Entries.Count;
+            int cur_count = 0;
+            if (count > 0)
+            {
+                foreach (ZipArchiveEntry entry in source.Entries)
                 {
-                    UnityEngine.Debug.LogError(request.error);
+                    string fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(text, entry.FullName));
+                    if (System.IO.Path.GetFileName(fullPath).Length == 0)
+                    {
+                        System.IO.Directory.CreateDirectory(fullPath);
+                    }
+                    else
+                    {
+                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath));
+                        entry.ExtractToFile(fullPath, overwrite: false);
+                    }
+                    cur_count++;
+                    progress?.Invoke((float)cur_count / count * 0.7f);
                 }
             }
 
+            zipSavePath = System.IO.Path.Combine(Sango.Path.PersistentDataPathPath, ModZipFile);
+            source = ZipFile.Open(zipSavePath, ZipArchiveMode.Read, null);
+            directoryInfo = System.IO.Directory.CreateDirectory(Sango.Path.PersistentDataPathPath);
+            text = directoryInfo.FullName;
+            length = text.Length;
+            if (length != 0 && text[length - 1] != System.IO.Path.DirectorySeparatorChar)
             {
-                string path = System.IO.Path.Combine(Application.streamingAssetsPath, ModZipFile);
-                string uri = new System.Uri(path).AbsoluteUri;
-                UnityWebRequest request = UnityWebRequest.Get(uri);
-                yield return request.SendWebRequest();
-
-                if (request.result == UnityWebRequest.Result.Success)
+                text += System.IO.Path.DirectorySeparatorChar;
+            }
+            count = source.Entries.Count;
+            cur_count = 0;
+            if (count > 0)
+            {
+                foreach (ZipArchiveEntry entry in source.Entries)
                 {
-                    string zipSavePath = System.IO.Path.Combine(Application.persistentDataPath, ModZipFile);
-                    if (File.Exists(zipSavePath))
-                        File.Delete(zipSavePath);
-
-                    File.WriteAllBytes(zipSavePath, request.downloadHandler.data);
-                    ZipFile.ExtractToDirectory(zipSavePath, Application.persistentDataPath);
-                }
-                else
-                {
-                    UnityEngine.Debug.LogError(request.error);
+                    string fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(text, entry.FullName));
+                    if (System.IO.Path.GetFileName(fullPath).Length == 0)
+                    {
+                        System.IO.Directory.CreateDirectory(fullPath);
+                    }
+                    else
+                    {
+                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath));
+                        entry.ExtractToFile(fullPath, overwrite: false);
+                    }
+                    cur_count++;
+                    progress?.Invoke(0.7f + (float)cur_count / count * 0.3f);
                 }
             }
+            progress?.Invoke(1);
         }
 
 #if UNITY_EDITOR
