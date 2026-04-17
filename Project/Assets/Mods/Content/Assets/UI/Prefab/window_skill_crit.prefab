@@ -112,7 +112,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 1600, y: 0}
-  m_SizeDelta: {x: 512, y: 512}
+  m_SizeDelta: {x: 500, y: 708}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6399645520898743287
 CanvasRenderer:
@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 0c2a84e9535466c4194b2bc38229c090, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 6bcdbf38fc76f7c41bb3fe89052d5baa, type: 3}
+  m_Texture: {fileID: 2800000, guid: 1cb0051547e7ae7418a23b2249ef9361, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -456,11 +456,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19806800, guid: 1c9178dc645b30d499fa53975e38ee85, type: 3}
       propertyPath: lengthInSec
-      value: 1.6
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 19826016, guid: 1c9178dc645b30d499fa53975e38ee85, type: 3}
       propertyPath: lengthInSec
-      value: 1.6
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 19826016, guid: 1c9178dc645b30d499fa53975e38ee85, type: 3}
       propertyPath: ColorModule.enabled
@@ -484,7 +484,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19897844, guid: 1c9178dc645b30d499fa53975e38ee85, type: 3}
       propertyPath: lengthInSec
-      value: 1.6
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 19897844, guid: 1c9178dc645b30d499fa53975e38ee85, type: 3}
       propertyPath: InitialModule.startColor.maxColor.a

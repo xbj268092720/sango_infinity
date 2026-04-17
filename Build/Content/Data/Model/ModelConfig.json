@@ -82,5 +82,29 @@
     "Name": "高松",
     "modelType": 6,
     "model": "Assets/Model/Prefab/p_tree_10.prefab"
+  },
+  "15": {
+    "Id": 15,
+    "Name": "标注蓝",
+    "modelType": 7,
+    "model": "Assets/Model/Prefab/MapLabel_blue.prefab"
+  },
+  "16": {
+    "Id": 16,
+    "Name": "标注红",
+    "modelType": 7,
+    "model": "Assets/Model/Prefab/MapLabel_red.prefab"
+  },
+  "17": {
+    "Id": 17,
+    "Name": "标注绿",
+    "modelType": 7,
+    "model": "Assets/Model/Prefab/MapLabel_green.prefab"
+  },
+  "18": {
+    "Id": 18,
+    "Name": "标注黄",
+    "modelType": 7,
+    "model": "Assets/Model/Prefab/MapLabel_yellow.prefab"
   }
 }

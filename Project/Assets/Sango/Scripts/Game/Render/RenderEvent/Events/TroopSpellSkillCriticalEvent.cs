@@ -69,7 +69,7 @@ namespace Sango.Render
             if (!isCritWindowShown)
             {
                 critWindowTime += deltaTime;
-                if (critWindowTime >= 1.8f)
+                if (critWindowTime >= 1f)
                 {
                     isCritWindowShown = true;
                    

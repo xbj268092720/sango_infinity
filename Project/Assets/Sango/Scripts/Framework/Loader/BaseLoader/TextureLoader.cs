@@ -146,7 +146,25 @@ namespace Sango.Loader
         /// <param name="onCharpLoadedFunc"></param>
         public static Texture LoadFromFileSync(string filePath, bool textureNeedCompress, bool needMipmap)
         {
-            filePath = Path.FindFile(filePath);
+            string srcPath = filePath;
+            if (!System.IO.Path.HasExtension(srcPath))
+            {
+                filePath = Path.FindFile(srcPath + ".png");
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    filePath = Path.FindFile(srcPath + ".jpeg");
+                    if (string.IsNullOrEmpty(filePath))
+                    {
+                        filePath = Path.FindFile(srcPath + ".tga");
+                        if (string.IsNullOrEmpty(filePath))
+                            filePath = Path.FindFile(srcPath + ".bmp");
+                    }
+                }
+            }
+            else
+            {
+                filePath = Path.FindFile(srcPath);
+            }
             if (string.IsNullOrEmpty(filePath)) return null;
             Texture obj = AssetStore.Instance.CheckAsset<Texture>(filePath);
             if (obj == null)

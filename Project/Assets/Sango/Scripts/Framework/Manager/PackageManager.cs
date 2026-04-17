@@ -59,6 +59,25 @@ namespace Sango
             string assetsPath = $"Assets/Mods/{packageName}/{assetName}";
             UnityEngine.Object editorObj = UnityEditor.AssetDatabase.LoadAssetAtPath(assetsPath, assetType);
             if (editorObj != null) return editorObj;
+
+            if (assetType == typeof(UnityEngine.Texture) && !System.IO.Path.HasExtension(assetName))
+            {
+                assetsPath = $"Assets/Mods/{packageName}/{assetName}.png";
+                editorObj = UnityEditor.AssetDatabase.LoadAssetAtPath(assetsPath, assetType);
+                if (editorObj != null) return editorObj;
+
+                assetsPath = $"Assets/Mods/{packageName}/{assetName}.jpeg";
+                editorObj = UnityEditor.AssetDatabase.LoadAssetAtPath(assetsPath, assetType);
+                if (editorObj != null) return editorObj;
+
+                assetsPath = $"Assets/Mods/{packageName}/{assetName}.tga";
+                editorObj = UnityEditor.AssetDatabase.LoadAssetAtPath(assetsPath, assetType);
+                if (editorObj != null) return editorObj;
+
+                assetsPath = $"Assets/Mods/{packageName}/{assetName}.bmp";
+                editorObj = UnityEditor.AssetDatabase.LoadAssetAtPath(assetsPath, assetType);
+                if (editorObj != null) return editorObj;
+            }
 #endif
             PackageInfo packageInfo = null;
             if (!packages.TryGetValue(packageName, out packageInfo))
