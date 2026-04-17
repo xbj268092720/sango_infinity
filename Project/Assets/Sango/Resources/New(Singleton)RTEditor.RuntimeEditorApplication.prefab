@@ -810,7 +810,7 @@ MonoBehaviour:
     _focusDistanceScale: 1.5
   _moveSettings:
     _moveSpeed: 10
-  _rotationSpeedInDegrees: 8.8
+  _rotationSpeedInDegrees: 3
   _background:
     _isVisible: 0
     _topColor: {r: 0.2784314, g: 0.2784314, b: 0.2784314, a: 1}

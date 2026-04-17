@@ -26,7 +26,10 @@ namespace Sango.Render
         {
             get
             {
-                return new Sango.Tools.Rect(position.x, position.z, 10, 10);
+                Vector3 pos = position;
+                return new Tools.Rect(pos.z + bounds.x - bounds.width / 2,
+                pos.x + bounds.y - bounds.height / 2,
+                bounds.width, bounds.height);
             }
         }
 
@@ -190,18 +193,19 @@ namespace Sango.Render
             position = pos;
             textColor = color;
             fontSize = size;
-            
+            bounds = new Sango.Tools.Rect(0, 0, 20, 20);
+
             // 创建文本Mesh
-            textMesh = gameObject.AddComponent<TextMesh>();
-            textMesh.text = labelText;
-            textMesh.color = textColor;
-            textMesh.fontSize = fontSize;
-            textMesh.anchor = TextAnchor.MiddleCenter;
-            textMesh.alignment = TextAlignment.Center;
-            
-            // 确保文本面向相机
-            transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
-            
+            //textMesh = gameObject.AddComponent<TextMesh>();
+            //textMesh.text = labelText;
+            //textMesh.color = textColor;
+            //textMesh.fontSize = fontSize;
+            //textMesh.anchor = TextAnchor.MiddleCenter;
+            //textMesh.alignment = TextAlignment.Center;
+
+            //// 确保文本面向相机
+            //transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward);
+
             // 如果可见，创建资源
             if (visible)
             {
@@ -401,7 +405,7 @@ namespace Sango.Render
                     labelResource.SetActive(true);
                     
                     // 获取Text组件
-                    textComponent = labelResource.GetComponent<UnityEngine.UI.Text>();
+                    textComponent = labelResource.GetComponentInChildren<UnityEngine.UI.Text>(true);
                     if (textComponent != null)
                     {
                         // 赋值

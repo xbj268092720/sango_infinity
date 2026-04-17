@@ -45,17 +45,16 @@ namespace Sango.Render
             // 创建标注游戏对象
             GameObject labelObj = new GameObject($"MapLabel_{labels.Count}");
             labelObj.transform.parent = MapRender.modelRoot;
-            
+
             // 添加MapLabel组件
             MapLabel label = labelObj.AddComponent<MapLabel>();
             label.Initialize(map, text, position, color, fontSize);
-            
             // 添加到集合
             labels.Add(label);
-            
+
             // 添加到地图静态对象
             map.AddStatic(label);
-            
+
             return label;
         }
 
@@ -69,10 +68,10 @@ namespace Sango.Render
             {
                 // 从地图静态对象中移除
                 map.RemoveStatic(label);
-                
+
                 // 从集合中移除
                 labels.Remove(label);
-                
+
                 // 销毁标注对象
                 label.Destroy();
             }
@@ -117,7 +116,7 @@ namespace Sango.Render
         {
             // 写入标注数量
             writer.Write(labels.Count);
-            
+
             // 写入每个标注的数据
             foreach (var label in labels)
             {
@@ -141,13 +140,13 @@ namespace Sango.Render
         {
             // 清除现有标注
             ClearLabels();
-            
+
             // 只有版本号>=10时才加载标注数据
             if (versionCode >= 10)
             {
                 // 读取标注数量
                 int count = reader.ReadInt32();
-                
+
                 // 读取每个标注的数据
                 for (int i = 0; i < count; i++)
                 {
@@ -155,14 +154,14 @@ namespace Sango.Render
                     float x = reader.ReadSingle();
                     float y = reader.ReadSingle();
                     float z = reader.ReadSingle();
-                    float r = reader.ReadSingle();
-                    float g = reader.ReadSingle();
-                    float b = reader.ReadSingle();
+                    byte r = reader.ReadByte();
+                    byte g = reader.ReadByte();
+                    byte b = reader.ReadByte();
                     int fontSize = reader.ReadInt32();
-                    
-                    Color32 color = new Color32((byte)(r * 255), (byte)(g * 255), (byte)(b * 255), 255);
+
+                    Color32 color = new Color32(r, g, b, 255);
                     Vector3 position = new Vector3(x, y, z);
-                    
+
                     // 创建标注
                     AddLabel(text, position, color, fontSize);
                 }

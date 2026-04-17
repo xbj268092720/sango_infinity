@@ -40,8 +40,8 @@ namespace Sango.Tools
             Grid,
             // 模型
             Model,
-            // 设置
-            Setting
+            // 地图标记
+            MapLabel
         }
 
         public Render.MapRender map;
@@ -63,6 +63,7 @@ namespace Sango.Tools
         public TerrainBrush terrain_brush;
         internal GridBrush grid_brush;
         internal ModelBrush model_brush;
+        internal MapLabelBrush mapLabel_brush;
 
         public EditorWindow editorToolsBarWindow;
         public EditorWindow editorContentWindow;
@@ -113,7 +114,8 @@ namespace Sango.Tools
             terrain_brush = new TerrainBrush(this);
             grid_brush = new GridBrush(this);
             model_brush = new ModelBrush(this);
-            brushArray = new BrushBase[] { terrain_brush, grid_brush, model_brush };
+            mapLabel_brush = new MapLabelBrush(this);
+            brushArray = new BrushBase[] { terrain_brush, grid_brush, model_brush, mapLabel_brush };
 
             // 关闭游戏主相机
             Camera.main.gameObject.SetActive(false);
@@ -341,6 +343,11 @@ namespace Sango.Tools
                         brush = brushes[2];
                     }
                     break;
+                case EditorModType.MapLabel:
+                    {
+                        brush = brushes[3];
+                    }
+                    break;
                 default:
                     break;
             }
@@ -421,7 +428,7 @@ namespace Sango.Tools
         int currentEditMode = 0;
         private string[] toolbarTitle = new string[]
         {
-            "无", "编辑地形", "编辑地格", "模型放置", "设置说明"
+            "无", "编辑地形", "编辑地格", "模型放置", "地图标记"
         };
         private string[] toolbarSeason = new string[]
         {
@@ -559,17 +566,12 @@ namespace Sango.Tools
                     //OnGUI_Base();
                     break;
                 case 1:
-                    OnGUI_Edit_Terrain();
-                    break;
                 case 2:
-                    OnGUI_Edit_Grid();
-                    break;
                 case 3:
-                    OnGUI_Models();
-                    break;
                 case 4:
-                    OnGUI_Setting();
+                    CheckBrush().OnGUI();
                     break;
+               
                 default:
                     break;
             }
