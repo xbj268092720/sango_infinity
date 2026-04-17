@@ -104,11 +104,11 @@ namespace Sango.Tools
         public static void OnGUI(Render.MapLayer layer)
         {
             int count = layer.layerDatas.Length;
-            scrollPos_layer = GUILayout.BeginScrollView(scrollPos_layer, GUILayout.Width(180), GUILayout.Height(87 * ((count < 5) ? count : 5)));
+           scrollPos_layer = GUILayout.BeginScrollView(scrollPos_layer, GUILayout.Width(340), GUILayout.Height(150 * ((count < 4) ? count : 4)));
             for (int i = 0; i < count; i++)
             {
                 Render.MapLayer.LayerData data = layer.layerDatas[i];
-                GUILayout.Box("层: " + i, GUILayout.Width(168), GUILayout.Height(85));
+                GUILayout.Box("层: " + i, GUILayout.Width(300), GUILayout.Height(150));
                 UnityEngine.Rect r = GUILayoutUtility.GetLastRect();
                 OnGUI(data, r, i, i == layer.layerDatas.Length - 1);
             }
@@ -166,8 +166,8 @@ namespace Sango.Tools
             int season = layerData.layer.curSeason;
             UnityEngine.Rect rect = r;
             rect.y += 16;
-            rect.width = 64;
-            rect.height = 64;
+            rect.width = 128;
+            rect.height = 128;
             if (GUI.Button(rect, layerData.GetDiffuse(season)))
             {
                 if (UnityEngine.Event.current.button == 1)
@@ -187,7 +187,7 @@ namespace Sango.Tools
                     selectLayer = index;
                 }
             }
-            rect.x += 68;
+            rect.x += 128;
             rect.height = 24;
             GUI.changed = false;
             //GUI.enabled = false;

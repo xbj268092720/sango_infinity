@@ -55,6 +55,9 @@ namespace Sango.Tools
         // 编辑器UI框体范围
         internal UnityEngine.Rect windowRect = new UnityEngine.Rect(500, 400, 240, 100);
 
+        // 属性窗口滚动位置
+        private Vector2 scrollPosition = Vector2.zero;
+
         private BrushBase[] brushArray;
         public BrushBase[] brushes { get { return brushArray; } }
         public TerrainBrush terrain_brush;
@@ -122,17 +125,14 @@ namespace Sango.Tools
             EditorUndoRedoSystem.Instance.overrideAction = RegisterUndoRedoAction;
             EditorObjectSelection.Instance.IsOverUIHandler += IsPointerOverUI;
 
-            // 创建工具栏窗口并限制在屏幕范围内（向下偏移30像素以避免被顶部菜单条遮挡）
+            // 创建编辑器主窗口，高度自适应屏幕高度减去顶部菜单栏高度(30像素)
             windowRect.y += 30;
+            windowRect.height = Screen.height - 30;
             windowRect = ConstrainWindowToScreen(windowRect);
             editorToolsBarWindow = EditorWindow.AddWindow(0, windowRect, DrawToolbarWindow, "地图编辑器");
             editorToolsBarWindow.canClose = false;
 
-            // 创建属性窗口并限制在屏幕范围内
-            windowRect = ConstrainWindowToScreen(windowRect);
-            editorContentWindow = EditorWindow.AddWindow(1, windowRect, DrawContentWindow, "属性窗口");
-            editorContentWindow.canClose = false;
-            editorContentWindow.visible = false;
+            // 属性窗口不再单独创建，内容合并到工具栏窗口下方
 
             // 初始化操作历史窗口
             operationHistoryWindow = new OperationHistoryWindow(this);
@@ -517,138 +517,24 @@ namespace Sango.Tools
             GUILayout.Label($"当前鼠标格子:{{{SelectedCoord.col},{SelectedCoord.row}}}");
             GUILayout.Space(10);
 
-            //// 季节和视角控制组
-            //GUILayout.BeginHorizontal();
-            //GUILayout.Label("季节:", GUILayout.Width(40));
-            //int season = GUILayout.Toolbar(map.curSeason, toolbarSeason, GUILayout.ExpandWidth(false));
-            //if (season != map.curSeason)
-            //{
-            //    map.curSeason = season;
-            //    foreach (BrushBase brush in brushes)
-            //    {
-            //        brush.OnSeasonChanged(season);
-            //    }
-            //}
-
-            //GUILayout.Space(20);
-            //bool viewTpye = GUILayout.Toggle(ViewIs311Camera, "固定视角");
-            //if (viewTpye != ViewIs311Camera)
-            //{
-            //    ViewIs311Camera = viewTpye;
-            //    if (ViewIs311Camera)
-            //        SetCameraControlType(1);
-            //    else
-            //        SetCameraControlType(0);
-            //}
-
-            //if (GUILayout.Button("重置相机", GUILayout.ExpandWidth(false)))
-            //{
-            //    map.mapCamera.position = new Vector3(0, 500, 0);
-            //    map.mapCamera.lookRotate = new Vector3(90, -90, 0);
-            //    ViewIs311Camera = false;
-            //    SetCameraControlType(0);
-            //    Camera.main.gameObject.transform.position = map.mapCamera.position;
-            //    Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
-            //}
-            //GUILayout.EndHorizontal();
-
-            //GUILayout.Space(10);
-
-            //// 地图操作组
-            //GUILayout.BeginHorizontal();
-            //GUILayout.Label("地图操作:", GUILayout.Width(60));
-
-            //if (GUILayout.Button("加载地图", GUILayout.ExpandWidth(true)))
-            //{
-            //    string[] path = WindowDialog.OpenFileDialog("地图文件(*.bin)\0*.bin;\0\0");
-            //    if (path != null)
-            //    {
-            //        string fName = path[0];
-            //        lastSavedPath = fName;
-            //        map.LoadMap(fName);
-            //        EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
-            //        if (editorfree != null)
-            //            editorfree.lookAt = map.mapCamera.GetCenterTransform();
-
-            //        BrushBase brush = CheckBrush();
-            //        if (brush == null) return;
-            //        brush.OnEnter();
-
-            //        if (ViewIs311Camera)
-            //            SetCameraControlType(1);
-            //        else
-            //            SetCameraControlType(0);
-
-            //        Sango.Log.Info($"地图已加载: {fName}");
-            //    }
-            //}
-
-            //if (GUILayout.Button("保存地图", GUILayout.ExpandWidth(true)))
-            //{
-            //    string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
-            //    if (path != null)
-            //    {
-            //        lastSavedPath = path;
-            //        map.SaveMap(path);
-            //        // 保存底图
-            //        SaveBaseMap(path);
-            //        string message = $"地图已保存到: {System.IO.Path.GetFileName(path)}";
-            //        Sango.Log.Info(message);
-            //        autoSave.ShowSaveNotification(message);
-            //    }
-            //}
-
-            //if (GUILayout.Button("放大2倍保存", GUILayout.ExpandWidth(true)))
-            //{
-            //    string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
-            //    if (path != null)
-            //    {
-            //        map.SaveScaleMap(path, 2);
-            //    }
-            //}
-            //GUILayout.EndHorizontal();
-
-            //GUILayout.Space(15);
-
             // 编辑模式切换
             Color lastColor = GUI.backgroundColor;
             GUI.backgroundColor = new Color(0.3f, 0.7f, 1f); // 更美观的蓝色
             int editMode = GUILayout.Toolbar(currentEditMode, toolbarTitle, GUILayout.Height(35));
             if (editMode != currentEditMode)
             {
-                editorContentWindow.windowRect.size = windowRect.size;
                 BrushBase brush = CheckBrush();
                 if (brush != null)
                     brush.Clear();
                 currentEditMode = editMode;
                 brush = CheckBrush();
-                if (brush == null)
+                if (brush != null)
                 {
-                    editorContentWindow.visible = false;
-                    return;
+                    brush.OnEnter();
+                    SetModelSelectionMod(currentEditMode == (int)EditorModType.Model);
                 }
-                brush.OnEnter();
-                SetModelSelectionMod(currentEditMode == (int)EditorModType.Model);
-                editorContentWindow.visible = true;
             }
             GUI.backgroundColor = lastColor;
-
-            // 操作历史按钮
-            //GUILayout.Space(10);
-            //if (GUILayout.Button("操作历史", GUILayout.Height(30)))
-            //{
-            //    operationHistoryWindow.ToggleWindow();
-            //}
-
-            //// 布局管理按钮
-            //GUILayout.Space(10);
-            //if (GUILayout.Button("保存布局", GUILayout.Height(30)))
-            //{
-            //    layoutManager.SaveLayout();
-            //    string message = "布局已保存";
-            //    Sango.Log.Info(message);
-            //    autoSave.ShowSaveNotification(message);
-            //}
 
             // 快捷键提示
             GUILayout.Space(10);
@@ -658,6 +544,37 @@ namespace Sango.Tools
             GUILayout.Label("Ctrl+Z 撤销", GUILayout.Width(80));
             GUILayout.Label("Ctrl+Y 重做", GUILayout.Width(80));
             GUILayout.EndHorizontal();
+
+            // 分隔线
+            GUILayout.Space(10);
+            GUILayout.Label("", GUI.skin.horizontalSlider);
+            GUILayout.Space(10);
+
+            // 属性窗口内容 - 添加滚动支持
+            scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.ExpandHeight(true));
+            
+            switch (currentEditMode)
+            {
+                case 0:
+                    //OnGUI_Base();
+                    break;
+                case 1:
+                    OnGUI_Edit_Terrain();
+                    break;
+                case 2:
+                    OnGUI_Edit_Grid();
+                    break;
+                case 3:
+                    OnGUI_Models();
+                    break;
+                case 4:
+                    OnGUI_Setting();
+                    break;
+                default:
+                    break;
+            }
+            
+            GUILayout.EndScrollView();
         }
 
         /// <summary>

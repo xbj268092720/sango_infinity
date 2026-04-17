@@ -43,8 +43,6 @@ namespace Sango.Tools
         private Vector2 mapSize;
         private ColorPicker picker;
         private UnityEngine.Color brushColor;
-        EditorWindow contentWindow;
-        UnityEngine.Rect InitWindowRect = new UnityEngine.Rect(0, 0, 100, 100);
 
         // 拖拽相关变量
         private Dictionary<int, TerrainEditCommand.VertexDataChange> dragChangesMap = new Dictionary<int, TerrainEditCommand.VertexDataChange>();
@@ -317,59 +315,8 @@ namespace Sango.Tools
 
             Shader.SetGlobalFloat("_terrainTypeAlpha", gridInfoAlpha);
             base.OnEnter();
-            if (contentWindow == null)
-            {
-                contentWindow = EditorWindow.AddWindow(1000, InitWindowRect, DrawContentWindow, "");
-            }
-
-            if (brushType == BrushType.BaseMap || brushType == BrushType.BaseMapEraser || brushType == BrushType.Texture)
-            {
-                contentWindow.windowRect.size = InitWindowRect.size;
-                contentWindow.visible = true;
-            }
-            else
-                contentWindow.visible = false;
         }
         float gridInfoAlpha = 1;
-        void DrawContentWindow(int winId, EditorWindow window)
-        {
-            switch (brushType)
-            {
-                case BrushType.BaseMap:
-                case BrushType.BaseMapEraser:
-                    {
-                        GUILayout.Label(baseMap[editor.map.curSeason], GUILayout.Width(256), GUILayout.Height(256));
-                    }
-                    break;
-                case BrushType.Texture:
-                    {
-
-                        GUILayout.Label("地格信息透明度");
-                        float _alpha = GUILayout.HorizontalSlider(gridInfoAlpha, 0f, 1f);
-                        if (_alpha != gridInfoAlpha)
-                        {
-                            gridInfoAlpha = _alpha;
-                            Shader.SetGlobalFloat("_terrainTypeAlpha", gridInfoAlpha);
-                        }
-
-                        MapLayer.LayerData data = editor.map.mapLayer.GetLayer(textureIndex);
-                        if (data != null)
-                        {
-                            GUILayout.Label(data.GetDiffuseName(editor.map.curSeason));
-                            GUILayout.Label(data.GetDiffuse(editor.map.curSeason), GUILayout.Width(128), GUILayout.Height(128));
-                        }
-
-                        EditorUIDraw.OnGUI(editor.map.mapLayer);
-
-                        if (textureIndex != EditorUIDraw.selectLayer)
-                        {
-                            textureIndex = EditorUIDraw.selectLayer;
-                        }
-                    }
-                    break;
-
-            }
-        }
 
         public override void OnBrushSizeChange()
         {
@@ -429,14 +376,6 @@ namespace Sango.Tools
         public bool pressureEnabled = true; // 是否启用压感
         public override void OnBrushTypeChange()
         {
-            if (brushType == BrushType.BaseMap || brushType == BrushType.BaseMapEraser || brushType == BrushType.Texture)
-            {
-                contentWindow.windowRect.size = InitWindowRect.size;
-                contentWindow.visible = true;
-            }
-            else
-                contentWindow.visible = false;
-
             if (brushType == BrushType.BaseMap || brushType == BrushType.BaseMapEraser)
             {
                 size = 15;
@@ -992,7 +931,7 @@ namespace Sango.Tools
             GUILayout.Space(8);
             UnityEngine.Color lastColor = GUI.backgroundColor;
             GUI.backgroundColor = UnityEngine.Color.cyan;
-            int editMode = GUILayout.SelectionGrid(currentEditMode, toolbarTitle, 4, GUILayout.Height(60));
+            int editMode = GUILayout.SelectionGrid(currentEditMode, toolbarTitle, 3, GUILayout.Height(90));
             if (editMode != currentEditMode)
             {
                 currentEditMode = editMode;
@@ -1156,6 +1095,49 @@ namespace Sango.Tools
                     break;
                 default:
                     {
+                    }
+                    break;
+            }
+
+            // 原 contentWindow 内容合并到此处
+            switch (brushType)
+            {
+                case BrushType.BaseMap:
+                case BrushType.BaseMapEraser:
+                    {
+                        GUILayout.Space(10);
+                        GUILayout.Label("", GUI.skin.horizontalSlider);
+                        GUILayout.Space(10);
+                        GUILayout.Label(baseMap[editor.map.curSeason], GUILayout.Width(256), GUILayout.Height(256));
+                    }
+                    break;
+                case BrushType.Texture:
+                    {
+                        GUILayout.Space(10);
+                        GUILayout.Label("", GUI.skin.horizontalSlider);
+                        GUILayout.Space(10);
+
+                        GUILayout.Label("地格信息透明度");
+                        float _alpha = GUILayout.HorizontalSlider(gridInfoAlpha, 0f, 1f);
+                        if (_alpha != gridInfoAlpha)
+                        {
+                            gridInfoAlpha = _alpha;
+                            Shader.SetGlobalFloat("_terrainTypeAlpha", gridInfoAlpha);
+                        }
+
+                        MapLayer.LayerData data = editor.map.mapLayer.GetLayer(textureIndex);
+                        if (data != null)
+                        {
+                            GUILayout.Label(data.GetDiffuseName(editor.map.curSeason));
+                            GUILayout.Label(data.GetDiffuse(editor.map.curSeason), GUILayout.Width(128), GUILayout.Height(128));
+                        }
+
+                        EditorUIDraw.OnGUI(editor.map.mapLayer);
+
+                        if (textureIndex != EditorUIDraw.selectLayer)
+                        {
+                            textureIndex = EditorUIDraw.selectLayer;
+                        }
                     }
                     break;
             }

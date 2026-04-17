@@ -39,9 +39,7 @@ namespace Sango.Tools
                 layoutData.toolbarWindowX = editor.editorToolsBarWindow.windowRect.x;
                 layoutData.toolbarWindowY = editor.editorToolsBarWindow.windowRect.y;
                 
-                // 保存属性窗口
-                layoutData.contentWindowX = editor.editorContentWindow.windowRect.x;
-                layoutData.contentWindowY = editor.editorContentWindow.windowRect.y;
+                // 属性窗口已合并到工具栏窗口，不再单独保存位置
                 
                 // 保存操作历史窗口
                 if (editor.operationHistoryWindow != null)
@@ -94,13 +92,7 @@ namespace Sango.Tools
                         editor.editorToolsBarWindow.windowRect.height
                     );
                     
-                    // 加载属性窗口位置
-                    editor.editorContentWindow.windowRect = new UnityEngine.Rect(
-                        layoutData.contentWindowX, 
-                        layoutData.contentWindowY,
-                        editor.editorContentWindow.windowRect.width,
-                        editor.editorContentWindow.windowRect.height
-                    );
+                    // 属性窗口已合并到工具栏窗口，不再单独加载位置
                     
                     // 加载操作历史窗口位置
                     if (editor.operationHistoryWindow != null)

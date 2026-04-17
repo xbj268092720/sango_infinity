@@ -273,7 +273,7 @@ namespace Sango.Tools
             //}
             UnityEngine.Color lastColor = GUI.backgroundColor;
             GUI.backgroundColor = UnityEngine.Color.cyan;
-            int typeIndex = GUILayout.SelectionGrid(currentObjectType, objectTypeTitle, 4, GUILayout.Height(60));
+            int typeIndex = GUILayout.SelectionGrid(currentObjectType, objectTypeTitle, 3, GUILayout.Height(90));
             if (typeIndex != currentObjectType)
             {
                 currentObjectType = typeIndex;

@@ -12,6 +12,7 @@ namespace Sango.Tools
 
         public bool visible;
         public UnityEngine.Rect windowRect;
+        public UnityEngine.Rect saved_windowRect;
         public WindowFunction windowFunc;
         public WindowFunction windowMinFunc;
         public string windowName;
@@ -64,7 +65,10 @@ namespace Sango.Tools
                     if (GUI.Button(MinRect, "-", MinStyle))
                     {
                         isMax = false;
-                        windowRect.size = new Vector2(90, 40);
+                        saved_windowRect = windowRect;
+                        Vector2 xs = windowRect.size;
+                        xs.y = 30;
+                        windowRect.size = xs;
                         return;
                     }
 
@@ -76,9 +80,10 @@ namespace Sango.Tools
 
                     beginX -= 20;
                     MinRect.x = beginX;
-                    if (GUI.Button(MinRect, "��", MaxStyle))
+                    if (GUI.Button(MinRect, "□", MaxStyle))
                     {
                         isMax = true;
+                        windowRect = saved_windowRect;
                     }
 
                     if (windowMinFunc != null)
