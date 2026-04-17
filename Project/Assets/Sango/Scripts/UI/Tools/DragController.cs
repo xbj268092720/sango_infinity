@@ -12,6 +12,7 @@ public class DragController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
     public RectTransform dragRect;
     public Camera uiCamera;
     bool draging = false;
+    public bool isOverlayCamera = false;
 
     private void Awake()
     {
@@ -23,7 +24,7 @@ public class DragController : MonoBehaviour, IPointerDownHandler, IDragHandler, 
 
     void Start()
     {
-        if (uiCamera == null)
+        if (!isOverlayCamera && uiCamera == null)
             uiCamera = Sango.Core.Game.Instance.UICamera;
     }
 

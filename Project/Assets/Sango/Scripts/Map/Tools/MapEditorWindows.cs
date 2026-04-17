@@ -19,9 +19,9 @@ namespace Sango.Tools
         private UnityEngine.Rect lightWindowRect;
         private UnityEngine.Rect fogWindowRect;
         
-        private int newMapWidth = 100;
-        private int newMapHeight = 100;
-        private int newMapCellSize = 10;
+        private int newMapWidth = 512;
+        private int newMapHeight = 512;
+        private int newMapCellSize = 20;
         private string newMapKey = "";
         
         private Vector2 settingsScrollPosition = Vector2.zero;
@@ -248,14 +248,6 @@ namespace Sango.Tools
                 }
                 GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("格子大小:", GUILayout.Width(100));
-                string cellSizeStr = GUILayout.TextField(newMapCellSize.ToString(), GUILayout.Width(100));
-                if (int.TryParse(cellSizeStr, out int cellSize) && cellSize > 0)
-                {
-                    newMapCellSize = cellSize;
-                }
-                GUILayout.EndHorizontal();
                 GUILayout.EndVertical();
                 GUILayout.Space(12);
 
@@ -277,9 +269,9 @@ namespace Sango.Tools
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("创建", GUILayout.Width(100), GUILayout.Height(30)))
                 {
-                    if (newMapWidth <= 0 || newMapHeight <= 0 || newMapCellSize <= 0)
+                    if (newMapWidth <= 0 || newMapHeight <= 0)
                     {
-                        Sango.Log.Error("地图参数必须为正整数");
+                        Sango.Log.Error("地图宽度和高度必须为正整数");
                         return;
                     }
                     if (string.IsNullOrEmpty(newMapKey))
@@ -494,15 +486,35 @@ namespace Sango.Tools
 
                     GUILayout.Label("雾颜色:", GUILayout.Width(60));
                     int fogSeasonIndex = i;
-                    EditorUtility.ColorField(editor.map.mapFog.fog_color[fogSeasonIndex], "", (color) => { editor.map.mapFog.fog_color[fogSeasonIndex] = color; });
+                    EditorUtility.ColorField(editor.map.mapFog.fog_color[fogSeasonIndex], "", (color) => { 
+                        editor.map.mapFog.fog_color[fogSeasonIndex] = color;
+                        if (fogSeasonIndex == editor.map.curSeason)
+                        {
+                            editor.map.mapFog.UpdateRender();
+                        }
+                    });
 
                     GUILayout.Label("起点距离:", GUILayout.Width(70));
-                    editor.map.mapFog.fog_start[i] = EditorUtility.FloatField(editor.map.mapFog.fog_start[i], GUILayout.Width(80));
-                    editor.map.mapFog.fog_start[i] = Mathf.Max(0, editor.map.mapFog.fog_start[i]);
+                    float newStart = EditorUtility.FloatField(editor.map.mapFog.fog_start[i], GUILayout.Width(80));
+                    if (newStart != editor.map.mapFog.fog_start[i])
+                    {
+                        editor.map.mapFog.fog_start[i] = Mathf.Max(0, newStart);
+                        if (i == editor.map.curSeason)
+                        {
+                            editor.map.mapFog.UpdateRender();
+                        }
+                    }
 
                     GUILayout.Label("结束距离:", GUILayout.Width(70));
-                    editor.map.mapFog.fog_end[i] = EditorUtility.FloatField(editor.map.mapFog.fog_end[i], GUILayout.Width(80));
-                    editor.map.mapFog.fog_end[i] = Mathf.Max(editor.map.mapFog.fog_start[i], editor.map.mapFog.fog_end[i]);
+                    float newEnd = EditorUtility.FloatField(editor.map.mapFog.fog_end[i], GUILayout.Width(80));
+                    if (newEnd != editor.map.mapFog.fog_end[i])
+                    {
+                        editor.map.mapFog.fog_end[i] = Mathf.Max(editor.map.mapFog.fog_start[i], newEnd);
+                        if (i == editor.map.curSeason)
+                        {
+                            editor.map.mapFog.UpdateRender();
+                        }
+                    }
 
                     GUILayout.EndHorizontal();
                     GUILayout.EndVertical();

@@ -86,9 +86,9 @@ namespace Sango.Tools
                 showRenderMenu = false;
                 showOriginal311Menu = false;
                 showHelpWindow = false;
-                // 计算视图菜单高度：1个toggle + 1个按钮 + 1个分隔线 + 1个标签 + 4个按钮
+                // 计算视图菜单高度：1个toggle + 1个按钮 + 1个分隔线 + 3个加载按钮 + 1个分隔线 + 1个按钮 + 1个标签 + 4个季节按钮
                 // 增加额外空间以确保显示完整
-                float height = CalculateMenuHeight(6, 1) + 30f;
+                float height = CalculateMenuHeight(10, 2) + 30f;
                 viewMenuRect = new UnityEngine.Rect(120, MENU_BAR_HEIGHT, 150, height); // Y坐标从菜单高度开始，确保不与顶部菜单重叠
             }
 
@@ -274,42 +274,11 @@ namespace Sango.Tools
             GUILayout.Label("---");
             GUILayout.Space(5);
 
-            if (GUILayout.Button("加载高度"))
+            bool historyWindowVisible = GUILayout.Toggle(editor.operationHistoryWindow.window.visible, "历史记录");
+            if (historyWindowVisible != editor.operationHistoryWindow.window.visible)
             {
-                string[] path = WindowDialog.OpenFileDialog("高度文件(*.csv)\0*.csv;\0\0");
-                if (path != null)
-                {
-                    // 这里实现加载高度的逻辑
-                    Sango.Log.Info("加载高度功能待实现");
-                }
-                showEditMenu = false;
+                editor.operationHistoryWindow.ToggleWindow();
             }
-
-            if (GUILayout.Button("加载图层"))
-            {
-                string[] path = WindowDialog.OpenFileDialog("图层文件(*.csv)\0*.csv;\0\0");
-                if (path != null)
-                {
-                    // 这里实现加载图层的逻辑
-                    Sango.Log.Info("加载图层功能待实现");
-                }
-                showEditMenu = false;
-            }
-
-            if (GUILayout.Button("加载水"))
-            {
-                string[] path = WindowDialog.OpenFileDialog("水文件(*.csv)\0*.csv;\0\0");
-                if (path != null)
-                {
-                    // 这里实现加载水的逻辑
-                    Sango.Log.Info("加载水功能待实现");
-                }
-                showEditMenu = false;
-            }
-
-            GUILayout.Space(5);
-            GUILayout.Label("---");
-            GUILayout.Space(5);
 
             if (GUILayout.Button("清空历史"))
             {
@@ -366,6 +335,48 @@ namespace Sango.Tools
             GUILayout.Space(5);
             GUILayout.Label("---");
             GUILayout.Space(5);
+
+            if (GUILayout.Button("加载高度"))
+            {
+                string[] path = WindowDialog.OpenFileDialog("高度文件(*.csv)\0*.csv;\0\0");
+                if (path != null)
+                {
+                    Sango.Log.Info("加载高度功能待实现");
+                }
+                showViewMenu = false;
+            }
+
+            if (GUILayout.Button("加载图层"))
+            {
+                string[] path = WindowDialog.OpenFileDialog("图层文件(*.csv)\0*.csv;\0\0");
+                if (path != null)
+                {
+                    Sango.Log.Info("加载图层功能待实现");
+                }
+                showViewMenu = false;
+            }
+
+            if (GUILayout.Button("加载水"))
+            {
+                string[] path = WindowDialog.OpenFileDialog("水文件(*.csv)\0*.csv;\0\0");
+                if (path != null)
+                {
+                    Sango.Log.Info("加载水功能待实现");
+                }
+                showViewMenu = false;
+            }
+
+            GUILayout.Space(5);
+            GUILayout.Label("---");
+            GUILayout.Space(5);
+
+            if (GUILayout.Button("保存布局"))
+            {
+                editor.layoutManager.SaveLayout();
+                string message = "布局已保存";
+                Sango.Log.Info(message);
+                editor.autoSave.ShowSaveNotification(message);
+            }
 
             GUILayout.Label("季节:");
             // 保存原始背景颜色

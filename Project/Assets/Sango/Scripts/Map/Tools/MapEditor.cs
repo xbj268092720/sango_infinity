@@ -1,7 +1,6 @@
 using RTEditor;
 using Sango.Render;
 using Sango.Tools.UndoRedo;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -65,7 +64,7 @@ namespace Sango.Tools
         public EditorWindow editorToolsBarWindow;
         public EditorWindow editorContentWindow;
         public OperationHistoryWindow operationHistoryWindow;
-        private LayoutManager layoutManager;
+        public LayoutManager layoutManager { get; private set; }
 
         /// <summary>
         /// 自动保存扩展类
@@ -133,6 +132,7 @@ namespace Sango.Tools
             windowRect = ConstrainWindowToScreen(windowRect);
             editorContentWindow = EditorWindow.AddWindow(1, windowRect, DrawContentWindow, "属性窗口");
             editorContentWindow.canClose = false;
+            editorContentWindow.visible = false;
 
             // 初始化操作历史窗口
             operationHistoryWindow = new OperationHistoryWindow(this);
@@ -219,8 +219,8 @@ namespace Sango.Tools
         {
             IsEditOn = false;
             Shader.DisableKeyword("SANGO_EDITOR");
-            EditorUndoRedoSystem.Instance.overrideAction = null;
-            EditorObjectSelection.Instance.IsOverUIHandler -= IsPointerOverUI;
+            //EditorUndoRedoSystem.Instance.overrideAction = null;
+            //EditorObjectSelection.Instance.IsOverUIHandler -= IsPointerOverUI;
         }
 
         public void SetModelSelectionMod(bool b)
@@ -421,7 +421,7 @@ namespace Sango.Tools
         int currentEditMode = 0;
         private string[] toolbarTitle = new string[]
         {
-            "基础编辑", "编辑地形", "编辑地格", "模型放置", "设置说明"
+            "无", "编辑地形", "编辑地格", "模型放置", "设置说明"
         };
         private string[] toolbarSeason = new string[]
         {
@@ -517,98 +517,98 @@ namespace Sango.Tools
             GUILayout.Label($"当前鼠标格子:{{{SelectedCoord.col},{SelectedCoord.row}}}");
             GUILayout.Space(10);
 
-            // 季节和视角控制组
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("季节:", GUILayout.Width(40));
-            int season = GUILayout.Toolbar(map.curSeason, toolbarSeason, GUILayout.ExpandWidth(false));
-            if (season != map.curSeason)
-            {
-                map.curSeason = season;
-                foreach (BrushBase brush in brushes)
-                {
-                    brush.OnSeasonChanged(season);
-                }
-            }
+            //// 季节和视角控制组
+            //GUILayout.BeginHorizontal();
+            //GUILayout.Label("季节:", GUILayout.Width(40));
+            //int season = GUILayout.Toolbar(map.curSeason, toolbarSeason, GUILayout.ExpandWidth(false));
+            //if (season != map.curSeason)
+            //{
+            //    map.curSeason = season;
+            //    foreach (BrushBase brush in brushes)
+            //    {
+            //        brush.OnSeasonChanged(season);
+            //    }
+            //}
 
-            GUILayout.Space(20);
-            bool viewTpye = GUILayout.Toggle(ViewIs311Camera, "固定视角");
-            if (viewTpye != ViewIs311Camera)
-            {
-                ViewIs311Camera = viewTpye;
-                if (ViewIs311Camera)
-                    SetCameraControlType(1);
-                else
-                    SetCameraControlType(0);
-            }
+            //GUILayout.Space(20);
+            //bool viewTpye = GUILayout.Toggle(ViewIs311Camera, "固定视角");
+            //if (viewTpye != ViewIs311Camera)
+            //{
+            //    ViewIs311Camera = viewTpye;
+            //    if (ViewIs311Camera)
+            //        SetCameraControlType(1);
+            //    else
+            //        SetCameraControlType(0);
+            //}
 
-            if (GUILayout.Button("重置相机", GUILayout.ExpandWidth(false)))
-            {
-                map.mapCamera.position = new Vector3(0, 500, 0);
-                map.mapCamera.lookRotate = new Vector3(90, -90, 0);
-                ViewIs311Camera = false;
-                SetCameraControlType(0);
-                Camera.main.gameObject.transform.position = map.mapCamera.position;
-                Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
-            }
-            GUILayout.EndHorizontal();
+            //if (GUILayout.Button("重置相机", GUILayout.ExpandWidth(false)))
+            //{
+            //    map.mapCamera.position = new Vector3(0, 500, 0);
+            //    map.mapCamera.lookRotate = new Vector3(90, -90, 0);
+            //    ViewIs311Camera = false;
+            //    SetCameraControlType(0);
+            //    Camera.main.gameObject.transform.position = map.mapCamera.position;
+            //    Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
+            //}
+            //GUILayout.EndHorizontal();
 
-            GUILayout.Space(10);
+            //GUILayout.Space(10);
 
-            // 地图操作组
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("地图操作:", GUILayout.Width(60));
+            //// 地图操作组
+            //GUILayout.BeginHorizontal();
+            //GUILayout.Label("地图操作:", GUILayout.Width(60));
 
-            if (GUILayout.Button("加载地图", GUILayout.ExpandWidth(true)))
-            {
-                string[] path = WindowDialog.OpenFileDialog("地图文件(*.bin)\0*.bin;\0\0");
-                if (path != null)
-                {
-                    string fName = path[0];
-                    lastSavedPath = fName;
-                    map.LoadMap(fName);
-                    EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
-                    if (editorfree != null)
-                        editorfree.lookAt = map.mapCamera.GetCenterTransform();
+            //if (GUILayout.Button("加载地图", GUILayout.ExpandWidth(true)))
+            //{
+            //    string[] path = WindowDialog.OpenFileDialog("地图文件(*.bin)\0*.bin;\0\0");
+            //    if (path != null)
+            //    {
+            //        string fName = path[0];
+            //        lastSavedPath = fName;
+            //        map.LoadMap(fName);
+            //        EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
+            //        if (editorfree != null)
+            //            editorfree.lookAt = map.mapCamera.GetCenterTransform();
 
-                    BrushBase brush = CheckBrush();
-                    if (brush == null) return;
-                    brush.OnEnter();
+            //        BrushBase brush = CheckBrush();
+            //        if (brush == null) return;
+            //        brush.OnEnter();
 
-                    if (ViewIs311Camera)
-                        SetCameraControlType(1);
-                    else
-                        SetCameraControlType(0);
+            //        if (ViewIs311Camera)
+            //            SetCameraControlType(1);
+            //        else
+            //            SetCameraControlType(0);
 
-                    Sango.Log.Info($"地图已加载: {fName}");
-                }
-            }
+            //        Sango.Log.Info($"地图已加载: {fName}");
+            //    }
+            //}
 
-            if (GUILayout.Button("保存地图", GUILayout.ExpandWidth(true)))
-            {
-                string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
-                if (path != null)
-                {
-                    lastSavedPath = path;
-                    map.SaveMap(path);
-                    // 保存底图
-                    SaveBaseMap(path);
-                    string message = $"地图已保存到: {System.IO.Path.GetFileName(path)}";
-                    Sango.Log.Info(message);
-                    autoSave.ShowSaveNotification(message);
-                }
-            }
+            //if (GUILayout.Button("保存地图", GUILayout.ExpandWidth(true)))
+            //{
+            //    string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
+            //    if (path != null)
+            //    {
+            //        lastSavedPath = path;
+            //        map.SaveMap(path);
+            //        // 保存底图
+            //        SaveBaseMap(path);
+            //        string message = $"地图已保存到: {System.IO.Path.GetFileName(path)}";
+            //        Sango.Log.Info(message);
+            //        autoSave.ShowSaveNotification(message);
+            //    }
+            //}
 
-            if (GUILayout.Button("放大2倍保存", GUILayout.ExpandWidth(true)))
-            {
-                string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
-                if (path != null)
-                {
-                    map.SaveScaleMap(path, 2);
-                }
-            }
-            GUILayout.EndHorizontal();
+            //if (GUILayout.Button("放大2倍保存", GUILayout.ExpandWidth(true)))
+            //{
+            //    string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
+            //    if (path != null)
+            //    {
+            //        map.SaveScaleMap(path, 2);
+            //    }
+            //}
+            //GUILayout.EndHorizontal();
 
-            GUILayout.Space(15);
+            //GUILayout.Space(15);
 
             // 编辑模式切换
             Color lastColor = GUI.backgroundColor;
@@ -622,7 +622,11 @@ namespace Sango.Tools
                     brush.Clear();
                 currentEditMode = editMode;
                 brush = CheckBrush();
-                if (brush == null) return;
+                if (brush == null)
+                {
+                    editorContentWindow.visible = false;
+                    return;
+                }
                 brush.OnEnter();
                 SetModelSelectionMod(currentEditMode == (int)EditorModType.Model);
                 editorContentWindow.visible = true;
@@ -630,21 +634,21 @@ namespace Sango.Tools
             GUI.backgroundColor = lastColor;
 
             // 操作历史按钮
-            GUILayout.Space(10);
-            if (GUILayout.Button("操作历史", GUILayout.Height(30)))
-            {
-                operationHistoryWindow.ToggleWindow();
-            }
+            //GUILayout.Space(10);
+            //if (GUILayout.Button("操作历史", GUILayout.Height(30)))
+            //{
+            //    operationHistoryWindow.ToggleWindow();
+            //}
 
-            // 布局管理按钮
-            GUILayout.Space(10);
-            if (GUILayout.Button("保存布局", GUILayout.Height(30)))
-            {
-                layoutManager.SaveLayout();
-                string message = "布局已保存";
-                Sango.Log.Info(message);
-                autoSave.ShowSaveNotification(message);
-            }
+            //// 布局管理按钮
+            //GUILayout.Space(10);
+            //if (GUILayout.Button("保存布局", GUILayout.Height(30)))
+            //{
+            //    layoutManager.SaveLayout();
+            //    string message = "布局已保存";
+            //    Sango.Log.Info(message);
+            //    autoSave.ShowSaveNotification(message);
+            //}
 
             // 快捷键提示
             GUILayout.Space(10);
@@ -719,7 +723,7 @@ namespace Sango.Tools
             switch (currentEditMode)
             {
                 case 0:
-                    OnGUI_Base();
+                    //OnGUI_Base();
                     break;
                 case 1:
                     OnGUI_Edit_Terrain();

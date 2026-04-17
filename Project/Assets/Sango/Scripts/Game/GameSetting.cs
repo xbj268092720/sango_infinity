@@ -433,7 +433,7 @@ namespace Sango.Core
         public void SetFullScreen(bool isFullScreen)
         {
             IsFullScreen = isFullScreen;
-            ApplyResolution();
+            Screen.fullScreen = IsFullScreen;
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace Sango.Core
         public void ToggleFullScreen()
         {
             IsFullScreen = !IsFullScreen;
-            ApplyResolution();
+            Screen.fullScreen = IsFullScreen;
         }
 #endregion
 
