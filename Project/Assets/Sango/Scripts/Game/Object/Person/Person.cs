@@ -1232,10 +1232,11 @@ namespace Sango.Core
             BelongTroop = null;
         }
 
-        public Person BeCaptive(City city)
+        public Person BeCaptive(City city, bool breakCircal = false)
         {
             Official = Scenario.Cur.CommonData.Officials.Get(0);
-            city.AddCaptive(this);
+            if(!breakCircal)
+                city.AddCaptive(this, true);
 #if SANGO_DEBUG
             Sango.Log.Info($"@人才@[{Name}]被<{city.BelongForce.Name}>俘虏至{city.Name}");
 #endif

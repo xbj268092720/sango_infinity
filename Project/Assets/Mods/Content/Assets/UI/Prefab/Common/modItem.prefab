@@ -314,7 +314,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8253797014870742453}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7643481032982129549}
+        m_TargetAssemblyTypeName: Sango.UI.UIModItem, Assembly-CSharp
+        m_MethodName: OnClickUp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4602352376368913776
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +447,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 957074033562576225}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7643481032982129549}
+        m_TargetAssemblyTypeName: Sango.UI.UIModItem, Assembly-CSharp
+        m_MethodName: OnClickDown
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5593131779243610017
 GameObject:
   m_ObjectHideFlags: 0
@@ -933,6 +957,8 @@ MonoBehaviour:
   pressImg: {fileID: 8695348464636844075}
   overImg: {fileID: 2763434226669551749}
   targetIndex: 0
+  upButton: {fileID: 2987889819099417849}
+  downButton: {fileID: 4578239758673945200}
 --- !u!1001 &5354051726718386829
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -28,8 +28,9 @@ using Sango.Core; namespace Sango.UI
         protected int selectedIndex = 0;
 
 
+
         List<Mod.Mod> allMods = new List<Mod.Mod>();
-        List<string> enabledMods = new List<string>();
+        List<Mod.Mod> enabledMods = new List<Mod.Mod>();
 
         protected override void Awake()
         {
@@ -76,7 +77,15 @@ using Sango.Core; namespace Sango.UI
             string[] enabledModNames = ModManager.Instance.LoadModList();
             if (enabledModNames != null)
             {
-                enabledMods.AddRange(enabledModNames);
+                for(int i = 0; i < enabledModNames.Length;i++)
+                {
+                    string modName = enabledModNames[i];
+                    Mod.Mod mod = allMods.Find(x => x.Id == modName);
+                    if (mod != null)
+                    {
+                        enabledMods.Add(mod);
+                    }
+                }
             }
         }
 
@@ -105,15 +114,69 @@ using Sango.Core; namespace Sango.UI
             Mod.Mod mod = allMods[index];
             if (isEnabled)
             {
-                if (!enabledMods.Contains(mod.Id))
+                if (!enabledMods.Contains(mod))
                 {
-                    enabledMods.Add(mod.Id);
+                    enabledMods.Add(mod);
                 }
             }
             else
             {
-                enabledMods.Remove(mod.Id);
+                enabledMods.Remove(mod);
             }
+            SortMod();
+            UpdateItemStartIndex(startIndex);
+        }
+
+        void SortMod()
+        {
+            List<Mod.Mod> mods = new List<Mod.Mod> (enabledMods);
+            for(int i = 0; i < allMods.Count; i++)
+            {
+                Mod.Mod dest = allMods[i];
+                if(!enabledMods.Contains (dest))
+                    mods.Add(dest);
+            }
+            allMods = mods;
+        }
+
+
+        public void OnModUp(int index)
+        {
+            Mod.Mod mod = allMods[index];
+            int i = 0;
+            for(int j = 1; j < enabledMods.Count; j++)
+            {
+                if (enabledMods[j] == mod)
+                {
+                    Mod.Mod temp = enabledMods[i];
+                    enabledMods[i] = mod;
+                    enabledMods[j] = temp;
+                }
+                else
+                    i++;
+            }
+            SortMod();
+            UpdateItemStartIndex(startIndex);
+        }
+
+        public void OnModDown(int index)
+        {
+            Mod.Mod mod = allMods[index];
+            int i = 1;
+            for (int j = 0; j < enabledMods.Count - 1; j++)
+            {
+                if (enabledMods[j] == mod)
+                {
+                    Mod.Mod temp = enabledMods[i];
+                    enabledMods[i] = mod;
+                    enabledMods[j] = temp;
+                }
+                else
+                    i++;
+            }
+
+            SortMod();
+            UpdateItemStartIndex(startIndex);
         }
 
         public void ShowModInfo(int index)
@@ -138,7 +201,7 @@ using Sango.Core; namespace Sango.UI
             {
                     modPosterImg.enabled = true;
                 string posterPath = mod.GetFullPath(mod.Poster);
-                modPosterImg.texture = Loader.ObjectLoader.LoadObject<Texture>(posterPath, true, false);
+                modPosterImg.texture = Loader.ObjectLoader.LoadObject<Texture>(posterPath, false, false);
             }
         }
 
@@ -150,15 +213,17 @@ using Sango.Core; namespace Sango.UI
 
         public void OnApply()
         {
+
+
             // 保存MOD列表
             ModManager.Instance.SaveModList(enabledMods.ToArray());
-            // 重新初始化MOD
-            ModManager.Instance.InitMods(enabledMods.ToArray());
+            //// 重新初始化MOD
+            //ModManager.Instance.InitMods(enabledMods.ToArray());
             // 显示提示，需要重启游戏才能生效
             GameDialog.Open("修改MOD后需要重启游戏才能生效，点击确定重启游戏。", () =>
             {
                 // 重启游戏
-                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+                Application.Quit();
             });
         }
 
@@ -170,6 +235,7 @@ using Sango.Core; namespace Sango.UI
 
         public void UpdateItemStartIndex(int startIndex)
         {
+            int enabledCount = enabledMods.Count;
             for (int i = 0; i < itemCount; i++)
             {
                 UIModItem listItem = uIModItems[i];
@@ -178,7 +244,10 @@ using Sango.Core; namespace Sango.UI
                 if (destIndex < totalCount)
                 {
                     Mod.Mod mod = allMods[destIndex];
-                    listItem.SetSelected(selectedIndex == destIndex).SetEnabled(enabledMods.Contains(mod.Id)).SetName(mod.Name).SetVersion(mod.Version).enableToggle.gameObject.SetActive(true);
+                    listItem.SetSelected(selectedIndex == destIndex).SetEnabled(destIndex < enabledCount).SetName(mod.Name).SetVersion(mod.Version).enableToggle.gameObject.SetActive(true);
+                    listItem.BindToggleCall(OnToggleMod);
+                    listItem.onUpCall = OnModUp;
+                    listItem.onDownCall = OnModDown;
                 }
                 else
                 {

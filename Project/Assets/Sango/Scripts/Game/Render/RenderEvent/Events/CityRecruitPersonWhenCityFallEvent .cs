@@ -42,17 +42,6 @@ namespace Sango.Render
                     }
                     else
                     {
-                        person.BelongCity.RemovePerson(person);
-                        if (recruitType == 2)
-                        {
-                            person.BelongCorps = null;
-                            person.BelongForce = null;
-                        }
-                        else
-                        {
-                            escapeCity.AddPerson(person);
-                            person.ChangeBelongCity(escapeCity);
-                        }
                         person.BeCaptive(targetCity);
                     }
                 }

@@ -35,7 +35,7 @@ namespace Sango.Core
 
             bool target_is_returnable = target.BelongForce != null;
             //目标武将势力消灭
-            if (type == 2)
+            if (type == (int)PersonRecruitType.OnForceFall)
                 target_is_returnable = false;
 
             //执行武将沒有君主时总是失敗
@@ -169,7 +169,7 @@ namespace Sango.Core
                 return p;
 
             int loyalty = target.loyalty;
-            if (type == 0)
+            if (type == (int)PersonRecruitType.Normal)
             {
                 // 普通招募武将
                 loyalty = target.IsWild ? 0 : target.loyalty;
@@ -183,13 +183,13 @@ namespace Sango.Core
 
             Person actorGovernor = actor.BelongForce.Governor;
             Person targetGovernor = null;
-            if (target.BelongForce != null && type != 2)
+            if (target.BelongForce != null && type != (int)PersonRecruitType.OnForceFall)
                 targetGovernor = target.BelongForce.Governor;
 
             ScenarioVariables variables = Scenario.Cur.Variables;
             int aishou = variables.recruitBaseCompatibility;
             //目标武将在野或是已灭亡势力的俘虏
-            if (target.IsWild || type == 2)
+            if (target.IsWild || type == (int)PersonRecruitType.OnForceFall)
             {
                 loyalty = variables.recruitWildLoyaltyBase + Scenario.Cur.Variables.difficulty * variables.recruitLoyaltyDifficultyFactor;
                 if (!target.IsPrisoner)

@@ -1,0 +1,6 @@
+id=fix_critical_image
+name=暴击图补完
+description=补完三国志11的暴击图
+version=1.0
+depends=
+poster=poster.jpeg

@@ -15,10 +15,10 @@ namespace Sango.Core
         public int result = 0;
         public System.Action<PersonRecruit> doneAction;
 
-        public void Start(Person recruitor, Person target, int recruitType, int limit, System.Action<PersonRecruit> doneAction)
+        public void Start(Person recruitor, Person target, int recruitType, int tryLimit, System.Action<PersonRecruit> doneAction)
         {
             result = 0;
-            tryLimit = limit;
+            this.tryLimit = tryLimit;
             this.recruitor = recruitor;
             this.fallCity = null;
             this.atker = null;
@@ -28,10 +28,10 @@ namespace Sango.Core
             Push();
         }
 
-        public void Start(City fallCity, Troop atker, Person target, int recruitType, int limit, System.Action<PersonRecruit> doneAction)
+        public void Start(City fallCity, Troop atker, Person target, int recruitType, int tryLimit, System.Action<PersonRecruit> doneAction)
         {
             result = 0;
-            tryLimit = limit;
+            this.tryLimit = tryLimit;
             this.recruitor = atker.BelongForce.Governor;
             this.fallCity = fallCity;
             this.atker = atker;
@@ -41,10 +41,10 @@ namespace Sango.Core
             Push();
         }
 
-        public void Start(Troop atker, Person target, int recruitType, int limit, System.Action<PersonRecruit> doneAction)
+        public void Start(Troop atker, Person target, int recruitType, int tryLimit, System.Action<PersonRecruit> doneAction)
         {
             result = 0;
-            tryLimit = limit;
+            this.tryLimit = tryLimit;
             this.recruitor = atker.BelongForce.Governor;
             this.fallCity = null;
             this.atker = atker;
@@ -141,7 +141,7 @@ namespace Sango.Core
         {
             result = 2;
             Force releaseForce = atker?.BelongForce ?? fallCity?.BelongForce;
-            target.Escape(EscapeType.Released);
+            target.SetMission(MissionType.PersonReturn, target.BelongCity);
             GameEvent.OnPersonRelease?.Invoke(target, releaseForce);
             Done();
             doneAction?.Invoke(this);

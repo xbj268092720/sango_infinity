@@ -35,10 +35,18 @@ namespace Sango.Render
             if (IsVisible())
             {
                 troop.Render.SetSmokeShow(true);
+                // 打开暴击窗口
+                if(troop.IsPlayer)
+                {
+                    Sango.Window.Instance.Open("window_skill_crit", this);
+                }
             }
 
-            // 打开暴击窗口
-            Sango.Window.Instance.Open("window_skill_crit", this);
+            if(!troop.IsPlayer)
+            {
+                if (skill.costEnergy > 0)
+                    troop.Render.ShowSkill(skill, false, true);
+            }
         }
 
         public override void Exit(Scenario scenario)
@@ -64,19 +72,22 @@ namespace Sango.Render
                 IsDone = true;
                 return IsDone;
             }
-            
+
             // 处理暴击窗口显示
-            if (!isCritWindowShown)
+            if (troop.IsPlayer)
             {
-                critWindowTime += deltaTime;
-                if (critWindowTime >= 1f)
+                if (!isCritWindowShown)
                 {
-                    isCritWindowShown = true;
-                   
-                    if (skill.costEnergy > 0)
-                        troop.Render.ShowSkill(skill, false, true);
+                    critWindowTime += deltaTime;
+                    if (critWindowTime >= 1f)
+                    {
+                        isCritWindowShown = true;
+
+                        if (skill.costEnergy > 0)
+                            troop.Render.ShowSkill(skill, false, true);
+                    }
+                    return IsDone;
                 }
-                return IsDone;
             }
             
             IsDone = skill.UpdateRender(troop, spellCell, scenario, time, Action);

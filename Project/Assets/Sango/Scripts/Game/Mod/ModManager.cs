@@ -153,6 +153,19 @@ namespace Sango.Mod
             File.WriteAllText(list_path, string.Join("\n", list));
         }
 
+        public void SaveModList(Mod[] mod_list)
+        {
+            string list_path = $"{MOD_ROOT_DIR}/modList.txt";
+            if (File.Exists(list_path))
+                File.Delete(list_path);
+            List<string> list = new List<string>();
+            for (int i = 0; i < mod_list.Length; i++)
+                list.Add(mod_list[i].Id);
+            foreach (string s in DEFAULT_MODS)
+                list.Remove(s);
+            File.WriteAllText(list_path, string.Join("\n", list));
+        }
+
         public void InitMods()
         {
             InitMods(null);

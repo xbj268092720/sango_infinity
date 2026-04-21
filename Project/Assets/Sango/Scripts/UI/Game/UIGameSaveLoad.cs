@@ -310,7 +310,7 @@ namespace Sango.UI
             int i = 0;
             foreach (var city in scenario.citySet.Values)
             {
-                if (city.BuildingType > 1) return false;
+                if (city.BuildingType > 1) continue;
                 if (city.Id == 0) continue;
 
                 GameObject cityObj;

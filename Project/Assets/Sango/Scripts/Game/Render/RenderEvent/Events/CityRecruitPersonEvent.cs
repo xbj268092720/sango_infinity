@@ -42,13 +42,13 @@ namespace Sango.Render
             InitJobFeature(person);
             if (!person.BelongCorps.IsPlayer)
             {
-                person.JobRecruitPerson(target, 0);
+                person.JobRecruitPerson(target, (int)PersonRecruitType.Normal);
                 IsDone = true;
                 ClearJobFeature();
                 return;
             }
 
-            if (person.JobRecruitPerson(target, 0))
+            if (person.JobRecruitPerson(target, (int)PersonRecruitType.Normal))
             {
                 GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"成功招募了{target.ColorName}", () =>
                 {

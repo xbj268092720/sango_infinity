@@ -344,4 +344,26 @@ namespace Sango.Core
         Security
     }
 
+    public enum PersonRecruitType
+    {
+        /// <summary>
+        /// 普通登庸
+        /// </summary>
+        Normal = 0,
+
+        /// <summary>
+        /// 有势力的俘虏
+        /// </summary>
+        OnCityFall = 1, //
+
+        /// <summary>
+        /// 没有势力的俘虏
+        /// </summary>
+        OnForceFall = 2,
+        
+        /// <summary>
+        /// 搜索人才
+        /// </summary>
+        OnSearching = 3, // 搜索人才
+    }
 }

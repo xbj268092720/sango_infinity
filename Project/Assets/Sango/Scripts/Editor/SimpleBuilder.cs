@@ -53,6 +53,13 @@ public class SimpleBuilder
     
     private static void BuildWindows(bool isDevelopment)
     {
+
+        string winPackagePath = System.IO.Path.Combine(Sango.Path.ContentRootPath, "Package", "android");
+        if (System.IO.Directory.Exists(winPackagePath))
+        {
+            System.IO.Directory.Delete(winPackagePath, true);
+        }
+
         string buildPath = Sango.Path.SaveRootPath;
         string[] scenes = EditorBuildSettings.scenes
             .Where(scene => scene.enabled)
@@ -121,14 +128,15 @@ public class SimpleBuilder
     
     private static void BuildAndroid(bool isDevelopment)
     {
-        Platform.ZipContentToStreamingAssets();
         
         string winPackagePath = System.IO.Path.Combine(Sango.Path.ContentRootPath, "Package", "win");
         if (System.IO.Directory.Exists(winPackagePath))
         {
             System.IO.Directory.Delete(winPackagePath, true);
         }
-        
+
+        Platform.ZipContentToStreamingAssets();
+
         string version = Application.version;
         string buildType = isDevelopment ? "_dev" : "_release";
         string productName = Application.productName;

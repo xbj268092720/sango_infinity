@@ -47,7 +47,6 @@ namespace Sango.UI
             // 设置暴击图
             if (critImage != null && _criticalEvent.troop != null && _criticalEvent.troop.Leader != null)
             {
-                Sango.Log.Error(_criticalEvent.troop.Leader.headIconID);
                 // 使用部队首领的 imageID 加载对应的暴击图
                 critImage.texture = Sango.Core.GameRenderHelper.LoadCriticalImage(_criticalEvent.troop.Leader.headIconID);
                 critImage.SetNativeSize();

@@ -44,7 +44,7 @@ namespace Sango.Render
 
             if (!city.BelongCorps.IsPlayer)
             {
-                person.JobRecruitPerson(target, 3);
+                person.JobRecruitPerson(target, (int)PersonRecruitType.OnSearching);
                 IsDone = true;
                 return;
             }

@@ -18,7 +18,21 @@ using Sango.Core; namespace Sango.UI
 
         public int targetIndex;
         private System.Action onClickCall;
-        private System.Action<bool> onToggleCall;
+        private System.Action<int, bool> onToggleCall;
+        public System.Action<int> onUpCall;
+        public System.Action<int> onDownCall;
+
+        public Button upButton;
+        public Button downButton;
+
+        public void OnClickUp()
+        {
+            onUpCall?.Invoke(targetIndex);
+        }
+        public void OnClickDown()
+        {
+            onDownCall?.Invoke(targetIndex);
+        }
 
         public UIModItem SetName(string name)
         {
@@ -44,6 +58,14 @@ using Sango.Core; namespace Sango.UI
             {
                 enableToggle.isOn = enabled;
             }
+            if (upButton != null)
+            {
+                upButton.gameObject.SetActive(false);
+            }
+            if (downButton != null)
+            {
+                downButton.gameObject.SetActive(false);
+            }
             return this;
         }
 
@@ -53,6 +75,7 @@ using Sango.Core; namespace Sango.UI
             {
                 selectedImage.gameObject.SetActive(selected);
             }
+
             return this;
         }
 
@@ -61,13 +84,13 @@ using Sango.Core; namespace Sango.UI
             onClickCall = call;
         }
 
-        public void BindToggleCall(System.Action<bool> call)
+        public void BindToggleCall(System.Action<int, bool> call)
         {
             onToggleCall = call;
             if (enableToggle != null)
             {
                 enableToggle.onValueChanged.RemoveAllListeners();
-                enableToggle.onValueChanged.AddListener((value) => { onToggleCall?.Invoke(value); });
+                enableToggle.onValueChanged.AddListener((value) => { onToggleCall?.Invoke(targetIndex, value); });
             }
         }
 
@@ -83,6 +106,30 @@ using Sango.Core; namespace Sango.UI
         public void SetOver(bool b)
         {
             overImg.enabled = b;
+
+
+            if (enableToggle != null && enableToggle.isOn == true)
+            {
+                if (upButton != null)
+                {
+                    upButton.gameObject.SetActive(b);
+                }
+                if (downButton != null)
+                {
+                    downButton.gameObject.SetActive(b);
+                }
+            }
+            else
+            {
+                if (upButton != null)
+                {
+                    upButton.gameObject.SetActive(false);
+                }
+                if (downButton != null)
+                {
+                    downButton.gameObject.SetActive(false);
+                }
+            }
         }
     }
 }
