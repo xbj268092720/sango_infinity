@@ -244,9 +244,9 @@ namespace Sango.Render
             pos.y = mapGrid.GetGridHeight(c, r);
             return pos;
         }
-        public Vector2Int PositionToCoords(float x, float y)
+        public Vector2Int PositionToCoords(float x, float z)
         {
-            return mapGrid.PositionToCoords(x, y);
+            return mapGrid.PositionToCoords(x, z);
         }
 
         private int _curSeason = 0;

@@ -223,6 +223,7 @@ namespace Sango.Tools
                     
                     if (editor.scenario != null && !string.IsNullOrEmpty(editor.scenario.FilePath))
                     {
+                        editor.CorrectCityPositions();
                         editor.scenario.Export(editor.scenario.FilePath);
                         Sango.Log.Info("剧本数据已同步保存");
                     }

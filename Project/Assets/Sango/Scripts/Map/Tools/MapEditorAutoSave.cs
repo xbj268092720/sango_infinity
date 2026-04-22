@@ -59,6 +59,7 @@ namespace Sango.Tools
                 
                 if (editor.scenario != null && !string.IsNullOrEmpty(editor.scenario.FilePath))
                 {
+                    editor.CorrectCityPositions();
                     editor.scenario.Export(editor.scenario.FilePath);
                     Sango.Log.Info("剧本数据已同步保存");
                 }
@@ -78,6 +79,7 @@ namespace Sango.Tools
                     
                     if (editor.scenario != null && !string.IsNullOrEmpty(editor.scenario.FilePath))
                     {
+                        editor.CorrectCityPositions();
                         editor.scenario.Export(editor.scenario.FilePath);
                         Sango.Log.Info("剧本数据已同步保存");
                     }
@@ -113,6 +115,7 @@ namespace Sango.Tools
                 
                 if (editor.scenario != null)
                 {
+                    editor.CorrectCityPositions();
                     string scenarioAutoSavePath = System.IO.Path.Combine(autoSaveDirectory, $"{fileName}_auto_save_{timestamp}.json");
                     editor.scenario.Export(scenarioAutoSavePath);
                     Sango.Log.Info("剧本数据已同步自动保存");
