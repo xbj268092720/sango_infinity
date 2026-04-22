@@ -7,7 +7,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     /// <summary>
     /// 剧本势力选择界面
@@ -347,9 +348,12 @@ using Sango.Core; namespace Sango.UI
                         ShortPerson person = ShortScenario.CurSelected.personSet[playerList[j].Governor];
                         ShortCity city = ShortScenario.CurSelected.citySet[person.BelongCity];
                         Vector3 position = ShortScenario.CurSelected.Map.Coords2Position(city.x, city.y);
-                        Scenario.CurSelected.Info.cameraPosition = position;
-                        Scenario.CurSelected.Info.cameraRotation = new Vector3(40f, -50f, 0f);
-                        Scenario.CurSelected.Info.cameraDistance = 400f;
+                        Scenario.CurSelected.View = new ScenarioView()
+                        {
+                            cameraPosition = position,
+                            cameraRotation = new Vector3(40f, -50f, 0f),
+                            cameraDistance = 400f
+                        };
                         isFind = true;
                         break;
                     }
@@ -367,9 +371,12 @@ using Sango.Core; namespace Sango.UI
                         ShortPerson person = ShortScenario.CurSelected.personSet[force.Governor];
                         ShortCity city = ShortScenario.CurSelected.citySet[person.BelongCity];
                         Vector3 position = ShortScenario.CurSelected.Map.Coords2Position(city.x, city.y);
-                        Scenario.CurSelected.Info.cameraPosition = position;
-                        Scenario.CurSelected.Info.cameraRotation = new Vector3(40f, -50f, 0f);
-                        Scenario.CurSelected.Info.cameraDistance = 400f;
+                        Scenario.CurSelected.View = new ScenarioView()
+                        {
+                            cameraPosition = position,
+                            cameraRotation = new Vector3(40f, -50f, 0f),
+                            cameraDistance = 400f
+                        };
                         break;
                     }
                 }

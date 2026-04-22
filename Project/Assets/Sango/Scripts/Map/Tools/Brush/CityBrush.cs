@@ -1,0 +1,664 @@
+using Sango.Core;
+using Sango.Render;
+using Sango.Tools.UndoRedo;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Sango.Tools
+{
+    public class CityBrush : BrushBase
+    {
+
+        public class CityNeighborEditCommand : IUndoableCommand
+        {
+            private MapEditor editor;
+            private City city1;
+            private City city2;
+            private bool isAdd;
+            private string actionName;
+
+            public CityNeighborEditCommand(MapEditor editor, City city1, City city2, bool isAdd, string actionName)
+            {
+                this.editor = editor;
+                this.city1 = city1;
+                this.city2 = city2;
+                this.isAdd = isAdd;
+                this.actionName = actionName;
+            }
+
+            public string Description
+            {
+                get { return actionName; }
+            }
+
+            public void Execute()
+            {
+                if (isAdd)
+                {
+                    if (!city1.NeighborList.Contains(city2))
+                        city1.NeighborList.Add(city2);
+                    if (!city2.NeighborList.Contains(city1))
+                        city2.NeighborList.Add(city1);
+                }
+                else
+                {
+                    city1.NeighborList.Remove(city2);
+                    city2.NeighborList.Remove(city1);
+                }
+            }
+
+            public void Undo()
+            {
+                if (!isAdd)
+                {
+                    if (!city1.NeighborList.Contains(city2))
+                        city1.NeighborList.Add(city2);
+                    if (!city2.NeighborList.Contains(city1))
+                        city2.NeighborList.Add(city1);
+                }
+                else
+                {
+                    city1.NeighborList.Remove(city2);
+                    city2.NeighborList.Remove(city1);
+                }
+            }
+
+            public void Redo()
+            {
+                Execute();
+            }
+
+            public void Destroy()
+            {
+                // 清理资源
+            }
+        }
+
+        private City selectedCity = null;
+        private City hoverCity = null;
+        private bool showCityLines = false;
+        private bool isConnecting = false;
+        private City connectStartCity = null;
+        private List<GameObject> lineRenderers = new List<GameObject>();
+        private CityPropertyEditorWindow propertyEditorWindow = null;
+        private string connectHint = "";
+
+        public CityBrush(MapEditor e) : base(e)
+        {
+        }
+
+        public override void OnBrushTypeChange()
+        {
+            ClearLineRenderers();
+        }
+
+        public override void OnSeasonChanged(int curSeason)
+        {
+        }
+
+        public override void Clear()
+        {
+            if (selectedCity != null && selectedCity.Render != null)
+            {
+                selectedCity.Render.SetFlash(false);
+            }
+            selectedCity = null;
+            hoverCity = null;
+            isConnecting = false;
+            connectStartCity = null;
+            ClearLineRenderers();
+            ClosePropertyEditorWindow();
+        }
+
+        /// <summary>
+        /// 关闭属性编辑器窗口
+        /// </summary>
+        private void ClosePropertyEditorWindow()
+        {
+            if (propertyEditorWindow != null)
+            {
+                propertyEditorWindow.visible = false;
+                EditorWindow.RemoveWindow(propertyEditorWindow);
+                propertyEditorWindow = null;
+            }
+        }
+
+        public override void Modify(Vector3 center, MapEditor editor)
+        {
+            // 处理城市选择
+            City city = GetCityAtPosition(center);
+            if (city != null)
+            {
+                if (isConnecting && connectStartCity != null)
+                {
+                    // 处理城市连接
+                    if (connectStartCity != city)
+                    {
+                        bool isNeighbor = connectStartCity.NeighborList.Contains(city);
+                        if (!isNeighbor)
+                        {
+                            // 添加邻接关系
+                            CityNeighborEditCommand command = new CityNeighborEditCommand(editor, connectStartCity, city, true, $"添加邻接城市: {connectStartCity.Name} - {city.Name}");
+                            editor.undoRedoManager.AddCommand(command, true);
+                            connectHint = $"添加邻接城市: {connectStartCity.Name} - {city.Name}";
+                            Sango.Log.Info($"添加邻接城市: {connectStartCity.Name} - {city.Name}");
+                            // 添加邻接城市后刷新linerenderer的展示
+                            if (showCityLines)
+                            {
+                                CreateLineRenderers();
+                            }
+                        }
+                        else
+                        {
+                            connectHint = $"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市";
+                            Sango.Log.Warning($"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市");
+                        }
+                    }
+                    isConnecting = false;
+                    connectStartCity = null;
+                }
+                else
+                {
+                    // 选择城市
+                    if (selectedCity != null && selectedCity.Render != null)
+                    {
+                        selectedCity.Render.SetFlash(false);
+                    }
+                    selectedCity = city;
+                    if (selectedCity != null && selectedCity.Render != null)
+                    {
+                        selectedCity.Render.SetFlash(true);
+                    }
+                    Sango.Log.Info($"选中城市: {city.Name}");
+                }
+            }
+        }
+
+        public override void OnGUI()
+        {
+            GUILayout.Label("城池编辑");
+            GUILayout.Space(10);
+
+            // 显示城市线路开关
+            showCityLines = GUILayout.Toggle(showCityLines, "显示城市线路");
+            if (showCityLines != (lineRenderers.Count > 0))
+            {
+                if (showCityLines)
+                {
+                    CreateLineRenderers();
+                }
+                else
+                {
+                    ClearLineRenderers();
+                }
+            }
+            GUILayout.Space(10);
+
+            // 城市属性编辑按钮
+            if (selectedCity != null)
+            {
+                GUILayout.Label($"当前选中城市: {selectedCity.Name}");
+                GUILayout.Space(10);
+
+                // 连接城市按钮（只在选中城市时展示）
+                if (GUILayout.Button("连接城市"))
+                {
+                    isConnecting = true;
+                    connectStartCity = selectedCity;
+                    connectHint = $"开始连接城市，选择起始城市: {selectedCity.Name}";
+                    Sango.Log.Info($"开始连接城市，选择起始城市: {selectedCity.Name}");
+                }
+                
+                // 显示连接提示
+                if (!string.IsNullOrEmpty(connectHint))
+                {
+                    GUILayout.Space(5);
+                    GUILayout.Label(connectHint, new GUIStyle(GUI.skin.label) { fontSize = 12, normal = new GUIStyleState() { textColor = Color.yellow } });
+                }
+                
+                GUILayout.Space(10);
+
+                if (GUILayout.Button("编辑城市属性"))
+                {
+                    OpenPropertyEditorWindow();
+                }
+
+                // 显示邻接城市
+                GUILayout.Label("邻接城市:");
+                for (int i = 0; i < selectedCity.NeighborList.Count; i++)
+                {
+                    City neighbor = selectedCity.NeighborList[i];
+                    if (neighbor != null)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label(neighbor.Name);
+                        if (GUILayout.Button("移除"))
+                        {
+                            CityNeighborEditCommand command = new CityNeighborEditCommand(editor, selectedCity, neighbor, false, $"移除邻接城市: {selectedCity.Name} - {neighbor.Name}");
+                            editor.undoRedoManager.AddCommand(command, true);
+                            Sango.Log.Info($"移除邻接城市: {selectedCity.Name} - {neighbor.Name}");
+                            // 移除邻接城市后刷新linerenderer的展示
+                            if (showCityLines)
+                            {
+                                CreateLineRenderers();
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                }
+            }
+            else
+            {
+                GUILayout.Label("请选择一个城市");
+            }
+        }
+
+        /// <summary>
+        /// 打开属性编辑窗口
+        /// </summary>
+        private void OpenPropertyEditorWindow()
+        {
+            if (propertyEditorWindow == null)
+            {
+                propertyEditorWindow = EditorWindow.AddWindow<CityPropertyEditorWindow>(1102, new UnityEngine.Rect(0, 0, 400, 600), null, "城市属性编辑") as CityPropertyEditorWindow;
+                propertyEditorWindow.Initialize(editor, selectedCity);
+            }
+            else
+            {
+                propertyEditorWindow.SetCity(selectedCity);
+                propertyEditorWindow.visible = true;
+            }
+        }
+
+        public override void OnEnter()
+        {
+            if (showCityLines)
+            {
+                CreateLineRenderers();
+            }
+        }
+
+        public override void DrawGizmos(Vector3 center)
+        {
+            // 显示鼠标悬停的城市
+            City city = GetCityAtPosition(center);
+            if (city != hoverCity)
+            {
+                hoverCity = city;
+            }
+
+            // 绘制连接预览
+            if (isConnecting && connectStartCity != null && hoverCity != null && hoverCity != connectStartCity)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(connectStartCity.Render.MapObject.transform.position, hoverCity.Render.MapObject.transform.position);
+            }
+        }
+
+        public override void Update()
+        {
+            // 更新城市线路
+            if (showCityLines && lineRenderers.Count > 0)
+            {
+                UpdateLineRenderers();
+            }
+
+            // 处理鼠标右键点击 - 取消连接操作
+            if (isConnecting && Input.GetMouseButtonDown(1))
+            {
+                isConnecting = false;
+                connectStartCity = null;
+                connectHint = "连接操作已取消";
+                Sango.Log.Info("连接操作已取消");
+            }
+
+            // 处理鼠标左键点击
+            if (!IsPointerOverUI() && Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastObjectLayer))
+                {
+                    Modify(hit.point, editor);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 编辑城市属性（int类型）
+        /// </summary>
+        private void EditCityProperty(string name, ref int value, int min, int max)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(100));
+            string newValueStr = GUILayout.TextField(value.ToString(), GUILayout.Width(100));
+            if (int.TryParse(newValueStr, out int newValue) && newValue != value)
+            {
+                newValue = Mathf.Clamp(newValue, min, max);
+                CityEditCommand command = new CityEditCommand(editor, selectedCity, name.ToLower(), value, newValue, $"修改城市{name}: {value} -> {newValue}");
+                editor.undoRedoManager.AddCommand(command, true);
+                value = newValue;
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// 编辑城市属性（float类型）
+        /// </summary>
+        private void EditCityProperty(string name, ref float value, float min, float max)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(100));
+            string newValueStr = GUILayout.TextField(value.ToString(), GUILayout.Width(100));
+            if (float.TryParse(newValueStr, out float newValue) && newValue != value)
+            {
+                newValue = Mathf.Clamp(newValue, min, max);
+                CityEditCommand command = new CityEditCommand(editor, selectedCity, name.ToLower(), value, newValue, $"修改城市{name}: {value} -> {newValue}");
+                editor.undoRedoManager.AddCommand(command, true);
+                value = newValue;
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// 编辑城市属性（byte类型）
+        /// </summary>
+        private void EditCityProperty(string name, ref byte value, int min, int max)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(100));
+            string newValueStr = GUILayout.TextField(value.ToString(), GUILayout.Width(100));
+            if (int.TryParse(newValueStr, out int newValue) && newValue != value)
+            {
+                newValue = Mathf.Clamp(newValue, min, max);
+                CityEditCommand command = new CityEditCommand(editor, selectedCity, name.ToLower(), value, (byte)newValue, $"修改城市{name}: {value} -> {newValue}");
+                editor.undoRedoManager.AddCommand(command, true);
+                value = (byte)newValue;
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// 获取指定位置的城市
+        /// </summary>
+        private City GetCityAtPosition(Vector3 position)
+        {
+            if (editor.scenario == null || editor.scenario.citySet == null)
+                return null;
+
+            foreach (City city in editor.scenario.citySet)
+            {
+                if (city != null && city.Render != null && city.Render.MapObject != null)
+                {
+                    Collider collider = city.Render.MapObject.GetComponent<Collider>();
+                    if (collider != null && collider.bounds.Contains(position))
+                    {
+                        return city;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 创建城市之间的线路
+        /// </summary>
+        private void CreateLineRenderers()
+        {
+            ClearLineRenderers();
+
+            if (editor.scenario == null || editor.scenario.citySet == null)
+                return;
+
+            // 定义100个常用颜色
+            Color32[] colorLibrary = new Color32[]
+            {
+                new Color32(255, 0, 0, 255),     // 红色
+                new Color32(0, 0, 255, 255),     // 蓝色
+                new Color32(0, 255, 0, 255),     // 绿色
+                new Color32(255, 255, 0, 255),   // 黄色
+                new Color32(255, 0, 255, 255),   // 洋红色
+                new Color32(0, 255, 255, 255),   // 青色
+                new Color32(255, 165, 0, 255),   // 橙色
+                new Color32(128, 0, 128, 255),   // 紫色
+                new Color32(0, 128, 128, 255),   // 蓝绿色
+                new Color32(128, 128, 0, 255),   // 橄榄色
+                new Color32(128, 0, 0, 255),     // 栗色
+                new Color32(0, 128, 0, 255),     // 深绿色
+                new Color32(0, 0, 128, 255),     // 深蓝色
+                new Color32(192, 192, 192, 255), // 银色
+                new Color32(128, 128, 128, 255), // 灰色
+                new Color32(255, 192, 203, 255), // 粉色
+                new Color32(240, 230, 140, 255), // 卡其色
+                new Color32(143, 188, 143, 255), // 暗海绿色
+                new Color32(70, 130, 180, 255),  // 钢蓝色
+                new Color32(221, 160, 221, 255), // 李子色
+                new Color32(255, 69, 0, 255),    // 橙红色
+                new Color32(255, 215, 0, 255),   // 金色
+                new Color32(0, 250, 154, 255),   // 中春绿色
+                new Color32(138, 43, 226, 255),  // 蓝紫色
+                new Color32(255, 20, 147, 255),  // 深粉色
+                new Color32(0, 191, 255, 255),   // 深天蓝色
+                new Color32(127, 255, 212, 255), // 中绿松石色
+                new Color32(210, 105, 30, 255),  // 巧克力色
+                new Color32(255, 127, 80, 255),  // 珊瑚色
+                new Color32(32, 178, 170, 255),  // 暗青色
+                new Color32(255, 228, 181, 255), // 菊苣色
+                new Color32(0, 255, 127, 255),   // 春绿色
+                new Color32(240, 128, 128, 255), // 浅珊瑚色
+                new Color32(72, 61, 139, 255),   // 暗石板蓝
+                new Color32(100, 149, 237, 255), // 矢车菊蓝
+                new Color32(107, 142, 35, 255),  // 深卡其色
+                new Color32(255, 99, 71, 255),   // 番茄色
+                new Color32(152, 251, 152, 255), // 浅绿色
+                new Color32(135, 206, 235, 255), // 天蓝色
+                new Color32(244, 164, 96, 255),  // 沙褐色
+                new Color32(218, 112, 214, 255), // 兰花色
+                new Color32(189, 183, 107, 255), // 暗金色
+                new Color32(255, 222, 173, 255), // 小麦色
+                new Color32(233, 150, 122, 255), // 深鲑鱼色
+                new Color32(255, 248, 220, 255), // 玉米色
+                new Color32(250, 128, 114, 255), // 鲑鱼色
+                new Color32(211, 211, 211, 255), // 浅灰色
+                new Color32(190, 190, 190, 255), // 亮灰色
+                new Color32(238, 232, 170, 255), // 帕洛米诺色
+                new Color32(173, 255, 47, 255),  // 绿黄色
+                new Color32(255, 218, 185, 255), // 粉珊瑚色
+                new Color32(0, 255, 255, 255),   // 青色
+                new Color32(255, 255, 255, 255), // 白色
+                new Color32(0, 0, 0, 255),       // 黑色
+                new Color32(255, 255, 0, 255),   // 黄色
+                new Color32(255, 0, 255, 255),   // 洋红色
+                new Color32(0, 255, 255, 255),   // 青色
+                new Color32(255, 165, 0, 255),   // 橙色
+                new Color32(128, 0, 128, 255),   // 紫色
+                new Color32(0, 128, 128, 255),   // 蓝绿色
+                new Color32(128, 128, 0, 255),   // 橄榄色
+                new Color32(128, 0, 0, 255),     // 栗色
+                new Color32(0, 128, 0, 255),     // 深绿色
+                new Color32(0, 0, 128, 255),     // 深蓝色
+                new Color32(192, 192, 192, 255), // 银色
+                new Color32(128, 128, 128, 255), // 灰色
+                new Color32(255, 192, 203, 255), // 粉色
+                new Color32(240, 230, 140, 255), // 卡其色
+                new Color32(143, 188, 143, 255), // 暗海绿色
+                new Color32(70, 130, 180, 255),  // 钢蓝色
+                new Color32(221, 160, 221, 255), // 李子色
+                new Color32(255, 69, 0, 255),    // 橙红色
+                new Color32(255, 215, 0, 255),   // 金色
+                new Color32(0, 250, 154, 255),   // 中春绿色
+                new Color32(138, 43, 226, 255),  // 蓝紫色
+                new Color32(255, 20, 147, 255),  // 深粉色
+                new Color32(0, 191, 255, 255),   // 深天蓝色
+                new Color32(127, 255, 212, 255), // 中绿松石色
+                new Color32(210, 105, 30, 255),  // 巧克力色
+                new Color32(255, 127, 80, 255),  // 珊瑚色
+                new Color32(32, 178, 170, 255),  // 暗青色
+                new Color32(255, 228, 181, 255), // 菊苣色
+                new Color32(0, 255, 127, 255),   // 春绿色
+                new Color32(240, 128, 128, 255), // 浅珊瑚色
+                new Color32(72, 61, 139, 255),   // 暗石板蓝
+                new Color32(100, 149, 237, 255), // 矢车菊蓝
+                new Color32(107, 142, 35, 255),  // 深卡其色
+                new Color32(255, 99, 71, 255),   // 番茄色
+                new Color32(152, 251, 152, 255), // 浅绿色
+                new Color32(135, 206, 235, 255), // 天蓝色
+                new Color32(244, 164, 96, 255),  // 沙褐色
+                new Color32(218, 112, 214, 255), // 兰花色
+                new Color32(189, 183, 107, 255), // 暗金色
+                new Color32(255, 222, 173, 255), // 小麦色
+                new Color32(233, 150, 122, 255), // 深鲑鱼色
+                new Color32(255, 248, 220, 255), // 玉米色
+                new Color32(250, 128, 114, 255), // 鲑鱼色
+                new Color32(211, 211, 211, 255), // 浅灰色
+                new Color32(190, 190, 190, 255), // 亮灰色
+                new Color32(238, 232, 170, 255), // 帕洛米诺色
+                new Color32(173, 255, 47, 255),  // 绿黄色
+                new Color32(255, 218, 185, 255), // 粉珊瑚色
+                new Color32(0, 255, 255, 255),   // 青色
+            };
+
+            foreach (City city in editor.scenario.citySet)
+            {
+                if (city != null && city.Render != null && city.Render.MapObject != null)
+                {
+                    foreach (City neighbor in city.NeighborList)
+                    {
+                        if (neighbor != null && neighbor.Render != null && neighbor.Render.MapObject != null)
+                        {
+                            // 确保只创建一次线路，避免AB和BA重复
+                            if (city.Id > neighbor.Id) // 只处理city.Id > neighbor.Id的情况，确保每个组合只处理一次
+                            {
+                                // 避免重复创建线路
+                                bool lineExists = false;
+                                foreach (GameObject lineObj in lineRenderers)
+                                {
+                                    LineRenderer lineRenderer = lineObj.GetComponent<LineRenderer>();
+                                    if (lineRenderer != null)
+                                    {
+                                        Vector3 start = lineRenderer.GetPosition(0);
+                                        Vector3 end = lineRenderer.GetPosition(2);
+                                        Vector3 cityPos = city.Render.MapObject.transform.position;
+                                        Vector3 neighborPos = neighbor.Render.MapObject.transform.position;
+                                        if ((start == cityPos && end == neighborPos) || (start == neighborPos && end == cityPos))
+                                        {
+                                            lineExists = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (!lineExists)
+                                {
+                                    GameObject lineObj = new GameObject($"CityLine_{city.Name}_{neighbor.Name}");
+                                    LineRenderer lineRenderer = lineObj.AddComponent<LineRenderer>();
+                                    // 使用Sango/Particles/Alpha Blended shader
+                                    Shader sangoShader = Shader.Find("Sango/Particles/Alpha Blended");
+                                    if (sangoShader != null)
+                                    {
+                                        lineRenderer.material = new Material(sangoShader);
+                                    }
+                                    else
+                                    {
+                                        // 如果找不到Sango shader，使用默认的Unlit/Color作为备份
+                                        lineRenderer.material = new Material(Shader.Find("Unlit/Color"));
+                                    }
+                                    lineRenderer.material.renderQueue = 4000;
+                                    // 设置ZTest为Disabled
+                                    lineRenderer.material.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Disabled);
+
+                                    // 根据城市ID从颜色库中获取颜色
+                                    int cityColorIndex = city.Id % colorLibrary.Length;
+                                    int neighborColorIndex = neighbor.Id % colorLibrary.Length;
+                                    Color startColor = colorLibrary[cityColorIndex];
+                                    Color endColor = colorLibrary[neighborColorIndex];
+
+                                    // 设置LineRenderer的颜色渐变
+                                    Gradient gradient = new Gradient();
+                                    gradient.SetKeys(
+                                        new GradientColorKey[] { new GradientColorKey(startColor, 0f), new GradientColorKey(endColor, 1f) },
+                                        new GradientAlphaKey[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 1f) }
+                                    );
+                                    lineRenderer.colorGradient = gradient;
+                                    lineRenderer.numCapVertices = 16;
+                                    lineRenderer.numCornerVertices = 16;
+
+                                    Vector3 startPos = city.Render.MapObject.transform.position;
+                                    Vector3 endPos = neighbor.Render.MapObject.transform.position;
+                                    Vector3 midPos = (startPos + endPos) / 2f;
+
+                                    lineRenderer.positionCount = 3;
+                                    lineRenderer.SetPosition(0, startPos);
+                                    lineRenderer.SetPosition(1, midPos);
+                                    lineRenderer.SetPosition(2, endPos);
+
+                                    lineRenderer.startWidth = 3f;
+                                    lineRenderer.endWidth = 3f;
+                                    lineRenderer.widthCurve = new AnimationCurve(
+                                        new Keyframe(0f, 3f),
+                                        new Keyframe(0.5f, 10f),
+                                        new Keyframe(1f, 3f)
+                                    );
+
+                                    lineRenderers.Add(lineObj);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 更新城市之间的线路
+        /// </summary>
+        private void UpdateLineRenderers()
+        {
+            foreach (GameObject lineObj in lineRenderers)
+            {
+                LineRenderer lineRenderer = lineObj.GetComponent<LineRenderer>();
+                if (lineRenderer != null)
+                {
+                    // 这里可以添加线路更新逻辑，比如根据城市位置变化更新线路
+                }
+            }
+        }
+
+        /// <summary>
+        /// 清理城市之间的线路
+        /// </summary>
+        private void ClearLineRenderers()
+        {
+            foreach (GameObject lineObj in lineRenderers)
+            {
+                if (lineObj != null)
+                {
+                    GameObject.Destroy(lineObj);
+                }
+            }
+            lineRenderers.Clear();
+        }
+
+        /// <summary>
+        /// 拖拽开始
+        /// </summary>
+        public override void OnDragStart(Vector3 center)
+        {
+        }
+
+        /// <summary>
+        /// 拖拽过程
+        /// </summary>
+        public override void OnDrag(Vector3 center)
+        {
+        }
+
+        /// <summary>
+        /// 拖拽结束
+        /// </summary>
+        public override void OnDragEnd(Vector3 center)
+        {
+        }
+    }
+}

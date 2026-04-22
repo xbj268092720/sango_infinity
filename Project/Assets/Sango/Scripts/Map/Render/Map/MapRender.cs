@@ -249,6 +249,11 @@ namespace Sango.Render
             return mapGrid.PositionToCoords(x, z);
         }
 
+        public Vector2Int PositionToCoords(Vector3 pos)
+        {
+            return mapGrid.PositionToCoords(pos);
+        }
+
         private int _curSeason = 0;
         public int curSeason
         {
@@ -746,6 +751,11 @@ namespace Sango.Render
             Vector2 l = mapCamera.limitDistance;
             l.y = m;
             mapCamera.limitDistance = l;
+        }
+
+        public bool IsValid()
+        {
+            return mapRoot != null;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Sango.Tools
     public class EditorWindow : MonoBehaviour
     {
         // 顶部菜单高度常量
-        private const float MENU_BAR_HEIGHT = 30f;
+        protected const float MENU_BAR_HEIGHT = 30f;
         
         public delegate void WindowFunction(int winId, EditorWindow window);
 
@@ -209,7 +209,7 @@ namespace Sango.Tools
         /// <summary>
         /// 将窗口限制在屏幕范围内
         /// </summary>
-        private void ConstrainWindowToScreen()
+        protected void ConstrainWindowToScreen()
         {
             // 获取屏幕尺寸
             float screenWidth = Screen.width;

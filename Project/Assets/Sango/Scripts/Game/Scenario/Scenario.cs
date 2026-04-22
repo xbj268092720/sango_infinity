@@ -19,6 +19,7 @@ namespace Sango.Core
 
         #region Data
         [JsonProperty(Order = -97)] public ScenarioInfo Info { get; internal set; }
+        [JsonProperty(Order = -98)] public ScenarioView View { get; internal set; }
         [JsonProperty(Order = -96)] public ScenarioCommonData CommonData { internal set; get; }
         [JsonProperty(Order = -95)] public ScenarioVariables Variables { internal set; get; }
         [JsonProperty(Order = -94)] public Map Map { internal set; get; }
@@ -732,7 +733,7 @@ namespace Sango.Core
         bool isThreadPause = false;
         public void Start()
         {
-            MapRender.Instance.SetCamera(Info.cameraPosition, Info.cameraRotation, Info.cameraDistance);
+            MapRender.Instance.SetCamera(View.cameraPosition, View.cameraRotation, View.cameraDistance);
 
             GameEvent.OnScenarioStart?.Invoke(this);
 
@@ -1259,9 +1260,9 @@ namespace Sango.Core
         {
 
             Info.isSave = true;
-            Info.cameraPosition = MapRender.Instance.mapCamera.position;
-            Info.cameraRotation = MapRender.Instance.mapCamera.lookRotate;
-            Info.cameraDistance = MapRender.Instance.mapCamera.distance;
+            View.cameraPosition = MapRender.Instance.mapCamera.position;
+            View.cameraRotation = MapRender.Instance.mapCamera.lookRotate;
+            View.cameraDistance = MapRender.Instance.mapCamera.distance;
             Info.dateTime = DateTime.Now.ToFileTime();
             Sango.Directory.Create(path, false);
             JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
@@ -1279,6 +1280,8 @@ namespace Sango.Core
         {
             ScenarioCommonData saveData = CommonData;
             CommonData = null;
+            ScenarioView tempView = View;
+            View = null;
             Sango.Directory.Create(path, false);
             JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
             jsonSerializerSettings.Formatting = TKNewtonsoft.Json.Formatting.Indented;
@@ -1290,6 +1293,7 @@ namespace Sango.Core
                 serializer.Serialize(writer, this);
             }
             CommonData = saveData;
+            View = tempView;
         }
 
         void LoadModModify()

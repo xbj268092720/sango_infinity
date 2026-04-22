@@ -42,7 +42,9 @@ namespace Sango.Tools
             // 模型
             Model,
             // 地图标记
-            MapLabel
+            MapLabel,
+            // 城池
+            City
         }
 
         public Render.MapRender map;
@@ -65,6 +67,7 @@ namespace Sango.Tools
         internal GridBrush grid_brush;
         internal ModelBrush model_brush;
         internal MapLabelBrush mapLabel_brush;
+        internal CityBrush city_brush;
 
         public EditorWindow editorToolsBarWindow;
         public EditorWindow editorContentWindow;
@@ -121,7 +124,8 @@ namespace Sango.Tools
             grid_brush = new GridBrush(this);
             model_brush = new ModelBrush(this);
             mapLabel_brush = new MapLabelBrush(this);
-            brushArray = new BrushBase[] { terrain_brush, grid_brush, model_brush, mapLabel_brush };
+            city_brush = new CityBrush(this);
+            brushArray = new BrushBase[] { terrain_brush, grid_brush, model_brush, mapLabel_brush, city_brush };
 
             // 关闭游戏主相机
             Camera.main.gameObject.SetActive(false);
@@ -139,6 +143,7 @@ namespace Sango.Tools
             windowRect = ConstrainWindowToScreen(windowRect);
             editorToolsBarWindow = EditorWindow.AddWindow(0, windowRect, DrawToolbarWindow, "地图编辑器");
             editorToolsBarWindow.canClose = false;
+            editorToolsBarWindow.visible = false;
 
             // 属性窗口不再单独创建，内容合并到工具栏窗口下方
 
@@ -194,7 +199,8 @@ namespace Sango.Tools
                     {
                         map.LoadMap(mapPath);
                         lastSavedPath = mapPath;
-                        
+                        editorToolsBarWindow.visible = true;
+
                         EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
                         if (editorfree != null)
                             editorfree.lookAt = map.mapCamera.GetCenterTransform();
@@ -287,7 +293,7 @@ namespace Sango.Tools
                 {
                     Vector3 worldPos = city.Render.MapObject.transform.position;
                     
-                    UnityEngine.Vector2Int gridPos = map.PositionToCoords(worldPos.x, worldPos.z);
+                    UnityEngine.Vector2Int gridPos = map.PositionToCoords(worldPos);
                     city.x = gridPos.x;
                     city.y = gridPos.y;
 
@@ -481,6 +487,11 @@ namespace Sango.Tools
                         brush = brushes[3];
                     }
                     break;
+                case EditorModType.City:
+                    {
+                        brush = brushes[4];
+                    }
+                    break;
                 default:
                     break;
             }
@@ -561,7 +572,7 @@ namespace Sango.Tools
         int currentEditMode = 0;
         private string[] toolbarTitle = new string[]
         {
-            "无", "编辑地形", "编辑地格", "模型放置", "地图标记"
+            "无", "地形", "地格", "模型", "标记", "城池"
         };
         private string[] toolbarSeason = new string[]
         {
@@ -698,14 +709,8 @@ namespace Sango.Tools
                 case 0:
                     //OnGUI_Base();
                     break;
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    CheckBrush().OnGUI();
-                    break;
-               
                 default:
+                    CheckBrush().OnGUI();
                     break;
             }
             

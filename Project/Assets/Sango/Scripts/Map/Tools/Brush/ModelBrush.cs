@@ -444,18 +444,24 @@ namespace Sango.Tools
 
         public override void Update()
         {
+            if (RTEditor.EditorObjectSelection.Instance.SelectedGameObjects.Count > 0)
+            {
+                return;
+            }
+
             if (model == null && modelConfig == null && Input.GetMouseButtonDown(0))
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastObjectLayer))
-                {
-                    MapObject mapObject = hit.collider.GetComponentInParent<MapObject>();
-                    if (mapObject != null)
-                    {
-                        editor.ForceCameraToGameObject(mapObject.GetGameObject());
-                    }
-                }
+        
+                //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                //RaycastHit hit;
+                //if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastObjectLayer))
+                //{
+                //    MapObject mapObject = hit.collider.GetComponentInParent<MapObject>();
+                //    if (mapObject != null)
+                //    {
+                //        editor.ForceCameraToGameObject(mapObject.GetGameObject());
+                //    }
+                //}
                 return;
             }
 

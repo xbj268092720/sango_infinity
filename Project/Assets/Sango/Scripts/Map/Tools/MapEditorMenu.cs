@@ -100,8 +100,8 @@ namespace Sango.Tools
                 showViewMenu = false;
                 showOriginal311Menu = false;
                 showHelpWindow = false;
-                // 计算渲染菜单高度：2个按钮
-                float height = CalculateMenuHeight(2);
+                // 计算渲染菜单高度：2个按钮 + 1个开关
+                float height = CalculateMenuHeight(3);
                 renderMenuRect = new UnityEngine.Rect(180, MENU_BAR_HEIGHT, 150, height); // Y坐标从菜单高度开始，确保不与顶部菜单重叠
             }
 
@@ -198,6 +198,7 @@ namespace Sango.Tools
                     string fName = path[0];
                     editor.lastSavedPath = fName;
                     editor.map.LoadMap(fName);
+                    editor.editorToolsBarWindow.visible = true;
                     EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
                     if (editorfree != null)
                         editorfree.lookAt = editor.map.mapCamera.GetCenterTransform();
@@ -243,6 +244,10 @@ namespace Sango.Tools
                 }
                 showFileMenu = false;
             }
+
+            GUILayout.Space(5);
+            GUILayout.Label("---");
+            GUILayout.Space(5);
 
             if (GUILayout.Button("从剧本加载地图"))
             {
@@ -335,6 +340,14 @@ namespace Sango.Tools
             {
                 editor.windows.ShowFogWindow();
                 showRenderMenu = false;
+            }
+
+            // 雾效开关
+            bool fogEnabled = RenderSettings.fog;
+            bool newFogEnabled = GUILayout.Toggle(fogEnabled, "雾效开关");
+            if (newFogEnabled != fogEnabled)
+            {
+                RenderSettings.fog = newFogEnabled;
             }
 
             GUILayout.EndArea();

@@ -85,9 +85,9 @@ namespace Sango.Render
             public ushort areaId;
 
 #if SANGO_DEBUG
-            
+
             public UnityEngine.UI.Text textObj;
-            
+
             public bool visible;
 #endif
 
@@ -542,9 +542,12 @@ namespace Sango.Render
         }
         public Vector2Int PositionToCoords(float x, float y)
         {
-            int c = Mathf.FloorToInt((x + gridSize / 2) / gridSize);
-            int r = Mathf.FloorToInt((y + gridSize / 2 + (c % 2) * gridSize / 2) / gridSize);
-            return new Vector2Int(c, r);
+            return hexWorld.PositionToCoords(new Vector3(x, 0, y));
+        }
+
+        public Vector2Int PositionToCoords(Vector3 vector3)
+        {
+            return hexWorld.PositionToCoords(vector3);
         }
 
 #if SANGO_DEBUG
@@ -555,7 +558,7 @@ namespace Sango.Render
 
         int switchIndex = 1;
         Transform textROOT;
-        
+
         public void Update(Tools.Rect rect)
         {
             if (MapEditor.IsEditOn) return;

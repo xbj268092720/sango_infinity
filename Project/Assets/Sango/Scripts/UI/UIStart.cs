@@ -2,7 +2,8 @@ using Sango.Manager;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     /// <summary>
     /// 游戏开始界面
@@ -61,10 +62,13 @@ using Sango.Core; namespace Sango.UI
         {
             string path = Sango.Path.FindFile("Scenario/Scenario.json");
             Scenario scenario = new Scenario(path);
+            scenario.View = new ScenarioView
+            {
+                cameraPosition = new UnityEngine.Vector3(1407, 0, 796),
+                cameraRotation = new UnityEngine.Vector3(40f, -50f, 0f),
+                cameraDistance = 400f
+            };
 
-            scenario.Info.cameraPosition = new UnityEngine.Vector3(1407, 0, 796);
-            scenario.Info.cameraRotation = new UnityEngine.Vector3(40f, -50f, 0f);
-            scenario.Info.cameraDistance = 400f;
 
             Scenario.StartScenario(scenario);
         }
