@@ -59,8 +59,8 @@ namespace Sango.Tools
                 showRenderMenu = false;
                 showOriginal311Menu = false;
                 showHelpWindow = false;
-                // 计算文件菜单高度：5个按钮 + 1个分隔线 + 2个按钮
-                float height = CalculateMenuHeight(7, 1);
+                // 计算文件菜单高度：5个按钮 + 1个分隔线 + 3个按钮（新增从剧本加载地图）
+                float height = CalculateMenuHeight(8, 1);
                 fileMenuRect = new UnityEngine.Rect(0, MENU_BAR_HEIGHT, 150, height); // Y坐标从菜单高度开始，确保不与顶部菜单重叠
             }
 
@@ -72,9 +72,9 @@ namespace Sango.Tools
                 showRenderMenu = false;
                 showOriginal311Menu = false;
                 showHelpWindow = false;
-                // 计算编辑菜单高度：2个按钮 + 1个分隔线 + 3个按钮 + 1个分隔线 + 1个按钮
+                // 计算编辑菜单高度：2个按钮 + 1个分隔线 + 2个按钮 + 1个分隔线 + 1个按钮（新增加载剧本）
                 // 增加额外空间以确保显示完整
-                float height = CalculateMenuHeight(6, 2) + 20f;
+                float height = CalculateMenuHeight(7, 3) + 20f;
                 editMenuRect = new UnityEngine.Rect(60, MENU_BAR_HEIGHT, 150, height); // Y坐标从菜单高度开始，确保不与顶部菜单重叠
             }
 
@@ -220,6 +220,13 @@ namespace Sango.Tools
                 {
                     editor.lastSavedPath = path;
                     editor.map.SaveMap(path);
+                    
+                    if (editor.scenario != null && !string.IsNullOrEmpty(editor.scenario.FilePath))
+                    {
+                        editor.scenario.Export(editor.scenario.FilePath);
+                        Sango.Log.Info("剧本数据已同步保存");
+                    }
+                    
                     editor.autoSave.ShowSaveNotification($"地图已保存到: {System.IO.Path.GetFileName(path)}");
                 }
                 showFileMenu = false;
@@ -232,6 +239,16 @@ namespace Sango.Tools
                 {
                     // 这里实现放大2倍保存的逻辑
                     Sango.Log.Info("放大2倍保存功能待实现");
+                }
+                showFileMenu = false;
+            }
+
+            if (GUILayout.Button("从剧本加载地图"))
+            {
+                string[] path = WindowDialog.OpenFileDialog("剧本文件(*.json)\0*.json;\0\0");
+                if (path != null)
+                {
+                    editor.LoadMapFromScenario(path[0]);
                 }
                 showFileMenu = false;
             }
@@ -283,6 +300,20 @@ namespace Sango.Tools
             if (GUILayout.Button("清空历史"))
             {
                 editor.undoRedoManager.ClearHistory();
+                showEditMenu = false;
+            }
+
+            GUILayout.Space(5);
+            GUILayout.Label("---");
+            GUILayout.Space(5);
+
+            if (GUILayout.Button("加载剧本"))
+            {
+                string[] path = WindowDialog.OpenFileDialog("剧本文件(*.json)\0*.json;\0\0");
+                if (path != null)
+                {
+                    editor.LoadScenario(path[0]);
+                }
                 showEditMenu = false;
             }
 

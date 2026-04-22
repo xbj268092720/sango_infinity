@@ -68,8 +68,10 @@ namespace Sango.Core
         public Building Add(Building building) { buildingSet.Add(building); return building; }
         public Fire Add(Fire fire) { fireSet.Add(fire); return fire; }
         public Alliance Add(Alliance alliance) { allianceSet.Add(alliance); return alliance; }
-        public Force Remove(Force force) {
-            forceSet.Remove(force); return force; }
+        public Force Remove(Force force)
+        {
+            forceSet.Remove(force); return force;
+        }
         public Corps Remove(Corps corps) { corpsSet.Remove(corps); return corps; }
         public City Remove(City city) { citySet.Remove(city); return city; }
         public Person Remove(Person person) { personSet.Remove(person); return person; }
@@ -668,7 +670,7 @@ namespace Sango.Core
         {
             isThreadPause = false;
         }
-        
+
 
 
         // 在Prepare之后
@@ -718,7 +720,7 @@ namespace Sango.Core
         /// </summary>
         public void Prepare()
         {
-            
+
             for (int i = 0; i < prepareList.Count; ++i)
             {
                 prepareList[i].ForEach(o => { o.OnScenarioPrepare(this); });
@@ -870,7 +872,7 @@ namespace Sango.Core
                 return true;
             }
             CurRunForce = runForces.Dequeue();
-            while(!CurRunForce.IsAlive && runForces.Count > 0)
+            while (!CurRunForce.IsAlive && runForces.Count > 0)
                 CurRunForce = runForces.Dequeue();
 
             if (CurRunForce != null && CurRunForce.IsAlive)
@@ -889,7 +891,7 @@ namespace Sango.Core
         public bool TurnEnd()
         {
             if (HasTurnEnded) return true;
-             for (int i = 1; i < personSet.Count; i++)
+            for (int i = 1; i < personSet.Count; i++)
             {
                 Person person = personSet[i];
                 if (person != null && person.IsAlive)
@@ -1271,6 +1273,23 @@ namespace Sango.Core
             {
                 serializer.Serialize(writer, this);
             }
+        }
+
+        public void Export(string path)
+        {
+            ScenarioCommonData saveData = CommonData;
+            CommonData = null;
+            Sango.Directory.Create(path, false);
+            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
+            jsonSerializerSettings.Formatting = TKNewtonsoft.Json.Formatting.Indented;
+            jsonSerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            jsonSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; // 忽略循环引用
+            JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
+            using (StreamWriter writer = System.IO.File.CreateText(path))
+            {
+                serializer.Serialize(writer, this);
+            }
+            CommonData = saveData;
         }
 
         void LoadModModify()

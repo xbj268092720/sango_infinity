@@ -56,6 +56,13 @@ namespace Sango.Tools
             {
                 editor.map.SaveMap(editor.lastSavedPath);
                 SaveBaseMap(editor.lastSavedPath);
+                
+                if (editor.scenario != null && !string.IsNullOrEmpty(editor.scenario.FilePath))
+                {
+                    editor.scenario.Export(editor.scenario.FilePath);
+                    Sango.Log.Info("剧本数据已同步保存");
+                }
+                
                 string message = $"地图已快捷保存到: {System.IO.Path.GetFileName(editor.lastSavedPath)}";
                 Sango.Log.Info(message);
                 ShowSaveNotification(message);
@@ -68,6 +75,13 @@ namespace Sango.Tools
                     editor.lastSavedPath = path;
                     editor.map.SaveMap(path);
                     SaveBaseMap(path);
+                    
+                    if (editor.scenario != null && !string.IsNullOrEmpty(editor.scenario.FilePath))
+                    {
+                        editor.scenario.Export(editor.scenario.FilePath);
+                        Sango.Log.Info("剧本数据已同步保存");
+                    }
+                    
                     string message = $"地图已保存到: {System.IO.Path.GetFileName(path)}";
                     Sango.Log.Info(message);
                     ShowSaveNotification(message);
@@ -96,6 +110,14 @@ namespace Sango.Tools
 
                 editor.map.SaveMap(autoSavePath);
                 SaveBaseMap(autoSavePath);
+                
+                if (editor.scenario != null)
+                {
+                    string scenarioAutoSavePath = System.IO.Path.Combine(autoSaveDirectory, $"{fileName}_auto_save_{timestamp}.json");
+                    editor.scenario.Export(scenarioAutoSavePath);
+                    Sango.Log.Info("剧本数据已同步自动保存");
+                }
+                
                 string message = $"地图已自动保存到: {System.IO.Path.GetFileName(autoSavePath)}";
                 Sango.Log.Info(message);
                 ShowSaveNotification(message);

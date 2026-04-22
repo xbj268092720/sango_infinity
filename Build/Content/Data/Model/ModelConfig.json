@@ -106,5 +106,29 @@
     "Name": "标注黄",
     "modelType": 7,
     "model": "Assets/Model/Prefab/MapLabel_yellow.prefab"
+  },
+  "19": {
+    "Id": 19,
+    "Name": "小城类型一",
+    "modelType": 1,
+    "model": "Assets/Model/Prefab/4306.prefab"
+  },
+  "20": {
+    "Id": 20,
+    "Name": "小城类型二",
+    "modelType": 1,
+    "model": "Assets/Model/Prefab/4308.prefab"
+  },
+  "21": {
+    "Id": 21,
+    "Name": "小城类型三",
+    "modelType": 1,
+    "model": "Assets/Model/Prefab/4310.prefab"
+  },
+  "22": {
+    "Id": 22,
+    "Name": "小城类型四",
+    "modelType": 1,
+    "model": "Assets/Model/Prefab/4312.prefab"
   }
 }

@@ -3,6 +3,7 @@ using Sango.Render;
 using Sango.Tools.UndoRedo;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System;
 
 namespace Sango.Tools
 {
@@ -92,6 +93,11 @@ namespace Sango.Tools
 
         public string lastSavedPath { get; set; } = "";
 
+        /// <summary>
+        /// 当前加载的剧本对象
+        /// </summary>
+        public Sango.Core.Scenario scenario { get; private set; }
+
         public virtual bool IsPointerOverUI()
         {
             return EditorWindow.IsPointOverUI() || (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject());
@@ -167,6 +173,102 @@ namespace Sango.Tools
             map.mapCamera.lookRotate = new Vector3(90, -90, 0);
             Camera.main.gameObject.transform.position = map.mapCamera.position;
             Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
+        }
+
+        /// <summary>
+        /// 从剧本加载地图和剧本数据
+        /// </summary>
+        /// <param name="scenarioPath">剧本文件路径</param>
+        public void LoadMapFromScenario(string scenarioPath)
+        {
+#if SANGO_DEBUG
+            try
+            {
+#endif
+                scenario = new Sango.Core.Scenario(scenarioPath);
+                
+                if (!string.IsNullOrEmpty(scenario.Info.mapType))
+                {
+                    string mapPath = Sango.Path.FindFile($"Map/{scenario.Info.mapType}.bin");
+                    if (!string.IsNullOrEmpty(mapPath) && System.IO.File.Exists(mapPath))
+                    {
+                        map.LoadMap(mapPath);
+                        lastSavedPath = mapPath;
+                        
+                        EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
+                        if (editorfree != null)
+                            editorfree.lookAt = map.mapCamera.GetCenterTransform();
+                        
+                        BrushBase brush = CheckBrush();
+                        if (brush != null)
+                            brush.OnEnter();
+                        
+                        if (ViewIs311Camera)
+                            SetCameraControlType(1);
+                        else
+                            SetCameraControlType(0);
+                        
+                        Sango.Log.Info($"地图已加载: {mapPath}");
+                    }
+                }
+                
+                scenario.LoadContent();
+                
+                SpawnCityModels();
+                
+                string message = $"剧本已加载: {System.IO.Path.GetFileName(scenarioPath)}";
+                Sango.Log.Info(message);
+                autoSave.ShowSaveNotification(message);
+#if SANGO_DEBUG
+
+            }
+            catch (Exception e)
+            {
+                Sango.Log.Error($"加载剧本失败: {e.Message}");
+            }
+#endif
+        }
+
+        /// <summary>
+        /// 加载剧本数据（不加载地图）
+        /// </summary>
+        /// <param name="scenarioPath">剧本文件路径</param>
+        public void LoadScenario(string scenarioPath)
+        {
+            try
+            {
+                scenario = new Sango.Core.Scenario(scenarioPath);
+                
+                scenario.LoadContent();
+                
+                SpawnCityModels();
+                
+                string message = $"剧本数据已加载: {System.IO.Path.GetFileName(scenarioPath)}";
+                Sango.Log.Info(message);
+                autoSave.ShowSaveNotification(message);
+            }
+            catch (Exception e)
+            {
+                Sango.Log.Error($"加载剧本数据失败: {e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 根据剧本数据生成城市模型
+        /// </summary>
+        private void SpawnCityModels()
+        {
+            if (scenario == null || scenario.citySet == null)
+                return;
+
+            foreach (Sango.Core.City city in scenario.citySet)
+            {
+                if (city != null)
+                {
+                    city.Render = new EditorBuildingRender(city);
+                    Sango.Log.Info($"城市已加载: {city.Name}");
+                }
+            }
         }
 
         protected void Start()
