@@ -491,11 +491,11 @@ namespace Sango.Render
                 {
                     if(isStatic)
                     {
-                        manager.RemoveStatic(this);
+                        manager.Remove(this);
                     }
                     else
                     {
-                        manager.RemoveDynamic(this);
+                        manager.Remove(this);
                     }
                 }
             }
@@ -539,9 +539,9 @@ namespace Sango.Render
             if (manager != null)
             {
                 if (isStatic)
-                    manager.RemoveStatic(this);
+                    manager.Remove(this);
                 else
-                    manager.RemoveDynamic(this);
+                    manager.Remove(this);
             }
 
             ClearModels();

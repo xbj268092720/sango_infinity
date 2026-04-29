@@ -1,6 +1,7 @@
 
 using Sango.Core;
 using Sango.Loader;
+using Sango.Tools;
 using System;
 using System.IO;
 using UnityEngine;
@@ -226,7 +227,10 @@ namespace Sango.Render
 
         public void AddStatic(IMapManageObject obj)
         {
-            mapModels.AddStatic(obj);
+            if (MapEditor.IsEditOn)
+                mapModels.AddDynamic(obj);
+            else
+                mapModels.AddStatic(obj);
         }
         public void RemoveDynamic(IMapManageObject obj)
         {
@@ -235,7 +239,17 @@ namespace Sango.Render
 
         public void RemoveStatic(IMapManageObject obj)
         {
-            mapModels.RemoveStatic(obj);
+            if (MapEditor.IsEditOn)
+                mapModels.RemoveStatic(obj);
+            else
+                mapModels.RemoveStatic(obj);
+        }
+        public void Remove(IMapManageObject obj)
+        {
+            if (obj.isStatic)
+                mapModels.RemoveStatic(obj);
+            else
+                mapModels.RemoveDynamic(obj);
         }
 
         public Vector3 CoordsToPosition(int c, int r)

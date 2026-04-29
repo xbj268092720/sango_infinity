@@ -8,8 +8,15 @@ using UnityEngine;
 
 namespace Sango.Tools
 {
+    /// <summary>
+    /// 模型编辑笔刷
+    /// 支持放置、选择和管理地图上的静态模型
+    /// </summary>
     public class ModelBrush : BrushBase
     {
+        /// <summary>
+        /// 模型配置编辑类
+        /// </summary>
         public class EditModelConfig
         {
             public Sango.Core.ModelConfig modelConfig;
@@ -30,15 +37,39 @@ namespace Sango.Tools
         }
 
 
+        /// <summary>
+        /// 模型配置列表
+        /// </summary>
         List<ModelConfig> configList = new List<ModelConfig>();
+        
+        /// <summary>
+        /// 默认数据保存路径
+        /// </summary>
         string default_data_save_path;// = XPath.ContentRootPath + "/Mod/Map/Scripts/Data/data_model.lua";
 
+        /// <summary>
+        /// 当前配置列表
+        /// </summary>
         List<ModelConfig> currentConfigList;
 
+        /// <summary>
+        /// 对象索引
+        /// </summary>
         int objectIndex = -1;
+        
+        /// <summary>
+        /// 当前静态模型列表
+        /// </summary>
         List<IMapManageObject> currentStaticModelList;
+        
+        /// <summary>
+        /// 是否显示模型配置
+        /// </summary>
         bool isShowModelConfig = true;
 
+        /// <summary>
+        /// 当前显示模型信息列表
+        /// </summary>
         List<ModelShowInfo> currenShowModelInfo = new List<ModelShowInfo>();
 
 
@@ -123,13 +154,39 @@ namespace Sango.Tools
             }
         }
 
+        /// <summary>
+        /// 是否随机方向
+        /// </summary>
         public bool randomDir = false;
+        
+        /// <summary>
+        /// 当前预览模型
+        /// </summary>
         public GameObject model = null;
+        
+        /// <summary>
+        /// 当前模型配置
+        /// </summary>
         public ModelConfig modelConfig = null;
+        
+        /// <summary>
+        /// 是否贴合格子中心
+        /// </summary>
         public bool anchorByGrid = false;
 
-        private string[] objectTypeTitle = new string[] { "所有", "城", "关", "港", "内", "军", "植", "其他" };
-        private int currentObjectType = 1;
+        /// <summary>
+        /// 对象类型标题数组
+        /// </summary>
+        private string[] objectTypeTitle = new string[] { "所有", "内", "军", "植", "其他" };
+        
+        /// <summary>
+        /// 当前对象类型索引
+        /// </summary>
+        private int currentObjectType = 0;
+        
+        /// <summary>
+        /// 窗口矩形
+        /// </summary>
         private UnityEngine.Rect windowRect = new UnityEngine.Rect(20, 20, 120, 50);
 
         public ModelBrush(MapEditor e) : base(e)
@@ -205,12 +262,14 @@ namespace Sango.Tools
             }
             else
             {
-                currentConfigList = configList.FindAll(x => x.modelType == currentObjectType);
+                int originalModelType = currentObjectType + 3;
+                currentConfigList = configList.FindAll(x => x.modelType == originalModelType);
             }
 
-            if (currentObjectType >= 1 && currentObjectType <= 3)
+            if (currentObjectType >= 1)
             {
-                currentStaticModelList = editor.map.mapModels.staticObjects.FindAll(x => x.objType == currentObjectType);
+                int originalObjType = currentObjectType + 3;
+                currentStaticModelList = editor.map.mapModels.staticObjects.FindAll(x => x.objType == originalObjType);
             }
             else
             {

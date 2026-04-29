@@ -12,42 +12,153 @@ using Sango.Tools.UndoRedo;
 
 namespace Sango.Tools
 {
-
+    /// <summary>
+    /// 地形编辑笔刷
+    /// 支持地形高度编辑、纹理绘制、水面编辑和底图绘制
+    /// </summary>
     public class TerrainBrush : BrushBase
     {
+        /// <summary>
+        /// 笔刷类型枚举
+        /// </summary>
         public enum BrushType : int
         {
+            /// <summary>
+            /// 升高高度
+            /// </summary>
             RaiseHeight = 0,
+            /// <summary>
+            /// 降低高度
+            /// </summary>
             LowerHeight,
+            /// <summary>
+            /// 平整高度
+            /// </summary>
             PullHeight,
+            /// <summary>
+            /// 平滑高度
+            /// </summary>
             SmoothHeight,
+            /// <summary>
+            /// 纹理绘制
+            /// </summary>
             Texture,
+            /// <summary>
+            /// 水面编辑
+            /// </summary>
             Water,
-            BaseMap,         // BaseMap画笔
-            BaseMapEraser,   // BaseMap橡皮擦
+            /// <summary>
+            /// BaseMap画笔
+            /// </summary>
+            BaseMap,
+            /// <summary>
+            /// BaseMap橡皮擦
+            /// </summary>
+            BaseMapEraser,
+            /// <summary>
+            /// 未知类型
+            /// </summary>
             Unknown,
         }
+
+        /// <summary>
+        /// 笔刷大小
+        /// </summary>
         public float size = 5f;
+        
+        /// <summary>
+        /// 笔刷透明度
+        /// </summary>
         public float opacity;
+        
+        /// <summary>
+        /// 工具栏标题数组
+        /// </summary>
         private string[] toolbarTitle = new string[] { "升高", "降低", "平整", "平滑", "贴图", "水面", "BaseMap画笔", "BaseMap橡皮擦" };
+        
+        /// <summary>
+        /// 当前编辑模式索引
+        /// </summary>
         private int currentEditMode = 0;
+        
+        /// <summary>
+        /// 笔刷纹理数组
+        /// </summary>
         public Texture[] brushTexture;
+        
+        /// <summary>
+        /// 当前笔刷类型
+        /// </summary>
         public BrushType brushType = BrushType.Unknown;
+        
+        /// <summary>
+        /// 纹理索引
+        /// </summary>
         private int textureIndex = 0;
+        
+        /// <summary>
+        /// 滚动位置
+        /// </summary>
         private Vector2 scrollPos;
+        
+        /// <summary>
+        /// 底图数组
+        /// </summary>
         public RenderTexture[] baseMap;
+        
+        /// <summary>
+        /// 临时底图
+        /// </summary>
         public RenderTexture temp_baseMap;
+        
+        /// <summary>
+        /// 笔刷索引
+        /// </summary>
         private int brushIndex = 0;
+        
+        /// <summary>
+        /// 笔刷材质
+        /// </summary>
         private Material brushMat;
+        
+        /// <summary>
+        /// 绘制材质
+        /// </summary>
         private Material blitMat;
+        
+        /// <summary>
+        /// 地图大小
+        /// </summary>
         private Vector2 mapSize;
+        
+        /// <summary>
+        /// 颜色选择器
+        /// </summary>
         private ColorPicker picker;
+        
+        /// <summary>
+        /// 笔刷颜色
+        /// </summary>
         private UnityEngine.Color brushColor;
 
-        // 拖拽相关变量
+        /// <summary>
+        /// 拖拽相关变量 - 顶点数据变更字典
+        /// </summary>
         private Dictionary<int, TerrainEditCommand.VertexDataChange> dragChangesMap = new Dictionary<int, TerrainEditCommand.VertexDataChange>();
+        
+        /// <summary>
+        /// 拖拽编辑类型
+        /// </summary>
         private TerrainEditCommand.EditType dragEditType;
+        
+        /// <summary>
+        /// 拖拽描述
+        /// </summary>
         private string dragDescription;
+        
+        /// <summary>
+        /// 拖拽边界
+        /// </summary>
         private Rect dragBounds;
         public TerrainBrush(MapEditor e) : base(e)
         {

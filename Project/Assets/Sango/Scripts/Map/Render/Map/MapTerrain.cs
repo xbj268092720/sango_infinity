@@ -62,7 +62,7 @@ namespace Sango.Render
             {
                 MapCell cell = terrainCells[i];
                 if (cell == null) continue;
-                map.RemoveStatic(cell);
+                map.Remove(cell);
                 cell.Clear();
             }
             terrainCells = null;

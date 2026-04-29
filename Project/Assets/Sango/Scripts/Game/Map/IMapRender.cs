@@ -20,12 +20,8 @@ namespace Sango.Core
         /// 移除动态对象
         /// </summary>
         /// <param name="obj">地图管理对象</param>
-        public void RemoveDynamic(IMapManageObject obj);
-        /// <summary>
-        /// 移除静态对象
-        /// </summary>
-        /// <param name="obj">地图管理对象</param>
-        public void RemoveStatic(IMapManageObject obj);
+        public void Remove(IMapManageObject obj);
+
         /// <summary>
         /// 添加实例对象
         /// </summary>

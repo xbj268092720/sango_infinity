@@ -33,8 +33,6 @@ namespace Sango.Render
             }
         }
 
-
-
         /// <summary>
         /// 对象ID
         /// </summary>

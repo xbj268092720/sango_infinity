@@ -5,16 +5,38 @@ using UnityEngine;
 
 namespace Sango.Tools
 {
+    /// <summary>
+    /// 地图标记笔刷
+    /// 支持创建、选中、移动和删除地图标记
+    /// </summary>
     public class MapLabelBrush : BrushBase
     {
+        /// <summary>
+        /// 标记类型枚举
+        /// </summary>
         public enum LabelType
         {
+            /// <summary>
+            /// 蓝色标记
+            /// </summary>
             Blue,
+            /// <summary>
+            /// 红色标记
+            /// </summary>
             Red,
+            /// <summary>
+            /// 绿色标记
+            /// </summary>
             Green,
+            /// <summary>
+            /// 黄色标记
+            /// </summary>
             Yellow
         }
 
+        /// <summary>
+        /// 地图标记编辑命令
+        /// </summary>
         public class MapLabelEditCommand : IUndoableCommand
         {
             private MapEditor editor;
@@ -76,13 +98,44 @@ namespace Sango.Tools
             }
         }
 
+        /// <summary>
+        /// 当前标记类型
+        /// </summary>
         private LabelType currentLabelType = LabelType.Blue;
+        
+        /// <summary>
+        /// 标记文本内容
+        /// </summary>
         private string labelText = "标记";
+        
+        /// <summary>
+        /// 字号大小
+        /// </summary>
         private int fontSize = 24;
+        
+        /// <summary>
+        /// 预览标记对象
+        /// </summary>
         private MapLabel previewLabel = null;
+        
+        /// <summary>
+        /// 当前选中的标记
+        /// </summary>
+        private MapLabel selectedLabel = null;
+        
+        /// <summary>
+        /// 是否贴合格子中心
+        /// </summary>
         private bool anchorByGrid = true;
 
+        /// <summary>
+        /// 标记类型名称数组
+        /// </summary>
         private string[] labelTypeNames = { "蓝色", "红色", "绿色", "黄色" };
+        
+        /// <summary>
+        /// 标记颜色数组
+        /// </summary>
         private Color32[] labelColors = 
         {
             new Color32(0, 122, 255, 255), // 蓝色
@@ -106,6 +159,7 @@ namespace Sango.Tools
         public override void Clear()
         {
             ClearPreviewLabel();
+            selectedLabel = null;
         }
 
         public override void Modify(Vector3 center, MapEditor editor)
@@ -127,6 +181,7 @@ namespace Sango.Tools
         public override void OnGUI()
         {
             GUILayout.Label("地图标记设置");
+            GUILayout.Label("操作提示：按空格键创建标注，选中后按Delete删除");
             GUILayout.Space(10);
 
             // 标记类型选择
@@ -227,14 +282,62 @@ namespace Sango.Tools
 
         public override void Update()
         {
-            if (previewLabel == null && Input.GetKeyDown(KeyCode.Space))
+            if (previewLabel == null && selectedLabel == null && Input.GetKeyDown(KeyCode.Space))
             {
                 CreatePreviewLabel();
             }
 
+            if (selectedLabel != null)
+            {
+                if (Input.GetKeyDown(KeyCode.Delete))
+                {
+                    editor.map.mapLabelSet.RemoveLabel(selectedLabel);
+                    Sango.Log.Info($"删除标记: {selectedLabel.labelText}");
+                    selectedLabel = null;
+                    return;
+                }
+
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastLayer))
+                {
+                    Vector3 pos = hit.point;
+                    if (anchorByGrid)
+                    {
+                        Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(hit.point);
+                        Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
+                        pos = editor.map.mapGrid.hexWorld.CoordsToPosition(offset.col, offset.row);
+                        pos.y = editor.map.mapGrid.GetGridHeight(offset.col, offset.row) + 5f;
+                    }
+                    selectedLabel.position = pos;
+                    if (Input.GetMouseButtonDown(0) && !IsPointerOverUI())
+                    {
+                        selectedLabel = null;
+                        return;
+                    }
+                }
+            }
+
+            if (previewLabel == null && selectedLabel == null)
+            {
+                if (Input.GetMouseButtonDown(0) && !IsPointerOverUI())
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
+                    if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastLayer))
+                    {
+                        MapLabel hitLabel = editor.map.mapLabelSet.FindLabelAtPosition(hit.point, 10f);
+                        if (hitLabel != null)
+                        {
+                            selectedLabel = hitLabel;
+                            Sango.Log.Info($"选中标记: {hitLabel.labelText}");
+                        }
+                    }
+                }
+            }
+
             if (previewLabel != null)
             {
-                // 右键或者Esc取消预览
                 if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
                 {
                     ClearPreviewLabel();

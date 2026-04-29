@@ -67,7 +67,7 @@ namespace Sango.Render
             if (labels.Contains(label))
             {
                 // 从地图静态对象中移除
-                map.RemoveStatic(label);
+                map.Remove(label);
 
                 // 从集合中移除
                 labels.Remove(label);
@@ -84,7 +84,7 @@ namespace Sango.Render
         {
             foreach (var label in labels)
             {
-                map.RemoveStatic(label);
+                map.Remove(label);
                 label.Destroy();
             }
             labels.Clear();

@@ -6,9 +6,34 @@ using UnityEngine;
 
 namespace Sango.Tools
 {
+    /// <summary>
+    /// 城市编辑笔刷
+    /// 支持城池、关卡、港口的添加、选择、删除和邻接关系编辑
+    /// </summary>
     public class CityBrush : BrushBase
     {
+        /// <summary>
+        /// 城市类型枚举
+        /// </summary>
+        public enum CityType
+        {
+            /// <summary>
+            /// 城池
+            /// </summary>
+            City,
+            /// <summary>
+            /// 关卡
+            /// </summary>
+            Gate,
+            /// <summary>
+            /// 港口
+            /// </summary>
+            Port
+        }
 
+        /// <summary>
+        /// 城市邻接关系编辑命令
+        /// </summary>
         public class CityNeighborEditCommand : IUndoableCommand
         {
             private MapEditor editor;
@@ -74,14 +99,55 @@ namespace Sango.Tools
             }
         }
 
+        /// <summary>
+        /// 当前选中的城市
+        /// </summary>
         private City selectedCity = null;
+        
+        /// <summary>
+        /// 鼠标悬停的城市
+        /// </summary>
         private City hoverCity = null;
+        
+        /// <summary>
+        /// 是否显示城市线路
+        /// </summary>
         private bool showCityLines = false;
+        
+        /// <summary>
+        /// 是否正在连接城市
+        /// </summary>
         private bool isConnecting = false;
+        
+        /// <summary>
+        /// 连接起始城市
+        /// </summary>
         private City connectStartCity = null;
+        
+        /// <summary>
+        /// 线路渲染器列表
+        /// </summary>
         private List<GameObject> lineRenderers = new List<GameObject>();
+        
+        /// <summary>
+        /// 属性编辑器窗口
+        /// </summary>
         private CityPropertyEditorWindow propertyEditorWindow = null;
+        
+        /// <summary>
+        /// 连接提示信息
+        /// </summary>
         private string connectHint = "";
+
+        /// <summary>
+        /// 当前城市类型
+        /// </summary>
+        private CityType currentCityType = CityType.City;
+        
+        /// <summary>
+        /// 城市类型名称数组
+        /// </summary>
+        private string[] cityTypeNames = { "城池", "关卡", "港口" };
 
         public CityBrush(MapEditor e) : base(e)
         {
@@ -172,11 +238,53 @@ namespace Sango.Tools
                     Sango.Log.Info($"选中城市: {city.Name}");
                 }
             }
+            else if (!isConnecting && editor.scenario != null && editor.scenario.citySet != null)
+            {
+                Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
+                Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
+                
+                City newCity = null;
+                switch (currentCityType)
+                {
+                    case CityType.Gate:
+                        newCity = new Gate();
+                        break;
+                    case CityType.Port:
+                        newCity = new Port();
+                        break;
+                    default:
+                        newCity = new City();
+                        break;
+                }
+                
+                newCity.x = offset.col;
+                newCity.y = offset.row;
+                newCity.Name = cityTypeNames[(int)currentCityType];
+                
+                editor.scenario.citySet.Add(newCity);
+                newCity.Render = new EditorBuildingRender(newCity);
+                
+                Sango.Log.Info($"添加{cityTypeNames[(int)currentCityType]}: {newCity.Name}");
+                
+                if (showCityLines)
+                {
+                    CreateLineRenderers();
+                }
+            }
         }
 
         public override void OnGUI()
         {
             GUILayout.Label("城池编辑");
+            GUILayout.Space(10);
+
+            // 城市类型选择
+            GUILayout.Label("城市类型:");
+            int typeIndex = GUILayout.SelectionGrid((int)currentCityType, cityTypeNames, 3);
+            if (typeIndex != (int)currentCityType)
+            {
+                currentCityType = (CityType)typeIndex;
+            }
             GUILayout.Space(10);
 
             // 显示城市线路开关
@@ -303,13 +411,40 @@ namespace Sango.Tools
                 UpdateLineRenderers();
             }
 
-            // 处理鼠标右键点击 - 取消连接操作
-            if (isConnecting && Input.GetMouseButtonDown(1))
+            // 处理鼠标右键点击 - 取消连接操作或取消选择
+            if (Input.GetMouseButtonDown(1))
             {
-                isConnecting = false;
-                connectStartCity = null;
-                connectHint = "连接操作已取消";
-                Sango.Log.Info("连接操作已取消");
+                if (isConnecting)
+                {
+                    isConnecting = false;
+                    connectStartCity = null;
+                    connectHint = "连接操作已取消";
+                    Sango.Log.Info("连接操作已取消");
+                }
+                else if (selectedCity != null)
+                {
+                    if (selectedCity.Render != null)
+                    {
+                        selectedCity.Render.SetFlash(false);
+                    }
+                    selectedCity = null;
+                    Sango.Log.Info("取消选择城市");
+                }
+            }
+
+            // 处理删除城市
+            if (selectedCity != null && Input.GetKeyDown(KeyCode.Delete))
+            {
+                editor.scenario.citySet.Remove(selectedCity);
+                selectedCity.Render?.Clear();
+                Sango.Log.Info($"删除城市: {selectedCity.Name}");
+                selectedCity = null;
+                
+                // 刷新城市线路显示
+                if (showCityLines)
+                {
+                    CreateLineRenderers();
+                }
             }
 
             // 处理鼠标左键点击

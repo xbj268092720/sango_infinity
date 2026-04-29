@@ -13,70 +13,130 @@ using Sango.Tools.UndoRedo;
 
 namespace Sango.Tools
 {
+    /// <summary>
+    /// 地格编辑笔刷
+    /// 支持地格类型、区域、内政、防守等属性的编辑
+    /// </summary>
     public class GridBrush : BrushBase
     {
+        /// <summary>
+        /// 笔刷类型枚举
+        /// </summary>
         public enum BrushType : int
         {
+            /// <summary>
+            /// 地形类型
+            /// </summary>
             TerrainType,
+            /// <summary>
+            /// 区域类型
+            /// </summary>
             Area,
-            //Trap,
-            //Dir,
+            /// <summary>
+            /// 内政属性
+            /// </summary>
             Interior,
+            /// <summary>
+            /// 防守属性
+            /// </summary>
             Defence,
+            /// <summary>
+            /// 贼属性
+            /// </summary>
             Thief,
-            //Flood,
-            //Ruins,
+            /// <summary>
+            /// 未知类型
+            /// </summary>
             Unknown,
         }
+
+        /// <summary>
+        /// 笔刷大小
+        /// </summary>
         public int size = 1;
+        
+        /// <summary>
+        /// 笔刷透明度
+        /// </summary>
         public int opacity;
 
-        //private string[] toolbarTitle = new string[] { "无", "可行走编辑", "地格类型刷", "地格信息编辑" };
+        /// <summary>
+        /// 工具栏标题数组
+        /// </summary>
         private string[] toolbarTitle = new string[] {
             "无",
             "类型",
             "区域",
-            ////"lpB",
-            //"陷阱",
-            //"方向",
             "内政",
             "防守",
             "贼",
-            //"水淹",
-            ////"种类?",
-            //"遗迹"
         };
+        
+        /// <summary>
+        /// 当前编辑模式索引
+        /// </summary>
         private int currentEditMode = 0;
+        
+        /// <summary>
+        /// 当前笔刷类型
+        /// </summary>
         public BrushType brushType = BrushType.Unknown;
+        
+        /// <summary>
+        /// 地形类型纹理名称数组
+        /// </summary>
         public string[] terrainTypeTexNames = new string[] {
             "editor_terrain_type",
             "editor_area_type",
-            //"editor_trap_type",
-            //"editor_dir_type",
             "editor_interior_type",
             "editor_defence_type",
             "editor_thief_type",
-            //"editor_flood_type",
-            //"editor_ruins_type",
         };
+        
+        /// <summary>
+        /// 地形类型纹理数组
+        /// </summary>
         public Texture[] terrainTypeTexes = new Texture[] {
             Texture2D.whiteTexture,
             Texture2D.whiteTexture,
             Texture2D.whiteTexture,
             Texture2D.whiteTexture,
             Texture2D.whiteTexture,
-            //Texture2D.whiteTexture,
-            //Texture2D.whiteTexture,
-            //Texture2D.whiteTexture,
-            //Texture2D.whiteTexture,
         };
+        
+        /// <summary>
+        /// 当前地形类型纹理
+        /// </summary>
         public Texture2D terrainTypeTex;
+        
+        /// <summary>
+        /// 地形类型遮罩纹理
+        /// </summary>
         public Texture2D terrainTypeMaskTex;
+        
+        /// <summary>
+        /// 遮罩纹理列数
+        /// </summary>
         public int terrainTypeMaskCol = 4;
+        
+        /// <summary>
+        /// 遮罩纹理行数
+        /// </summary>
         public int terrainTypeMaskRow = 8;
 
+        /// <summary>
+        /// 是否显示地形类型
+        /// </summary>
         public bool showTerrainType = false;
+        
+        /// <summary>
+        /// 是否显示网格
+        /// </summary>
         private bool showGrid = true;
+        
+        /// <summary>
+        /// 遮罩窗口矩形
+        /// </summary>
         internal UnityEngine.Rect maskWindowRect = new UnityEngine.Rect(20, 20, 256, 256);
 
         private string[] dirTypeTitle = new string[] {
