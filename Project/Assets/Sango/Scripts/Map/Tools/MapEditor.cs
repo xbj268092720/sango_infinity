@@ -682,7 +682,7 @@ namespace Sango.Tools
                 if (brush != null)
                 {
                     brush.OnEnter();
-                    SetModelSelectionMod(currentEditMode == (int)EditorModType.Model);
+                    SetModelSelectionMod(currentEditMode == (int)EditorModType.Model || currentEditMode == (int)EditorModType.City);
                 }
             }
             GUI.backgroundColor = lastColor;

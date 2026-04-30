@@ -40,6 +40,10 @@ namespace Sango.Render
 
         //public Rect bounds;
         private bool _visible = false;
+        /// <summary>
+        /// 是否可保存至地图
+        /// </summary>
+        public bool canSave { get; set; } = false;
 
         public MapCell(MapRender map, int x, int y, int w, int h) : base(map)
         {

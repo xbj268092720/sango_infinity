@@ -227,11 +227,9 @@ namespace Sango.Render
 
         public void AddStatic(IMapManageObject obj)
         {
-            if (MapEditor.IsEditOn)
-                mapModels.AddDynamic(obj);
-            else
-                mapModels.AddStatic(obj);
+            mapModels.AddStatic(obj);
         }
+
         public void RemoveDynamic(IMapManageObject obj)
         {
             mapModels.RemoveDynamic(obj);
@@ -239,11 +237,9 @@ namespace Sango.Render
 
         public void RemoveStatic(IMapManageObject obj)
         {
-            if (MapEditor.IsEditOn)
-                mapModels.RemoveStatic(obj);
-            else
-                mapModels.RemoveStatic(obj);
+            mapModels.RemoveStatic(obj);
         }
+
         public void Remove(IMapManageObject obj)
         {
             if (obj.isStatic)
@@ -510,6 +506,7 @@ namespace Sango.Render
 
         internal void BindModel(MapObject mapObject)
         {
+            Sango.Log.Error($"BIND: objId:{mapObject.objId}, bindId:{mapObject.bindId} ");
             replaceBindModelFunc?.Invoke(mapObject);
         }
 

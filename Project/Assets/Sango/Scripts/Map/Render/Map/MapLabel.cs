@@ -13,6 +13,10 @@ namespace Sango.Render
         /// 地图渲染管理器
         /// </summary>
         public MapRender manager { get; set; }
+        /// <summary>
+        /// 是否可保存至地图
+        /// </summary>
+        public bool canSave { get; set; } = false;
 
         /// <summary>
         /// 边界

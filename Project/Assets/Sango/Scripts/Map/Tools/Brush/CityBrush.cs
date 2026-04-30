@@ -32,6 +32,16 @@ namespace Sango.Tools
         }
 
         /// <summary>
+        /// 城市类型对应的模型类型
+        /// </summary>
+        private Dictionary<CityType, int> cityTypeToModelType = new Dictionary<CityType, int>()
+        {
+            { CityType.City, 1 },
+            { CityType.Gate, 2 },
+            { CityType.Port, 3 }
+        };
+
+        /// <summary>
         /// 城市邻接关系编辑命令
         /// </summary>
         public class CityNeighborEditCommand : IUndoableCommand
@@ -149,8 +159,45 @@ namespace Sango.Tools
         /// </summary>
         private string[] cityTypeNames = { "城池", "关卡", "港口" };
 
+        /// <summary>
+        /// 当前选中的模型配置
+        /// </summary>
+        private ModelConfig selectedModelConfig = null;
+
+        /// <summary>
+        /// 当前预览模型
+        /// </summary>
+        private GameObject previewModel = null;
+
+        /// <summary>
+        /// 当前城市类型对应的模型列表
+        /// </summary>
+        private List<ModelConfig> currentModelList = new List<ModelConfig>();
+
+        /// <summary>
+        /// 滚动位置
+        /// </summary>
+        private Vector2 scrollPos = Vector2.zero;
+
         public CityBrush(MapEditor e) : base(e)
         {
+            UpdateModelList();
+        }
+
+        /// <summary>
+        /// 根据当前城市类型更新模型列表
+        /// </summary>
+        private void UpdateModelList()
+        {
+            currentModelList.Clear();
+            int modelType = cityTypeToModelType[currentCityType];
+            GameData.Instance.ModelConfigs.ForEach(config =>
+            {
+                if (config.modelType == modelType)
+                {
+                    currentModelList.Add(config);
+                }
+            });
         }
 
         public override void OnBrushTypeChange()
@@ -174,6 +221,41 @@ namespace Sango.Tools
             connectStartCity = null;
             ClearLineRenderers();
             ClosePropertyEditorWindow();
+            ClearPreviewModel();
+        }
+
+        /// <summary>
+        /// 清理预览模型
+        /// </summary>
+        private void ClearPreviewModel()
+        {
+            if (previewModel != null)
+            {
+                PoolManager.Recycle(previewModel);
+                previewModel.SetActive(false);
+                previewModel = null;
+            }
+            selectedModelConfig = null;
+        }
+
+        /// <summary>
+        /// 选择城市模型
+        /// </summary>
+        /// <param name="config">模型配置</param>
+        public void SelectModel(ModelConfig config)
+        {
+            selectedModelConfig = config;
+
+            if (previewModel != null)
+            {
+                GameObject.Destroy(previewModel);
+            }
+            previewModel = PoolManager.Create(selectedModelConfig.model);
+            if (previewModel != null)
+            {
+                previewModel.transform.parent = null;
+                previewModel.SetActive(true);
+            }
         }
 
         /// <summary>
@@ -191,54 +273,7 @@ namespace Sango.Tools
 
         public override void Modify(Vector3 center, MapEditor editor)
         {
-            // 处理城市选择
-            City city = GetCityAtPosition(center);
-            if (city != null)
-            {
-                if (isConnecting && connectStartCity != null)
-                {
-                    // 处理城市连接
-                    if (connectStartCity != city)
-                    {
-                        bool isNeighbor = connectStartCity.NeighborList.Contains(city);
-                        if (!isNeighbor)
-                        {
-                            // 添加邻接关系
-                            CityNeighborEditCommand command = new CityNeighborEditCommand(editor, connectStartCity, city, true, $"添加邻接城市: {connectStartCity.Name} - {city.Name}");
-                            editor.undoRedoManager.AddCommand(command, true);
-                            connectHint = $"添加邻接城市: {connectStartCity.Name} - {city.Name}";
-                            Sango.Log.Info($"添加邻接城市: {connectStartCity.Name} - {city.Name}");
-                            // 添加邻接城市后刷新linerenderer的展示
-                            if (showCityLines)
-                            {
-                                CreateLineRenderers();
-                            }
-                        }
-                        else
-                        {
-                            connectHint = $"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市";
-                            Sango.Log.Warning($"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市");
-                        }
-                    }
-                    isConnecting = false;
-                    connectStartCity = null;
-                }
-                else
-                {
-                    // 选择城市
-                    if (selectedCity != null && selectedCity.Render != null)
-                    {
-                        selectedCity.Render.SetFlash(false);
-                    }
-                    selectedCity = city;
-                    if (selectedCity != null && selectedCity.Render != null)
-                    {
-                        selectedCity.Render.SetFlash(true);
-                    }
-                    Sango.Log.Info($"选中城市: {city.Name}");
-                }
-            }
-            else if (!isConnecting && editor.scenario != null && editor.scenario.citySet != null)
+            if (previewModel != null && selectedModelConfig != null)
             {
                 Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
                 Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
@@ -259,7 +294,8 @@ namespace Sango.Tools
                 
                 newCity.x = offset.col;
                 newCity.y = offset.row;
-                newCity.Name = cityTypeNames[(int)currentCityType];
+                newCity.Name = selectedModelConfig.Name;
+                newCity.model = selectedModelConfig.model;
                 
                 editor.scenario.citySet.Add(newCity);
                 newCity.Render = new EditorBuildingRender(newCity);
@@ -269,6 +305,56 @@ namespace Sango.Tools
                 if (showCityLines)
                 {
                     CreateLineRenderers();
+                }
+
+                if (!Input.GetKey(KeyCode.LeftShift))
+                {
+                    ClearPreviewModel();
+                }
+            }
+            else
+            {
+                City city = GetCityAtPosition(center);
+                if (city != null)
+                {
+                    if (isConnecting && connectStartCity != null)
+                    {
+                        if (connectStartCity != city)
+                        {
+                            bool isNeighbor = connectStartCity.NeighborList.Contains(city);
+                            if (!isNeighbor)
+                            {
+                                CityNeighborEditCommand command = new CityNeighborEditCommand(editor, connectStartCity, city, true, $"添加邻接城市: {connectStartCity.Name} - {city.Name}");
+                                editor.undoRedoManager.AddCommand(command, true);
+                                connectHint = $"添加邻接城市: {connectStartCity.Name} - {city.Name}";
+                                Sango.Log.Info($"添加邻接城市: {connectStartCity.Name} - {city.Name}");
+                                if (showCityLines)
+                                {
+                                    CreateLineRenderers();
+                                }
+                            }
+                            else
+                            {
+                                connectHint = $"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市";
+                                Sango.Log.Warning($"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市");
+                            }
+                        }
+                        isConnecting = false;
+                        connectStartCity = null;
+                    }
+                    else
+                    {
+                        if (selectedCity != null && selectedCity.Render != null)
+                        {
+                            selectedCity.Render.SetFlash(false);
+                        }
+                        selectedCity = city;
+                        if (selectedCity != null && selectedCity.Render != null)
+                        {
+                            selectedCity.Render.SetFlash(true);
+                        }
+                        Sango.Log.Info($"选中城市: {city.Name}");
+                    }
                 }
             }
         }
@@ -284,6 +370,40 @@ namespace Sango.Tools
             if (typeIndex != (int)currentCityType)
             {
                 currentCityType = (CityType)typeIndex;
+                UpdateModelList();
+                ClearPreviewModel();
+            }
+            GUILayout.Space(10);
+
+            // 模型选择列表
+            GUILayout.Label("选择模型:");
+            scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(356), GUILayout.Height(200));
+            foreach (var config in currentModelList)
+            {
+                GUILayout.BeginHorizontal();
+                bool isSelected = selectedModelConfig != null && selectedModelConfig.Id == config.Id;
+                UnityEngine.Color lastColor = GUI.backgroundColor;
+                GUI.backgroundColor = isSelected ? UnityEngine.Color.green : UnityEngine.Color.white;
+                if (GUILayout.Button(config.Name, GUILayout.Width(150)))
+                {
+                    SelectModel(config);
+                }
+                GUI.backgroundColor = lastColor;
+                GUILayout.Label($"ID: {config.Id}");
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndScrollView();
+            GUILayout.Space(10);
+
+            // 当前选中模型提示
+            if (selectedModelConfig != null)
+            {
+                GUILayout.Label($"当前选中: {selectedModelConfig.Name}", new GUIStyle(GUI.skin.label) { normal = new GUIStyleState() { textColor = Color.green } });
+                GUILayout.Label("点击地图放置城市，右键取消", new GUIStyle(GUI.skin.label) { fontSize = 12 });
+            }
+            else
+            {
+                GUILayout.Label("请先选择一个模型", new GUIStyle(GUI.skin.label) { normal = new GUIStyleState() { textColor = Color.yellow } });
             }
             GUILayout.Space(10);
 
@@ -388,30 +508,68 @@ namespace Sango.Tools
 
         public override void DrawGizmos(Vector3 center)
         {
-            // 显示鼠标悬停的城市
-            City city = GetCityAtPosition(center);
-            if (city != hoverCity)
+            if (previewModel != null)
             {
-                hoverCity = city;
+                Vector3 pos = center;
+                Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
+                Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
+                pos = editor.map.mapGrid.hexWorld.CoordsToPosition(offset.col, offset.row);
+                pos.y = editor.map.mapGrid.GetGridHeight(offset.col, offset.row);
+                previewModel.transform.position = pos;
             }
-
-            // 绘制连接预览
-            if (isConnecting && connectStartCity != null && hoverCity != null && hoverCity != connectStartCity)
+            else
             {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(connectStartCity.Render.MapObject.transform.position, hoverCity.Render.MapObject.transform.position);
+                City city = GetCityAtPosition(center);
+                if (city != hoverCity)
+                {
+                    hoverCity = city;
+                }
+
+                if (isConnecting && connectStartCity != null && hoverCity != null && hoverCity != connectStartCity)
+                {
+                    Gizmos.color = Color.yellow;
+                    Gizmos.DrawLine(connectStartCity.Render.MapObject.transform.position, hoverCity.Render.MapObject.transform.position);
+                }
             }
         }
 
         public override void Update()
         {
-            // 更新城市线路
+            if (RTEditor.EditorObjectSelection.Instance.SelectedGameObjects.Count > 0)
+            {
+                return;
+            }
+
+            if (previewModel != null)
+            {
+                if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+                {
+                    ClearPreviewModel();
+                    return;
+                }
+
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastLayer))
+                {
+                    if (hit.point != lastCenter)
+                    {
+                        if (!IsPointerOverUI() && Input.GetMouseButtonDown(0))
+                        {
+                            Modify(hit.point, editor);
+                            lastCenter = hit.point;
+                        }
+                        DrawGizmos(hit.point);
+                    }
+                }
+                return;
+            }
+
             if (showCityLines && lineRenderers.Count > 0)
             {
                 UpdateLineRenderers();
             }
 
-            // 处理鼠标右键点击 - 取消连接操作或取消选择
             if (Input.GetMouseButtonDown(1))
             {
                 if (isConnecting)
@@ -432,7 +590,6 @@ namespace Sango.Tools
                 }
             }
 
-            // 处理删除城市
             if (selectedCity != null && Input.GetKeyDown(KeyCode.Delete))
             {
                 editor.scenario.citySet.Remove(selectedCity);
@@ -440,14 +597,12 @@ namespace Sango.Tools
                 Sango.Log.Info($"删除城市: {selectedCity.Name}");
                 selectedCity = null;
                 
-                // 刷新城市线路显示
                 if (showCityLines)
                 {
                     CreateLineRenderers();
                 }
             }
 
-            // 处理鼠标左键点击
             if (!IsPointerOverUI() && Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

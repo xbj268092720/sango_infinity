@@ -41,7 +41,7 @@ namespace Sango.Tools
         /// 模型配置列表
         /// </summary>
         List<ModelConfig> configList = new List<ModelConfig>();
-        
+
         /// <summary>
         /// 默认数据保存路径
         /// </summary>
@@ -56,12 +56,12 @@ namespace Sango.Tools
         /// 对象索引
         /// </summary>
         int objectIndex = -1;
-        
+
         /// <summary>
         /// 当前静态模型列表
         /// </summary>
         List<IMapManageObject> currentStaticModelList;
-        
+
         /// <summary>
         /// 是否显示模型配置
         /// </summary>
@@ -77,7 +77,7 @@ namespace Sango.Tools
         {
             public ModelConfig bindConfig;
             public IMapManageObject bidMapObject;
-            public string[] showContent;
+            public string[] showContent = new string[10];
 
             public void Draw(ModelBrush brush, ModelConfig c)
             {
@@ -85,7 +85,6 @@ namespace Sango.Tools
                 {
                     bindConfig = c;
 
-                    showContent = new string[5];
                     showContent[0] = c.Id.ToString();
                     showContent[1] = c.Name;
                     //showContent[2] = c.mod;
@@ -115,7 +114,6 @@ namespace Sango.Tools
                 {
                     bidMapObject = m;
 
-                    showContent = new string[3];
                     showContent[0] = m.bindId.ToString();
                     showContent[1] = m.objId.ToString();
                     showContent[2] = m.modelId.ToString();
@@ -158,17 +156,17 @@ namespace Sango.Tools
         /// 是否随机方向
         /// </summary>
         public bool randomDir = false;
-        
+
         /// <summary>
         /// 当前预览模型
         /// </summary>
         public GameObject model = null;
-        
+
         /// <summary>
         /// 当前模型配置
         /// </summary>
         public ModelConfig modelConfig = null;
-        
+
         /// <summary>
         /// 是否贴合格子中心
         /// </summary>
@@ -177,13 +175,13 @@ namespace Sango.Tools
         /// <summary>
         /// 对象类型标题数组
         /// </summary>
-        private string[] objectTypeTitle = new string[] { "所有", "内", "军", "植", "其他" };
-        
+        private string[] objectTypeTitle = new string[] { "所有", "城", "关", "港", "内", "军", "植", "其他" };
+
         /// <summary>
         /// 当前对象类型索引
         /// </summary>
-        private int currentObjectType = 0;
-        
+        private int currentObjectType = 1;
+
         /// <summary>
         /// 窗口矩形
         /// </summary>
@@ -201,7 +199,7 @@ namespace Sango.Tools
         {
             if (objectIndex == -1)
             {
-                foreach (IMapManageObject obj in editor.map.mapModels.staticObjects)
+                foreach (IMapManageObject obj in editor.map.mapModels.dynamicObjects)
                 {
                     objectIndex = Math.Max(objectIndex, obj.objId);
                 }
@@ -262,14 +260,12 @@ namespace Sango.Tools
             }
             else
             {
-                int originalModelType = currentObjectType + 3;
-                currentConfigList = configList.FindAll(x => x.modelType == originalModelType);
+                currentConfigList = configList.FindAll(x => x.modelType == currentObjectType);
             }
 
-            if (currentObjectType >= 1)
+            if (currentObjectType >= 1 && currentObjectType <= 3)
             {
-                int originalObjType = currentObjectType + 3;
-                currentStaticModelList = editor.map.mapModels.staticObjects.FindAll(x => x.objType == originalObjType);
+                currentStaticModelList = editor.map.mapModels.dynamicObjects.FindAll(x => x.objType == currentObjectType);
             }
             else
             {
@@ -299,8 +295,8 @@ namespace Sango.Tools
             mapObj.modelId = modelConfig.Id;
             mapObj.modelAsset = modelConfig.model;
             mapObj.position = model.transform.position;
-            if(randomDir)
-                mapObj.rotation = new Vector3(0,UnityEngine.Random.Range(0, 360f),0);
+            if (randomDir)
+                mapObj.rotation = new Vector3(0, UnityEngine.Random.Range(0, 360f), 0);
             else
                 mapObj.rotation = model.transform.rotation.eulerAngles;
             mapObj.scale = model.transform.localScale;
@@ -332,41 +328,41 @@ namespace Sango.Tools
             //}
             UnityEngine.Color lastColor = GUI.backgroundColor;
             GUI.backgroundColor = UnityEngine.Color.cyan;
-            int typeIndex = GUILayout.SelectionGrid(currentObjectType, objectTypeTitle, 3, GUILayout.Height(90));
+            int typeIndex = GUILayout.SelectionGrid(currentObjectType, objectTypeTitle, 4, GUILayout.Height(90));
             if (typeIndex != currentObjectType)
             {
                 currentObjectType = typeIndex;
                 OnObjectTypeChange();
             }
             GUI.backgroundColor = lastColor;
-            if (GUILayout.Button("加载原来模型"))
-            {
-                editor.map.mapModels.ClearAllModels();
-                //editor.CallFunction("LoadDefaultModel");
+            //if (GUILayout.Button("加载原来模型"))
+            //{
+            //    editor.map.mapModels.ClearAllModels();
+            //    //editor.CallFunction("LoadDefaultModel");
 
-                string dataModelFile = Path.FindFile("Data/Model/ModelList.xml");
-                XmlDocument xmlDocument = new XmlDocument();
-                xmlDocument.Load(dataModelFile);
-                int count = xmlDocument.LastChild.ChildNodes.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    XmlNode xmlNode = xmlDocument.LastChild.ChildNodes[i];
-                    int id = int.Parse(xmlNode["Id"].InnerText);
-                    string name = xmlNode["Name"].InnerText;
-                    int model = int.Parse(xmlNode["model"].InnerText);
-                    int x = int.Parse(xmlNode["x"].InnerText);
-                    int y = int.Parse(xmlNode["y"].InnerText);
-                    int h = int.Parse(xmlNode["h"].InnerText);
-                    float r = float.Parse(xmlNode["r"].InnerText);
+            //    string dataModelFile = Path.FindFile("Data/Model/ModelList.xml");
+            //    XmlDocument xmlDocument = new XmlDocument();
+            //    xmlDocument.Load(dataModelFile);
+            //    int count = xmlDocument.LastChild.ChildNodes.Count;
+            //    for (int i = 0; i < count; i++)
+            //    {
+            //        XmlNode xmlNode = xmlDocument.LastChild.ChildNodes[i];
+            //        int id = int.Parse(xmlNode["Id"].InnerText);
+            //        string name = xmlNode["Name"].InnerText;
+            //        int model = int.Parse(xmlNode["model"].InnerText);
+            //        int x = int.Parse(xmlNode["x"].InnerText);
+            //        int y = int.Parse(xmlNode["y"].InnerText);
+            //        int h = int.Parse(xmlNode["h"].InnerText);
+            //        float r = float.Parse(xmlNode["r"].InnerText);
 
-                    MapObject o = MapObject.Create(name, editor.map.CoordsToPosition(x + 28, y + 28), new Vector3(0, r * Mathf.Rad2Deg - 90, 0), Vector3.one);
-                    o.modelId = model;
-                    o.objId = id;
-                    editor.map.AddStatic(o);
+            //        MapObject o = MapObject.Create(name, editor.map.CoordsToPosition(x + 28, y + 28), new Vector3(0, r * Mathf.Rad2Deg - 90, 0), Vector3.one);
+            //        o.modelId = model;
+            //        o.objId = id;
+            //        editor.map.AddStatic(o);
 
-                }
+            //    }
 
-            }
+            //}
 
             anchorByGrid = GUILayout.Toggle(anchorByGrid, "贴合格子中心");
             randomDir = GUILayout.Toggle(randomDir, "随机方向");
@@ -382,6 +378,7 @@ namespace Sango.Tools
                     {
                         isShowModelConfig = false;
                         scrollPos = new Vector2();
+                        OnObjectTypeChange();
                         return;
                     }
 
@@ -393,7 +390,7 @@ namespace Sango.Tools
                         }
                     }
 
-                    scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(356), GUILayout.Height(456));
+                    scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Height(456));
                     for (int i = 0; i < currentConfigList.Count; ++i)
                     {
                         ModelConfig config = currentConfigList[i];
@@ -407,7 +404,10 @@ namespace Sango.Tools
                 if (GUILayout.Button("切换至模型库"))
                 {
                     isShowModelConfig = true;
+                    currentConfigList = null;
+
                     scrollPos = new Vector2();
+                    OnObjectTypeChange();
                     return;
                 }
 
@@ -421,7 +421,7 @@ namespace Sango.Tools
                         }
                     }
 
-                    scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(456), GUILayout.Height(456));
+                    scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Height(456));
                     for (int i = 0; i < currentStaticModelList.Count; ++i)
                     {
                         IMapManageObject config = currentStaticModelList[i];
@@ -510,7 +510,7 @@ namespace Sango.Tools
 
             if (model == null && modelConfig == null && Input.GetMouseButtonDown(0))
             {
-        
+
                 //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 //RaycastHit hit;
                 //if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastObjectLayer))
@@ -548,14 +548,13 @@ namespace Sango.Tools
                         {
                             Modify(hit.point, editor);
                             lastCenter = hit.point;
-                            currentObjectType = -1;
                         }
                         DrawGizmos(hit.point);
                     }
                 }
             }
         }
-        
+
         /// <summary>
         /// 拖拽开始（模型放置不支持拖拽）
         /// </summary>
@@ -564,7 +563,7 @@ namespace Sango.Tools
         {
             // 模型放置只支持点击操作，不支持拖拽
         }
-        
+
         /// <summary>
         /// 拖拽过程（模型放置不支持拖拽）
         /// </summary>
@@ -573,7 +572,7 @@ namespace Sango.Tools
         {
             // 模型放置只支持点击操作，不支持拖拽
         }
-        
+
         /// <summary>
         /// 拖拽结束（模型放置不支持拖拽）
         /// </summary>

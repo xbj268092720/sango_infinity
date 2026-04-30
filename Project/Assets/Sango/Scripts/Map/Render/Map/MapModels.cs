@@ -191,6 +191,12 @@ namespace Sango.Render
 
         public void AddStatic(IMapManageObject obj)
         {
+            if (MapEditor.IsEditOn)
+            {
+                AddDynamic(obj);
+                return;
+            }
+
             //if (staticObjectMap.TryAdd(obj.objId, obj)) {
             staticObjects.Add(obj);
             obj.isStatic = true;
@@ -203,6 +209,12 @@ namespace Sango.Render
 
         public void RemoveStatic(IMapManageObject obj)
         {
+            if (MapEditor.IsEditOn)
+            {
+                RemoveDynamic(obj);
+                return;
+            }
+
             if (staticObjects.Remove(obj))
             {
                 staticObjectsQuadTree.Remove(obj, obj.worldBounds);
@@ -270,18 +282,16 @@ namespace Sango.Render
                 o.visible = false;
             }
             staticObjects.Clear();
+            dynamicObjects.Clear();
         }
 
         internal override void OnSave(BinaryWriter writer)
         {
-            List<IMapManageObject> invalidList = staticObjects.FindAll(x => x.objId == 0 && x.objType == 0 && x.modelId == 0);
-
-            foreach (IMapManageObject o in invalidList)
-                RemoveStatic(o);
-            writer.Write(staticObjects.Count);
-            for (int i = 0; i < staticObjects.Count; ++i)
+            List<IMapManageObject> validList = dynamicObjects.FindAll(x =>x.canSave && (x.objId > 0 || x.objType > 0 || x.modelId > 0));
+            writer.Write(validList.Count);
+            for (int i = 0; i < validList.Count; ++i)
             {
-                IMapManageObject obj = staticObjects[i];
+                IMapManageObject obj = validList[i];
                 writer.Write(obj.objId);
                 writer.Write(obj.objType);
                 writer.Write(obj.bindId);
@@ -296,7 +306,6 @@ namespace Sango.Render
                 writer.Write(obj.scale.y);
                 writer.Write(obj.scale.z);
             }
-
         }
 
         internal override void OnLoad(int versionCode, BinaryReader reader)

@@ -66,7 +66,10 @@ namespace Sango.Core
         /// 是否保持在视图中
         /// </summary>
         bool remainInView { get; set; }
-
+        /// <summary>
+        /// 是否可保存至地图
+        /// </summary>
+        bool canSave { get; set; }
         /// <summary>
         /// 位置
         /// </summary>

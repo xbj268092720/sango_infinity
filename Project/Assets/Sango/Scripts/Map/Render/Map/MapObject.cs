@@ -25,7 +25,10 @@ namespace Sango.Render
         bool _selectable = false;
         public MapRender manager { get; set; }
         public bool remainInView { get; set; }
-
+        /// <summary>
+        /// 是否可保存至地图
+        /// </summary>
+        public virtual bool canSave { get; set; } = true;
         public Tools.Rect bounds { get; set; }
         /// <summary>
         /// 用于绑定物件的ID
