@@ -21,7 +21,6 @@ namespace Sango.Tools
         
         private int newMapWidth = 512;
         private int newMapHeight = 512;
-        private int newMapCellSize = 20;
         private string newMapKey = "";
         
         private Vector2 settingsScrollPosition = Vector2.zero;
@@ -201,8 +200,8 @@ namespace Sango.Tools
                         Screen.width / 2 - 250,
                         windowY,
                         500,
-                        350
-                    );
+                        400
+                    ); 
                 }
 
                 // 确保窗口不会与顶部菜单重叠
@@ -255,6 +254,8 @@ namespace Sango.Tools
                 GUILayout.Label("MapKey <color=red>*必填</color>", new GUIStyle(GUI.skin.label) { fontSize = 14, fontStyle = FontStyle.Bold });
                 GUILayout.Space(8);
 
+                GUILayout.Label("剧本地图需要填写此标识,会在Assets/Map/下面新建一个此名字文件夹,地图相关资源会优先在此存放和读取!!");
+
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("地图标识:", GUILayout.Width(100));
                 newMapKey = GUILayout.TextField(newMapKey, GUILayout.Width(350));
@@ -280,8 +281,7 @@ namespace Sango.Tools
                         return;
                     }
 
-                    editor.CreateNewMap(newMapWidth, newMapHeight, newMapCellSize);
-                    editor.map.WorkContent = newMapKey;
+                    editor.CreateNewMap(newMapWidth, newMapHeight, newMapKey);
                     editor.lastSavedPath = "";
                     showNewMapWindow = false;
                     Sango.Log.Info($"已创建新地图: {newMapWidth} x {newMapHeight}");

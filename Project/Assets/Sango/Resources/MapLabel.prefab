@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 605790848239174846}
   - component: {fileID: 6820584736501310441}
   - component: {fileID: 7545958005650708307}
-  - component: {fileID: 7238656108554053167}
+  - component: {fileID: 6251441639600032368}
   m_Layer: 0
   m_Name: label
   m_TagString: Untagged
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: dcef2bb2db1e9b243adfba24de0757ae, type: 2}
+  m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0.40416813, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -181,7 +181,7 @@ MonoBehaviour:
   scaleFactor: {x: 0.4, y: 1}
   offsetFactor: {x: 0, y: -5, z: 0}
   cacheOffset: {x: 0, y: 15, z: 0}
---- !u!114 &7238656108554053167
+--- !u!114 &6251441639600032368
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -190,9 +190,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5750049921642998163}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28b9d10c4bd60c34799c18ab5949bbf9, type: 3}
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_OutlineColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
-  m_OutlineWidth: 1
-  m_gray: 0
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.88235295}
+  m_EffectDistance: {x: 1.4, y: -1.4}
+  m_UseGraphicAlpha: 1

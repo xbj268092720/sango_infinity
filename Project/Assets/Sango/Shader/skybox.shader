@@ -2,7 +2,7 @@
 
 Shader "Sango/skybox" {
 Properties {
-	_BaseMap("Base (RGB) Trans (A)", 2D) = "white" {}
+	_MainTex("Base (RGB) Trans (A)", 2D) = "white" {}
 	_BeginHeight("Start", Float) = 0
 	_EndHeight("End", Float) = 0
 	_MixBegin("mixBegin", float) = 800//和天空盒混合距离
@@ -59,7 +59,7 @@ SubShader {
 
 			};
 			CBUFFER_START(UnityPerMaterial)
-			float4 _BaseMap_ST;
+			float4 _MainTex_ST;
 			float _EndHeight;
 			float _BeginHeight;
 			float _MixBegin;
@@ -82,7 +82,7 @@ SubShader {
 			{
 				VertexOutput o = (VertexOutput)0;
 				o.vertex = TransformObjectToHClip(v.vertex.xyz);
-				o.texcoord = TRANSFORM_TEX(v.texcoord, _BaseMap);
+				o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
 				float4 posWorld = mul(unity_ObjectToWorld, v.vertex);
 				o.fogCoord.x = posWorld.y;
 				o.screenPos = ComputeScreenPos(o.vertex);

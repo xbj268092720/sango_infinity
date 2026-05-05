@@ -167,10 +167,14 @@ namespace Sango.Render
 
         public void NewMap(int w, int h)
         {
+            Clear();
+            Init();
             InitMat();
             mapWidth = w;
             mapHeight = h;
             CreateDatas();
+            OnMapLoaded?.Invoke();
+
         }
 
         public void LoadFromBMP(int w, int h, string height, string layer, string water)

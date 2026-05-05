@@ -162,18 +162,11 @@ namespace Sango.Tools
             Sango.Core.GameController.Instance.DragMoveViewEnabled = false;
         }
 
-        public Render.MapRender CreateEmptyMap(int w, int h)
+        public void CreateNewMap(int width, int height, string mapName)
         {
-            map = MapRender.Instance;
-            map.NewMap(w, h);
-
-            return map;
-        }
-
-        public void CreateNewMap(int width, int height, int cellSize)
-        {
-            map.LoadMap(Sango.Path.FindFile("Data/Map/Editor/default_map.bin"));
-
+            map.WorkContent = mapName;
+            map.NewMap(width, height);
+            //map.LoadMap(Sango.Path.FindFile("Data/Map/Editor/default_map.bin"));
             map.mapCamera.position = new Vector3(0, 500, 0);
             map.mapCamera.lookRotate = new Vector3(90, -90, 0);
             Camera.main.gameObject.transform.position = map.mapCamera.position;
@@ -320,28 +313,36 @@ namespace Sango.Tools
 
             // 创建空地图
             if (map == null)
-                CreateEmptyMap(1024, 1024);
+                map = MapRender.Instance; //CreateEmptyMap(1024, 1024);
 
-            // 设置基础可视化距离
-            map.showLimitLength = 3500;
-            map.mapFog.fogEnabled = false;
+            map.OnMapLoaded = () =>
+            {
+                // 设置基础可视化距离
+                map.showLimitLength = 3500;
+                map.mapFog.fogEnabled = false;
+                // 不使用游戏相机逻辑,采用另外的编辑机相机逻辑
+                map.mapCamera.enabled = false;
+                map.mapCamera.SetCamera(Camera.main);
+
+                //EditorFreeCamera editorfree = Camera.main.gameObject.AddComponent<Sango.Tools.EditorFreeCamera>();
+                //if (editorfree != null)
+                //    editorfree.lookAt = map.mapCamera.GetCenterTransform();
+                editorToolsBarWindow.visible = true;
+
+                Invoke("DelaySetFreeCamera", 0.1f);
+            };
 
             Shader.EnableKeyword("SANGO_EDITOR");
             Shader.SetGlobalFloat("_BrushType", 0);
             Shader.SetGlobalFloat("_TerrainTypeShowFlag", 0);
-
-            // 不使用游戏相机逻辑,采用另外的编辑机相机逻辑
-            map.mapCamera.enabled = false;
-            map.mapCamera.SetCamera(Camera.main);
-            EditorFreeCamera editorfree = Camera.main.gameObject.AddComponent<Sango.Tools.EditorFreeCamera>();
-            if (editorfree != null)
-                editorfree.lookAt = map.mapCamera.GetCenterTransform();
+           
+            
             Camera.main.farClipPlane = 30000;
             SetModelSelectionMod(false);
             SetGizmoCameraEnable(false);
             EditorCameraExtend.Instance.Camera.farClipPlane = 30000;
 
-            Invoke("DelaySetFreeCamera", 0.1f);
+           
         }
 
         void DelaySetFreeCamera()
