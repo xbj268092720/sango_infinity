@@ -11,6 +11,7 @@ namespace Sango.Core.Player
         public List<ObjectSortTitle> customActionTitleList;
         public List<Person> targetList = new List<Person>();
         public List<Person> target = new List<Person>();
+        public List<Person> counsellorRecommendList = new List<Person>();
 
         public CityRecruit()
         {
@@ -47,6 +48,8 @@ namespace Sango.Core.Player
         {
             personList.Clear();
             target.Clear();
+            counsellorRecommendList.Clear();
+
             customTargetTitleList = new List<ObjectSortTitle>()
             {
                 PersonSortFunction.SortByName,
@@ -55,8 +58,6 @@ namespace Sango.Core.Player
                 PersonSortFunction.SortByLoyalty,
                 PersonSortFunction.GetSortByDistanceDay(TargetCity),
                 PersonSortFunction.SortByBelongCity,
-//                PersonSortFunction.SortByCurrentCity,
-                // 缺履行
                 PersonSortFunction.SortByCommand,
                 PersonSortFunction.SortByStrength,
                 PersonSortFunction.SortByIntelligence,
@@ -85,7 +86,6 @@ namespace Sango.Core.Player
                     }
                 }
             });
-            // 排序：无势力优先 → 无势力按期间(距离天数) → 有势力按忠诚
             targetList.Sort((a, b) =>
             {
                 bool aIsWild = a.BelongForce == null;
@@ -100,6 +100,19 @@ namespace Sango.Core.Player
                 return a.loyalty.CompareTo(b.loyalty);
             });
 
+            if (customActionTitleList == null)
+            {
+                customActionTitleList = new List<ObjectSortTitle>()
+                {
+                    PersonSortFunction.SortByName,
+                    PersonSortFunction.GetSortByContainsInList("军师推荐", counsellorRecommendList),
+                    PersonSortFunction.SortByIntelligence,
+                    PersonSortFunction.SortByPolitics,
+                    PersonSortFunction.SortByGlamour,
+                    PersonSortFunction.SortByFeatureList,
+                };
+            }
+
             Window.Instance.Open(windowName);
         }
         public override void OnDestroy()
@@ -111,13 +124,32 @@ namespace Sango.Core.Player
         public void SetTarget(List<Person> target)
         {
             this.target = target;
+            personList.Clear();
+            
             if (target.Count > 0)
             {
-                Person recommandPerson = ForceAI.CounsellorRecommendRecruitPerson(TargetCity.freePersons, target[0], null);
-                if (recommandPerson != null)
+                counsellorRecommendList.Clear();
+                
+                for (int i = 0; i < TargetCity.freePersons.Count; i++)
                 {
-                    personList.Clear();
-                    personList.Add(recommandPerson);
+                    Person person = TargetCity.freePersons[i];
+                    int probability = GameFormula.Instance.RecruitPersonProbability(person, target[0], 0);
+                    if (probability >= 30)
+                    {
+                        counsellorRecommendList.Add(person);
+                    }
+                }
+                
+                counsellorRecommendList.Sort((a, b) =>
+                {
+                    int probA = GameFormula.Instance.RecruitPersonProbability(a, target[0], 0);
+                    int probB = GameFormula.Instance.RecruitPersonProbability(b, target[0], 0);
+                    return probB.CompareTo(probA);
+                });
+                
+                if (counsellorRecommendList.Count > 0)
+                {
+                    personList.Add(counsellorRecommendList[0]);
                 }
             }
         }
