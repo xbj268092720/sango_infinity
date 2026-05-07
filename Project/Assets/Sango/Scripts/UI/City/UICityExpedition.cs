@@ -422,7 +422,10 @@ using Sango.Core; namespace Sango.UI
                 waterTroopTypePool[cityExpeditionSys.CurSelectWaterTrropTypeIndex].SetSelected(false);
             cityExpeditionSys.CurSelectWaterTrropTypeIndex = buildingTypeItem.index;
             buildingTypeItem.SetSelected(true);
-            cityExpeditionSys.UpdateJobValue();
+            
+            TroopType troopType = cityExpeditionSys.ActivedWaterTroopTypes[buildingTypeItem.index];
+            cityExpeditionSys.AutoMakeTroop(troopType);
+            
             UpdateContent();
         }
 
@@ -432,7 +435,10 @@ using Sango.Core; namespace Sango.UI
                 landTroopTypePool[cityExpeditionSys.CurSelectLandTrropTypeIndex].SetSelected(false);
             cityExpeditionSys.CurSelectLandTrropTypeIndex = buildingTypeItem.index;
             buildingTypeItem.SetSelected(true);
-            cityExpeditionSys.UpdateJobValue();
+            
+            TroopType troopType = cityExpeditionSys.ActivedLandTroopTypes[buildingTypeItem.index];
+            cityExpeditionSys.AutoMakeTroop(troopType);
+            
             UpdateContent();
         }
 

@@ -88,7 +88,25 @@ using Sango.Core; namespace Sango.UI
         public virtual void OnTargetPersonChange(List<Person> personList)
         {
             currentSystem.SetTarget(personList);
-            UpdateContent();
+            
+            if (currentSystem.personList.Count > 0)
+            {
+                string content = $"最适合担任此任务的人，\n除{currentSystem.personList[0].ColorName}之外别无其他人选。";
+                if (currentSystem.personList[0] == TargetCity.BelongForce.Counsellor)
+                {
+                    content = $"我对此任务很有信心，\n请务必交给我吧。";
+                }
+
+                GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, content, () => { GameDialog.Close(); UpdateContent(); });
+                Person person = TargetCity.BelongForce.Counsellor;
+                dialog.SetPerson(person);
+            }
+            else
+            {
+                GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"如今并无适合担任此任务的人选。", () => { GameDialog.Close(); UpdateContent(); });
+                Person person = TargetCity.BelongForce.Counsellor;
+                dialog.SetPerson(person);
+            }
         }
 
         public virtual void OnActionPersonChange(List<Person> personList)
