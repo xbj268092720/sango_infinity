@@ -84,3 +84,5 @@
 /Project/Assets/Plugins/Roslyn.meta
 /.trae
 /Build/Content/AutoSaveMap
+/Project/Builds/StandaloneWindows64
+/.codebuddy
