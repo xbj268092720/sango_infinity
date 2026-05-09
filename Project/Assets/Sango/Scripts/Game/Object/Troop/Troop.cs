@@ -1,3 +1,10 @@
+/*
+ * 文件名：Troop.cs
+ * 描述：部队类，管理游戏中的部队对象
+ * 创建日期：2026-03-27
+ * 最后修改：2026-03-27
+ */
+
 using Sango.Core.Action;
 using Sango.Render;
 using Sango.Tools;
@@ -7,21 +14,40 @@ using TKNewtonsoft.Json;
 
 namespace Sango.Core
 {
+    /// <summary>
+    /// 部队类，管理游戏中的部队对象
+    /// 部队是游戏中的作战单位，包含主将、副将、兵力、士气等属性
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class Troop : SangoObject
     {
+        /// <summary>
+        /// 获取对象类型
+        /// </summary>
         public override SangoObjectType ObjectType { get { return SangoObjectType.Troops; } }
 
+        /// <summary>
+        /// 带颜色的部队名称
+        /// </summary>
         public string ColorName => $"<color=#85B964>{Name}</color>";
+
+        /// <summary>
+        /// AI是否完成行动
+        /// </summary>
         public virtual bool AIFinished { get; set; }
+
+        /// <summary>
+        /// AI是否准备完成
+        /// </summary>
         public virtual bool AIPrepared { get; set; }
+
         /// <summary>
         /// 所属势力
         /// </summary>
         public Force BelongForce => Leader?.BelongForce;
 
         /// <summary>
-        /// 所属势力
+        /// 所属军团
         /// </summary>
         public Corps BelongCorps => Leader?.BelongCorps;
 
@@ -36,7 +62,7 @@ namespace Sango.Core
         public City CurrentCity => cell.BelongCity.BelongCity == null ? cell.BelongCity : cell.BelongCity.BelongCity;
 
         /// <summary>
-        /// 统领
+        /// 统领（主将）
         /// </summary>
         [JsonConverter(typeof(Id2ObjConverter<Person>))]
         [JsonProperty]
@@ -58,16 +84,20 @@ namespace Sango.Core
 
 
         /// <summary>
-        /// 俘虏
+        /// 俘虏列表
         /// </summary>
         [JsonConverter(typeof(SangoObjectListIDConverter<Person>))]
         [JsonProperty]
         public SangoObjectList<Person> captiveList = new SangoObjectList<Person>();
 
 
-        string _troopName;
         /// <summary>
-        /// 部队名
+        /// 部队名称缓存
+        /// </summary>
+        string _troopName;
+
+        /// <summary>
+        /// 部队名称
         /// </summary>
         public override string Name => _troopName;
 
@@ -98,7 +128,14 @@ namespace Sango.Core
         /// </summary>
         [JsonProperty] public int liveDays;
 
+        /// <summary>
+        /// 最大兵力
+        /// </summary>
         public int MaxTroops { get; set; }
+
+        /// <summary>
+        /// 是否满兵
+        /// </summary>
         public bool IsFull => troops >= MaxTroops;
 
         /// <summary>
@@ -127,8 +164,17 @@ namespace Sango.Core
         /// 移动能力
         /// </summary>
         public int MoveAbility => IsInWater ? waterMoveAbility : landMoveAbility;
+
+        /// <summary>
+        /// 水上移动能力
+        /// </summary>
         public int waterMoveAbility;
+
+        /// <summary>
+        /// 陆地移动能力
+        /// </summary>
         public int landMoveAbility;
+
         /// <summary>
         /// 携带粮食
         /// </summary>

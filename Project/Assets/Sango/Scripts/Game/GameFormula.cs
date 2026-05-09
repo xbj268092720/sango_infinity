@@ -1,3 +1,10 @@
+/*
+ * 文件名：GameFormula.cs
+ * 描述：游戏公式类，包含游戏中使用的各种计算公式
+ * 创建日期：2026-03-27
+ * 最后修改：2026-03-27
+ */
+
 using Sango.Render;
 using System;
 using System.Collections.Generic;
@@ -6,10 +13,20 @@ using UnityEngine.UI;
 
 namespace Sango.Core
 {
+    /// <summary>
+    /// 游戏公式类，包含游戏中使用的各种计算公式
+    /// 如招募概率、伤害计算、成功率计算等
+    /// </summary>
     public class GameFormula
     {
+        /// <summary>
+        /// 单例实例
+        /// </summary>
         private static GameFormula _instance = new GameFormula();
 
+        /// <summary>
+        /// 获取或设置单例实例
+        /// </summary>
         public static GameFormula Instance
         {
             set { _instance = value; }

@@ -1,2 +1,2 @@
-JsonTool.exe -src Common -out ../../Build/Content/Data/Common -combine Common
+JsonTool.exe -src Common -out ../../Build/Content/Data/Common
 pause

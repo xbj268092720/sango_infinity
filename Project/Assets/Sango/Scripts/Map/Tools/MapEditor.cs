@@ -4,6 +4,7 @@ using Sango.Tools.UndoRedo;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngine.Rendering.Universal;
 
 namespace Sango.Tools
 {
@@ -19,7 +20,7 @@ namespace Sango.Tools
         /// 编辑器是否启用
         /// </summary>
         public static bool IsEditOn { get; set; }
-        public string DefaultContentName { get { return "Default"; } }
+        public readonly string DefaultContentName = "Default";
 
         public static Sango.Hexagon.Coord SelectedCoord { get; set; }
 
@@ -90,6 +91,11 @@ namespace Sango.Tools
         public MapEditorMenu menu { get; private set; }
 
         /// <summary>
+        /// UI地图编辑器组件引用
+        /// </summary>
+        public UIMapEditor uiMapEditor { get; private set; }
+
+        /// <summary>
         /// 是否使用311相机模式
         /// </summary>
         public bool ViewIs311Camera { get; set; } = true;
@@ -131,7 +137,7 @@ namespace Sango.Tools
             Camera.main.gameObject.SetActive(false);
 
             // 加载模型编辑工具, 设置监听
-            GameObject.Instantiate(Resources.Load("New(Singleton)RTEditor.RuntimeEditorApplication"));
+            DontDestroyOnLoad(GameObject.Instantiate(Resources.Load("New(Singleton)RTEditor.RuntimeEditorApplication")));
 
             // 监听Gizmo变换消息，用于Undo/Redo
             EditorUndoRedoSystem.Instance.overrideAction = RegisterUndoRedoAction;
@@ -157,10 +163,235 @@ namespace Sango.Tools
             // 初始化扩展类
             autoSave = new MapEditorAutoSave(this);
             windows = new MapEditorWindows(this);
-            menu = new MapEditorMenu(this);
+            //menu = new MapEditorMenu(this);
+
+            var cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            cameraData.cameraStack.Add(App.Instance.UICamera);
 
             Sango.Core.GameController.Instance.DragMoveViewEnabled = false;
+
+            // 加载UI地图编辑器预制件
+            LoadUIMapEditor();
         }
+
+        /// <summary>
+        /// 加载UI地图编辑器预制件
+        /// </summary>
+        private void LoadUIMapEditor()
+        {
+            EditorEvent.OnEditorTopMenuInit += OnEditorTopMenuInit;
+
+            GameObject prefab = Sango.Loader.ObjectLoader.LoadObject<GameObject>("Assets/UI/Prefab/window_editor.prefab");
+            if (prefab != null)
+            {
+                GameObject uiRoot = UnityEngine.GameObject.Instantiate(prefab);
+                uiRoot.transform.SetParent(App.Instance.UIRoot, false);
+                uiMapEditor = uiRoot.GetComponent<UIMapEditor>();
+                if (uiMapEditor == null)
+                {
+                    uiMapEditor = uiRoot.AddComponent<UIMapEditor>();
+                }
+                Sango.Log.Info("UI地图编辑器已加载");
+            }
+            else
+            {
+                Sango.Log.Error("加载UI地图编辑器预制件失败");
+            }
+        }
+
+        public void OnEditorTopMenuInit(EditorMenuItemData menuData, UIMapEditor ui)
+        {
+            // 文件菜单
+            menuData.Add("文件/新建地图", () => { windows.ShowNewMapWindow(); });
+            menuData.Add("文件/加载地图", () =>
+            {
+                string[] path = WindowDialog.OpenFileDialog("地图文件(*.bin)\0*.bin;\0\0");
+                if (path != null)
+                {
+                    string fName = path[0];
+                    lastSavedPath = fName;
+                    map.LoadMap(fName);
+                    editorToolsBarWindow.visible = true;
+                    EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
+                    if (editorfree != null)
+                        editorfree.lookAt = map.mapCamera.GetCenterTransform();
+                    BrushBase brush = CheckBrush();
+                    if (brush != null)
+                        brush.OnEnter();
+                    if (ViewIs311Camera)
+                        SetCameraControlType(1);
+                    else
+                        SetCameraControlType(0);
+                    Sango.Log.Info($"地图已加载: {fName}");
+                }
+            });
+            menuData.Add("文件/保存地图", () =>
+            {
+                string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
+                if (path != null)
+                {
+                    lastSavedPath = path;
+                    map.SaveMap(path);
+
+                    if (scenario != null && !string.IsNullOrEmpty(scenario.FilePath))
+                    {
+                        CorrectCityPositions();
+                        scenario.Export(scenario.FilePath);
+                        Sango.Log.Info("剧本数据已同步保存");
+                    }
+
+                    autoSave.ShowSaveNotification($"地图已保存到: {System.IO.Path.GetFileName(path)}");
+                }
+            });
+            menuData.Add("文件/放大2倍保存", () =>
+            {
+                string path = WindowDialog.SaveFileDialog("map_2x.bin", "地图文件(*.bin)\0*.bin;\0\0");
+                if (path != null)
+                {
+                    Sango.Log.Info("放大2倍保存功能待实现");
+                }
+            });
+            menuData.Add("文件/-", null); // 分隔线
+            menuData.Add("文件/从剧本加载地图", () =>
+            {
+                string[] path = WindowDialog.OpenFileDialog("剧本文件(*.json)\0*.json;\0\0");
+                if (path != null)
+                {
+                    LoadMapFromScenario(path[0]);
+                }
+            });
+            menuData.Add("文件/-", null); // 分隔线
+            menuData.Add("文件/设置", () => { windows.ShowSettingsWindow(); });
+            menuData.Add("文件/退出编辑器", () => { UnityEngine.Application.Quit(); });
+
+            // 编辑菜单
+            menuData.Add("编辑/撤销", () => { undoRedoManager.Undo(); });
+            menuData.Add("编辑/重做", () => { undoRedoManager.Redo(); });
+            menuData.Add("编辑/-", null); // 分隔线
+            menuData.Add("编辑/历史记录", () => { operationHistoryWindow.ToggleWindow(); }, true, false);
+            menuData.Add("编辑/清空历史", () => { undoRedoManager.ClearHistory(); });
+            menuData.Add("编辑/-", null); // 分隔线
+            menuData.Add("编辑/加载剧本", () =>
+            {
+                string[] path = WindowDialog.OpenFileDialog("剧本文件(*.json)\0*.json;\0\0");
+                if (path != null)
+                {
+                    LoadScenario(path[0]);
+                }
+            });
+
+            // 视图菜单
+            menuData.Add("视图/固定视角", () =>
+            {
+                ViewIs311Camera = !ViewIs311Camera;
+                if (ViewIs311Camera)
+                    SetCameraControlType(1);
+                else
+                    SetCameraControlType(0);
+            }, true, ViewIs311Camera);
+            menuData.Add("视图/重置相机", () =>
+            {
+                map.mapCamera.position = new Vector3(0, 500, 0);
+                map.mapCamera.lookRotate = new Vector3(90, -90, 0);
+                ViewIs311Camera = false;
+                SetCameraControlType(0);
+                Camera.main.gameObject.transform.position = map.mapCamera.position;
+                Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
+            });
+            menuData.Add("视图/-", null); // 分隔线
+            menuData.Add("视图/加载高度", () =>
+            {
+                string[] path = WindowDialog.OpenFileDialog("高度文件(*.csv)\0*.csv;\0\0");
+                if (path != null)
+                {
+                    Sango.Log.Info("加载高度功能待实现");
+                }
+            });
+            menuData.Add("视图/加载图层", () =>
+            {
+                string[] path = WindowDialog.OpenFileDialog("图层文件(*.csv)\0*.csv;\0\0");
+                if (path != null)
+                {
+                    Sango.Log.Info("加载图层功能待实现");
+                }
+            });
+            menuData.Add("视图/加载水", () =>
+            {
+                string[] path = WindowDialog.OpenFileDialog("水文件(*.csv)\0*.csv;\0\0");
+                if (path != null)
+                {
+                    Sango.Log.Info("加载水功能待实现");
+                }
+            });
+            menuData.Add("视图/-", null); // 分隔线
+            menuData.Add("视图/保存布局", () =>
+            {
+                layoutManager.SaveLayout();
+                string message = "布局已保存";
+                Sango.Log.Info(message);
+                autoSave.ShowSaveNotification(message);
+            });
+            menuData.Add("视图/-", null); // 分隔线
+            menuData.Add("视图/季节/秋", () =>
+            {
+                map.curSeason = 0;
+                foreach (BrushBase brush in brushes)
+                {
+                    brush.OnSeasonChanged(0);
+                }
+            }, true, map.curSeason == 0);
+            menuData.Add("视图/季节/春", () =>
+            {
+                map.curSeason = 1;
+                foreach (BrushBase brush in brushes)
+                {
+                    brush.OnSeasonChanged(1);
+                }
+            }, true, map.curSeason == 1);
+            menuData.Add("视图/季节/夏", () =>
+            {
+                map.curSeason = 2;
+                foreach (BrushBase brush in brushes)
+                {
+                    brush.OnSeasonChanged(2);
+                }
+            }, true, map.curSeason == 2);
+            menuData.Add("视图/季节/冬", () =>
+            {
+                map.curSeason = 3;
+                foreach (BrushBase brush in brushes)
+                {
+                    brush.OnSeasonChanged(3);
+                }
+            }, true, map.curSeason == 3);
+
+            // 渲染菜单
+            menuData.Add("渲染/灯光设置", () => { windows.ShowLightWindow(); });
+            menuData.Add("渲染/雾效设置", () => { windows.ShowFogWindow(); });
+            menuData.Add("渲染/雾效开关", () =>
+            {
+                UnityEngine.RenderSettings.fog = !UnityEngine.RenderSettings.fog;
+            }, true, UnityEngine.RenderSettings.fog);
+
+            // 原版311菜单
+            menuData.Add("原版311/导出地格", () =>
+            {
+                string path = WindowDialog.SaveFileDialog("grid.csv", "CSV文件(*.csv)\0*.csv;\0\0");
+                if (path != null)
+                {
+                    Sango.Log.Info("地格导出功能待实现");
+                }
+            });
+            menuData.Add("原版311/导入地格", () =>
+            {
+                string[] path = WindowDialog.OpenFileDialog("CSV文件(*.csv)\0*.csv;\0\0");
+                if (path != null)
+                {
+                    Sango.Log.Info("地格导入功能待实现");
+                }
+            });
+        }
+
 
         public void CreateNewMap(int width, int height, string mapName)
         {
@@ -184,7 +415,7 @@ namespace Sango.Tools
             {
 #endif
                 scenario = new Sango.Core.Scenario(scenarioPath);
-                
+
                 if (!string.IsNullOrEmpty(scenario.Info.mapType))
                 {
                     string mapPath = Sango.Path.FindFile($"Map/{scenario.Info.mapType}.bin");
@@ -197,24 +428,24 @@ namespace Sango.Tools
                         EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
                         if (editorfree != null)
                             editorfree.lookAt = map.mapCamera.GetCenterTransform();
-                        
+
                         BrushBase brush = CheckBrush();
                         if (brush != null)
                             brush.OnEnter();
-                        
+
                         if (ViewIs311Camera)
                             SetCameraControlType(1);
                         else
                             SetCameraControlType(0);
-                        
+
                         Sango.Log.Info($"地图已加载: {mapPath}");
                     }
                 }
-                
+
                 scenario.LoadContent();
-                
+
                 SpawnCityModels();
-                
+
                 string message = $"剧本已加载: {System.IO.Path.GetFileName(scenarioPath)}";
                 Sango.Log.Info(message);
                 autoSave.ShowSaveNotification(message);
@@ -237,11 +468,11 @@ namespace Sango.Tools
             try
             {
                 scenario = new Sango.Core.Scenario(scenarioPath);
-                
+
                 scenario.LoadContent();
-                
+
                 SpawnCityModels();
-                
+
                 string message = $"剧本数据已加载: {System.IO.Path.GetFileName(scenarioPath)}";
                 Sango.Log.Info(message);
                 autoSave.ShowSaveNotification(message);
@@ -285,7 +516,7 @@ namespace Sango.Tools
                 if (city != null && city.Render != null && city.Render.MapObject != null)
                 {
                     Vector3 worldPos = city.Render.MapObject.transform.position;
-                    
+
                     UnityEngine.Vector2Int gridPos = map.PositionToCoords(worldPos);
                     city.x = gridPos.x;
                     city.y = gridPos.y;
@@ -335,14 +566,14 @@ namespace Sango.Tools
             Shader.EnableKeyword("SANGO_EDITOR");
             Shader.SetGlobalFloat("_BrushType", 0);
             Shader.SetGlobalFloat("_TerrainTypeShowFlag", 0);
-           
-            
+
+
             Camera.main.farClipPlane = 30000;
             SetModelSelectionMod(false);
             SetGizmoCameraEnable(false);
             EditorCameraExtend.Instance.Camera.farClipPlane = 30000;
 
-           
+
         }
 
         void DelaySetFreeCamera()
@@ -654,10 +885,10 @@ namespace Sango.Tools
         public void OnGUI()
         {
             // 委托给菜单扩展类绘制顶部菜单条
-            menu.DrawTopMenuBar();
-            
+            //menu.DrawTopMenuBar();
+
             // 委托给窗口扩展类绘制各个窗口
-            windows.Draw();
+           windows.Draw();
         }
 
         void DrawToolbarWindow(int windowID, EditorWindow window)
@@ -704,7 +935,7 @@ namespace Sango.Tools
 
             // 属性窗口内容 - 添加滚动支持
             scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.ExpandHeight(true));
-            
+
             switch (currentEditMode)
             {
                 case 0:
@@ -714,7 +945,7 @@ namespace Sango.Tools
                     CheckBrush().OnGUI();
                     break;
             }
-            
+
             GUILayout.EndScrollView();
         }
 

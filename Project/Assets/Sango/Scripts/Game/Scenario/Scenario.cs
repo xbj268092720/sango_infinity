@@ -1,3 +1,10 @@
+/*
+ * 文件名：Scenario.cs
+ * 描述：剧本类，管理游戏剧本的所有数据，包括势力、武将、城市、部队等
+ * 创建日期：2026-03-27
+ * 最后修改：2026-03-27
+ */
+
 using TKNewtonsoft.Json;
 using Sango.Render;
 using Sango.Render;
@@ -11,117 +18,322 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Sango.Core
 {
-
+    /// <summary>
+    /// 剧本类，管理游戏剧本的所有数据
+    /// 包含势力、武将、城市、部队、建筑等游戏对象
+    /// 负责剧本的加载、保存、运行等核心功能
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class Scenario : SangoObject
     {
+        /// <summary>
+        /// 获取对象类型
+        /// </summary>
         public override SangoObjectType ObjectType { get { return SangoObjectType.Scenario; } }
 
         #region Data
+        /// <summary>
+        /// 剧本信息
+        /// </summary>
         [JsonProperty(Order = -97)] public ScenarioInfo Info { get; internal set; }
+
+        /// <summary>
+        /// 剧本视图配置
+        /// </summary>
         [JsonProperty(Order = -98)] public ScenarioView View { get; internal set; }
+
+        /// <summary>
+        /// 剧本公共数据
+        /// </summary>
         [JsonProperty(Order = -96)] public ScenarioCommonData CommonData { internal set; get; }
+
+        /// <summary>
+        /// 剧本变量配置
+        /// </summary>
         [JsonProperty(Order = -95)] public ScenarioVariables Variables { internal set; get; }
+
+        /// <summary>
+        /// 地图数据
+        /// </summary>
         [JsonProperty(Order = -94)] public Map Map { internal set; get; }
 
+        /// <summary>
+        /// 势力集合
+        /// </summary>
         [JsonConverter(typeof(SangoObjectSetConverter<Force>))]
         [JsonProperty] public SangoObjectSet<Force> forceSet = new SangoObjectSet<Force>();
 
+        /// <summary>
+        /// 军团集合
+        /// </summary>
         [JsonConverter(typeof(SangoObjectSetConverter<Corps>))]
         [JsonProperty] public SangoObjectSet<Corps> corpsSet = new SangoObjectSet<Corps>();
 
-        // 这个特殊点,会判断Variables的关卡和港口索引来创建不同的类型
+        /// <summary>
+        /// 城市集合（包含关卡和港口）
+        /// </summary>
         [JsonConverter(typeof(SangoObjectSetCityConverter))]
         [JsonProperty] public SangoObjectSet<City> citySet = new SangoObjectSet<City>();
 
+        /// <summary>
+        /// 武将集合
+        /// </summary>
         [JsonConverter(typeof(SangoObjectSetConverter<Person>))]
         [JsonProperty] public SangoObjectSet<Person> personSet = new SangoObjectSet<Person>();
 
+        /// <summary>
+        /// 部队集合
+        /// </summary>
         [JsonConverter(typeof(SangoObjectSetConverter<Troop>))]
         [JsonProperty] public SangoObjectSet<Troop> troopsSet = new SangoObjectSet<Troop>();
 
+        /// <summary>
+        /// 建筑集合
+        /// </summary>
         [JsonConverter(typeof(SangoObjectSetConverter<Building>))]
         [JsonProperty] public SangoObjectSet<Building> buildingSet = new SangoObjectSet<Building>();
 
+        /// <summary>
+        /// 火焰集合
+        /// </summary>
         [JsonConverter(typeof(SangoObjectSetConverter<Fire>))]
         [JsonProperty] public SangoObjectSet<Fire> fireSet = new SangoObjectSet<Fire>();
 
-        /// 结盟信息
+        /// <summary>
+        /// 结盟信息集合
         /// </summary>
         [JsonConverter(typeof(SangoObjectSetConverter<Alliance>))]
         [JsonProperty] public SangoObjectSet<Alliance> allianceSet = new SangoObjectSet<Alliance>();
 
         /// <summary>
-        /// 关系信息
+        /// 势力关系矩阵
         /// </summary>
         [JsonProperty] public int[][] RelationMap { get; set; }
 
+        /// <summary>
+        /// 添加势力到剧本
+        /// </summary>
+        /// <param name="force">势力对象</param>
+        /// <returns>添加的势力</returns>
         public Force Add(Force force) { forceSet.Add(force); return force; }
+
+        /// <summary>
+        /// 添加军团到剧本
+        /// </summary>
+        /// <param name="corps">军团对象</param>
+        /// <returns>添加的军团</returns>
         public Corps Add(Corps corps) { corpsSet.Add(corps); return corps; }
+
+        /// <summary>
+        /// 添加城市到剧本
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <returns>添加的城市</returns>
         public City Add(City city) { citySet.Add(city); return city; }
+
+        /// <summary>
+        /// 添加武将到剧本
+        /// </summary>
+        /// <param name="person">武将对象</param>
+        /// <returns>添加的武将</returns>
         public Person Add(Person person) { personSet.Add(person); return person; }
+
+        /// <summary>
+        /// 添加部队到剧本
+        /// </summary>
+        /// <param name="troop">部队对象</param>
+        /// <returns>添加的部队</returns>
         public Troop Add(Troop troop)
         {
             troopsSet.Add(troop);
             GameEvent.OnTroopCreated?.Invoke(troop, this);
             return troop;
         }
+
+        /// <summary>
+        /// 添加建筑到剧本
+        /// </summary>
+        /// <param name="building">建筑对象</param>
+        /// <returns>添加的建筑</returns>
         public Building Add(Building building) { buildingSet.Add(building); return building; }
+
+        /// <summary>
+        /// 添加火焰到剧本
+        /// </summary>
+        /// <param name="fire">火焰对象</param>
+        /// <returns>添加的火焰</returns>
         public Fire Add(Fire fire) { fireSet.Add(fire); return fire; }
+
+        /// <summary>
+        /// 添加同盟到剧本
+        /// </summary>
+        /// <param name="alliance">同盟对象</param>
+        /// <returns>添加的同盟</returns>
         public Alliance Add(Alliance alliance) { allianceSet.Add(alliance); return alliance; }
+
+        /// <summary>
+        /// 从剧本移除势力
+        /// </summary>
+        /// <param name="force">势力对象</param>
+        /// <returns>移除的势力</returns>
         public Force Remove(Force force)
         {
             forceSet.Remove(force); return force;
         }
+
+        /// <summary>
+        /// 从剧本移除军团
+        /// </summary>
+        /// <param name="corps">军团对象</param>
+        /// <returns>移除的军团</returns>
         public Corps Remove(Corps corps) { corpsSet.Remove(corps); return corps; }
+
+        /// <summary>
+        /// 从剧本移除城市
+        /// </summary>
+        /// <param name="city">城市对象</param>
+        /// <returns>移除的城市</returns>
         public City Remove(City city) { citySet.Remove(city); return city; }
+
+        /// <summary>
+        /// 从剧本移除武将
+        /// </summary>
+        /// <param name="person">武将对象</param>
+        /// <returns>移除的武将</returns>
         public Person Remove(Person person) { personSet.Remove(person); return person; }
+
+        /// <summary>
+        /// 从剧本移除部队
+        /// </summary>
+        /// <param name="troop">部队对象</param>
+        /// <returns>移除的部队</returns>
         public Troop Remove(Troop troop)
         {
             troopsSet.Remove(troop);
             GameEvent.OnTroopDestroyed?.Invoke(troop, this);
             return troop;
         }
+
+        /// <summary>
+        /// 从剧本移除建筑
+        /// </summary>
+        /// <param name="building">建筑对象</param>
+        /// <returns>移除的建筑</returns>
         public Building Remove(Building building) { buildingSet.Remove(building); return building; }
+
+        /// <summary>
+        /// 从剧本移除火焰
+        /// </summary>
+        /// <param name="fire">火焰对象</param>
+        /// <returns>移除的火焰</returns>
         public Fire Remove(Fire fire) { fireSet.Remove(fire); return fire; }
+
+        /// <summary>
+        /// 从剧本移除同盟
+        /// </summary>
+        /// <param name="alliance">同盟对象</param>
+        /// <returns>移除的同盟</returns>
         public Alliance Remove(Alliance alliance) { allianceSet.Remove(alliance); return alliance; }
 
+        /// <summary>
+        /// 城市路径缓存映射
+        /// </summary>
         public Dictionary<string, List<City>> cityPathMap;
 
         #endregion Data
+
+        /// <summary>
+        /// 当前运行的剧本
+        /// </summary>
         public static Scenario Cur { get; private set; }
+
+        /// <summary>
+        /// 所有剧本列表
+        /// </summary>
         public static List<Scenario> all_scenario_list = new List<Scenario>();
+
+        /// <summary>
+        /// 当前选中的剧本
+        /// </summary>
         public static Scenario CurSelected { get; set; }
 
+        /// <summary>
+        /// 剧本文件路径
+        /// </summary>
         public string FilePath { internal set; get; }
+
+        /// <summary>
+        /// 待运行的势力队列
+        /// </summary>
         private Queue<Force> runForces = new Queue<Force>();
+
+        /// <summary>
+        /// 当前正在运行的势力
+        /// </summary>
         public Force CurRunForce { get; private set; }
+
+        /// <summary>
+        /// 当前季节
+        /// </summary>
         public SeasonType CurSeason { get { return GameDefine.SeasonInMonth[Info.month - 1]; } }
 
+        /// <summary>
+        /// 开始玩家列表
+        /// </summary>
         List<int> startPlayerList;
 
         /// <summary>
-        /// 调试用
+        /// 调试用暂停回合数
         /// </summary>
         internal int PauseTrunCount = -1;
+
+        /// <summary>
+        /// 当前回合数
+        /// </summary>
         public int TurnCount => Info.turnCount;
 
+        /// <summary>
+        /// 是否使用线程运行
+        /// </summary>
         public bool useThreadRun = false;
+
+        /// <summary>
+        /// 异步任务
+        /// </summary>
         Task task;
 
+        /// <summary>
+        /// 构造函数，根据文件路径创建剧本
+        /// </summary>
+        /// <param name="filePath">剧本文件路径</param>
         public Scenario(string filePath)
         {
             this.FilePath = filePath;
             LoadInfo();
         }
 
+        /// <summary>
+        /// 准备列表
+        /// </summary>
         List<IDatabase> prepareList = new List<IDatabase>();
+
+        /// <summary>
+        /// 事件接收列表
+        /// </summary>
         List<IDatabase> eventReciveList = new List<IDatabase>();
 
+        /// <summary>
+        /// 默认构造函数
+        /// </summary>
         public Scenario()
         {
         }
 
+        /// <summary>
+        /// 获取指定类型的数据集合
+        /// </summary>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <returns>数据集合</returns>
         public Database<T> GetDatabase<T>() where T : SangoObject, new()
         {
             Type tType = typeof(T);

@@ -1,3 +1,10 @@
+/*
+ * 文件名：Corps.cs
+ * 描述：军团类，管理游戏中的军团对象
+ * 创建日期：2026-03-27
+ * 最后修改：2026-03-27
+ */
+
 using TKNewtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -5,23 +12,53 @@ using UnityEngine;
 
 namespace Sango.Core
 {
+    /// <summary>
+    /// 军团类，管理游戏中的军团对象
+    /// 军团是势力下的组织单位，包含多个城市和武将
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class Corps : SangoObject
     {
+        /// <summary>
+        /// 获取对象类型
+        /// </summary>
         public override SangoObjectType ObjectType { get { return SangoObjectType.Corps; } }
+
+        /// <summary>
+        /// 是否为玩家军团
+        /// </summary>
         public virtual bool IsPlayer => BelongForce?.IsPlayer ?? false;
+
         /// <summary>
         /// 获取是否为当前的玩家势力
         /// </summary>
         public bool IsCurPlayer => BelongForce?.IsCurPlayer ?? false;
 
+        /// <summary>
+        /// AI是否完成行动
+        /// </summary>
         public virtual bool AIFinished { get; set; }
+
+        /// <summary>
+        /// AI是否准备完成
+        /// </summary>
         public virtual bool AIPrepared { get; set; }
 
+        /// <summary>
+        /// 军团编号文本
+        /// </summary>
         public readonly string[] numberTxt = { "零", "一", "二", "三", "四", "五", "六", "七", "八" };
+
+        /// <summary>
+        /// 军团名称
+        /// </summary>
         public override string Name {
             get { return $"第{numberTxt[number]}军团"; }
         }
+
+        /// <summary>
+        /// 带颜色的军团名称
+        /// </summary>
         public string ColorName { get { return $"<color=#7CCADB>第{numberTxt[number]}军团</color>"; } }
 
         /// <summary>
@@ -39,7 +76,7 @@ namespace Sango.Core
         public Person Comander;
 
         /// <summary>
-        /// 番号
+        /// 军团番号
         /// </summary>
         [JsonProperty]
         public int number;

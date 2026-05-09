@@ -7,7 +7,7 @@ namespace Sango
     public class CreatePool<T> where T : Component
     {
         T target;
-        List<T> instance_list = new List<T>();
+        public List<T> instance_list = new List<T>();
         List<T> pool_list = new List<T>();
 
         public CreatePool(T target)

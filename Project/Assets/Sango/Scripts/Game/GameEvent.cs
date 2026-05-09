@@ -1,9 +1,20 @@
+/*
+ * 文件名：GameEvent.cs
+ * 描述：游戏事件类，定义游戏中所有的事件委托
+ * 创建日期：2026-03-27
+ * 最后修改：2026-03-27
+ */
+
 using Sango.Core.Tools;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Sango.Core
 {
+    /// <summary>
+    /// 游戏事件类，定义游戏中所有的事件委托
+    /// 包含全局事件、剧本事件、窗口事件、游戏事件、武将事件、城市事件、部队事件等
+    /// </summary>
     public class GameEvent : EventBase
     {
 
@@ -473,6 +484,11 @@ namespace Sango.Core
         public static EventDelegate<Person> OnPersonLevelUp;
 
         /// <summary>
+        /// 武将装备变更事件
+        /// </summary>
+        public static EventDelegate<Person> OnPersonEquipmentChanged;
+
+        /// <summary>
         /// 势力忠诚换季衰减概率
         /// </summary>
         public static EventDelegate<Force, OverrideData<int>> OnForcePersonLoyaltyChangeProbability;
@@ -573,6 +589,16 @@ namespace Sango.Core
         /// 当需要选择决策时
         /// </summary>
         public static EventDelegate<DuelSystem> OnDuelDecisionRequired;
+
+        /// <summary>
+        /// 当单挑决策已做出时
+        /// </summary>
+        public static EventDelegate<DuelSystem> OnDuelDecisionMade;
+
+        /// <summary>
+        /// 当单挑行动发生时
+        /// </summary>
+        public static EventDelegate<DuelSystem, Person, Person, AttackResult> OnDuelAction;
 
         #region Diplomacy
         /// <summary>

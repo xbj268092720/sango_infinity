@@ -1,3 +1,10 @@
+/*
+ * 文件名：Skill.cs
+ * 描述：技能类，管理游戏中的技能配置
+ * 创建日期：2026-03-27
+ * 最后修改：2026-03-27
+ */
+
 using System;
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
@@ -6,9 +13,16 @@ using UnityEngine;
 
 namespace Sango.Core
 {
+    /// <summary>
+    /// 技能类，管理游戏中的技能配置
+    /// 包含技能类型、攻击力、施法范围、效果等属性
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class Skill : SangoObject
     {
+        /// <summary>
+        /// 获取对象类型
+        /// </summary>
         public override SangoObjectType ObjectType { get { return SangoObjectType.Skill; } }
 
         /// <summary>
