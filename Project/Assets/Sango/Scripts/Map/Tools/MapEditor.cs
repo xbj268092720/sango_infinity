@@ -98,7 +98,7 @@ namespace Sango.Tools
         /// <summary>
         /// 是否使用311相机模式
         /// </summary>
-        public bool ViewIs311Camera { get; set; } = true;
+        public bool ViewIs311Camera { get; set; } = false;
 
         public string lastSavedPath { get; set; } = "";
 
@@ -117,7 +117,7 @@ namespace Sango.Tools
             timeInterval = 1.0f / frameLimit;
             Sango.Path.Init();
             //Path.AddSearchPath("D:/project_tk/Build/Mods/CoreMap");
-            string assetsPath = $"{Application.dataPath}/Mods/Content/Assets/Map/Default";
+            string assetsPath = $"{Sango.Path.ContentRootPath}/Assets/Map/{DefaultContentName}";
             Sango.Path.AddSearchPath(assetsPath, false);
 
             IsEditOn = true;
@@ -170,8 +170,6 @@ namespace Sango.Tools
 
             Sango.Core.GameController.Instance.DragMoveViewEnabled = false;
 
-            // 加载UI地图编辑器预制件
-            LoadUIMapEditor();
         }
 
         /// <summary>
@@ -339,7 +337,7 @@ namespace Sango.Tools
                 {
                     brush.OnSeasonChanged(0);
                 }
-            }, true, map.curSeason == 0);
+            }, true, map.curSeason == 0).toggleGroup = 1;
             menuData.Add("视图/季节/春", () =>
             {
                 map.curSeason = 1;
@@ -347,7 +345,7 @@ namespace Sango.Tools
                 {
                     brush.OnSeasonChanged(1);
                 }
-            }, true, map.curSeason == 1);
+            }, true, map.curSeason == 1).toggleGroup = 1;
             menuData.Add("视图/季节/夏", () =>
             {
                 map.curSeason = 2;
@@ -355,7 +353,7 @@ namespace Sango.Tools
                 {
                     brush.OnSeasonChanged(2);
                 }
-            }, true, map.curSeason == 2);
+            }, true, map.curSeason == 2).toggleGroup = 1;
             menuData.Add("视图/季节/冬", () =>
             {
                 map.curSeason = 3;
@@ -363,7 +361,7 @@ namespace Sango.Tools
                 {
                     brush.OnSeasonChanged(3);
                 }
-            }, true, map.curSeason == 3);
+            }, true, map.curSeason == 3).toggleGroup = 1;
 
             // 渲染菜单
             menuData.Add("渲染/灯光设置", () => { windows.ShowLightWindow(); });
@@ -574,6 +572,8 @@ namespace Sango.Tools
             EditorCameraExtend.Instance.Camera.farClipPlane = 30000;
 
 
+            // 加载UI地图编辑器预制件
+            LoadUIMapEditor();
         }
 
         void DelaySetFreeCamera()
@@ -585,6 +585,7 @@ namespace Sango.Tools
             Camera.main.gameObject.transform.position = map.mapCamera.position;
             Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
 
+            //
             terrain_brush.AutoImportLayerTexture();
         }
 

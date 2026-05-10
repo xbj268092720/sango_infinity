@@ -32,12 +32,23 @@ namespace Sango.Tools
             // 如果是Toggle类型的菜单项
             if (menuData.isToggle)
             {
-                // 切换Toggle状态
-                menuData.Toggle();
-                
-                // 更新图标显示
-                UpdateToggleIcon();
-                
+                // 如果有toggleGroup且当前是开启状态，则不关闭（保持开启）
+                // 否则切换Toggle状态
+                if (menuData.toggleGroup == 0 || !menuData.isToggleOn)
+                {
+                    // ToggleGroup互斥逻辑：关闭同组其他toggle
+                    if (menuData.toggleGroup != 0)
+                    {
+                        DisableOtherToggleInGroup();
+                    }
+
+                    // 切换Toggle状态
+                    menuData.Toggle();
+
+                    // 更新图标显示
+                    UpdateToggleIcon();
+                }
+
                 // 如果有回调则执行
                 if (menuData.action != null)
                 {
@@ -53,6 +64,26 @@ namespace Sango.Tools
                 }
             }
             rootUI.CloseMenu();
+        }
+
+        /// <summary>
+        /// 关闭同一ToggleGroup中的其他Toggle
+        /// </summary>
+        private void DisableOtherToggleInGroup()
+        {
+            if (rootPanel == null || rootPanel.menuItems == null) return;
+            if (menuData.toggleGroup == 0) return;
+
+            foreach (var siblingData in rootPanel.menuItems)
+            {
+                if (siblingData != menuData &&
+                    siblingData.isToggle &&
+                    siblingData.toggleGroup == menuData.toggleGroup &&
+                    siblingData.isToggleOn)
+                {
+                    siblingData.SetToggle(false, false);
+                }
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)

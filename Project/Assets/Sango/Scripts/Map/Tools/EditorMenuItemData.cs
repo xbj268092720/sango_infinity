@@ -13,6 +13,7 @@ namespace Sango.Tools
         public bool isSeparator = false;
         public bool isToggle = false;
         public bool isToggleOn = false;
+        public int toggleGroup = 0; // Toggle互斥组，0表示不参与互斥，非0值表示同组内互斥
         public bool isValid = true; // 菜单项是否可用，false时置灰
         public string icon; // 可选的图标
         public List<EditorMenuItemData> menuItems = new List<EditorMenuItemData>();
@@ -28,19 +29,20 @@ namespace Sango.Tools
         /// <param name="isToggle">是否为Toggle类型</param>
         /// <param name="isToggleOn">Toggle是否选中</param>
         /// <param name="onToggleChanged">Toggle状态改变时的回调</param>
-        public void Add(string name, System.Action action, bool isToggle, bool isToggleOn, Action<bool> onToggleChanged = null)
+        /// <returns>添加的菜单项数据</returns>
+        public EditorMenuItemData Add(string name, System.Action action, bool isToggle, bool isToggleOn, Action<bool> onToggleChanged = null)
         {
             // 处理分隔线
             if (name == "-")
             {
                 menuItems.Add(new EditorMenuItemData() { displayName = "-", isSeparator = true });
-                return;
+                return null;
             }
             string[] subName = name.Split('/');
-            Add(subName, action, isToggle, isToggleOn, onToggleChanged);
+            return Add(subName, action, isToggle, isToggleOn, onToggleChanged);
         }
 
-        private void Add(string[] name, System.Action action, bool isToggle, bool isToggleOn, Action<bool> onToggleChanged)
+        private EditorMenuItemData Add(string[] name, System.Action action, bool isToggle, bool isToggleOn, Action<bool> onToggleChanged)
         {
             string mainName = name[0];
             EditorMenuItemData data = menuItems.Find(x => x.displayName == mainName);
@@ -60,7 +62,7 @@ namespace Sango.Tools
             {
                 string[] co = new string[name.Length - 1];
                 System.Array.Copy(name, 1, co, 0, co.Length);
-                data.Add(co, action, isToggle, isToggleOn, onToggleChanged);
+                return data.Add(co, action, isToggle, isToggleOn, onToggleChanged);
             }
             else
             {
@@ -68,6 +70,7 @@ namespace Sango.Tools
                 data.isToggle = isToggle;
                 data.isToggleOn = isToggleOn;
                 data.onToggleChanged = onToggleChanged;
+                return data;
             }
         }
 
@@ -139,14 +142,13 @@ namespace Sango.Tools
         /// <summary>
         /// 添加菜单项（普通类型）
         /// </summary>
-        public void Add(string name, System.Action action)
+        public EditorMenuItemData Add(string name, System.Action action)
         {
-
             string[] subName = name.Split('/');
-            Add(subName, action);
+            return Add(subName, action);
         }
 
-        private void Add(string[] name, System.Action action)
+        private EditorMenuItemData Add(string[] name, System.Action action)
         {
             string mainName = name[0];
 
@@ -154,7 +156,7 @@ namespace Sango.Tools
             if (mainName == "-")
             {
                 menuItems.Add(new EditorMenuItemData() { displayName = "-", isSeparator = true });
-                return;
+                return null;
             }
 
             EditorMenuItemData data = menuItems.Find(x => x.displayName == mainName);
@@ -171,11 +173,12 @@ namespace Sango.Tools
             {
                 string[] co = new string[name.Length - 1];
                 System.Array.Copy(name, 1, co, 0, co.Length);
-                data.Add(co, action);
+                return data.Add(co, action);
             }
             else
             {
                 data.action = action;
+                return data;
             }
         }
     }
