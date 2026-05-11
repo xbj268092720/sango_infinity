@@ -79,8 +79,8 @@ namespace Sango.Core.Player
             {
                 buttonDatas = selectButtons;
             }
-            //if (customSortTitles.Count > 1)
-            //    Objects.Sort(customSortItems[1].Sort);
+            if (customSortTitles.Count > 1)
+                Objects.Sort(customSortItems[1].Sort);
             GameSystemManager.Instance.Push(this);
         }
 

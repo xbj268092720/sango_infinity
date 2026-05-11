@@ -192,7 +192,7 @@ namespace Sango.UI
             foodLabel.text = $"{targetTroop.food}/{targetCity.food}";
 
             int foodCost = targetTroop.PrepeareFoodCost();
-            int turnCount = (int)(targetTroop.food / foodCost);
+            int turnCount = foodCost > 0 ? (int)(targetTroop.food / foodCost) : 0;
             dayTurnLabel.text = $"{turnCount * 10}日";
 
             SetItemLabel(itemTroopsLabel, targetCity.troops, targetTroop.troops);
