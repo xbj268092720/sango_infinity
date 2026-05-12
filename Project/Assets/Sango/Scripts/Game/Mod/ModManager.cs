@@ -195,19 +195,22 @@ namespace Sango.Mod
             for (int i = 0; i < mModList.Count; i++)
                 mModList[i].LoadLanguage();
 
-            Task.Run(() =>
-            {
-                try
-                {
-                    for (int i = 0; i < mModList.Count; i++)
-                        mModList[i].LoadScenario();
-                }
-                catch (System.Exception e)
-                {
-                    Sango.Log.Error(e + e.StackTrace);
-                }
-            }
-            );
+            //Task.Run(() =>
+            //{
+            //    try
+            //    {
+            //        for (int i = 0; i < mModList.Count; i++)
+            //            mModList[i].LoadScenario();
+            //    }
+            //    catch (System.Exception e)
+            //    {
+            //        Sango.Log.Error(e + e.StackTrace);
+            //    }
+            //}
+            //);
+
+            for (int i = 0; i < mModList.Count; i++)
+                mModList[i].LoadScenario();
 
             for (int i = 0; i < mModList.Count; i++)
                 mModList[i].LoadUI();

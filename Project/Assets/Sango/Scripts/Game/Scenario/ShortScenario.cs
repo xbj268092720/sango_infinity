@@ -117,6 +117,7 @@ namespace Sango.Core
         public static ShortScenario Cur { get; private set; }
         public static List<ShortScenario> all_scenario_info_list = new List<ShortScenario>();
         public static ShortScenario CurSelected { get; set; }
+        public string ModName { internal set; get; }
 
         public string FilePath { internal set; get; }
         Task task;
@@ -149,14 +150,15 @@ namespace Sango.Core
             }
         }
 
-        public static void Add(string path)
+        public static ShortScenario Add(string path)
         {
             if (!File.Exists(path))
-                return;
+                return null;
 
             ShortScenario scenario = new ShortScenario(path);
 
             all_scenario_info_list.Add(scenario);
+            return scenario;
         }
 
         public void LoadInfo()
@@ -238,6 +240,12 @@ namespace Sango.Core
         {
             ScenarioInfo scenarioInfo = Info;
             return $"{scenarioInfo.year}年 {scenarioInfo.month}月 {scenarioInfo.name}";
+        }
+
+        public string GetModIDName(string mod)
+        {
+            ScenarioInfo scenarioInfo = Info;
+            return $"[{mod}]{scenarioInfo.id} {scenarioInfo.year}年 {scenarioInfo.month}月 {scenarioInfo.name}";
         }
     }
 }

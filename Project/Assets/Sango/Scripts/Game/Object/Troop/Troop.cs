@@ -1083,8 +1083,10 @@ namespace Sango.Core
         public int TroopsLevelBoost(int value, int troopTypeLv)
         {
             ScenarioVariables Variables = Scenario.Cur.Variables;
-            if (troopTypeLv < 0 || troopTypeLv > Variables.troops_adaptation_level_boost.Length)
-                return value;
+            if (troopTypeLv < 0)
+                troopTypeLv = 0;
+            if (troopTypeLv >= Variables.troops_adaptation_level_boost.Length)
+                troopTypeLv = Variables.troops_adaptation_level_boost.Length - 1;
 
             return value * Variables.troops_adaptation_level_boost[troopTypeLv] / 100;
         }
@@ -1589,8 +1591,8 @@ namespace Sango.Core
                     p.ChangeCurrentCity(city);
                     p.BelongTroop = null;
                 });
+                captiveList.Clear();
             }
-            captiveList.Clear();
             captiveList = null;
 
             // 返还兵装

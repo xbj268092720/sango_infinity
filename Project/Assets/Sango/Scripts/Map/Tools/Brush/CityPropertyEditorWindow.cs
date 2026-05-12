@@ -91,6 +91,8 @@ namespace Sango.Tools
         {
             GUILayout.Label("基础属性");
             GUILayout.Space(5);
+            selectedCity.Name = EditCityProperty("名字", selectedCity.Name);
+
             EditCityProperty("粮食", ref selectedCity.food, 0, 999999);
             EditCityProperty("金钱", ref selectedCity.gold, 0, 999999);
             EditCityProperty("人口", ref selectedCity.population, 0, 999999);
@@ -193,6 +195,20 @@ namespace Sango.Tools
                 value = newValue;
             }
             GUILayout.EndHorizontal();
+        }
+
+        private string EditCityProperty(string name, string value)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(100));
+            string newValueStr = GUILayout.TextField(value, GUILayout.Width(100));
+            if (newValueStr.Equals(value))
+            {
+                CreateEditCommand(name.ToLower(), value, newValueStr, $"修改城市{name}: {value} -> {newValueStr}");
+                value = newValueStr;
+            }
+            GUILayout.EndHorizontal();
+            return value;
         }
 
         private void EditCityProperty(string name, ref byte value, int min, int max)

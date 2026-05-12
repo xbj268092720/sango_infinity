@@ -283,15 +283,18 @@ namespace Sango.Tools
                 {
                     case CityType.Gate:
                         newCity = new Gate();
+                        newCity.BuildingType = GameData.Instance.ScenarioCommonData.BuildingTypes.Get(2);
                         break;
                     case CityType.Port:
                         newCity = new Port();
+                        newCity.BuildingType = GameData.Instance.ScenarioCommonData.BuildingTypes.Get(3);
                         break;
                     default:
                         newCity = new City();
+                        newCity.BuildingType = GameData.Instance.ScenarioCommonData.BuildingTypes.Get(1);
                         break;
                 }
-                
+                newCity.CityLevelType = GameData.Instance.ScenarioCommonData.CityLevelTypes.Get(1);
                 newCity.x = offset.col;
                 newCity.y = offset.row;
                 newCity.Name = selectedModelConfig.Name;

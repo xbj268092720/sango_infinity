@@ -1,14 +1,11 @@
-using UnityEngine;
-using System.IO;
-using System;
 using HSVPicker;
-using System.Drawing;
 using Sango.Render;
-using Sango;
-using System.Collections.Generic;
-using DG.Tweening.Plugins.Core.PathCore;
-using Sango.Core;
 using Sango.Tools.UndoRedo;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using UnityEngine;
 
 namespace Sango.Tools
 {
@@ -65,77 +62,77 @@ namespace Sango.Tools
         /// 笔刷大小
         /// </summary>
         public float size = 5f;
-        
+
         /// <summary>
         /// 笔刷透明度
         /// </summary>
         public float opacity;
-        
+
         /// <summary>
         /// 工具栏标题数组
         /// </summary>
         private string[] toolbarTitle = new string[] { "升高", "降低", "平整", "平滑", "贴图", "水面", "BaseMap画笔", "BaseMap橡皮擦" };
-        
+
         /// <summary>
         /// 当前编辑模式索引
         /// </summary>
         private int currentEditMode = 0;
-        
+
         /// <summary>
         /// 笔刷纹理数组
         /// </summary>
         public Texture[] brushTexture;
-        
+
         /// <summary>
         /// 当前笔刷类型
         /// </summary>
         public BrushType brushType = BrushType.Unknown;
-        
+
         /// <summary>
         /// 纹理索引
         /// </summary>
         private int textureIndex = 0;
-        
+
         /// <summary>
         /// 滚动位置
         /// </summary>
         private Vector2 scrollPos;
-        
+
         /// <summary>
         /// 底图数组
         /// </summary>
         public RenderTexture[] baseMap;
-        
+
         /// <summary>
         /// 临时底图
         /// </summary>
         public RenderTexture temp_baseMap;
-        
+
         /// <summary>
         /// 笔刷索引
         /// </summary>
         private int brushIndex = 0;
-        
+
         /// <summary>
         /// 笔刷材质
         /// </summary>
         private Material brushMat;
-        
+
         /// <summary>
         /// 绘制材质
         /// </summary>
         private Material blitMat;
-        
+
         /// <summary>
         /// 地图大小
         /// </summary>
         private Vector2 mapSize;
-        
+
         /// <summary>
         /// 颜色选择器
         /// </summary>
         private ColorPicker picker;
-        
+
         /// <summary>
         /// 笔刷颜色
         /// </summary>
@@ -145,17 +142,17 @@ namespace Sango.Tools
         /// 拖拽相关变量 - 顶点数据变更字典
         /// </summary>
         private Dictionary<int, TerrainEditCommand.VertexDataChange> dragChangesMap = new Dictionary<int, TerrainEditCommand.VertexDataChange>();
-        
+
         /// <summary>
         /// 拖拽编辑类型
         /// </summary>
         private TerrainEditCommand.EditType dragEditType;
-        
+
         /// <summary>
         /// 拖拽描述
         /// </summary>
         private string dragDescription;
-        
+
         /// <summary>
         /// 拖拽边界
         /// </summary>
@@ -1089,12 +1086,37 @@ namespace Sango.Tools
                     break;
                 case BrushType.Texture:
                     {
-                        GUILayout.BeginHorizontal();
-                        if (GUILayout.Button("自动加载图层信息"))
+                        GUILayout.BeginVertical();
+                        if (GUILayout.Button("自动加载图层信息4800-0"))
                         {
-                            AutoImportLayerTexture();
+                            string path = WindowDialog.OpenFolderDialog("选择目录");
+                            if (path != null)
+                            {
+                                string[] rpStr = new string[]
+                                {
+                                    "4800-",
+                                    "4801-",
+                                    "4802-",
+                                    "4803-",
+                                };
+                                AutoImportAndCreateLayerTexture(path, rpStr, 0);
+                            }
                         }
-
+                        if (GUILayout.Button("自动加载图层信息4801-1"))
+                        {
+                            string path = WindowDialog.OpenFolderDialog("选择目录");
+                            if (path != null)
+                            {
+                                string[] rpStr = new string[]
+                                {
+                                    "4801-",
+                                    "4802-",
+                                    "4803-",
+                                    "4804-",
+                                };
+                                AutoImportAndCreateLayerTexture(path, rpStr, 1);
+                            }
+                        }
                         if (GUILayout.Button("保存图层数据到BMP"))
                         {
                             string path = WindowDialog.SaveFileDialog("layer.bmp", "贴图文件(*.bmp)|*.bmp\0");
@@ -1121,7 +1143,7 @@ namespace Sango.Tools
 #endif
                             }
                         }
-                        GUILayout.EndHorizontal();
+                        GUILayout.EndVertical();
                     }
                     break;
                 case BrushType.Water:
@@ -1359,7 +1381,6 @@ namespace Sango.Tools
                 Shader.SetGlobalVector("_BrushUV", new Vector2((center.z) / mapSize.x, (mapSize.y - center.x) / mapSize.y));
             }
         }
-
         public void AutoImportLayerTexture()
         {
             string[][] seasonfiles = new string[4][];
@@ -1381,6 +1402,93 @@ namespace Sango.Tools
                         seasonfiles[j][i] = "";
                     }
                 }
+            }
+
+            int len = editor.map.mapLayer.layerDatas.Length;
+            if (len < maxCount)
+            {
+                for (int j = len; j < maxCount; ++j)
+                    editor.map.mapLayer.AddLayer();
+            }
+
+            for (int i = 0; i < editor.map.mapLayer.layerDatas.Length - 1; ++i)
+            {
+                MapLayer.LayerData data_layer = editor.map.mapLayer.layerDatas[i];
+                for (int j = 0; j < 4; ++j)
+                {
+                    data_layer.diffuseTexName[j] = System.IO.Path.GetFileNameWithoutExtension(seasonfiles[j][i]);
+                }
+                data_layer.AutoLoadDiffuse();
+            }
+
+            int waterBegin = maxCount;
+
+            // 处理水层
+            seasonfiles = new string[4][];
+            maxCount = 0;
+            for (int j = 0; j < 4; ++j)
+            {
+                seasonfiles[j] = new string[100];
+                string seasonName = MapRender.SeasonNames[j];
+                for (int i = 0; i < 100; i++)
+                {
+                    string file = Path.FindFile($"Terrain/{seasonName}/water_{i}");
+                    if (file != null)
+                    {
+                        maxCount = Math.Max(maxCount, (i + 1));
+                        seasonfiles[j][i] = file;
+                    }
+                    else
+                    {
+                        seasonfiles[j][i] = "";
+                    }
+                }
+            }
+
+            for (int j = 0; j < maxCount; ++j)
+                editor.map.mapLayer.AddLayer();
+
+            for (int i = 0; i < maxCount; ++i)
+            {
+                MapLayer.LayerData data_layer = editor.map.mapLayer.layerDatas[waterBegin + i];
+                for (int j = 0; j < 4; ++j)
+                {
+                    data_layer.diffuseTexName[j] = System.IO.Path.GetFileNameWithoutExtension(seasonfiles[j][i]);
+                }
+                data_layer.AutoLoadDiffuse();
+            }
+
+        }
+
+        public void AutoImportAndCreateLayerTexture(string dir, string[] rpStr, int offset)
+        {
+            string[][] seasonfiles = new string[4][];
+            int maxCount = 0;
+            for (int j = 0; j < 4; ++j)
+            {
+                seasonfiles[j] = new string[100];
+                string seasonName = MapRender.SeasonNames[j];
+                string replaceStr = rpStr[j];
+                for (int i = 0; i < 100; i++)
+                {
+                    string file = ($"{dir}/{replaceStr}{i + offset}.png");
+                    if (File.Exists(file))
+                    {
+                        string saveFile = $"{Path.ContentRootPath}/Assets/Map/{editor.map.WorkContent}/Terrain/{seasonName}/layer_{i}.png";
+                        Sango.Directory.Create(saveFile, false);
+                        File.Copy(file, saveFile);
+                        maxCount = Math.Max(maxCount, (i + 1));
+                        seasonfiles[j][i] = saveFile;
+                    }
+                    else
+                    {
+                        seasonfiles[j][i] = "";
+                    }
+                }
+
+                string water_src_file = $"{Path.ContentRootPath}/Assets/Map/Default/Terrain/{seasonName}/water_0.png";
+                string water_saveFile = $"{Path.ContentRootPath}/Assets/Map/{editor.map.WorkContent}/Terrain/{seasonName}/water_0.png";
+                File.Copy(water_src_file, water_saveFile);
             }
 
             int len = editor.map.mapLayer.layerDatas.Length;

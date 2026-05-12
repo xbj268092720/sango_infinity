@@ -98,7 +98,7 @@ namespace Sango.Tools
         /// <summary>
         /// 是否使用311相机模式
         /// </summary>
-        public bool ViewIs311Camera { get; set; } = false;
+        public bool ViewIs311Camera { get; set; } = true;
 
         public string lastSavedPath { get; set; } = "";
 
@@ -203,7 +203,7 @@ namespace Sango.Tools
             menuData.Add("文件/新建地图", () => { windows.ShowNewMapWindow(); });
             menuData.Add("文件/加载地图", () =>
             {
-                string[] path = WindowDialog.OpenFileDialog("地图文件(*.bin)\0*.bin;\0\0");
+                string[] path = WindowDialog.OpenFileDialog("加载地图", $"{Path.ContentRootPath}/Map", "地图文件(*.bin)\0*.bin;\0\0");
                 if (path != null)
                 {
                     string fName = path[0];
@@ -225,7 +225,7 @@ namespace Sango.Tools
             });
             menuData.Add("文件/保存地图", () =>
             {
-                string path = WindowDialog.SaveFileDialog("map.bin", "地图文件(*.bin)\0*.bin;\0\0");
+                string path = WindowDialog.SaveFileDialog("保存地图", $"{Path.ContentRootPath}/Map", "map.bin", "地图文件(*.bin)\0*.bin;\0\0");
                 if (path != null)
                 {
                     lastSavedPath = path;
@@ -252,7 +252,8 @@ namespace Sango.Tools
             menuData.Add("文件/-", null); // 分隔线
             menuData.Add("文件/从剧本加载地图", () =>
             {
-                string[] path = WindowDialog.OpenFileDialog("剧本文件(*.json)\0*.json;\0\0");
+
+                string[] path = WindowDialog.OpenFileDialog("加载剧本", $"{Path.ContentRootPath}/Scenario", "剧本文件(*.json)\0*.json;\0\0");
                 if (path != null)
                 {
                     LoadMapFromScenario(path[0]);
@@ -289,7 +290,7 @@ namespace Sango.Tools
             }, true, ViewIs311Camera);
             menuData.Add("视图/重置相机", () =>
             {
-                map.mapCamera.position = new Vector3(0, 500, 0);
+                map.mapCamera.position = new Vector3(500, 0, 500);
                 map.mapCamera.lookRotate = new Vector3(90, -90, 0);
                 ViewIs311Camera = false;
                 SetCameraControlType(0);
@@ -299,27 +300,17 @@ namespace Sango.Tools
             menuData.Add("视图/-", null); // 分隔线
             menuData.Add("视图/加载高度", () =>
             {
-                string[] path = WindowDialog.OpenFileDialog("高度文件(*.csv)\0*.csv;\0\0");
-                if (path != null)
-                {
-                    Sango.Log.Info("加载高度功能待实现");
-                }
+                map.mapData.LoadHeight();
+
             });
             menuData.Add("视图/加载图层", () =>
             {
-                string[] path = WindowDialog.OpenFileDialog("图层文件(*.csv)\0*.csv;\0\0");
-                if (path != null)
-                {
-                    Sango.Log.Info("加载图层功能待实现");
-                }
+                map.mapData.LoadLayer();
             });
             menuData.Add("视图/加载水", () =>
             {
-                string[] path = WindowDialog.OpenFileDialog("水文件(*.csv)\0*.csv;\0\0");
-                if (path != null)
-                {
-                    Sango.Log.Info("加载水功能待实现");
-                }
+                map.mapData.LoadWater();
+
             });
             menuData.Add("视图/-", null); // 分隔线
             menuData.Add("视图/保存布局", () =>
@@ -374,19 +365,11 @@ namespace Sango.Tools
             // 原版311菜单
             menuData.Add("原版311/导出地格", () =>
             {
-                string path = WindowDialog.SaveFileDialog("grid.csv", "CSV文件(*.csv)\0*.csv;\0\0");
-                if (path != null)
-                {
-                    Sango.Log.Info("地格导出功能待实现");
-                }
+                grid_brush.SaveTo311GridData();
             });
             menuData.Add("原版311/导入地格", () =>
             {
-                string[] path = WindowDialog.OpenFileDialog("CSV文件(*.csv)\0*.csv;\0\0");
-                if (path != null)
-                {
-                    Sango.Log.Info("地格导入功能待实现");
-                }
+                grid_brush.Load311GridData();
             });
         }
 
@@ -396,7 +379,7 @@ namespace Sango.Tools
             map.WorkContent = mapName;
             map.NewMap(width, height);
             //map.LoadMap(Sango.Path.FindFile("Data/Map/Editor/default_map.bin"));
-            map.mapCamera.position = new Vector3(0, 500, 0);
+            map.mapCamera.position = new Vector3(500, 0, 500);
             map.mapCamera.lookRotate = new Vector3(90, -90, 0);
             Camera.main.gameObject.transform.position = map.mapCamera.position;
             Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
@@ -580,11 +563,13 @@ namespace Sango.Tools
         {
             map.mapCamera.position = new Vector3(0, 500, 0);
             map.mapCamera.lookRotate = new Vector3(90, -90, 0);
-            ViewIs311Camera = true;
-            SetCameraControlType(1);
+            ViewIs311Camera = false;
+            SetCameraControlType(0);
             Camera.main.gameObject.transform.position = map.mapCamera.position;
             Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
 
+            UnityEngine.RenderSettings.fog = false;
+            
             //
             terrain_brush.AutoImportLayerTexture();
         }

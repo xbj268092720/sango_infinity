@@ -819,7 +819,7 @@ namespace Sango.Tools
                 editor.map.mapGrid.ApplyRangMask();
             }
         }
-        void Load311GridData()
+        public void Load311GridData()
         {
             string[] path = WindowDialog.OpenFileDialog("地格文件(*.SHEX)|*.SHEX\0");
             if (path != null)
@@ -830,7 +830,7 @@ namespace Sango.Tools
             }
         }
 
-        void SaveTo311GridData()
+        public void SaveTo311GridData()
         {
             string path = WindowDialog.SaveFileDialog("4791.SHEX", "地格文件(*.SHEX)|*.SHEX\0");
             if (path != null)

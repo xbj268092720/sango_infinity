@@ -304,6 +304,14 @@ namespace Sango.Core
                 city.troops -= troops;
                 troop.troops = troops;
             }
+            else
+            {
+                // 最低运输兵力
+                int troops = 1;
+                city.troops -= troops;
+                troop.troops = troops;
+            }
+
             if (target.gold < target.GoldLimit)
             {
                 int left = target.GoldLimit - target.gold;
@@ -325,7 +333,7 @@ namespace Sango.Core
             troop = city.EnsureTroop(troop, scenario);
             city.CurActiveTroop = troop;
 #if SANGO_DEBUG
-            Sango.Log.Info($"{scenario.GetDateStr()}{city.BelongForce.Name}势力在{city.Name}由{troop.Leader.Name}率领运输队出城 向{target.BelongForce?.Name}的{target.Name}运输物资!");
+            Sango.Log.Info($"{scenario.GetDateStr()}{city.BelongForce.Name}势力在{city.Name}由{troop.Leader.Name}率领运输队{troop.troops}出城 向{target.BelongForce?.Name}的{target.Name}运输物资!");
 #endif
             troop.SetMission(MissionType.TroopTransformGoodsToCity, target.Id);
             return true;
@@ -1322,6 +1330,8 @@ namespace Sango.Core
         /// <returns>创建的部队</returns>
         public static Troop AIMakeTroop(City city, int minTurn, bool isAttack, Scenario scenario)
         {
+            if(city.troops == 0) return null;
+
             int minEquipNeed = 5000;
             if (isAttack)
             {
@@ -1443,6 +1453,12 @@ namespace Sango.Core
         public static Troop AIMakeTransportTroop(City city, City target, int troops, int gold, int food, ItemStore itemStore, Scenario scenario)
         {
             if (city.freePersons.Count <= 0) return null;
+            if (city.troops <= 0) return null;
+            if (troops <= 0)
+            {
+                Sango.Log.Error("why 00!!");
+                return null;
+            }
             TroopType troopType = scenario.GetObject<TroopType>(6);
             Person[] persons = ForceAI.CounsellorRecommendTransportTroop(city.freePersons);
             Person leader = persons[0];

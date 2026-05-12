@@ -144,12 +144,17 @@ namespace Sango.Mod
         public void LoadScenario()
         {
             string path = GetFullPath("Scenario");
+            int count = ShortScenario.all_scenario_info_list.Count;
             Directory.EnumFiles(path, "*.json", SearchOption.TopDirectoryOnly, (file) =>
             {
 #if SANGO_DEBUG
                 Sango.Log.Info($"Find Scenario: {file}");
 #endif
-                ShortScenario.Add(file);
+                ShortScenario shortScenario = ShortScenario.Add(file);
+                shortScenario.Info.id = count + shortScenario.Info.id;
+                shortScenario.ModName = Id;
+                Scenario scenario = Scenario.Add(file);
+                scenario.Info.id = count + scenario.Info.id;
             });
         }
         public string GetFullPath(string path)

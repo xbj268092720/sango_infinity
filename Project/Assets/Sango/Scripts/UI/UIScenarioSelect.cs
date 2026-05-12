@@ -49,7 +49,11 @@ using Sango.Core; namespace Sango.UI
                 item.gameObject.SetActive(true);
                 int selIndex = i;
                 item.targetIndex = selIndex;
-                item.SetName(scenario.GetIDName()).SetSelected(i == curSelectIndex);
+                if(string.IsNullOrEmpty(scenario.ModName))
+                    item.SetName(scenario.GetIDName()).SetSelected(i == curSelectIndex);
+                else
+                    item.SetName(scenario.GetModIDName(scenario.ModName)).SetSelected(i == curSelectIndex);
+                
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
                 item.BindCall(() => { OnNext(); });
 #else

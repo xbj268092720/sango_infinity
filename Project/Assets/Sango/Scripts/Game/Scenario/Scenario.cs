@@ -605,13 +605,14 @@ namespace Sango.Core
             //}
             return null;
         }
-        public static void Add(string path)
+        public static Scenario Add(string path)
         {
             if (!File.Exists(path))
-                return;
+                return null;
 
             Scenario scenario = new Scenario(path);
             all_scenario_list.Add(scenario);
+            return scenario;
         }
         public void LoadInfo()
         {
@@ -1491,13 +1492,18 @@ namespace Sango.Core
         public void Export(string path)
         {
             ScenarioCommonData saveData = CommonData;
-            CommonData = null;
+            ScenarioVariables saveVariables = Variables;
             ScenarioView tempView = View;
+            Map saveMap = Map;
+            CommonData = null;
+            Variables = null;
+            Map = null;
             View = null;
             Sango.Directory.Create(path, false);
             JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
             jsonSerializerSettings.Formatting = TKNewtonsoft.Json.Formatting.Indented;
             jsonSerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            jsonSerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
             jsonSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; // 忽略循环引用
             JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
             using (StreamWriter writer = System.IO.File.CreateText(path))
@@ -1505,6 +1511,8 @@ namespace Sango.Core
                 serializer.Serialize(writer, this);
             }
             CommonData = saveData;
+            Variables = saveVariables;
+            Map = saveMap;
             View = tempView;
         }
 
