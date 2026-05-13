@@ -166,6 +166,8 @@ using Sango.Core; namespace Sango.UI
 
                     foreach (var k in city.buildingCountMap.Keys)
                     {
+                        if(!buildingCountMap.ContainsKey(k))
+                            buildingCountMap.Add(k, 0);
                         buildingCountMap[k] += city.buildingCountMap[k];
                     }
 
