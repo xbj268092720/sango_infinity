@@ -54,7 +54,7 @@ namespace Sango.Core
         {
             Target = city.BelongForce;
             if (CityMenuCanShow())
-                menuData.Add(Name, 20, null, OnClickMenuItem, city.BelongForce != null);
+                menuData.Add(Name, 20, city.BelongForce, OnClickMenuItem, city.BelongForce != null);
         }
 
         protected virtual void OnClickMenuItem(IContextMenuItem contextMenuItem)
@@ -67,7 +67,9 @@ namespace Sango.Core
             });
 
             all_objects = obj_list;
-            Target = all_objects[0] as Force;
+            Target = contextMenuItem.CustomData as Force;
+            if (Target == null)
+                Target = all_objects[0] as Force;
             Push();
         }
 
