@@ -197,7 +197,7 @@ namespace Sango.Core
             name = "政治",
             width = 50,
             valueGetCall = x => x.Politics.ToString(),
-            personSortFunc = (a, b) => a.Politics.CompareTo(b.Politics),
+            personSortFunc = (a, b) => b.Politics.CompareTo(a.Politics),
         };
 
         public static SortTitle SortByGlamour = new SortTitle()

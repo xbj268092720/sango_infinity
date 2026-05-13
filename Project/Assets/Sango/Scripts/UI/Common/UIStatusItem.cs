@@ -27,16 +27,16 @@ using Sango.Core; namespace Sango.UI
         {
             if (person == null)
             {
-                SetStatus(0, PersonSortFunction.SortByStrength.name, 0);
-                SetStatus(1, PersonSortFunction.SortByCommand.name, 0);
+                SetStatus(0, PersonSortFunction.SortByCommand.name, 0);
+                SetStatus(1, PersonSortFunction.SortByStrength.name, 0);
                 SetStatus(2, PersonSortFunction.SortByIntelligence.name, 0);
                 SetStatus(3, PersonSortFunction.SortByPolitics.name, 0);
                 SetStatus(4, PersonSortFunction.SortByGlamour.name, 0);
                 return;
             }
 
-            SetStatus(0, PersonSortFunction.SortByStrength.name, person.Strength);
-            SetStatus(1, PersonSortFunction.SortByCommand.name, person.Command);
+            SetStatus(0, PersonSortFunction.SortByCommand.name, person.Command);
+            SetStatus(1, PersonSortFunction.SortByStrength.name, person.Strength);
             SetStatus(2, PersonSortFunction.SortByIntelligence.name, person.Intelligence);
             SetStatus(3, PersonSortFunction.SortByPolitics.name, person.Politics);
             SetStatus(4, PersonSortFunction.SortByGlamour.name, person.Glamour);
