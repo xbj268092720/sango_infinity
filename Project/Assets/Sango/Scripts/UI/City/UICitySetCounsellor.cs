@@ -1,4 +1,4 @@
-﻿using Sango.Core.Player;
+using Sango.Core.Player;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
@@ -61,7 +61,7 @@ using Sango.Core; namespace Sango.UI
         public void OnSelectPerson()
         {
             GameSystem.GetSystem<PersonSelectSystem>().Start(currentSystem.targetList,
-               currentSystem.personList, 1, OnPersonChange, currentSystem.customTitleList, currentSystem.customTitleName);
+               currentSystem.personList, 1, OnPersonChange, currentSystem.customTitleList, currentSystem.customTitleName, 2);
         }
 
         public virtual void OnPersonChange(List<Person> personList)

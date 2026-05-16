@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using static Sango.Core.PersonSortFunction;
 
@@ -54,7 +54,7 @@ namespace Sango.Core.Player
             WindowInterface?.Refresh();
         }
 
-        public void Start(List<Person> persons, List<Person> resultList, int limit, Action<List<Person>> action, List<ObjectSortTitle> customSortTitles, string cutomSortTitleName)
+        public void Start(List<Person> persons, List<Person> resultList, int limit, Action<List<Person>> action, List<ObjectSortTitle> customSortTitles, string cutomSortTitleName, int sortIndex = 1)
         {
             selectLimit = Math.Min(limit, persons.Count);
             Objects = new List<SangoObject>(persons);
@@ -79,8 +79,8 @@ namespace Sango.Core.Player
             {
                 buttonDatas = selectButtons;
             }
-            if (customSortTitles.Count > 1)
-                Objects.Sort(customSortItems[1].Sort);
+            if (customSortTitles.Count > sortIndex && sortIndex >= 0)
+                Objects.Sort(customSortItems[sortIndex].Sort);
             GameSystemManager.Instance.Push(this);
         }
 
