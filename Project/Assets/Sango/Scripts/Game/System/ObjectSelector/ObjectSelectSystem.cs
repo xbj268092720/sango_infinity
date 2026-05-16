@@ -1,4 +1,4 @@
-﻿using Sango.UI;
+using Sango.UI;
 using System;
 using System.Collections.Generic;
 
@@ -52,7 +52,10 @@ namespace Sango.Core.Player
 
         public void Add(int index)
         {
-            selected.Add(Objects[index]);
+            if (!selected.Contains(Objects[index]))
+            {
+                selected.Add(Objects[index]);
+            }
 
             // 点选模式
             if (ClickMode)

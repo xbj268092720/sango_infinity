@@ -1,4 +1,4 @@
-﻿using Sango.Core.Player;
+using Sango.Core.Player;
 using System.Collections.Generic;
 using UnityEngine.UI;
 

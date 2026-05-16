@@ -27,10 +27,8 @@ namespace Sango.Core.Player
             customActionTitleList = new List<ObjectSortTitle>()
             {
                 PersonSortFunction.SortByName,
-                PersonSortFunction.SortByIntelligence,
-                PersonSortFunction.SortByPolitics,
+                PersonSortFunction.GetSortByRecruitRecommend(counsellorRecommendList),
                 PersonSortFunction.SortByGlamour,
-                PersonSortFunction.SortByFeatureList,
             };
 
         }
@@ -105,11 +103,8 @@ namespace Sango.Core.Player
                 customActionTitleList = new List<ObjectSortTitle>()
                 {
                     PersonSortFunction.SortByName,
-                    PersonSortFunction.GetSortByContainsInList("军师推荐", counsellorRecommendList),
-                    PersonSortFunction.SortByIntelligence,
-                    PersonSortFunction.SortByPolitics,
+                    PersonSortFunction.GetSortByRecruitRecommend(counsellorRecommendList),
                     PersonSortFunction.SortByGlamour,
-                    PersonSortFunction.SortByFeatureList,
                 };
             }
 

@@ -1,4 +1,4 @@
-﻿using Sango.Core.Player;
+using Sango.Core.Player;
 using System.Collections.Generic;
 using System.Text;
 
@@ -63,7 +63,7 @@ namespace Sango.Core
                         titleList.Add(SortByBelongForce);
                         titleList.Add(SortByBelongCorps);
                         titleList.Add(SortByBelongCity);
-                        //                        titleList.Add(SortByBelongCity);//应该是所在城市，剧本缺
+                        titleList.Add(SortByCurrentCity);
                         titleList.Add(SortByState);
                         titleList.Add(SortByIsCityLeader);
                         titleList.Add(SortByLoyalty);
@@ -189,7 +189,7 @@ namespace Sango.Core
             name = "智力",
             width = 50,
             valueGetCall = x => x.Intelligence.ToString(),
-            personSortFunc = (a, b) => a.Intelligence.CompareTo(b.Intelligence),
+            personSortFunc = (a, b) => -a.Intelligence.CompareTo(b.Intelligence),
         };
 
         public static SortTitle SortByPolitics = new SortTitle()
@@ -459,6 +459,54 @@ namespace Sango.Core
             };
         }
 
+        public static SortTitle GetSortBySearchingRecommend(List<Person> recommendList, int featureId)
+        {
+            return new SortTitle()
+            {
+                name = "军师推荐",
+                width = 80,
+                valueGetCall = x =>
+                {
+                    bool isRecommend = recommendList.Contains(x);
+                    if (isRecommend) return "○";
+                    return "✕";
+                },
+                personSortFunc = (a, b) =>
+                {
+                    bool aRecommend = recommendList.Contains(a);
+                    bool bRecommend = recommendList.Contains(b);
+                    bool aFeature = a.HasFeatrue(featureId);
+                    bool bFeature = b.HasFeatrue(featureId);
+
+                    int aScore = (aRecommend ? 2 : 0) + (aFeature ? 1 : 0);
+                    int bScore = (bRecommend ? 2 : 0) + (bFeature ? 1 : 0);
+
+                    if (aScore != bScore)
+                        return -aScore.CompareTo(bScore);
+
+                    return -a.Politics.CompareTo(b.Politics);
+                }
+            };
+        }
+
+        public static SortTitle GetSortByRecruitRecommend(List<Person> recommendList)
+        {
+            return new SortTitle()
+            {
+                name = "军师推荐",
+                width = 80,
+                valueGetCall = x => recommendList.Contains(x) ? "○" : "✕",
+                personSortFunc = (a, b) =>
+                {
+                    bool aRecommend = recommendList.Contains(a);
+                    bool bRecommend = recommendList.Contains(b);
+                    if (aRecommend != bRecommend)
+                        return -aRecommend.CompareTo(bRecommend);
+                    return -a.Glamour.CompareTo(b.Glamour);
+                }
+            };
+        }
+
         public static SortTitle GetSortByDistanceDay(City where)
         {
             return new SortTitle()
@@ -677,6 +725,24 @@ namespace Sango.Core
                 bool aIsLeader = a.BelongCity != null && a == a.BelongCity.Leader;
                 bool bIsLeader = b.BelongCity != null && b == b.BelongCity.Leader;
                 return bIsLeader.CompareTo(aIsLeader);
+            }
+        };
+
+        public static SortTitle SortByIsCounsellor = new SortTitle()
+        {
+            name = "军师",
+            width = 50,
+            valueGetCall = x =>
+            {
+                if (x.BelongForce == null)
+                    return "✕";
+                return x == x.BelongForce.Counsellor ? "○" : "✕";
+            },
+            personSortFunc = (a, b) =>
+            {
+                bool aIsCounsellor = a.BelongForce != null && a == a.BelongForce.Counsellor;
+                bool bIsCounsellor = b.BelongForce != null && b == b.BelongForce.Counsellor;
+                return bIsCounsellor.CompareTo(aIsCounsellor);
             }
         };
 

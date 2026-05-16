@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Sango.Core.Player
 {
@@ -45,7 +45,7 @@ namespace Sango.Core.Player
                             bool bhas = b.HasFeatrue(recommandFeatrues);
                             if (ahas == bhas)
                             {
-                                return -a.Glamour.CompareTo(b.Glamour);
+                                return -a.Politics.CompareTo(b.Politics);
                             }
                             else
                             {
@@ -63,7 +63,7 @@ namespace Sango.Core.Player
                 customTitleList = new List<ObjectSortTitle>()
                 {
                     PersonSortFunction.SortByName,
-                    PersonSortFunction.GetSortByContainsInList("军师推荐", counsellorRecommendList),
+                    PersonSortFunction.GetSortBySearchingRecommend(counsellorRecommendList, 86),
                     PersonSortFunction.SortByPolitics,
                     PersonSortFunction.GetSortByFeatrueId(86),
                 };
@@ -82,10 +82,7 @@ namespace Sango.Core.Player
             if (personList.Count <= 0)
                 return;
 
-            for (int i = 0; i < personList.Count; i++)
-            {
-                TargetCity.JobSearching(personList.ToArray());
-            }
+            TargetCity.JobSearching(personList.ToArray());
 
             Done();
             GameMedia.Instance.PlayDoAcitonSfx();

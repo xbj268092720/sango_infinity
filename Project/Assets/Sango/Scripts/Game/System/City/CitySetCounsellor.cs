@@ -1,4 +1,4 @@
-﻿using Sango.UI;
+using Sango.UI;
 using System.Collections.Generic;
 
 namespace Sango.Core.Player
@@ -19,10 +19,11 @@ namespace Sango.Core.Player
             customTitleList = new List<ObjectSortTitle>()
             {
                 PersonSortFunction.SortByName,
+                PersonSortFunction.SortByIsCounsellor,
                 PersonSortFunction.SortByIntelligence,
                 PersonSortFunction.SortByPolitics,
-                PersonSortFunction.SortByGlamour,
-                PersonSortFunction.SortByFeatureList,
+                PersonSortFunction.SortByOfficial,
+                PersonSortFunction.SortByMerit,
             };
 
         }

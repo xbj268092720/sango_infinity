@@ -18,7 +18,7 @@ namespace Sango.Render
         public override void Enter(Scenario scenario)
         {
             int rs = city.DoJobSearching(person, out target);
-            if (rs < 0)
+            if(rs < 0)
             {
                 if (city.BelongCorps.IsPlayer)
                 {
@@ -33,12 +33,6 @@ namespace Sango.Render
                 {
                     IsDone = true;
                 }
-                return;
-            }
-
-            if(target == null)
-            {
-                IsDone = true;
                 return;
             }
 
