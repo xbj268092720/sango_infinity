@@ -27,14 +27,10 @@ namespace Sango.Core
         public ScenarioCommonData LoadNewCommonData()
         {
             ScenarioCommonData scenarioCommonData = new ScenarioCommonData();
-            string commonDataFileName = "Data/Common/Common.json";
-            ModManager.Instance.LoadFile(commonDataFileName, file =>
+            ModManager.Instance.EnumDirectory("Data/Common", dir =>
             {
-                scenarioCommonData = TKNewtonsoft.Json.JsonConvert.DeserializeObject<ScenarioCommonData>(File.ReadAllText(file));
+                scenarioCommonData.Load(dir);
             });
-            //SimpleJSON.JSONClass node = new SimpleJSON.JSONClass();
-            //ScenarioCommonData.Save(node);
-            //node.SaveToFile("D:/commonData.json");
             return scenarioCommonData;
         }
 
@@ -44,14 +40,10 @@ namespace Sango.Core
                 return ScenarioCommonData;
 
             ScenarioCommonData = new ScenarioCommonData();
-            string commonDataFileName = "Data/Common/Common.json";
-            ModManager.Instance.LoadFile(commonDataFileName, file =>
+            ModManager.Instance.EnumDirectory("Data/Common", dir =>
             {
-                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), ScenarioCommonData);
+                ScenarioCommonData.Load(dir);
             });
-            //SimpleJSON.JSONClass node = new SimpleJSON.JSONClass();
-            //ScenarioCommonData.Save(node);
-            //node.SaveToFile("D:/commonData.json");
             return ScenarioCommonData;
         }
 

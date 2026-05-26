@@ -1,7 +1,6 @@
-﻿using TKNewtonsoft.Json;
-using Sango.Render;
-using Sango.Render;
+﻿using Sango.Render;
 using System.Collections.Generic;
+using TKNewtonsoft.Json;
 using UnityEngine;
 
 namespace Sango.Core

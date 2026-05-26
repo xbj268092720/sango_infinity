@@ -169,5 +169,115 @@ namespace Sango.Core
             ItemTypeList.Sort((a, b) => a.Id.CompareTo(b.Id));
         }
 
+
+        public void Load(string path)
+        {
+            string file = $"{path}/TerrainTypes.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), TerrainTypes);
+            }
+            file = $"{path}/BuildingTypes.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), BuildingTypes);
+            }
+            file = $"{path}/Features.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Features);
+            }
+            file = $"{path}/TroopTypes.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), TroopTypes);
+            }
+            file = $"{path}/ItemTypes.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), ItemTypes);
+            }
+            file = $"{path}/TroopAnimations.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), TroopAnimations);
+            }
+            file = $"{path}/AttributeChangeTypes.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), AttributeChangeTypes);
+            }
+            file = $"{path}/PersonAttributeTypes.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), PersonAttributeTypes);
+            }
+            file = $"{path}/CityLevelTypes.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), CityLevelTypes);
+            }
+            file = $"{path}/Flags.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Flags);
+            }
+            file = $"{path}/Provinces.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Provinces);
+            }
+            file = $"{path}/Regions.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Regions);
+            }
+            file = $"{path}/Titles.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Titles);
+            }
+            file = $"{path}/Officials.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Officials);
+            }
+            file = $"{path}/Skills.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Skills);
+            }
+            file = $"{path}/PersonLevels.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), PersonLevels);
+            }
+            file = $"{path}/JobTypes.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), JobTypes);
+            }
+            file = $"{path}/Buffs.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Buffs);
+            }
+            file = $"{path}/Techniques.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Techniques);
+            }
+            file = $"{path}/Personalities.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Personalities);
+            }
+            file = $"{path}/Argumentations.json";
+            if (File.Exists(path))
+            {
+                TKNewtonsoft.Json.JsonConvert.PopulateObject(File.ReadAllText(file), Argumentations);
+            }
+        }
+
     }
 }

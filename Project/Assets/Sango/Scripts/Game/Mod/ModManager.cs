@@ -257,5 +257,21 @@ namespace Sango.Mod
                 Directory.EnumFiles(targetDir, searchPattern, searchOption, action);
             }
         }
+
+        /// <summary>
+        /// 遍历文件,找到Mod下所有这个路径的文件,一般用来合并json文件
+        /// </summary>
+        /// <param name="path">Assets/AA/BB/cc.dd</param>
+        /// <param name="action"></param>
+        public void EnumDirectory(string path, System.Action<string> action)
+        {
+            for (int i = 0; i < mModList.Count; i++)
+            {
+                Mod mod = mModList[i];
+                string targetFile = mod.GetFullPath(path);
+                if (Directory.Exists(targetFile))
+                    action(targetFile);
+            }
+        }
     }
 }

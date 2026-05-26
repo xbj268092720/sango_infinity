@@ -7,7 +7,6 @@
 
 using TKNewtonsoft.Json;
 using Sango.Render;
-using Sango.Render;
 using System;
 using System.Collections.Generic;
 using System.IO;

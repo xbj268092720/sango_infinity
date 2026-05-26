@@ -1,3 +1,4 @@
+using Sango.Manager;
 using System;
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
@@ -218,7 +219,7 @@ namespace Sango.Core
         public override void Execute(SkillInstance skillInstance, Troop troop, Cell spellCell)
         {
             // 播放音效逻辑
-            // AudioManager.Instance.PlaySound(soundName);
+           AudioManager.Instance.PlaySfx(soundName);
         }
     }
 
