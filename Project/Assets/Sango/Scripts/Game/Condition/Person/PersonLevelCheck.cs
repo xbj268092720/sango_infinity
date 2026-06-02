@@ -43,100 +43,23 @@ namespace Sango.Core
         /// </summary>
         /// <param name="objects">检查条件所需的对象</param>
         /// <returns>条件是否满足</returns>
-        public override bool Check(params object[] objects)
+        public override bool Check(IConditionDatabase database)
         {
             Person person = null;
-            
-            if (checkTarget == "self" && objects.Length > 0)
+
+            if (checkTarget == "self")
             {
-                person = objects[0] as Person;
+                person = database.ActivePerson;
             }
-            else if (checkTarget == "target" && objects.Length > 1)
+            else if (checkTarget == "target")
             {
-                person = objects[1] as Person;
+                person = database.TargetPerson;
             }
-            
+
             if (person == null || person.Level == null)
                 return false;
-            
-            return CheckCondition(person.Level.Id);
-        }
 
-        /// <summary>
-        /// 检查部队、目标和技能相关的条件
-        /// </summary>
-        /// <param name="troop">部队对象</param>
-        /// <param name="target">目标部队</param>
-        /// <param name="skill">技能实例</param>
-        /// <returns>条件是否满足</returns>
-        public override bool Check(Troop troop, Troop target, SkillInstance skill)
-        {
-            Person person = null;
-            
-            if (checkTarget == "self" && troop != null)
-            {
-                person = troop.Leader;
-            }
-            else if (checkTarget == "target" && target != null)
-            {
-                person = target.Leader;
-            }
-            
-            if (person == null || person.Level == null)
-                return false;
-            
-            return CheckCondition(person.Level.Id);
-        }
-
-        /// <summary>
-        /// 检查技能实例、部队、法术单元格和攻击单元格列表相关的条件
-        /// </summary>
-        /// <param name="skillInstance">技能实例</param>
-        /// <param name="troop">部队对象</param>
-        /// <param name="spellCell">法术单元格</param>
-        /// <param name="atkCellList">攻击单元格列表</param>
-        /// <returns>条件是否满足</returns>
-        public override bool Check(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
-        {
-            Person person = null;
-            
-            if (checkTarget == "self" && troop != null)
-            {
-                person = troop.Leader;
-            }
-            else if (checkTarget == "target" && spellCell != null && spellCell.troop != null)
-            {
-                person = spellCell.troop.Leader;
-            }
-            
-            if (person == null || person.Level == null)
-                return false;
-            
-            return CheckCondition(person.Level.Id);
-        }
-
-        /// <summary>
-        /// 根据运算符检查条件是否满足
-        /// </summary>
-        /// <param name="actualValue">实际值</param>
-        /// <returns>条件是否满足</returns>
-        private bool CheckCondition(int actualValue)
-        {
-            switch (@operator)
-            {
-                case "eq":
-                    return actualValue == level;
-                case "gt":
-                    return actualValue > level;
-                case "lt":
-                    return actualValue < level;
-                case "gte":
-                    return actualValue >= level;
-                case "lte":
-                    return actualValue <= level;
-                default:
-                    return false;
-            }
+            return GameUtility.CheckCondition(level, @operator, person.Level.Id);
         }
     }
 }

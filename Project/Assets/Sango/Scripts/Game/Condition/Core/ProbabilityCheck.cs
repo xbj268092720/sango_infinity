@@ -7,16 +7,7 @@ namespace Sango.Core
     public class ProbabilityCheck : Condition
     {
         int probability;
-        public override bool Check(params object[] objects)
-        {
-            return GameRandom.Range(0, 10000) <= probability;
-        }
-
-        public override bool Check(Troop troop, Troop target, SkillInstance skill)
-        {
-            return GameRandom.Range(0, 10000) <= probability;
-        }
-        public override bool Check(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
+        public override bool Check(IConditionDatabase database)
         {
             return GameRandom.Range(0, 10000) <= probability;
         }

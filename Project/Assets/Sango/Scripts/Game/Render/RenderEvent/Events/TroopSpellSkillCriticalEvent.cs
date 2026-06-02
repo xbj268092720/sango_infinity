@@ -14,9 +14,9 @@ namespace Sango.Render
         private bool isCritWindowShown = false;
         private float critWindowTime = 0;
 
-        public void Init(Troop troop, SkillInstance skill, Cell spellCell, int criticalFactor)
+        public void Init(SkillInstance skill, Cell spellCell, int criticalFactor)
         {
-            this.troop = troop;
+            this.troop = skill.master;
             this.skill = skill;
             this.spellCell = spellCell;
             this.criticalFactor = criticalFactor;
@@ -90,7 +90,7 @@ namespace Sango.Render
                 }
             }
             
-            IsDone = skill.UpdateRender(troop, spellCell, scenario, time, Action);
+            IsDone = skill.UpdateRender(spellCell, scenario, time, Action);
             time += deltaTime;
             return IsDone;
         }
@@ -99,7 +99,7 @@ namespace Sango.Render
         public void Action()
         {
             if (isAction) return;
-            skill.Action(troop, spellCell, criticalFactor);
+            skill.Action(spellCell, criticalFactor);
             isAction = true;
         }
 

@@ -1303,24 +1303,24 @@ namespace Sango.Core
                     return false;
             }
 
-            if (skill.CheckSuccess(this, spellCell))
+            if (skill.CheckSuccess(spellCell))
             {
 
-                int criticalFactor = skill.CheckCritical(this, spellCell);
+                int criticalFactor = skill.CheckCritical(spellCell);
                 if (criticalFactor > 100)
                 {
 #if SANGO_DEBUG
                     Sango.Log.Info($"{BelongForce.Name}的[{Name} 部队 技能: {skill.Name} =>({spellCell.x},{spellCell.y})]  暴击判定成功!  暴击伤害倍率{criticalFactor}!!");
 #endif
                     TroopSpellSkillCriticalEvent @event = RenderEvent.Instance.Create<TroopSpellSkillCriticalEvent>();
-                    @event.Init(this, skill, spellCell, criticalFactor);
+                    @event.Init(skill, spellCell, criticalFactor);
                     actionRenderEvent = @event;
                     RenderEvent.Instance.Add(@event);
                 }
                 else
                 {
                     TroopSpellSkillEvent @event = RenderEvent.Instance.Create<TroopSpellSkillEvent>();
-                    @event.Init(this, skill, spellCell);
+                    @event.Init(skill, spellCell);
                     actionRenderEvent = @event;
                     RenderEvent.Instance.Add(@event);
                 }

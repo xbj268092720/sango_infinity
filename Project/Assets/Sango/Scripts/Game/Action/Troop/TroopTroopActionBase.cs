@@ -69,7 +69,7 @@ namespace Sango.Core.Action
             if (checkLand == 2 && kinds != null && !kinds.Contains(troop.WaterTroopType.kind))
                 return false;
 
-            if (condition != null && !condition.Check(troop, defencer, skill))
+            if (condition != null && !condition.Check(new TroopActionConditionDatabase(skill, defencer.cell)))
                 return false;
 
             return true;

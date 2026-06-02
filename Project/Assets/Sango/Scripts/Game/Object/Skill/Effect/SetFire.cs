@@ -47,25 +47,25 @@ namespace Sango.Core
             }
         }
 
-        public override void Action(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
+        public override void Action(Cell targetCell)
         {
             if (!GameRandom.Chance(probability, 10000))
                 return;
 
-            if (condition != null && !condition.Check(troop, spellCell.troop, master))
+            if (condition != null && !condition.Check(new SkillEffectConditionDatabase(this, targetCell)))
                 return;
 
             int index = GameRandom.RandomWeightIndex(weight);
             int finalCount = values[index];
 
-            Fire fire = spellCell.fire;
+            Fire fire = targetCell.fire;
             if (fire == null)
             {
                 fire = new Fire()
                 {
                     damage = 300,
-                    intelligence = troop.Intelligence,
-                    cell = spellCell,
+                    intelligence = master.master.Intelligence,
+                    cell = targetCell,
                     counter = finalCount
                 };
                 Scenario.Cur.Add(fire);
@@ -73,11 +73,11 @@ namespace Sango.Core
             }
             else
             {
-                fire.intelligence = troop.Intelligence;
+                fire.intelligence = master.master.Intelligence;
                 fire.counter = finalCount;
             }
 
-            spellCell.fire = fire;
+            targetCell.fire = fire;
             fire.Action();
         }
     }

@@ -231,8 +231,8 @@ namespace Sango.Core
         public override void Execute(SkillInstance skillInstance, Troop troop, Cell spellCell)
         {
             // 执行伤害逻辑
-            int criticalFactor = skillInstance.CheckCritical(troop, spellCell);
-            skillInstance.Action(troop, spellCell, criticalFactor);
+            int criticalFactor = skillInstance.CheckCritical(spellCell);
+            skillInstance.Action(spellCell, criticalFactor);
         }
     }
 

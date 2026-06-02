@@ -53,7 +53,7 @@ namespace Sango.Core.Action
             if (checkLand == 2 && kinds != null && !kinds.Contains(troop.WaterTroopType.kind))
                 return;
 
-            if (condition != null && !condition.Check(troop, cell.troop, skill))
+            if (condition != null && !condition.Check(new TroopActionConditionDatabase(skill, cell)))
                 return;
 
             overrideData.Value += value;

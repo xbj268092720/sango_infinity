@@ -25,17 +25,17 @@ namespace Sango.Core
             }
         }
 
-        public override void Action(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
+        public override void Action(Cell targetCell)
         {
             if (!GameRandom.Chance(probability, 10000))
                 return;
 
-            if (condition != null && !condition.Check(troop, spellCell.troop, master))
+            if (condition != null && !condition.Check(new SkillEffectConditionDatabase(this, targetCell)))
                 return;
 
-            if (spellCell.fire != null)
+            if (targetCell.fire != null)
             {
-                spellCell.fire.Clear();
+                targetCell.fire.Clear();
             }
         }
     }

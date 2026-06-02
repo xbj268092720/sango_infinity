@@ -23,39 +23,10 @@ namespace Sango.Core
         /// </summary>
         /// <param name="objects">检查条件所需的对象</param>
         /// <returns>所有条件是否都满足</returns>
-        public override bool Check(params object[] objects)
+        public override bool Check(IConditionDatabase database)
         {
-            if (L != null && !L.Check(objects)) return false;
-            if (R != null && !R.Check(objects)) return false;
-            return true;
-        }
-
-        /// <summary>
-        /// 检查部队、目标和技能相关的所有条件是否都满足
-        /// </summary>
-        /// <param name="troop">部队对象</param>
-        /// <param name="target">目标部队</param>
-        /// <param name="skill">技能实例</param>
-        /// <returns>所有条件是否都满足</returns>
-        public override bool Check(Troop troop, Troop target, SkillInstance skill)
-        {
-            if (L != null && !L.Check(troop, target, skill)) return false;
-            if (R != null && !R.Check(troop, target, skill)) return false;
-            return true;
-        }
-
-        /// <summary>
-        /// 检查技能实例、部队、法术单元格和攻击单元格列表相关的所有条件是否都满足
-        /// </summary>
-        /// <param name="skillInstance">技能实例</param>
-        /// <param name="troop">部队对象</param>
-        /// <param name="spellCell">法术单元格</param>
-        /// <param name="atkCellList">攻击单元格列表</param>
-        /// <returns>所有条件是否都满足</returns>
-        public override bool Check(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
-        {
-            if (L != null && !L.Check(skillInstance, troop, spellCell, atkCellList)) return false;
-            if (R != null && !R.Check(skillInstance, troop, spellCell, atkCellList)) return false;
+            if (L != null && !L.Check(database)) return false;
+            if (R != null && !R.Check(database)) return false;
             return true;
         }
 

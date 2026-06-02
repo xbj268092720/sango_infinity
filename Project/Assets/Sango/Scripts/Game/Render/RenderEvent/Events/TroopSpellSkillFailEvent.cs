@@ -72,7 +72,7 @@ namespace Sango.Render
                 return IsDone;
             }
 
-            IsDone = replaceSkill.UpdateRender(troop, spellCell, scenario, time, Action);
+            IsDone = replaceSkill.UpdateRender(spellCell, scenario, time, Action);
             time += deltaTime;
             return IsDone;
         }
@@ -82,7 +82,7 @@ namespace Sango.Render
         {
             if (isAction) return;
             if (replaceSkill != null)
-                replaceSkill.Action(troop, spellCell, 100);
+                replaceSkill.Action(spellCell, 100);
             isAction = true;
         }
 

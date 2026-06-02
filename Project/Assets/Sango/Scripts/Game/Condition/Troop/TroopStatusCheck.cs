@@ -19,7 +19,7 @@ namespace Sango.Core
         /// <summary>
         /// 检查目标 (self: 自己, target: 目标)
         /// </summary>
-        string checkTarget;
+        bool compareTarget;
         
         /// <summary>
         /// 是否拥有该状态
@@ -34,7 +34,7 @@ namespace Sango.Core
         public override void Init(JObject p, params SangoObject[] sangoObjects)
         {
             statusType = p.Value<int>("statusType");
-            checkTarget = p.Value<string>("checkTarget") ?? "self";
+            compareTarget = (p.Value<string>("compareTarget") ?? "self") == "self";
             hasStatus = p.Value<bool>("hasStatus");
         }
 
@@ -43,73 +43,24 @@ namespace Sango.Core
         /// </summary>
         /// <param name="objects">检查条件所需的对象</param>
         /// <returns>条件是否满足</returns>
-        public override bool Check(params object[] objects)
+        public override bool Check(IConditionDatabase database)
         {
-            if (objects.Length < 2)
+            Troop troop = null;
+
+            if (compareTarget)
+            {
+                troop = database.ActiveTroop;
+            }
+            else
+            {
+                troop = database.TargetTroop;
+            }
+            
+            if (troop == null)
                 return false;
-            
-            Troop troop = objects[0] as Troop;
-            Troop target = objects[1] as Troop;
-            
-            if (checkTarget == "self" && troop != null)
-            {
-                bool has = HasBuffByKind(troop, statusType);
-                return has == hasStatus;
-            }
-            else if (checkTarget == "target" && target != null)
-            {
-                bool has = HasBuffByKind(target, statusType);
-                return has == hasStatus;
-            }
-            
-            return false;
-        }
 
-        /// <summary>
-        /// 检查部队、目标和技能相关的条件
-        /// </summary>
-        /// <param name="troop">部队对象</param>
-        /// <param name="target">目标部队</param>
-        /// <param name="skill">技能实例</param>
-        /// <returns>条件是否满足</returns>
-        public override bool Check(Troop troop, Troop target, SkillInstance skill)
-        {
-            if (checkTarget == "self" && troop != null)
-            {
-                bool has = HasBuffByKind(troop, statusType);
-                return has == hasStatus;
-            }
-            else if (checkTarget == "target" && target != null)
-            {
-                bool has = HasBuffByKind(target, statusType);
-                return has == hasStatus;
-            }
-            
-            return false;
-        }
-
-        /// <summary>
-        /// 检查技能实例、部队、法术单元格和攻击单元格列表相关的条件
-        /// </summary>
-        /// <param name="skillInstance">技能实例</param>
-        /// <param name="troop">部队对象</param>
-        /// <param name="spellCell">法术单元格</param>
-        /// <param name="atkCellList">攻击单元格列表</param>
-        /// <returns>条件是否满足</returns>
-        public override bool Check(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
-        {
-            if (checkTarget == "self" && troop != null)
-            {
-                bool has = HasBuffByKind(troop, statusType);
-                return has == hasStatus;
-            }
-            else if (checkTarget == "target" && spellCell != null && spellCell.troop != null)
-            {
-                bool has = HasBuffByKind(spellCell.troop, statusType);
-                return has == hasStatus;
-            }
-            
-            return false;
+            bool has = HasBuffByKind(troop, statusType);
+            return has == hasStatus;
         }
 
         /// <summary>

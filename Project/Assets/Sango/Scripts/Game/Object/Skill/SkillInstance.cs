@@ -362,7 +362,7 @@ namespace Sango.Core
         /// <param name="troop"></param>
         /// <param name="spellCell"></param>
         /// <returns></returns>
-        public bool CheckSuccess(Troop troop, Cell spellCell)
+        public bool CheckSuccess(Cell spellCell)
         {
             // 普通攻击,必中
             if (costEnergy == 0) return true;
@@ -370,7 +370,7 @@ namespace Sango.Core
             // 除开计略,目标只有有控制状态,必中
             if (spellCell.troop != null && !IsStrategy() && spellCell.troop.HasControlBuff())
                 return true;
-
+            Troop troop = master;
             int baseSuccessRate = 0;
             Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(baseSuccessRate);
             GameEvent.OnTroopBeforeCalculateSkillSuccess?.Invoke(troop, this, spellCell, overrideData);
@@ -425,9 +425,10 @@ namespace Sango.Core
         /// <param name="troop"></param>
         /// <param name="spellCell"></param>
         /// <returns></returns>
-        public int CheckCritical(Troop troop, Cell spellCell)
+        public int CheckCritical(Cell spellCell)
         {
             ScenarioVariables scenarioVariables = Scenario.Cur.Variables;
+            Troop troop = master;
 
             // 必爆流程判断
             Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(0);
@@ -465,13 +466,13 @@ namespace Sango.Core
         }
 
 
-        public bool UpdateRender(Troop troop, Cell spellCell, Scenario scenario, float time, System.Action action)
+        public bool UpdateRender(Cell spellCell, Scenario scenario, float time, System.Action action)
         {
             if (time <= 0f)
             {
-                troop.Render.FaceTo(spellCell.Position);
+                master.Render.FaceTo(spellCell.Position);
                 tempTimelineCellList.Clear();
-                GetAttackCells(troop, spellCell, tempTimelineCellList);
+                GetAttackCells(master, spellCell, tempTimelineCellList);
                 
                 // 重置时间轴实例
                 if (timelineInstance != null)
@@ -483,10 +484,10 @@ namespace Sango.Core
             // 使用时间轴实例处理技能表现
             if (timelineInstance != null)
             {
-                bool isComplete = timelineInstance.ProcessEvents(troop, spellCell, time, action);
+                bool isComplete = timelineInstance.ProcessEvents(master, spellCell, time, action);
                 if (isComplete)
                 {
-                    troop.Render.SetAniShow(0);
+                    master.Render.SetAniShow(0);
                     return true;
                 }
             }
@@ -496,13 +497,13 @@ namespace Sango.Core
                 if (time <= 0f)
                 {
                     // 播放技能视觉效果
-                    PlaySkillVisual(troop, spellCell, tempTimelineCellList);
+                    PlaySkillVisual(master, spellCell, tempTimelineCellList);
                 }
                 if (time > 1.2f)
                     action();
                 if (time > 2.5f)
                 {
-                    troop.Render.SetAniShow(0);
+                    master.Render.SetAniShow(0);
                     return true;
                 }
             }
@@ -511,8 +512,9 @@ namespace Sango.Core
 
         List<Cell> tempCellList = new List<Cell>();
 
-        public void Action(Troop troop, Cell spellCell, int criticalFactor)
+        public void Action(Cell spellCell, int criticalFactor)
         {
+            Troop troop = master;
             Scenario scenario = Scenario.Cur;
             ScenarioVariables scenarioVariables = scenario.Variables;
             Troop targetTroop = spellCell.troop;
@@ -918,8 +920,10 @@ namespace Sango.Core
             InitSkillEffects();
             if (effects == null || effects.Count == 0) return;
 
-            effects.ForEach(s => s.Action(null, troop, spellCell, atkCellList));
-
+            foreach(Cell target in atkCellList)
+            {
+                effects.ForEach(s => s.Action(target));
+            }
         }
 
         public void PlaySkillVisual(Troop troop, Cell spellCell, List<Cell> atkCellList)

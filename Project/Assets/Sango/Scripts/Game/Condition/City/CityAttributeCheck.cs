@@ -16,17 +16,17 @@ namespace Sango.Core
         /// 属性类型
         /// </summary>
         string attributeType;
-        
+
         /// <summary>
         /// 检查目标 (self: 自己, target: 目标)
         /// </summary>
         string checkTarget;
-        
+
         /// <summary>
         /// 比较值
         /// </summary>
         int value;
-        
+
         /// <summary>
         /// 比较运算符 (eq: 等于, gt: 大于, lt: 小于, gte: 大于等于, lte: 小于等于)
         /// </summary>
@@ -54,7 +54,7 @@ namespace Sango.Core
         {
             if (city == null)
                 return 0;
-            
+
             switch (attributeType)
             {
                 case "commerce":
@@ -75,113 +75,33 @@ namespace Sango.Core
                     return city.food;
                 case "gold":
                     return city.gold;
+                case "population":
+                    return city.population;
+                case "troopPopulation":
+                    return city.troopPopulation;
                 default:
                     return 0;
             }
         }
 
-        /// <summary>
-        /// 检查条件是否满足
-        /// </summary>
-        /// <param name="objects">检查条件所需的对象</param>
-        /// <returns>条件是否满足</returns>
-        public override bool Check(params object[] objects)
+        public override bool Check(IConditionDatabase database)
         {
             City city = null;
-            
-            if (checkTarget == "self" && objects.Length > 0)
+
+            if (checkTarget == "self")
             {
-                city = objects[0] as City;
+                city = database.ActiveCity;
             }
-            else if (checkTarget == "target" && objects.Length > 1)
+            else if (checkTarget == "target")
             {
-                city = objects[1] as City;
+                city = database.TargetCity;
             }
-            
+
             if (city == null)
                 return false;
-            
-            int actualValue = GetAttributeValue(city);
-            return CheckCondition(actualValue);
-        }
 
-        /// <summary>
-        /// 检查部队、目标和技能相关的条件
-        /// </summary>
-        /// <param name="troop">部队对象</param>
-        /// <param name="target">目标部队</param>
-        /// <param name="skill">技能实例</param>
-        /// <returns>条件是否满足</returns>
-        public override bool Check(Troop troop, Troop target, SkillInstance skill)
-        {
-            City city = null;
-            
-            if (checkTarget == "self" && troop != null)
-            {
-                city = troop.BelongCity;
-            }
-            else if (checkTarget == "target" && target != null)
-            {
-                city = target.BelongCity;
-            }
-            
-            if (city == null)
-                return false;
-            
             int actualValue = GetAttributeValue(city);
-            return CheckCondition(actualValue);
-        }
-
-        /// <summary>
-        /// 检查技能实例、部队、法术单元格和攻击单元格列表相关的条件
-        /// </summary>
-        /// <param name="skillInstance">技能实例</param>
-        /// <param name="troop">部队对象</param>
-        /// <param name="spellCell">法术单元格</param>
-        /// <param name="atkCellList">攻击单元格列表</param>
-        /// <returns>条件是否满足</returns>
-        public override bool Check(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
-        {
-            City city = null;
-            
-            if (checkTarget == "self" && troop != null)
-            {
-                city = troop.BelongCity;
-            }
-            else if (checkTarget == "target" && spellCell != null)
-            {
-                city = spellCell.BelongCity;
-            }
-            
-            if (city == null)
-                return false;
-            
-            int actualValue = GetAttributeValue(city);
-            return CheckCondition(actualValue);
-        }
-
-        /// <summary>
-        /// 根据运算符检查条件是否满足
-        /// </summary>
-        /// <param name="actualValue">实际值</param>
-        /// <returns>条件是否满足</returns>
-        private bool CheckCondition(int actualValue)
-        {
-            switch (@operator)
-            {
-                case "eq":
-                    return actualValue == value;
-                case "gt":
-                    return actualValue > value;
-                case "lt":
-                    return actualValue < value;
-                case "gte":
-                    return actualValue >= value;
-                case "lte":
-                    return actualValue <= value;
-                default:
-                    return false;
-            }
+            return GameUtility.CheckCondition(value, @operator, actualValue);
         }
     }
 }

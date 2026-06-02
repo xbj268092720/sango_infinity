@@ -51,22 +51,22 @@ namespace Sango.Core
             }
         }
 
-        public override void Action(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
+        public override void Action(Cell targetCell)
         {
-            Troop target = spellCell.troop;
+            Troop target = targetCell.troop;
             if (target == null) return;
 
             if (!GameRandom.Chance(probability, 10000))
                 return;
 
-            if (condition != null && !condition.Check(troop, target, master))
+            if (condition != null && !condition.Check(new SkillEffectConditionDatabase(this, targetCell)))
                 return;
 
             int index = GameRandom.RandomWeightIndex(weight);
             int finalCount = values[index];
             int v = target.woundedTroops * finalCount / 100;
             target.woundedTroops = Mathf.Max(0, target.woundedTroops - v);
-            target.ChangeTroops(v, troop, skillInstance, 0);
+            target.ChangeTroops(v, master.master, master, 0);
 
         }
     }

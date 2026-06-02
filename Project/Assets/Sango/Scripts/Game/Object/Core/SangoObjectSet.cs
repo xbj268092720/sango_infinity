@@ -12,7 +12,6 @@ namespace Sango.Core
     /// SangoObject限定数组数据集, 限定最大容量, 记住下标从1开始,0作为默认无效值,数据集用0号位来作为默认值
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [JsonObject(MemberSerialization.OptIn)]
     public class SangoObjectSet<T> : Database<T> where T : SangoObject, new()
     {
         public T[] objects;

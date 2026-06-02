@@ -23,12 +23,14 @@ namespace Sango.Core
             result = p.Value<int>("result");
         }
 
-        public override bool Check(params object[] objects)
+        public override bool Check(IConditionDatabase database)
         {
-            if (objects.Length < 3) return false;
-            Troop atker = objects[0] as Troop;
-            Troop target = objects[1] as Troop;
-            if (target == null) return true;
+            Troop atker = database.ActiveTroop;
+            Troop target = database.TargetTroop;
+
+            if (target == null)
+                return true;
+
             TroopCompareFunction.TroopCompare compareFunction = TroopCompareFunction.Get(attType);
             if (compareFunction == null)
             {
@@ -36,28 +38,6 @@ namespace Sango.Core
             }
 
             return compareFunction(atker, target) == result;
-        }
-
-        public override bool Check(Troop troop, Troop target, SkillInstance skill)
-        {
-            if (target == null) return true;
-            TroopCompareFunction.TroopCompare compareFunction = TroopCompareFunction.Get(attType);
-            if (compareFunction == null)
-            {
-                return false;
-            }
-            return compareFunction(troop, target) == result;
-        }
-
-        public override bool Check(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
-        {
-            if (spellCell.troop == null) return true;
-            TroopCompareFunction.TroopCompare compareFunction = TroopCompareFunction.Get(attType);
-            if (compareFunction == null)
-            {
-                return false;
-            }
-            return compareFunction(troop, spellCell.troop) == result;
         }
     }
 }

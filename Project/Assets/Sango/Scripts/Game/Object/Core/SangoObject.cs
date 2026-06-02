@@ -57,6 +57,10 @@ namespace Sango.Core
         /// </summary>
         Skill,
         /// <summary>
+        /// 技能
+        /// </summary>
+        SkillInstance,
+        /// <summary>
         /// 内部建筑
         /// </summary>
         InnerBuilding,

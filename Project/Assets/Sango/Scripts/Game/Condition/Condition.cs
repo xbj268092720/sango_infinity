@@ -15,31 +15,14 @@ namespace Sango.Core
         /// <param name="sangoObjects">相关的游戏对象</param>
         public abstract void Init(JObject p, params SangoObject[] sangoObjects);
 
+
         /// <summary>
         /// 检查条件是否满足
         /// </summary>
-        /// <param name="objects">检查条件所需的对象</param>
+        /// <param name="database">检查条件所需的对象</param>
         /// <returns>条件是否满足</returns>
-        public abstract bool Check(params object[] objects);
+        public abstract bool Check(IConditionDatabase database);
 
-        /// <summary>
-        /// 检查部队、目标和技能相关的条件
-        /// </summary>
-        /// <param name="troop">部队对象</param>
-        /// <param name="target">目标部队</param>
-        /// <param name="skill">技能实例</param>
-        /// <returns>条件是否满足</returns>
-        public virtual bool Check(Troop troop, Troop target, SkillInstance skill) { return false; }
-
-        /// <summary>
-        /// 检查技能实例、部队、法术单元格和攻击单元格列表相关的条件
-        /// </summary>
-        /// <param name="skillInstance">技能实例</param>
-        /// <param name="troop">部队对象</param>
-        /// <param name="spellCell">法术单元格</param>
-        /// <param name="atkCellList">攻击单元格列表</param>
-        /// <returns>条件是否满足</returns>
-        public virtual bool Check(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList) { return false; }
 
         /// <summary>
         /// 条件创建委托
@@ -99,7 +82,7 @@ namespace Sango.Core
             // Troop
             Register("TroopAttributeCompare", CraeteHandle<TroopAttributeCompare>);
             Register("TroopStatusCheck", CraeteHandle<TroopStatusCheck>);
-            Register("TroopStrengthCheck", CraeteHandle<TroopStrengthCheck>);
+           // Register("TroopStrengthCheck", CraeteHandle<TroopStrengthCheck>);
             Register("TroopMoraleCheck", CraeteHandle<TroopMoraleCheck>);
 
             // Skill
@@ -108,7 +91,7 @@ namespace Sango.Core
             Register("SkillIsStrategySkill", CraeteHandle<SkillIsStrategySkill>);
 
             // Person
-            Register("PersonAttributeCompare", CraeteHandle<PersonAttributeCompare>);
+            Register("PersonAttributeCompare", CraeteHandle<PersonAttributeCheck>);
             Register("PersonLoyaltyCheck", CraeteHandle<PersonLoyaltyCheck>);
             Register("PersonLevelCheck", CraeteHandle<PersonLevelCheck>);
 
@@ -122,14 +105,13 @@ namespace Sango.Core
             Register("FactionCheck", CraeteHandle<FactionCheck>);
 
             // Resource
-            Register("ResourceCheck", CraeteHandle<ResourceCheck>);
+            //Register("ResourceCheck", CraeteHandle<ResourceCheck>);
 
             // City
             Register("CityAttributeCheck", CraeteHandle<CityAttributeCheck>);
-            Register("CityPopulationCheck", CraeteHandle<CityPopulationCheck>);
 
             // Time
-            Register("TimeCheck", CraeteHandle<TimeCheck>);
+            //Register("TimeCheck", CraeteHandle<TimeCheck>);
         }
     }
 }

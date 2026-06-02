@@ -421,6 +421,25 @@ namespace Sango.Core
             argb += (int)(color.b * 255) << 0;
             return argb;
         }
+
+        public static bool CheckCondition(int value, string @operator, int actualValue)
+        {
+            switch (@operator)
+            {
+                case "eq":
+                    return actualValue == value;
+                case "gt":
+                    return actualValue > value;
+                case "lt":
+                    return actualValue < value;
+                case "gte":
+                    return actualValue >= value;
+                case "lte":
+                    return actualValue <= value;
+                default:
+                    return false;
+            }
+        }
     }
 
 

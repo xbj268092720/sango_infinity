@@ -11,9 +11,9 @@ namespace Sango.Render
         private bool isAction = false;
         private float time = 0;
 
-        public void Init(Troop troop, SkillInstance skill, Cell spellCell)
+        public void Init(SkillInstance skill, Cell spellCell)
         {
-            this.troop = troop;
+            this.troop = skill.master;
             this.skill = skill;
             this.spellCell = spellCell;
             this.isAction = false;
@@ -54,7 +54,7 @@ namespace Sango.Render
                 IsDone = true;
                 return IsDone;
             }
-            IsDone = skill.UpdateRender(troop, spellCell, scenario, time, Action);
+            IsDone = skill.UpdateRender(spellCell, scenario, time, Action);
             time += deltaTime;
             return IsDone;
         }
@@ -63,7 +63,7 @@ namespace Sango.Render
         public void Action()
         {
             if (isAction) return;
-            skill.Action(troop, spellCell, 100);
+            skill.Action(spellCell, 100);
             isAction = true;
         }
 

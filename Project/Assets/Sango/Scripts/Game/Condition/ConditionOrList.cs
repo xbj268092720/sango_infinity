@@ -10,34 +10,17 @@ namespace Sango.Core
     {
         List<Condition> list = new List<Condition>();
 
-        public override bool Check(params object[] objects)
+        /// <summary>
+        /// 检查所有条件是否都满足
+        /// </summary>
+        /// <param name="objects">检查条件所需的对象</param>
+        /// <returns>所有条件是否都满足</returns>
+        public override bool Check(IConditionDatabase database)
         {
             for (int i = 0; i < list.Count; ++i)
             {
                 Condition c = list[i];
-                if (c != null && c.Check(objects))
-                    return true;
-            }
-            return false;
-        }
-
-        public override bool Check(Troop troop, Troop target, SkillInstance skill)
-        {
-            for (int i = 0; i < list.Count; ++i)
-            {
-                Condition c = list[i];
-                if (c != null && c.Check(troop, target, skill))
-                    return true;
-            }
-            return false;
-        }
-
-        public override bool Check(SkillInstance skillInstance, Troop troop, Cell spellCell, List<Cell> atkCellList)
-        {
-            for (int i = 0; i < list.Count; ++i)
-            {
-                Condition c = list[i];
-                if (c != null && c.Check(skillInstance, troop, spellCell, atkCellList))
+                if (c != null && c.Check(database))
                     return true;
             }
             return false;
