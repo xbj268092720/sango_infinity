@@ -233,7 +233,7 @@ namespace Sango.Core
         public string GetIDName()
         {
             ScenarioInfo scenarioInfo = Info;
-            return $"   {scenarioInfo.id}  {scenarioInfo.year}年 {scenarioInfo.month}月 {scenarioInfo.name}";
+            return $" {scenarioInfo.id}. {scenarioInfo.year}年 {scenarioInfo.month}月 {scenarioInfo.name}";
         }
 
         public string GetDateName()
@@ -245,7 +245,7 @@ namespace Sango.Core
         public string GetModIDName(string mod)
         {
             ScenarioInfo scenarioInfo = Info;
-            return $"[{mod}]{scenarioInfo.id} {scenarioInfo.year}年 {scenarioInfo.month}月 {scenarioInfo.name}";
+            return $" {scenarioInfo.id}. {scenarioInfo.year}年 {scenarioInfo.month}月 {scenarioInfo.name}<{mod}>";
         }
     }
 }

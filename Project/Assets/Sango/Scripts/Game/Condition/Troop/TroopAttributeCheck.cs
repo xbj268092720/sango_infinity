@@ -78,7 +78,7 @@ namespace Sango.Core
 
             if (compareTarget)
             {
-                troop = database.ActiveTroop;
+                troop = database.ActionTroop;
             }
             else
             {

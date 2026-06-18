@@ -34,9 +34,9 @@ namespace Sango.Core
 
         public override bool Check(IConditionDatabase database)
         {
-            if(database.ActiveCell == null || database.TargetCell == null)
+            if(database.ActionCell == null || database.TargetCell == null)
                 return false;
-            int dis = database.ActiveCell.Distance(database.TargetCell);
+            int dis = database.ActionCell.Distance(database.TargetCell);
             return GameUtility.CheckCondition(distance, @operator, dis);
         }
 

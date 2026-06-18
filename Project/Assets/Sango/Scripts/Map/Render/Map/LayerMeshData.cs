@@ -121,6 +121,8 @@ namespace Sango.Render
             if (triangleCache != null) mesh.SetTriangles(triangleCache.Values, 0, triangleCache.Count, 0, true);
             mesh.RecalculateBounds();
             //mesh.RecalculateNormals();
+            mesh.MarkModified();
+            mesh.MarkDynamic();
         }
 
         public void Dispose()

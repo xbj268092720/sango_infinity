@@ -16,25 +16,25 @@ namespace Sango.Core
                 this.self = self;
             }
 
-            public SkillInstance ActiveSkill => self.master;
+            public SkillInstance ActionSkill => self.master;
             public SkillInstance TargetSkill => null;
-            public Person ActivePerson => self.master.master.Leader;
+            public Person ActionPerson => self.master.master.Leader;
             public Person TargetPerson => atk_cell.troop?.Leader;
-            public Troop ActiveTroop => self.master.master;
+            public Troop ActionTroop => self.master.master;
             public Troop TargetTroop => atk_cell.troop;
-            public Cell ActiveCell => self.master.master.cell;
+            public Cell ActionCell => self.master.master.cell;
             public Cell TargetCell => atk_cell;
-            public City ActiveCity => self.master.master.BelongCity;
+            public City ActionCity => self.master.master.BelongCity;
             public City TargetCity => atk_cell.troop?.BelongCity ?? atk_cell.building?.BelongCity;
-            public Corps ActiveCorps => self.master.master.BelongCorps;
+            public Corps ActionCorps => self.master.master.BelongCorps;
             public Corps TargetCorps => atk_cell.troop?.BelongCorps ?? atk_cell.building?.BelongCorps;
-            public Force ActiveForce => self.master.master.BelongForce;
+            public Force ActionForce => self.master.master.BelongForce;
             public Force TargetForce => atk_cell.troop?.BelongForce ?? atk_cell.building?.BelongForce;
             public BuildingBase ActiveBuildingBase => self.master.master.cell.building;
             public BuildingBase TargetBuildingBase => atk_cell.building;
             public Fire ActiveFire => self.master.master.cell.fire;
             public Fire TargetFire => atk_cell.fire;
-            public object ActiveObject => self;
+            public object ActionObject => self;
             public object TargetObject => atk_cell;
         }
 

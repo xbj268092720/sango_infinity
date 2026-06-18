@@ -78,7 +78,7 @@ namespace Sango.Core
 
             if (compareTarget)
             {
-                person = database.ActivePerson;
+                person = database.ActionPerson;
             }
             else
             {

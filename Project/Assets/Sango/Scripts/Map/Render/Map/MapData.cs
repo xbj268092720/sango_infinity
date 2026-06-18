@@ -423,7 +423,9 @@ namespace Sango.Render
                     {
                         VertexData vetex = vertexDatas[x][y];
                         vetex.height = (byte)(255 - rh);
-                        vertexDatas[x][y] = vetex;
+                        Vector3 vector3 = vetex.position;
+                        vector3.y = vetex.height * 0.5f;
+                        vetex.position = vector3;
                     }
                 }
 

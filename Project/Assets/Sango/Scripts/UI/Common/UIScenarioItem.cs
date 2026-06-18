@@ -9,6 +9,7 @@ using Sango.Core; namespace Sango.UI
     {
         public RectTransform root;
         public Text name;
+        public Text mod;
         public Image select;
         public Button button;
         public int targetIndex;
@@ -35,6 +36,11 @@ using Sango.Core; namespace Sango.UI
         public UIScenarioItem SetName(string n)
         {
             name.text = n;
+            return this;
+        }
+        public UIScenarioItem SetModName(string n)
+        {
+            mod.text = n;
             return this;
         }
         public UIScenarioItem BindCall(UnityAction call)

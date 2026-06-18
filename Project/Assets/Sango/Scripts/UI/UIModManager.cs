@@ -87,6 +87,8 @@ using Sango.Core; namespace Sango.UI
                     }
                 }
             }
+
+            SortMod();
         }
 
         private void BindEvents()

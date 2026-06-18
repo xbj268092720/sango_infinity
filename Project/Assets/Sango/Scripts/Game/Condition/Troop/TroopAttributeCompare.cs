@@ -25,7 +25,7 @@ namespace Sango.Core
 
         public override bool Check(IConditionDatabase database)
         {
-            Troop atker = database.ActiveTroop;
+            Troop atker = database.ActionTroop;
             Troop target = database.TargetTroop;
 
             if (target == null)

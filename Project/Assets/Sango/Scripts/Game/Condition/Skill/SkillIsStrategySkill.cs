@@ -10,7 +10,7 @@ namespace Sango.Core
         int result;
         public override bool Check(IConditionDatabase database)
         {
-            SkillInstance skill = database.ActiveSkill;
+            SkillInstance skill = database.ActionSkill;
             if (skill != null)
             {
                 return (skill.IsStrategy()) == (result == 1);

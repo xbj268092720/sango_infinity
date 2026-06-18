@@ -8,21 +8,21 @@ namespace Sango.Core
     /// </summary>
     public interface IConditionDatabase
     {
-        SkillInstance ActiveSkill { get; }
+        SkillInstance ActionSkill { get; }
         SkillInstance TargetSkill { get; }
-        Person ActivePerson { get; }
+        Person ActionPerson { get; }
         Person TargetPerson { get; }
-        Troop ActiveTroop { get; }
+        Troop ActionTroop { get; }
         Troop TargetTroop { get; }
-        Cell ActiveCell { get; }
+        Cell ActionCell { get; }
         Cell TargetCell { get; }
-        City ActiveCity { get; }
+        City ActionCity { get; }
         City TargetCity { get; }
-        Corps ActiveCorps { get; }
+        Corps ActionCorps { get; }
         Corps TargetCorps { get; }
-        Force ActiveForce { get; }
+        Force ActionForce { get; }
         Force TargetForce { get; }
-        object ActiveObject { get; }
+        object ActionObject { get; }
         object TargetObject { get; }
     }
 

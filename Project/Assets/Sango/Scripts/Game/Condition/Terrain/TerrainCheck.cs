@@ -33,9 +33,9 @@ namespace Sango.Core
 
         public override bool Check(IConditionDatabase database)
         {
-            if (checkTarget == "self" && database.ActiveCell != null)
+            if (checkTarget == "self" && database.ActionCell != null)
             {
-                return database.ActiveCell.TerrainType.Id == terrainType;
+                return database.ActionCell.TerrainType.Id == terrainType;
             }
             else if (checkTarget == "target" && database.TargetCell != null)
             {

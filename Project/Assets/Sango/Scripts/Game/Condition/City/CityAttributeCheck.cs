@@ -90,7 +90,7 @@ namespace Sango.Core
 
             if (checkTarget == "self")
             {
-                city = database.ActiveCity;
+                city = database.ActionCity;
             }
             else if (checkTarget == "target")
             {

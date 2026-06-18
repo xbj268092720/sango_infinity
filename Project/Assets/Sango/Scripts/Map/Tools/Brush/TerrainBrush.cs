@@ -1063,7 +1063,7 @@ namespace Sango.Tools
 
 #if UNITY_STANDALONE_WIN
 
-                                using (Bitmap bmp24 = new Bitmap(editor.map.mapData.vertex_width + 1, editor.map.mapData.vertex_height + 1, System.Drawing.Imaging.PixelFormat.Format24bppRgb))
+                                using (Bitmap bmp24 = new Bitmap(editor.map.mapData.vertex_x_max, editor.map.mapData.vertex_y_max, System.Drawing.Imaging.PixelFormat.Format24bppRgb))
                                 {
                                     MapData.VertexData[][] vertexDatas = editor.map.mapData.vertexDatas;
                                     for (int x = 0; x < vertexDatas.Length; x++)

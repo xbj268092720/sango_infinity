@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     /// <summary>
     /// 剧本选择界面
@@ -49,11 +50,13 @@ using Sango.Core; namespace Sango.UI
                 item.gameObject.SetActive(true);
                 int selIndex = i;
                 item.targetIndex = selIndex;
-                if(string.IsNullOrEmpty(scenario.ModName))
-                    item.SetName(scenario.GetIDName()).SetSelected(i == curSelectIndex);
+                item.SetName(scenario.GetIDName()).SetSelected(i == curSelectIndex);
+
+                if (!string.IsNullOrEmpty(scenario.ModName))
+                    item.SetModName(scenario.ModName);
                 else
-                    item.SetName(scenario.GetModIDName(scenario.ModName)).SetSelected(i == curSelectIndex);
-                
+                    item.SetModName("");
+
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
                 item.BindCall(() => { OnNext(); });
 #else
@@ -83,7 +86,7 @@ using Sango.Core; namespace Sango.UI
         {
             if (curSelectIndex != index)
             {
-                if(curSelectIndex >= 0 &&  curSelectIndex < selectedItems.Count)
+                if (curSelectIndex >= 0 && curSelectIndex < selectedItems.Count)
                     selectedItems[curSelectIndex].SetSelected(false);
             }
             selectedItems[index].SetSelected(true);

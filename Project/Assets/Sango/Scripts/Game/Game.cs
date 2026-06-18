@@ -42,6 +42,7 @@ namespace Sango.Core
                     }
 #else
                     _instance = new Game();
+                    _app_instance = _instance;
 #endif
                 }
                 return _instance;

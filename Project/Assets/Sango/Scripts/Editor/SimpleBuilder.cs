@@ -72,7 +72,7 @@ public class SimpleBuilder
         string exeName = $"{productName}.exe";
         
         BuildOptions buildOptions = isDevelopment 
-            ? BuildOptions.Development
+            ? BuildOptions.Development | BuildOptions.AllowDebugging
             : BuildOptions.None;
         
         BuildPlayerOptions playerOptions = new BuildPlayerOptions

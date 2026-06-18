@@ -33,7 +33,7 @@ namespace Sango.Core
 
         public override bool Check(IConditionDatabase database)
         {
-            Force a = database.ActiveForce;
+            Force a = database.ActionForce;
             Force b = database.TargetForce;
             switch (checkType)
             {

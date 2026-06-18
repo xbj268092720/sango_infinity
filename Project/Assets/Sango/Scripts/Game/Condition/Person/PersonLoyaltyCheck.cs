@@ -49,7 +49,7 @@ namespace Sango.Core
 
             if (checkTarget == "self")
             {
-                person = database.ActivePerson;
+                person = database.ActionPerson;
             }
             else if (checkTarget == "target")
             {
