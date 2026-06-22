@@ -238,7 +238,7 @@ namespace Sango
         /// <param name="trans"></param>
         public static void SetTransformParent(Transform trans, Transform p)
         {
-            trans.parent = p;
+            trans.SetParent(p);
         }
 
         /// <summary>

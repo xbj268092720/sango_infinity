@@ -602,7 +602,7 @@ namespace Sango.Core
                         ins = skills.Find(x => x.skill == skill);
                     if (ins == null)
                         ins = SkillInstance.Create(this, skill);
-
+                    ins.master = this;
                     skillInstances.Add(ins);
                     if (skill.costEnergy == 0)
                     {

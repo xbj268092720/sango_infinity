@@ -191,38 +191,51 @@ namespace Sango.Mod
                 }
             }
 
+            for (int i = 0; i < mModList.Count; i++)
+            {
+                Mod mod = mModList[i];
+                Path.AddSearchPath($"{mod.ModDir}", true); 
+                mod.LoadLanguage();
+                mod.LoadScenario();
+                mod.LoadUI();
+                mod.LoadPackage();
+                mod.LoadData();
+                mod.LoadAssembly();
+            }
+
+
             //最终可以通过MOD/Lua/名字去查代码
-            for (int i = 0; i < mModList.Count; i++)
-                mModList[i].LoadLanguage();
+            //for (int i = 0; i < mModList.Count; i++)
+            //    mModList[i].LoadLanguage();
 
-            //Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        for (int i = 0; i < mModList.Count; i++)
-            //            mModList[i].LoadScenario();
-            //    }
-            //    catch (System.Exception e)
-            //    {
-            //        Sango.Log.Error(e + e.StackTrace);
-            //    }
-            //}
-            //);
+            ////Task.Run(() =>
+            ////{
+            ////    try
+            ////    {
+            ////        for (int i = 0; i < mModList.Count; i++)
+            ////            mModList[i].LoadScenario();
+            ////    }
+            ////    catch (System.Exception e)
+            ////    {
+            ////        Sango.Log.Error(e + e.StackTrace);
+            ////    }
+            ////}
+            ////);
 
-            for (int i = 0; i < mModList.Count; i++)
-                mModList[i].LoadScenario();
+            //for (int i = 0; i < mModList.Count; i++)
+            //    mModList[i].LoadScenario();
 
-            for (int i = 0; i < mModList.Count; i++)
-                mModList[i].LoadUI();
-            for (int i = 0; i < mModList.Count; i++)
-                mModList[i].LoadPackage();
-            for (int i = 0; i < mModList.Count; i++)
-                mModList[i].LoadData();
-            for (int i = 0; i < mModList.Count; i++)
-                Path.AddSearchPath($"{mModList[i].ModDir}", true);
-            // 加载dll
-            for (int i = 0; i < mModList.Count; i++)
-                mModList[i].LoadAssembly();
+            //for (int i = 0; i < mModList.Count; i++)
+            //    mModList[i].LoadUI();
+            //for (int i = 0; i < mModList.Count; i++)
+            //    mModList[i].LoadPackage();
+            //for (int i = 0; i < mModList.Count; i++)
+            //    mModList[i].LoadData();
+            //for (int i = 0; i < mModList.Count; i++)
+            //    Path.AddSearchPath($"{mModList[i].ModDir}", true);
+            //// 加载dll
+            //for (int i = 0; i < mModList.Count; i++)
+            //    mModList[i].LoadAssembly();
 
             Scenario.OnModInitEnd();
         }

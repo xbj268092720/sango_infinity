@@ -71,15 +71,15 @@ namespace Sango.Render
         /// 是否可见
         /// </summary>
         private bool _visible = true;
-        public bool visible 
+        public bool visible
         {
             get { return _visible; }
-            set 
+            set
             {
                 if (_visible != value)
                 {
                     _visible = value;
-                    
+
                     if (_visible)
                     {
                         // 从false变为true，创建资源
@@ -169,12 +169,12 @@ namespace Sango.Render
         /// 文本Mesh组件
         /// </summary>
         private TextMesh textMesh;
-        
+
         /// <summary>
         /// 标注资源对象
         /// </summary>
         private GameObject labelResource;
-        
+
         /// <summary>
         /// Text组件
         /// </summary>
@@ -278,7 +278,7 @@ namespace Sango.Render
         {
             // 销毁标注资源
             DestroyLabelResource();
-            
+
             if (gameObject != null)
             {
                 UnityEngine.Object.Destroy(gameObject);
@@ -355,14 +355,14 @@ namespace Sango.Render
             labelText = text;
             textColor = color;
             fontSize = size;
-            
+
             if (textMesh != null)
             {
                 textMesh.text = labelText;
                 textMesh.color = textColor;
                 textMesh.fontSize = fontSize;
             }
-            
+
             if (textComponent != null)
             {
                 textComponent.text = labelText;
@@ -370,7 +370,7 @@ namespace Sango.Render
                 textComponent.fontSize = fontSize;
             }
         }
-        
+
         /// <summary>
         /// 创建标注资源
         /// </summary>
@@ -379,10 +379,10 @@ namespace Sango.Render
             if (labelResource == null)
             {
                 const string poolKey = "MapLabel";
-                
+
                 // 尝试从对象池获取
                 labelResource = Sango.PoolManager.Get(poolKey);
-                
+
                 if (labelResource == null)
                 {
                     // 加载Resources:MapLabel资源
@@ -391,21 +391,21 @@ namespace Sango.Render
                     {
                         // 添加到对象池
                         Sango.PoolManager.Add(poolKey, prefab);
-                        
+
                         // 从对象池获取
                         labelResource = Sango.PoolManager.Get(poolKey);
                     }
                 }
-                
+
                 if (labelResource != null)
                 {
                     // 设置父对象
-                    labelResource.transform.parent = transform;
+                    labelResource.transform.SetParent(transform, false);
                     labelResource.transform.localPosition = Vector3.zero;
                     labelResource.transform.localRotation = Quaternion.identity;
                     labelResource.transform.localScale = Vector3.one;
                     labelResource.SetActive(true);
-                    
+
                     // 获取Text组件
                     textComponent = labelResource.GetComponentInChildren<UnityEngine.UI.Text>(true);
                     if (textComponent != null)
@@ -418,7 +418,7 @@ namespace Sango.Render
                 }
             }
         }
-        
+
         /// <summary>
         /// 销毁标注资源
         /// </summary>

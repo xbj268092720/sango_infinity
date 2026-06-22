@@ -241,7 +241,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7093377878874941691, guid: f4c8d12323462af48b034be6d594d43a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f4c8d12323462af48b034be6d594d43a, type: 3}
 --- !u!224 &2684210139575595497 stripped
 RectTransform:
@@ -625,6 +626,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3886807747499810813, guid: f5a81c43446fe0b43926803f03e0c3ec, type: 3}
+    - {fileID: 7093377878874941691, guid: f5a81c43446fe0b43926803f03e0c3ec, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f5a81c43446fe0b43926803f03e0c3ec, type: 3}
 --- !u!114 &52419710664396851 stripped
 MonoBehaviour:

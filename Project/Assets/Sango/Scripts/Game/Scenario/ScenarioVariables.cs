@@ -71,7 +71,7 @@ namespace Sango.Core
         /// <summary>
         /// 伤害难度系数
         /// </summary>
-        [JsonProperty] public float[] fight_damage_difficulty_factor = new float[] { 1.3f, 1, 0.7f };
+        [JsonProperty] public float[] fight_damage_difficulty_factor = new float[] { 1.3f, 1, 0.85f, 0.7f };
 
         /// <summary>
         /// 难度
@@ -209,7 +209,7 @@ namespace Sango.Core
         /// <summary>
         /// 城池中粮食基础消耗率(每回合) 1粮养40兵每回合
         /// </summary>
-        [JsonProperty] public float baseFoodCostInCity = 0.025f; 
+        [JsonProperty] public float baseFoodCostInCity = 0.025f;
 
         /// <summary>
         /// 城池缺粮后每回合逃跑的士兵比例
@@ -315,22 +315,22 @@ namespace Sango.Core
         /// <summary>
         /// 城市沦陷可以保留金钱比例(百分比)
         /// </summary>
-        [JsonProperty] public int [] cityFallCanKeepGoldFactor = new int[4] { 1, 2, 4, 1 };
+        [JsonProperty] public int[] cityFallCanKeepGoldFactor = new int[4] { 1, 2, 4, 1 };
 
         /// <summary>
         /// 城市沦陷可以保留粮食比例(百分比)
         /// </summary>
-        [JsonProperty] public int [] cityFallCanKeepFoodFactor = new int[4] { 1, 2, 4, 1 };
+        [JsonProperty] public int[] cityFallCanKeepFoodFactor = new int[4] { 1, 2, 4, 1 };
 
         /// <summary>
         /// 城市沦陷可以保留士兵比例(百分比)
         /// </summary>
-        [JsonProperty] public int [] cityFallCanKeepTroopsFactor = new int[4] { 1, 2, 4, 1 };
+        [JsonProperty] public int[] cityFallCanKeepTroopsFactor = new int[4] { 1, 2, 4, 1 };
 
         /// <summary>
         /// 城市沦陷可以保留库存比例(百分比)
         /// </summary>
-        [JsonProperty] public int [] cityFallCanKeepItemFactor = new int[4] { 1, 2, 4, 1 };
+        [JsonProperty] public int[] cityFallCanKeepItemFactor = new int[4] { 1, 2, 4, 1 };
 
         /// <summary>
         /// 城市沦陷可以保留农业比例(百分比)
@@ -376,17 +376,18 @@ namespace Sango.Core
         /// <summary>
         /// 适应名称
         /// </summary>
-        [JsonProperty] public string[] personAbilityName = new string[] { "Ｃ", "Ｂ", "Ａ", "Ｓ"};
+        [JsonProperty] public string[] personAbilityName = new string[] { "Ｃ", "Ｂ", "Ａ", "Ｓ" };
 
         /// <summary>
         /// 属性名称
         /// </summary>
-        [JsonProperty] public string[] attributeName = new string[] { "统率", "武力", "智力", "政治", "魅力"};
+        [JsonProperty] public string[] attributeName = new string[] { "统率", "武力", "智力", "政治", "魅力" };
 
         /// <summary>
         /// 属性名称-带颜色
         /// </summary>
-        [JsonProperty] public string[] attributeNameWithColor = new string[] { 
+        [JsonProperty]
+        public string[] attributeNameWithColor = new string[] {
             "<color=#F58080>统率</color>",
             "<color=#9866DB>武力</color>",
             "<color=#E5B462>智力</color>",
@@ -967,7 +968,7 @@ namespace Sango.Core
                 {
                     return fight_damage_difficulty_factor[difficulty];
                 }
-                return 1;
+                return fight_damage_difficulty_factor[fight_damage_difficulty_factor.Length - 1];
             }
         }
 

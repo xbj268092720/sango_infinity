@@ -503,7 +503,7 @@ namespace Sango.Core
                     if (person == null) continue;
                     person.merit += meritGain;
                     person.GainExp(meritGain);
-                    person.ActionOver = true;
+                    //person.ActionOver = true;
                 }
 
                 belongCity.BelongForce.GainTechniquePoint(techniquePointGain);

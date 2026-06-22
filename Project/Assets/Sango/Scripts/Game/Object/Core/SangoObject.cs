@@ -115,11 +115,11 @@ namespace Sango.Core
         /// </summary>
         [JsonProperty]
         public virtual bool ActionOver { get; set; }
-        
-        /// <summary>
-        /// 获取对象的渲染器
-        /// </summary>
-        /// <returns>对象渲染器</returns>
+
+            /// <summary>
+            /// 获取对象的渲染器
+            /// </summary>
+            /// <returns>对象渲染器</returns>
         public virtual ObjectRender GetRender() { return null; }
 
         //[JsonExtensionData]

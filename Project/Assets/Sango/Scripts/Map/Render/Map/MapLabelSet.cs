@@ -44,7 +44,7 @@ namespace Sango.Render
         {
             // 创建标注游戏对象
             GameObject labelObj = new GameObject($"MapLabel_{labels.Count}");
-            labelObj.transform.parent = MapRender.modelRoot;
+            labelObj.transform.SetParent(MapRender.modelRoot, false);
 
             // 添加MapLabel组件
             MapLabel label = labelObj.AddComponent<MapLabel>();
