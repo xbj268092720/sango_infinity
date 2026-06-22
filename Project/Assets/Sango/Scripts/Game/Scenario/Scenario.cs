@@ -843,6 +843,11 @@ namespace Sango.Core
 
         public override void Clear()
         {
+            for (int i = 0; i < prepareList.Count; ++i)
+            {
+                prepareList[i].ForEach(o => { o.Clear(); });
+            }
+
             GameEvent.OnGameShutdown -= OnGameShutdown;
             GameEvent.OnGamePause -= OnGamePause;
             GameEvent.OnGameResume -= OnGameResume;
@@ -856,6 +861,7 @@ namespace Sango.Core
                 Map.Clear();
                 Map = null;
             }
+           
             forceSet.Clear();
             corpsSet.Clear();
             citySet.Clear();
@@ -865,6 +871,7 @@ namespace Sango.Core
             fireSet.Clear();
             allianceSet.Clear();
             RelationMap = null;
+            
             prepareList.Clear();
             eventReciveList.Clear();
         }

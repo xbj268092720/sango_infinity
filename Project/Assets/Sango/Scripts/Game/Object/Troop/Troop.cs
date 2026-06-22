@@ -447,6 +447,14 @@ namespace Sango.Core
                 if (person.BelongForce != null)
                     person.BelongForce.BeCaptiveList.Add(person);
             }
+            foreach (SkillInstance s in landSkills)
+            {
+                s.master = this;
+            }
+            foreach (SkillInstance s in waterSkills)
+            {
+                s.master = this;
+            }
             PrepeareFoodCost();
             //MemberList?.InitCache();// = new SangoObjectList<Person>().FromString(_memberListStr, scenario.personSet);
         }
