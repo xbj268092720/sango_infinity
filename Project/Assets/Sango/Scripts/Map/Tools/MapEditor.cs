@@ -107,6 +107,11 @@ namespace Sango.Tools
         /// </summary>
         public Sango.Core.Scenario scenario { get; private set; }
 
+        /// <summary>
+        /// 剧本编辑器窗口
+        /// </summary>
+        private Sango.ScenarioMaker.ScenarioMakerWindow scenarioMakerWindow;
+
         public virtual bool IsPointerOverUI()
         {
             return EditorWindow.IsPointOverUI() || (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject());
@@ -278,6 +283,18 @@ namespace Sango.Tools
                     LoadScenario(path[0]);
                 }
             });
+            menuData.Add("编辑/剧本编辑器", () =>
+            {
+                if (scenario != null)
+                {
+                    Sango.ScenarioMaker.ScenarioMaker.Instance.SetScenario(scenario);
+                    OpenScenarioMakerWindow();
+                }
+                else
+                {
+                    Sango.Log.Warning("请先加载剧本");
+                }
+            });
 
             // 视图菜单
             menuData.Add("视图/固定视角", () =>
@@ -427,6 +444,8 @@ namespace Sango.Tools
 
                 SpawnCityModels();
 
+                Sango.ScenarioMaker.ScenarioMaker.Instance.SetScenario(scenario);
+
                 string message = $"剧本已加载: {System.IO.Path.GetFileName(scenarioPath)}";
                 Sango.Log.Info(message);
                 autoSave.ShowSaveNotification(message);
@@ -454,6 +473,8 @@ namespace Sango.Tools
 
                 SpawnCityModels();
 
+                Sango.ScenarioMaker.ScenarioMaker.Instance.SetScenario(scenario);
+
                 string message = $"剧本数据已加载: {System.IO.Path.GetFileName(scenarioPath)}";
                 Sango.Log.Info(message);
                 autoSave.ShowSaveNotification(message);
@@ -461,6 +482,27 @@ namespace Sango.Tools
             catch (Exception e)
             {
                 Sango.Log.Error($"加载剧本数据失败: {e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 打开剧本编辑器窗口
+        /// </summary>
+        private void OpenScenarioMakerWindow()
+        {
+            if (scenarioMakerWindow == null)
+            {
+                scenarioMakerWindow = EditorWindow.AddWindow<Sango.ScenarioMaker.ScenarioMakerWindow>(
+                    1001,
+                    new UnityEngine.Rect(0, 0, 800, 600),
+                    null,
+                    "剧本编辑器"
+                ) as Sango.ScenarioMaker.ScenarioMakerWindow;
+                scenarioMakerWindow.Initialize();
+            }
+            else
+            {
+                scenarioMakerWindow.visible = true;
             }
         }
 

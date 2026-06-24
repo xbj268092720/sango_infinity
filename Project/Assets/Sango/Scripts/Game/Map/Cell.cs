@@ -465,5 +465,13 @@ namespace Sango.Core
                 }
             }
         }
+
+        public bool IsQRSLine(Cell cell)
+        {
+            Hex otherCub = cell.Cub;
+            return (Cub.q == otherCub.q && Cub.s != otherCub.s && Cub.r != otherCub.r) ||
+                (Cub.q != otherCub.q && Cub.s == otherCub.s && Cub.r != otherCub.r)
+                || (Cub.q != otherCub.q && Cub.s != otherCub.s && Cub.r == otherCub.r);
+        }
     }
 }

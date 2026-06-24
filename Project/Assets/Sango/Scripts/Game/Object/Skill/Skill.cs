@@ -91,6 +91,11 @@ namespace Sango.Core
         [JsonProperty] public int[] spellRanges;
 
         /// <summary>
+        /// 射程筛选逻辑
+        /// </summary>
+        [JsonProperty] public string rangeFilterMethod;
+
+        /// <summary>
         /// 所需适应等级
         /// </summary>
         [JsonProperty] public int needAblilityLevel;

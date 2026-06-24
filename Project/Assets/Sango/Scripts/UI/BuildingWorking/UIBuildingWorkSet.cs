@@ -4,13 +4,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     public class UIBuildingWorkSet : UGUIWindow
     {
         public Text windiwTitle;
 
         public UIPersonItem[] personItems;
+        public UIBuildingTypeItem[] productItems;
 
         public UITextField value_target;
         public UITextField value_attr;
@@ -23,7 +25,7 @@ using Sango.Core; namespace Sango.UI
         Building TargetBuilding { get; set; }
 
         List<Person> selectedPersonList = new List<Person>();
-
+        List<ItemType> product_items_list = new List<ItemType>();
         public override void OnOpen()
         {
             currentSystem = GameSystem.GetSystem<BuildingWorking>();
@@ -37,7 +39,48 @@ using Sango.Core; namespace Sango.UI
                     selectedPersonList.Add(p);
                 });
 
+            product_items_list.Clear();
+            if (targetBuildingType.productItems != null && targetBuildingType.productItems.Length > 0)
+            {
+                for (int i = 0; i < targetBuildingType.productItems.Length; i++)
+                {
+                    int itemId = targetBuildingType.productItems[i];
+                    ItemType itemType = Scenario.Cur.GetObject<ItemType>(itemId);
+                    if (itemType != null && itemType.IsValid(TargetBuilding.BelongForce))
+                    {
+                        product_items_list.Add(itemType);
+                    }
+                }
+
+                for (int i = 0; i < productItems.Length; i++)
+                {
+                    UIBuildingTypeItem item = productItems[i];
+                    if (i < product_items_list.Count)
+                    {
+                        item.gameObject.SetActive(true);
+                        ItemType itemType = product_items_list[i];
+                        if (TargetBuilding.ProductItemId == 0)
+                            TargetBuilding.ProductItemId = itemType.Id;
+                        item.SetItemType(itemType).SetNum(TargetBuilding.BelongCity.itemStore.GetNumber(itemType.storeKind)).SetSelected(itemType.Id == TargetBuilding.ProductItemId);
+                        item.onSelected = OnSelectProduct;
+                    }
+                    else
+                    {
+                        item.gameObject.SetActive(false);
+                    }
+                }
+            }
             ShowContent();
+        }
+
+        void OnSelectProduct(UIBuildingTypeItem item)
+        {
+            TargetBuilding.ProductItemId = item.obj.Id;
+            for (int i = 0; i < productItems.Length; i++)
+            {
+                productItems[i].SetSelected(false);
+            }
+            item.SetSelected(true);
         }
 
         void ShowContent()

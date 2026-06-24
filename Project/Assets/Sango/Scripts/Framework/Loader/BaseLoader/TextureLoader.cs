@@ -121,7 +121,16 @@ namespace Sango.Loader
                     //    t = texture2;
                     //}
                     if (loadData.textureNeedCompress)
-                        t.Compress(true);
+                    {
+                        try
+                        {
+                            t.Compress(true);
+                        }
+                        catch (Exception e)
+                        {
+                            Sango.Log.Warning(e);
+                        }
+                    }
                     t.Apply(loadData.textureNeedMipmap, true);
                     loadEnd.Invoke(t, loadData);
                 }

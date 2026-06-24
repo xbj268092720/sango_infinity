@@ -695,6 +695,11 @@ namespace Sango.Core
                 Father.sonList.Add(this);
 
             OnPersonAgeUpdate(scenario);
+
+            if (Official == null)
+                Official = scenario.CommonData.Officials[0];
+            if (Level == null)
+                Level = scenario.CommonData.PersonLevels[0];
         }
 
         public override void Init(Scenario scenario)
@@ -935,7 +940,7 @@ namespace Sango.Core
 
         public override bool OnTurnStart(Scenario scenario)
         {
-           
+
             return base.OnTurnStart(scenario);
         }
         public override bool OnForceTurnStart(Scenario scenario)
@@ -1235,7 +1240,7 @@ namespace Sango.Core
         public Person BeCaptive(City city, bool breakCircal = false)
         {
             Official = Scenario.Cur.CommonData.Officials.Get(0);
-            if(!breakCircal)
+            if (!breakCircal)
                 city.AddCaptive(this, true);
 #if SANGO_DEBUG
             Sango.Log.Info($"@人才@[{Name}]被<{city.BelongForce.Name}>俘虏至{city.Name}");
@@ -1321,12 +1326,19 @@ namespace Sango.Core
         public void GainExp(int add)
         {
             Exp += add;
+            if (Level.Next == null)
+                return;
             while (Level.exp > 0)
             {
                 if (Exp > Level.exp)
                 {
-                    Exp = Level.exp - Exp;
-                    Level = Level.Next;
+                    if (Level.Next != null)
+                    {
+                        Exp = Level.exp - Exp;
+                        Level = Level.Next;
+                    }
+                    else
+                        break;
 #if SANGO_DEBUG
                     Sango.Log.Info($"@个人@{Name}升级到{Level.Id}级");
 #endif

@@ -314,12 +314,13 @@ using Sango.Core; namespace Sango.UI
 
         void OnPersonSelected(List<Person> person_list)
         {
+            if (person_list.Count <= 0)
+                return;
+
             List<SangoObject> object_list = new List<SangoObject>();
             object_list.AddRange(personList);
             GameSystem.GetSystem<PersonInformation>().Start(person_list[0], object_list);
         }
-
-
 
     }
 }

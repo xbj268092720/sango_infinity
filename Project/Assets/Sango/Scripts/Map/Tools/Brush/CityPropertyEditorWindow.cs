@@ -12,6 +12,11 @@ namespace Sango.Tools
         private City selectedCity;
         private Vector2 scrollPosition = Vector2.zero;
 
+        /// <summary>
+        /// 武将归属列表滚动位置
+        /// </summary>
+        private Vector2 personAssignScroll = Vector2.zero;
+
         public void Initialize(MapEditor editor, City city)
         {
             this.editor = editor;
@@ -73,6 +78,10 @@ namespace Sango.Tools
             DrawIncomeProperties();
             DrawGrowthFactors();
             DrawOtherProperties();
+
+            DrawOwnershipProperties();
+
+            DrawPersonAssignment();
 
             GUILayout.EndScrollView();
         }
@@ -256,6 +265,120 @@ namespace Sango.Tools
                 windowRect = GUILayout.Window(windowId, windowRect, OnDrawWindow, windowName);
                 ConstrainWindowToScreen();
             }
+        }
+
+
+        /// <summary>
+        /// 绘制城池归属势力和归属军团
+        /// </summary>
+        private void DrawOwnershipProperties()
+        {
+            GUILayout.Label("归属势力");
+            GUILayout.Space(5);
+
+            List<Force> forces = new List<Force>();
+            List<string> forceNames = new List<string>();
+            forces.Add(null);
+            forceNames.Add("无");
+            editor.scenario.forceSet.ForEach((Force force) =>
+            {
+                if (force != null)
+                {
+                    forces.Add(force);
+                    forceNames.Add($"{force.Id}:{force.Name}");
+                }
+            });
+
+            int forceIndex = System.Math.Max(0, forces.IndexOf(selectedCity.BelongForce));
+            int newForceIndex = GUILayout.SelectionGrid(forceIndex, forceNames.ToArray(), 1);
+            if (newForceIndex != forceIndex && newForceIndex >= 0 && newForceIndex < forces.Count)
+            {
+                Force newForce = forces[newForceIndex];
+                selectedCity.BelongForce = newForce;
+                foreach (Person person in editor.scenario.personSet)
+                {
+                    if (person != null && person.BelongCity == selectedCity)
+                    {
+                        person.BelongForce = newForce;
+                    }
+                }
+            }
+            GUILayout.Space(10);
+
+            GUILayout.Label("归属军团");
+            GUILayout.Space(5);
+
+            List<Corps> corpsList = new List<Corps>();
+            List<string> corpsNames = new List<string>();
+            corpsList.Add(null);
+            corpsNames.Add("无");
+            Force cityForce = selectedCity.BelongForce;
+            editor.scenario.corpsSet.ForEach((Corps corps) =>
+            {
+                if (corps != null && (cityForce == null || corps.BelongForce == cityForce))
+                {
+                    corpsList.Add(corps);
+                    corpsNames.Add($"{corps.Id}:{corps.Name}");
+                }
+            });
+
+            int corpsIndex = System.Math.Max(0, corpsList.IndexOf(selectedCity.BelongCorps));
+            int newCorpsIndex = GUILayout.SelectionGrid(corpsIndex, corpsNames.ToArray(), 1);
+            if (newCorpsIndex != corpsIndex && newCorpsIndex >= 0 && newCorpsIndex < corpsList.Count)
+            {
+                Corps newCorps = corpsList[newCorpsIndex];
+                selectedCity.BelongCorps = newCorps;
+                foreach (Person person in editor.scenario.personSet)
+                {
+                    if (person != null && person.BelongCity == selectedCity)
+                    {
+                        person.BelongCorps = newCorps;
+                    }
+                }
+            }
+            GUILayout.Space(10);
+        }
+
+        /// <summary>
+        /// 绘制城池武将归属列表
+        /// </summary>
+        private void DrawPersonAssignment()
+        {
+            GUILayout.Label("城池武将归属");
+            GUILayout.Space(5);
+
+            personAssignScroll = GUILayout.BeginScrollView(personAssignScroll, GUILayout.Height(200));
+            foreach (Person person in editor.scenario.personSet)
+            {
+                if (person == null)
+                {
+                    continue;
+                }
+                bool assigned = person.BelongCity == selectedCity;
+                GUILayout.BeginHorizontal();
+                bool newAssigned = GUILayout.Toggle(assigned, "", GUILayout.Width(20));
+                GUILayout.Label($"{person.Id}:{person.Name}");
+                GUILayout.EndHorizontal();
+                if (newAssigned != assigned)
+                {
+                    if (newAssigned)
+                    {
+                        person.BelongCity = selectedCity;
+                        person.CurrentCity = selectedCity;
+                        person.BelongForce = selectedCity.BelongForce;
+                        person.BelongCorps = selectedCity.BelongCorps;
+                    }
+                    else
+                    {
+                        person.BelongCity = null;
+                        person.CurrentCity = null;
+                        person.BelongForce = null;
+                        person.BelongCorps = null;
+                    }
+                }
+            }
+            GUILayout.EndScrollView();
+            GUILayout.Space(10);
         }
     }
 }

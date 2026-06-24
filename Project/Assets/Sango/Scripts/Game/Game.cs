@@ -76,6 +76,7 @@ namespace Sango.Core
             TroopCompareFunction.Init();
             SkillSuccessMethod.Init();
             SkillCriticalMethod.Init();
+            SkillRangeFilterMethod.Init();
             ModManager.Instance.Init();
             GameLanguage.Instance.Init("cn");
             GameSystemManager.Instance.Init();
@@ -88,7 +89,7 @@ namespace Sango.Core
         /// </summary>
         public override void Shutdown()
         {
-            MapRender.Instance.Clear();
+            //MapRender.Instance.Clear();
 #if SANGO_DEBUG
             Sango.Log.Info("游戏关闭");
 #endif

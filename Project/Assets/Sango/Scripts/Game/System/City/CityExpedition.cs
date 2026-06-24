@@ -232,5 +232,25 @@ namespace Sango.Core.Player
             TargetTroop.troops = maxTroopNum;
             TargetTroop.food = food;
         }
+
+        public void SetWaterType(TroopType troopType)
+        {
+            TargetTroop.WaterTroopType = troopType;
+            if (personList.Count <= 0)
+                return;
+
+            TargetTroop.CalculateMaxTroops();
+            TargetTroop.CalculateAttribute(Scenario.Cur);
+        }
+
+        public void SetLandType(TroopType troopType)
+        {
+            TargetTroop.LandTroopType = troopType;
+            if (personList.Count <= 0)
+                return;
+
+            TargetTroop.CalculateMaxTroops();
+            TargetTroop.CalculateAttribute(Scenario.Cur);
+        }
     }
 }

@@ -28,6 +28,7 @@ namespace Sango.Core
         }
         public static SkillSuccessMethod Create(string name)
         {
+            if(string.IsNullOrEmpty(name)) return null;
             SkillSuccessMethodCreator creator;
             if (CreateMap.TryGetValue(name, out creator))
                 return creator();

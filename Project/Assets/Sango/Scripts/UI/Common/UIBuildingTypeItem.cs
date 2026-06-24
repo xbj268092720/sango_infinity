@@ -16,6 +16,7 @@ using Sango.Core; namespace Sango.UI
         public int index;
         public delegate void OnSelect(UIBuildingTypeItem item);
         public OnSelect onSelected;
+        public SangoObject obj;
         public bool IsSelected()
         {
             return select.gameObject.activeSelf;
@@ -62,6 +63,7 @@ using Sango.Core; namespace Sango.UI
 
         public UIBuildingTypeItem SetBuildingType(BuildingType buildingType)
         {
+            obj = buildingType;
             if (buildingType == null)
             {
                 icon.enabled = false;
@@ -88,6 +90,7 @@ using Sango.Core; namespace Sango.UI
 
         public UIBuildingTypeItem SetItemType(ItemType itemType)
         {
+            obj = itemType;
             if (itemType == null)
             {
                 icon.enabled = false;
@@ -115,6 +118,7 @@ using Sango.Core; namespace Sango.UI
 
         public UIBuildingTypeItem SetTroopType(TroopType troopType)
         {
+            obj = troopType;
             if (troopType == null)
             {
                 icon.enabled = false;

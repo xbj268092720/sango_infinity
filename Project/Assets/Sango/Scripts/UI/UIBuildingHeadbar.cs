@@ -1,13 +1,16 @@
 ﻿using Sango.Loader;
 using UnityEngine;
 using UnityEngine.UI;
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 
 {
     public class UIBuildingHeadbar : UIBuildingBaseHeadbar
     {
         public UIWorker[] workers;
         public RectTransform workerNode;
+        public RectTransform productNode;
+        public Image productImg;
 
         public void ShowWorker(Building building)
         {
@@ -35,10 +38,27 @@ using Sango.Core; namespace Sango.UI
             }
         }
 
+        public void ShowProduct(Building building)
+        {
+            if (building.ProductItemId <= 0)
+            {
+                productNode.gameObject.SetActive(false);
+                return;
+            }
+
+            productNode.gameObject.SetActive(true);
+            ItemType itemType = Scenario.Cur.GetObject<ItemType>(building.ProductItemId);
+            if (itemType != null)
+            {
+                productImg.sprite = GameRenderHelper.LoadBuildingTypeIcon(itemType.icon);
+            }
+        }
+
         public override void UpdateState(BuildingBase building)
         {
             base.UpdateState(building);
             ShowWorker(building as Building);
+            ShowProduct(building as Building);
         }
     }
 }

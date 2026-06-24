@@ -27,10 +27,13 @@ namespace Sango.Core
         public ScenarioCommonData LoadNewCommonData()
         {
             ScenarioCommonData scenarioCommonData = new ScenarioCommonData();
-            scenarioCommonData.Load(Path.ContentRootPath + "/Data/Common/Common.json");
-            ModManager.Instance.EnumFiles("Data/Common/Common.json", dir =>
+            Sango.Directory.EnumFiles(Path.ContentRootPath + "/Data/Common", file =>
             {
-                scenarioCommonData.Load(dir);
+                scenarioCommonData.Load(file);
+            });
+            ModManager.Instance.EnumDirectory("Data/Common", file =>
+            {
+                scenarioCommonData.Load(file);
             });
             return scenarioCommonData;
         }
@@ -41,10 +44,13 @@ namespace Sango.Core
                 return ScenarioCommonData;
 
             ScenarioCommonData = new ScenarioCommonData();
-            ScenarioCommonData.Load(Path.ContentRootPath + "/Data/Common/Common.json");
-            ModManager.Instance.EnumFiles("Data/Common/Common.json", dir =>
+            Sango.Directory.EnumFiles(Path.ContentRootPath + "/Data/Common", file =>
             {
-                ScenarioCommonData.Load(dir);
+                ScenarioCommonData.Load(file);
+            });
+            ModManager.Instance.EnumDirectory("Data/Common", file =>
+            {
+                ScenarioCommonData.Load(file);
             });
             return ScenarioCommonData;
         }

@@ -28,6 +28,9 @@ namespace Sango.Core
         }
         public static SkillCriticalMethod Create(string name)
         {
+
+            if (string.IsNullOrEmpty(name)) return null;
+
             SkillCriticalMethodCreator creator;
             if (CreateMap.TryGetValue(name, out creator))
                 return creator();

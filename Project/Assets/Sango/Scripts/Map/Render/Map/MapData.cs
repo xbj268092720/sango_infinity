@@ -81,11 +81,12 @@ namespace Sango.Render
 
         public override void Clear()
         {
-            if (needDisposeNativeVertexDatas)
-            {
-                needDisposeNativeVertexDatas = false;
-                nativeVertexDatas.Dispose();
-            }
+            //if (needDisposeNativeVertexDatas)
+            //{
+            //    needDisposeNativeVertexDatas = false;
+            //    if(nativeVertexDatas != null)
+            //       nativeVertexDatas.Dispose();
+            //}
             base.Clear();
             vertexDatas = null;
         }
@@ -214,7 +215,7 @@ namespace Sango.Render
 
             nativeVertexDatasTemp.Dispose();
             neighborVertexArray.Dispose();
-
+            nativeVertexDatas.Dispose();
             //for (int x = 0; x < vertexDatas.Length; x++)
             //{
             //    VertexData[] yTable = vertexDatas[x];

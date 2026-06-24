@@ -449,11 +449,11 @@ namespace Sango.Core
             }
             foreach (SkillInstance s in landSkills)
             {
-                s.master = this;
+                s.Init(this, s.skill);
             }
             foreach (SkillInstance s in waterSkills)
             {
-                s.master = this;
+                s.Init(this, s.skill);
             }
             PrepeareFoodCost();
             //MemberList?.InitCache();// = new SangoObjectList<Person>().FromString(_memberListStr, scenario.personSet);

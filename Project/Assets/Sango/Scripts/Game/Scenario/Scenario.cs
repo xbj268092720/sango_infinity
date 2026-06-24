@@ -690,6 +690,7 @@ namespace Sango.Core
 
             JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
 
+            CommonData = GameData.Instance.LoadNewCommonData();
 
             Map.Load(this);
 
@@ -731,12 +732,14 @@ namespace Sango.Core
             prepareList.Add(personSet);
             prepareList.Add(buildingSet);
             prepareList.Add(troopsSet);
+            prepareList.Add(fireSet);
 
             eventReciveList.Add(personSet);
             eventReciveList.Add(buildingSet);
             eventReciveList.Add(citySet);
             eventReciveList.Add(troopsSet);
             eventReciveList.Add(forceSet);
+            eventReciveList.Add(fireSet);
         }
 
         public void LoadWorld()

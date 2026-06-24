@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     public class UIPlayerInfoPanel : UGUIWindow
     {
@@ -31,6 +32,7 @@ using Sango.Core; namespace Sango.UI
 
         private void Start()
         {
+            OnDestroy();
             GameEvent.OnTroopCreated += OnTroopCreated;
             GameEvent.OnTroopDestroyed += OnTroopDestroyed;
             GameEvent.OnCityFall += OnCityFall;
@@ -47,7 +49,10 @@ using Sango.Core; namespace Sango.UI
 
         void OnTroopActionOver(Troop troop)
         {
-            if ((curShowType == ShowType.Troop || curShowType == ShowType.Person) && troop.BelongForce.IsPlayer && troop.BelongForce == Scenario.Cur.CurRunForce)
+            if (troop == null)
+                return;
+
+            if ((curShowType == ShowType.Troop || curShowType == ShowType.Person) && troop.BelongForce != null && troop.BelongForce.IsPlayer && troop.BelongForce == Scenario.Cur.CurRunForce)
             {
                 UpdateShowType();
             }

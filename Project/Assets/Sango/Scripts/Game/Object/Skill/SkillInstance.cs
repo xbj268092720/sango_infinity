@@ -123,6 +123,11 @@ namespace Sango.Core
         [JsonProperty] public string criticalMethod;
 
         /// <summary>
+        /// 射程筛选逻辑
+        /// </summary>
+        [JsonProperty] public string rangeFilterMethod;
+
+        /// <summary>
         /// 技能时间轴
         /// </summary>
         [JsonProperty] public SkillTimeline timeline;
@@ -139,6 +144,8 @@ namespace Sango.Core
 
         SkillSuccessMethod skillSuccessMethod;
         SkillCriticalMethod skillCriticalMethod;
+        SkillRangeFilterMethod skillRangeFilterMethod;
+
 
         // 时间轴事件处理相关
         private List<Cell> tempTimelineCellList = new List<Cell>();
@@ -205,6 +212,7 @@ namespace Sango.Core
             blockFactor = skill.blockFactor;
             successMethod = skill.successMethod;
             criticalMethod = skill.criticalMethod;
+            rangeFilterMethod = skill.rangeFilterMethod;
 
             InitSkillEffects();
             InitSkillVisualizer();
@@ -212,6 +220,7 @@ namespace Sango.Core
             InitTimelineInstance();
             skillCriticalMethod = SkillCriticalMethod.Create(criticalMethod);
             skillSuccessMethod = SkillSuccessMethod.Create(successMethod);
+            skillRangeFilterMethod = SkillRangeFilterMethod.Create(rangeFilterMethod);
 
             GameEvent.OnSkillCalculateAttribute?.Invoke(master, this);
         }
@@ -266,6 +275,8 @@ namespace Sango.Core
                     Scenario.Cur.Map.GetRing(where, spellRanges[i], cells, true);
                 }
             }
+
+            skillRangeFilterMethod?.Calculate(this, atker, where, cells);
         }
 
 

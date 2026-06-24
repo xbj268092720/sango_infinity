@@ -17,6 +17,7 @@ namespace Sango.Core
         public List<ObjectSortTitle>[] customTitleList;
         public string customTitleName;
         public string windowName = "window_building_work_set";
+
         // 基于经典产出的比例
         int classiceGainFactor = 5;
         int selectedWorkingType = 1;
@@ -222,10 +223,10 @@ namespace Sango.Core
             {
                 TargetBuilding = building as Building;
 
-                // 工作/设置
+                // 工作设置
                 menuData.Add(GameLanguage.GetString(10000001), 10, null, OnClickMenuItem_WorkerSet, true);
 
-                // 工作/自动
+                // 工作(自动)
                 menuData.Add(GameLanguage.GetString(10000002), 11, null, OnClickMenuItem_AutoWorkerSet, true);
             }
         }
@@ -379,8 +380,6 @@ namespace Sango.Core
                 }
             }
         }
-
-
 
         public int GetCityLeaderInfuse(City city, int effectAttrType)
         {
@@ -593,6 +592,8 @@ namespace Sango.Core
                 totalValue += (int)(city.population * scenario.Variables.populationFoodCostFactor * 0.5f);
             }
 
+            totalValue = (int)(totalValue * scenario.Variables.foodFactor);
+
             //totalValue = GameRandom.Random(totalValue, 0.05f);
             city.AddFood(totalValue);
 #if SANGO_DEBUG
@@ -631,6 +632,8 @@ namespace Sango.Core
             {
                 totalValue += (int)(city.population * scenario.Variables.populationGoldIncomeFactor);
             }
+
+            totalValue = (int)(totalValue * scenario.Variables.goldFactor);
 
             //Sango.Log.Error($"all: t:{totalValue}");
             //totalFoodt = GameRandom.Random(totalFood, 0.05f);
@@ -884,6 +887,32 @@ namespace Sango.Core
                     case (int)BuildingKindType.BlacksmithShop:
                         if (building.AccumulatedProduct > 0)
                         {
+                            if (building.ProductItemId == 0)
+                            {
+                                // 设置产出
+                                // 统计适应偏向
+                                int[] levelTotal = new int[3] { 1, 1, 1 };
+                                city.allPersons.ForEach(x =>
+                                {
+                                    levelTotal[0] += x.SpearLv;
+                                    levelTotal[1] += x.HalberdLv;
+                                    levelTotal[2] += x.CrossbowLv;
+                                });
+                                int totalWeaponNum = city.itemStore.GetNumber(new int[] { 2, 3, 4 });
+
+                                int sumTotal = levelTotal[0] + levelTotal[1] + levelTotal[2];
+
+                                for (int itemTypeId = 2; itemTypeId <= 4; itemTypeId++)
+                                {
+                                    int itemNum = city.itemStore.GetNumber(itemTypeId);
+                                    int destNum = totalWeaponNum * levelTotal[itemTypeId - 2] / sumTotal;
+                                    levelTotal[itemTypeId - 2] = Mathf.Max(1, (destNum - itemNum) / 100);
+                                }
+
+                                int targetIndex = GameRandom.RandomWeightIndex(levelTotal);
+                                building.ProductItemId = targetIndex + 2;
+                            }
+
                             city.AddItem(building.ProductItemId, building.AccumulatedProduct);
                             city.Render?.UpdateRender();
                             switch (building.ProductItemId)
@@ -904,6 +933,10 @@ namespace Sango.Core
                     case (int)BuildingKindType.Stable:
                         if (building.AccumulatedProduct > 0)
                         {
+                            if (building.ProductItemId == 0)
+                            {
+                                building.ProductItemId = 5;
+                            }
                             city.AddItem(5, building.AccumulatedProduct);
                             city.Render?.UpdateRender();
                             building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Horse);
@@ -913,6 +946,20 @@ namespace Sango.Core
                     case (int)BuildingKindType.BoatFactory:
                         if (building.AccumulatedProduct > 0)
                         {
+                            if (building.ProductItemId == 0)
+                            {
+                                int targetBoatId = 12;
+                                ItemType _itemType = scenario.GetObject<ItemType>(targetBoatId);
+                                if (_itemType.IsValid(city.BelongForce))
+                                {
+                                    building.ProductItemId = targetBoatId;
+                                }
+                                else
+                                {
+                                    building.ProductItemId = targetBoatId - 1;
+                                }
+                            }
+
                             ItemType itemType = scenario.GetObject<ItemType>(building.ProductItemId);
                             city.AddItem(itemType.storeKind, building.AccumulatedProduct);
                             city.Render?.UpdateRender();
@@ -923,6 +970,30 @@ namespace Sango.Core
                     case (int)BuildingKindType.MechineFactory:
                         if (building.AccumulatedProduct > 0)
                         {
+                            int monsterNum = city.itemStore.GetNumber((int)ItemStoreKindType.Helepolis);
+                            int towerNum = city.itemStore.GetNumber((int)ItemStoreKindType.Catapult);
+
+                            int tagetItemId;
+                            int totalNum;
+                            ItemType targetItemType;
+                            if (towerNum > monsterNum)
+                            {
+                                tagetItemId = 7;
+                                totalNum = monsterNum;
+                                targetItemType = scenario.GetObject<ItemType>(tagetItemId);
+                                if (!targetItemType.IsValid(city.BelongForce))
+                                    tagetItemId--;
+                            }
+                            else
+                            {
+                                tagetItemId = 9;
+                                totalNum = towerNum;
+                                targetItemType = scenario.GetObject<ItemType>(tagetItemId);
+                                if (!targetItemType.IsValid(city.BelongForce))
+                                    tagetItemId--;
+                            }
+                            building.ProductItemId = tagetItemId;
+
                             ItemType itemType = scenario.GetObject<ItemType>(building.ProductItemId);
                             city.AddItem(itemType.storeKind, building.AccumulatedProduct);
                             city.Render?.UpdateRender();
@@ -960,13 +1031,20 @@ namespace Sango.Core
         public override void OnEnter()
         {
             base.OnEnter();
-            Window.Instance.Open(windowName);
+            // 有多种产出的时候,需要设置产出界面
+            if (TargetBuilding.BuildingType.productItems != null && TargetBuilding.BuildingType.productItems.Length > 0)
+                Window.Instance.Open(windowName + "_product");
+            else
+                Window.Instance.Open(windowName);
         }
 
         public override void OnDestroy()
         {
             base.OnDestroy();
-            Window.Instance.Close(windowName);
+            if (TargetBuilding.BuildingType.productItems != null && TargetBuilding.BuildingType.productItems.Length > 0)
+                Window.Instance.Close(windowName + "_product");
+            else
+                Window.Instance.Close(windowName);
         }
 
         public void SetBuildingWorker(Building building, List<Person> workers)

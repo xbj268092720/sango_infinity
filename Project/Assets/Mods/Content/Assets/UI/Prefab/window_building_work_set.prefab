@@ -370,6 +370,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragRect: {fileID: 0}
+  uiCamera: {fileID: 0}
+  isOverlayCamera: 0
 --- !u!114 &8481979942988651892
 MonoBehaviour:
   m_ObjectHideFlags: 0

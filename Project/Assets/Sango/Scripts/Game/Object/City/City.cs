@@ -1867,6 +1867,8 @@ namespace Sango.Core
             building.durability = 1;
             building.ChangeDurability(GameUtility.Method_TroopBuildAbility(builder), null);
 
+            builder.gold -= buildingType.cost;
+
 #if SANGO_DEBUG
             Sango.Log.Info($"[{BelongForce.Name}]在<{Name}>由{builder.Name}开始修建: {building.Name}");
 #endif

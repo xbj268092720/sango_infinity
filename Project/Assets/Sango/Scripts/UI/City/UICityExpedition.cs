@@ -424,7 +424,7 @@ using Sango.Core; namespace Sango.UI
             buildingTypeItem.SetSelected(true);
             
             TroopType troopType = cityExpeditionSys.ActivedWaterTroopTypes[buildingTypeItem.index];
-            cityExpeditionSys.AutoMakeTroop(troopType);
+            cityExpeditionSys.SetWaterType(troopType);
             
             UpdateContent();
         }
@@ -437,7 +437,7 @@ using Sango.Core; namespace Sango.UI
             buildingTypeItem.SetSelected(true);
             
             TroopType troopType = cityExpeditionSys.ActivedLandTroopTypes[buildingTypeItem.index];
-            cityExpeditionSys.AutoMakeTroop(troopType);
+            cityExpeditionSys.SetLandType(troopType);
             
             UpdateContent();
         }
