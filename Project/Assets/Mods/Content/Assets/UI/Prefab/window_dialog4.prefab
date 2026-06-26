@@ -403,6 +403,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_Pivot.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 232.05139
+      objectReference: {fileID: 0}
+    - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -59.77124
+      objectReference: {fileID: 0}
     - target: {fileID: 1036248966155586300, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_RaycastTarget
       value: 0

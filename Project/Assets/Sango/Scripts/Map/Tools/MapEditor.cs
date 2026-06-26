@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 using UnityEngine.Rendering.Universal;
+using Sango.Manager;
 
 namespace Sango.Tools
 {
@@ -102,6 +103,8 @@ namespace Sango.Tools
 
         public string lastSavedPath { get; set; } = "";
 
+        GUISkin skin;
+
         /// <summary>
         /// 当前加载的剧本对象
         /// </summary>
@@ -119,6 +122,7 @@ namespace Sango.Tools
 
         private void Awake()
         {
+            skin = Resources.Load<GUISkin>("GUISkin/MapEditor");
             timeInterval = 1.0f / frameLimit;
             Sango.Path.Init();
             //Path.AddSearchPath("D:/project_tk/Build/Mods/CoreMap");
@@ -155,6 +159,7 @@ namespace Sango.Tools
             editorToolsBarWindow = EditorWindow.AddWindow(0, windowRect, DrawToolbarWindow, "地图编辑器");
             editorToolsBarWindow.canClose = false;
             editorToolsBarWindow.visible = false;
+            editorToolsBarWindow.skin = skin;
 
             // 属性窗口不再单独创建，内容合并到工具栏窗口下方
 
@@ -175,6 +180,7 @@ namespace Sango.Tools
 
             Sango.Core.GameController.Instance.DragMoveViewEnabled = false;
 
+            AudioManager.Instance.StopBgm();
         }
 
         /// <summary>
@@ -288,12 +294,8 @@ namespace Sango.Tools
                 if (scenario != null)
                 {
                     Sango.ScenarioMaker.ScenarioMaker.Instance.SetScenario(scenario);
-                    OpenScenarioMakerWindow();
                 }
-                else
-                {
-                    Sango.Log.Warning("请先加载剧本");
-                }
+                OpenScenarioMakerWindow();
             });
 
             // 视图菜单
@@ -412,43 +414,43 @@ namespace Sango.Tools
             try
             {
 #endif
-                scenario = new Sango.Core.Scenario(scenarioPath);
+            scenario = new Sango.Core.Scenario(scenarioPath);
 
-                if (!string.IsNullOrEmpty(scenario.Info.mapType))
+            if (!string.IsNullOrEmpty(scenario.Info.mapType))
+            {
+                string mapPath = Sango.Path.FindFile($"Map/{scenario.Info.mapType}.bin");
+                if (!string.IsNullOrEmpty(mapPath) && System.IO.File.Exists(mapPath))
                 {
-                    string mapPath = Sango.Path.FindFile($"Map/{scenario.Info.mapType}.bin");
-                    if (!string.IsNullOrEmpty(mapPath) && System.IO.File.Exists(mapPath))
-                    {
-                        map.LoadMap(mapPath);
-                        lastSavedPath = mapPath;
-                        editorToolsBarWindow.visible = true;
+                    map.LoadMap(mapPath);
+                    lastSavedPath = mapPath;
+                    editorToolsBarWindow.visible = true;
 
-                        EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
-                        if (editorfree != null)
-                            editorfree.lookAt = map.mapCamera.GetCenterTransform();
+                    EditorFreeCamera editorfree = Camera.main.gameObject.GetComponent<Sango.Tools.EditorFreeCamera>();
+                    if (editorfree != null)
+                        editorfree.lookAt = map.mapCamera.GetCenterTransform();
 
-                        BrushBase brush = CheckBrush();
-                        if (brush != null)
-                            brush.OnEnter();
+                    BrushBase brush = CheckBrush();
+                    if (brush != null)
+                        brush.OnEnter();
 
-                        if (ViewIs311Camera)
-                            SetCameraControlType(1);
-                        else
-                            SetCameraControlType(0);
+                    if (ViewIs311Camera)
+                        SetCameraControlType(1);
+                    else
+                        SetCameraControlType(0);
 
-                        Sango.Log.Info($"地图已加载: {mapPath}");
-                    }
+                    Sango.Log.Info($"地图已加载: {mapPath}");
                 }
+            }
 
-                scenario.LoadContent();
+            scenario.LoadContent();
 
-                SpawnCityModels();
+            SpawnCityModels();
 
-                Sango.ScenarioMaker.ScenarioMaker.Instance.SetScenario(scenario);
+            Sango.ScenarioMaker.ScenarioMaker.Instance.SetScenario(scenario);
 
-                string message = $"剧本已加载: {System.IO.Path.GetFileName(scenarioPath)}";
-                Sango.Log.Info(message);
-                autoSave.ShowSaveNotification(message);
+            string message = $"剧本已加载: {System.IO.Path.GetFileName(scenarioPath)}";
+            Sango.Log.Info(message);
+            autoSave.ShowSaveNotification(message);
 #if SANGO_DEBUG
 
             }
@@ -611,7 +613,7 @@ namespace Sango.Tools
             Camera.main.gameObject.transform.rotation = Quaternion.Euler(90, -90, 0);
 
             UnityEngine.RenderSettings.fog = false;
-            
+
             //
             terrain_brush.AutoImportLayerTexture();
         }
@@ -916,7 +918,7 @@ namespace Sango.Tools
             //menu.DrawTopMenuBar();
 
             // 委托给窗口扩展类绘制各个窗口
-           windows.Draw();
+            windows.Draw();
         }
 
         void DrawToolbarWindow(int windowID, EditorWindow window)

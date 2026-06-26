@@ -88,6 +88,8 @@ namespace Sango.Core
         /// </summary>
         [JsonProperty] public int agriculture_add_food = 10;
 
+
+
         /// <summary>
         /// 每一点商业点带来的金币收入
         /// </summary>
@@ -246,6 +248,11 @@ namespace Sango.Core
         /// </summary>
         [JsonProperty]
         public int BuildMaxTurn = 10;
+
+        /// <summary>
+        /// 玩家保护回合(不会受电脑攻击)
+        /// </summary>
+        [JsonProperty] public int AIAttackProtectedCount = 12;
 
         /// <summary>
         /// 粮食倍率
@@ -408,6 +415,7 @@ namespace Sango.Core
         /// 寻路安全次数限制
         /// </summary>
         [JsonProperty] public int pathfindingSafeCount = 100000;
+
 
         #region 外交系统参数
 

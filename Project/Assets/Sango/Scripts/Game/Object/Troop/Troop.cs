@@ -442,6 +442,7 @@ namespace Sango.Core
         }
         public override void OnScenarioPrepare(Scenario scenario)
         {
+            captiveList.RemoveAll(x => x.BelongTroop != this);
             foreach (Person person in captiveList)
             {
                 if (person.BelongForce != null)
@@ -532,6 +533,8 @@ namespace Sango.Core
             for (int i = captiveList.Count - 1; i >= 0; i--)
             {
                 Person person = captiveList[i];
+                if (person == null) continue;
+
                 if (GameRandom.Chance(GameFormula.Instance.PersonEscapeProbablility_InTroop(person, this, scenario), 10000))
                 {
                     person.Escape(EscapeType.Escape);
@@ -560,7 +563,7 @@ namespace Sango.Core
 
         public void ForEachPerson(Action<Person> action)
         {
-            action(Leader);
+            if (Leader != null) action(Leader);
             if (Member1 != null) action(Member1);
             if (Member2 != null) action(Member2);
         }
@@ -1268,7 +1271,7 @@ namespace Sango.Core
 #if SANGO_DEBUG
                 Sango.Log.Info($"{BelongForce.Name}的[{Name} 部队 溃灭!!");
 #endif
-                OnDestroy(atk);
+                OnDestroy(atk, skill, atkBack);
 
                 // 移除
                 Clear();
@@ -1282,8 +1285,47 @@ namespace Sango.Core
             return IsAlive;
         }
 
-        public void OnDestroy(SangoObject atk)
+        public int GetCaptureChangce()
         {
+            return Scenario.Cur.Variables.captureChangceWhenTroopFall;
+        }
+
+        public int GetEscapeChangce()
+        {
+            return 0;
+        }
+
+
+        public void OnDestroy(SangoObject atk, SkillInstance skill, int atkBack)
+        {
+            // 添加俘虏流程
+            if (atk.ObjectType == SangoObjectType.Troops)
+            {
+                Troop atkTroop = (Troop)atk;
+                int p = Math.Max(0, atkTroop.GetCaptureChangce() - GetEscapeChangce());
+                List<Person> captives = new List<Person>();
+                if (GameRandom.Chance(100))
+                {
+                    captives.Add(Leader);
+                }
+                if (Member1 != null && GameRandom.Chance(100))
+                {
+                    captives.Add(Member1);
+                }
+
+                if (Member2 != null && GameRandom.Chance(100))
+                {
+                    captives.Add(Member2);
+                }
+
+                if(captives.Count > 0)
+                {
+                    CityRecruitPersonWhenTroopFallEvent te = RenderEvent.Instance.Create<CityRecruitPersonWhenTroopFallEvent>();
+                    te.Init(captives, atkTroop);
+                    //RenderEvent.Instance.Add(te);
+                }
+            }
+
             for (int i = 0; i < captiveList.Count; i++)
             {
                 Person person = captiveList[i];
@@ -1591,18 +1633,13 @@ namespace Sango.Core
             city.AddGold(gold);
             city.AddFood(food);
             city.AddTroops(troops);
-            if (captiveList != null)
+            captiveList.ForEach(p =>
             {
-                captiveList.ForEach(p =>
-                {
-                    city.AddCaptive(p);
-                    p.ChangeCurrentCity(city);
-                    p.BelongTroop = null;
-                });
-                captiveList.Clear();
-            }
-            captiveList = null;
-
+                city.AddCaptive(p);
+                p.ChangeCurrentCity(city);
+                p.BelongTroop = null;
+            });
+            captiveList.Clear();
             // 返还兵装
             city.itemStore.Gain(LandTroopType.costItems, troops + woundedTroops);
             city.itemStore.Gain(WaterTroopType.costItems, troops + woundedTroops);
@@ -1657,15 +1694,11 @@ namespace Sango.Core
 
         public override void Clear()
         {
-            if (captiveList != null)
+            captiveList.ForEach(x =>
             {
-                captiveList.ForEach(x =>
-                {
-                    x.Escape(EscapeType.TroopDestroyed);
-                });
-
-                captiveList = null;
-            }
+                x.Escape(EscapeType.TroopDestroyed);
+            });
+            captiveList.Clear();
 
             if (actionList != null)
             {
@@ -1678,6 +1711,7 @@ namespace Sango.Core
 
             if (LandTroopType.isFight && LandTroopType.Id != 1)
                 BelongCity.allAttackTroops.Remove(this);
+
             BelongCity.allTroops.Remove(this);
             Scenario.Cur.Remove(this);
             ForEachPerson((person) =>

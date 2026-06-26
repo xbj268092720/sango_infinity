@@ -7,6 +7,7 @@ using System.Reflection;
 using TKNewtonsoft.Json;
 using UnityEngine;
 
+
 namespace Sango.ScenarioMaker
 {
     /// <summary>
@@ -341,7 +342,7 @@ namespace Sango.ScenarioMaker
         }
 
         /// <summary>
-        /// 绘制场景对象引用，数量较少时显示下拉列表，否则显示ID输入框
+        /// 绘制场景对象引用，数量较少时显示下拉菜单，否则显示ID输入框
         /// </summary>
         private static bool DrawSangoObjectReference(MemberInfo member, object target, Type type, SangoObject value, Scenario scenario)
         {
@@ -360,8 +361,9 @@ namespace Sango.ScenarioMaker
                         names.Add($"{obj.Id}:{obj.Name}");
                     }
                 }
+
                 int index = System.Math.Max(0, options.IndexOf(value));
-                int newIndex = GUILayout.SelectionGrid(index, names.ToArray(), 1);
+                int newIndex = Sango.Tools.EditorUtility.Popup(index, names.ToArray(), GUILayout.Width(120));
                 if (newIndex != index && newIndex >= 0 && newIndex < options.Count)
                 {
                     SetValue(member, target, options[newIndex]);
@@ -382,6 +384,7 @@ namespace Sango.ScenarioMaker
             }
         }
 
+
         /// <summary>
         /// 获取指定类型的候选对象列表
         /// </summary>
@@ -398,14 +401,32 @@ namespace Sango.ScenarioMaker
                 FieldInfo field = typeof(Scenario).GetField(fieldName);
                 if (field != null)
                 {
-                    IEnumerable set = field.GetValue(scenario) as IEnumerable;
+                    IDatabase set = field.GetValue(scenario) as IDatabase;
                     if (set != null)
                     {
-                        foreach (object obj in set)
+                        set.ForEach(obj =>
                         {
                             if (obj != null && obj is SangoObject so)
                             {
                                 result.Add(so);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        PropertyInfo propertyInfo = typeof(ScenarioCommonData).GetProperty(fieldName);
+                        if (propertyInfo != null)
+                        {
+                            set = propertyInfo.GetValue(scenario.CommonData) as IDatabase;
+                            if (set != null)
+                            {
+                                set.ForEach(obj =>
+                                {
+                                    if (obj != null && obj is SangoObject so)
+                                    {
+                                        result.Add(so);
+                                    }
+                                });
                             }
                         }
                     }
@@ -413,22 +434,40 @@ namespace Sango.ScenarioMaker
                 return result;
             }
 
-            if (CommonDataSetMap.TryGetValue(type, out string propertyName))
+            if (CommonDataSetMap.TryGetValue(type, out string commonDataFieldName))
             {
                 if (scenario.CommonData != null)
                 {
-                    PropertyInfo property = typeof(ScenarioCommonData).GetProperty(propertyName);
-                    if (property != null)
+                    FieldInfo field = typeof(ScenarioCommonData).GetField(commonDataFieldName);
+                    if (field != null)
                     {
-                        IEnumerable set = property.GetValue(scenario.CommonData) as IEnumerable;
+                        IDatabase set = field.GetValue(scenario.CommonData) as IDatabase;
                         if (set != null)
                         {
-                            foreach (object obj in set)
+                            set.ForEach(obj =>
                             {
                                 if (obj != null && obj is SangoObject so)
                                 {
                                     result.Add(so);
                                 }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        PropertyInfo propertyInfo = typeof(ScenarioCommonData).GetProperty(commonDataFieldName);
+                        if (propertyInfo != null)
+                        {
+                            IDatabase set = propertyInfo.GetValue(scenario.CommonData) as IDatabase;
+                            if (set != null)
+                            {
+                                set.ForEach(obj =>
+                                {
+                                    if (obj != null && obj is SangoObject so)
+                                    {
+                                        result.Add(so);
+                                    }
+                                });
                             }
                         }
                     }

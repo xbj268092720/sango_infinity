@@ -204,6 +204,7 @@ namespace Sango.Core
                     LeftCounter--;
                 ActionOver = false;
             }
+
             // 暂时写死
             if (isComplate && BuildingType.atk > 0 && BuildingType.atkRange > 0)
             {

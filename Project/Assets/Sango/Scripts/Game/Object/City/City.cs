@@ -817,6 +817,7 @@ namespace Sango.Core
                 }
             }
 
+            captiveList.RemoveAll(x => x.CurrentCity != this);
             foreach (Person person in captiveList)
             {
                 if (person.BelongForce != null)
@@ -1178,7 +1179,8 @@ namespace Sango.Core
             for (int i = captiveList.Count - 1; i >= 0; i--)
             {
                 Person person = captiveList[i];
-                person.missionCounter++;
+                if(person != null)
+                    person.missionCounter++;
             }
 
             GameEvent.OnCityTurnStart?.Invoke(this, scenario);
@@ -1200,6 +1202,7 @@ namespace Sango.Core
             for (int i = captiveList.Count - 1; i >= 0; i--)
             {
                 Person person = captiveList[i];
+                if (person == null) continue;
                 if (GameRandom.Chance(GameFormula.Instance.PersonEscapeProbablility_InCity(person, this, scenario), 10000))
                 {
                     person.Escape(EscapeType.Escape);
@@ -1300,7 +1303,8 @@ namespace Sango.Core
             // 计算俘虏的消耗
             for (int i = 0; i < captiveList.Count; i++)
             {
-                goldCost += 100;
+                if (captiveList[i] != null)
+                    goldCost += 100;
             }
 
             return goldCost;
@@ -1718,7 +1722,7 @@ namespace Sango.Core
             for (int i = this.captiveList.Count - 1; i >= 0; i--)
             {
                 Person person = this.captiveList[i];
-                if (person.IsSameForce(atk))
+                if (person != null && person.IsSameForce(atk))
                 {
                     RemoveCaptive(person);
                     person.BelongCity.RemovePerson(person);

@@ -712,7 +712,7 @@
         47,
         40
       ],
-      "validTechId": -1,
+      "validTechId": -29,
       "costItems": [
         6,
         10
@@ -785,7 +785,7 @@
         47,
         40
       ],
-      "validTechId": 1,
+      "validTechId": 29,
       "costItems": [
         6,
         10
@@ -858,7 +858,7 @@
         47,
         40
       ],
-      "validTechId": -2,
+      "validTechId": -23,
       "costItems": [
         7,
         10
@@ -931,7 +931,7 @@
         47,
         40
       ],
-      "validTechId": 2,
+      "validTechId": 23,
       "costItems": [
         7,
         10

@@ -105,6 +105,18 @@ namespace Sango.Core
         public string Language { get; set; } = "zh-CN";
         #endregion
 
+        #region 界面设置
+        /// <summary>
+        /// 大字体开关
+        /// </summary>
+        public bool IsLargeFontEnabled { get; set; } = false;
+
+        /// <summary>
+        /// 大字体缩放倍率
+        /// </summary>
+        public int LargeFontScaleFactor { get; set; } = 0;
+        #endregion
+
         #region 构造函数
         /// <summary>
         /// 构造函数
@@ -316,6 +328,18 @@ namespace Sango.Core
         }
 
         /// <summary>
+        /// 应用大字体设置
+        /// </summary>
+        public void ApplyLargeFontSettings()
+        {
+            PlayerPrefs.SetInt("IsLargeFontEnabled", IsLargeFontEnabled ? 1 : 0);
+            PlayerPrefs.SetFloat("LargeFontScaleFactor", LargeFontScaleFactor);
+            PlayerPrefs.Save();
+        }
+
+
+
+        /// <summary>
         /// 应用所有设置
         /// </summary>
         public void ApplyAllSettings()
@@ -327,7 +351,9 @@ namespace Sango.Core
             ApplyAudioSettings();
             ApplyControlSettings();
             ApplyLanguageSettings();
+            ApplyLargeFontSettings();
         }
+
 #endregion
 
 #region 加载设置
@@ -357,7 +383,12 @@ namespace Sango.Core
 
             // 语言设置
             Language = PlayerPrefs.GetString("Language", "zh-CN");
+
+            // 界面设置
+            IsLargeFontEnabled = PlayerPrefs.GetInt("IsLargeFontEnabled", 0) == 1;
+            LargeFontScaleFactor = PlayerPrefs.GetInt("LargeFontScaleFactor", 0);
         }
+
 #endregion
 
 #region 重置设置
@@ -388,6 +419,10 @@ namespace Sango.Core
             // 语言设置
             Language = "zh-CN";
 
+            // 界面设置
+            IsLargeFontEnabled = false;
+            LargeFontScaleFactor = 0;
+
             // 清除PlayerPrefs
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
@@ -395,6 +430,7 @@ namespace Sango.Core
             // 应用设置
             ApplyAllSettings();
         }
+
 #endregion
 
 #region 分辨率操作
@@ -521,6 +557,21 @@ namespace Sango.Core
                 SetFrameRateByIndex(index);
             });
 #endif
+            // 界面设置
+            setting.AddBigTitle("界面设置");
+
+            setting.AddToggleItem("大字体", IsLargeFontEnabled, (value) =>
+            {
+                IsLargeFontEnabled = value;
+                ApplyLargeFontSettings();
+            });
+
+            setting.AddSliderItem("大字体缩放倍率", LargeFontScaleFactor, 0, 12, (value) =>
+            {
+                LargeFontScaleFactor = value;
+                ApplyLargeFontSettings();
+            });
+
             // 音频设置
             setting.AddBigTitle("音频设置");
 
@@ -648,6 +699,10 @@ namespace Sango.Core
             // 语言设置
             Language = "zh-CN";
 
+            // 界面设置
+            IsLargeFontEnabled = false;
+            LargeFontScaleFactor = 0;
+
             // 清除PlayerPrefs
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
@@ -655,6 +710,7 @@ namespace Sango.Core
             // 应用设置
             ApplyAllSettings();
         }
+
 
         /// <summary>
         /// 创建设置快照
@@ -677,7 +733,9 @@ namespace Sango.Core
                 QualityLevel = QualityLevel,
                 KeyboardMoveSpeed = KeyboardMoveSpeed,
                 MovementMode = MovementMode,
-                Language = Language
+                Language = Language,
+                IsLargeFontEnabled = IsLargeFontEnabled,
+                LargeFontScaleFactor = LargeFontScaleFactor
             };
         }
 
@@ -705,6 +763,8 @@ namespace Sango.Core
             KeyboardMoveSpeed = snapshot.KeyboardMoveSpeed;
             MovementMode = snapshot.MovementMode;
             Language = snapshot.Language;
+            IsLargeFontEnabled = snapshot.IsLargeFontEnabled;
+            LargeFontScaleFactor = snapshot.LargeFontScaleFactor;
 
             // 应用设置
             ApplyAllSettings();
@@ -786,5 +846,15 @@ namespace Sango.Core
         /// 当前语言
         /// </summary>
         public string Language { get; set; }
+
+        /// <summary>
+        /// 大字体开关
+        /// </summary>
+        public bool IsLargeFontEnabled { get; set; }
+
+        /// <summary>
+        /// 大字体缩放倍率
+        /// </summary>
+        public int LargeFontScaleFactor { get; set; }
     }
 }

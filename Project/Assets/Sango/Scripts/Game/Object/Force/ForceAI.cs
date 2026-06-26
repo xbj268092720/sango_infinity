@@ -742,6 +742,8 @@ namespace Sango.Core
                 for (int i = 0; i < city.captiveList.Count; i++)
                 {
                     Person captive = city.captiveList[i];
+                    if(captive == null) continue;
+
                     // 检查是否可以招降
                     if (ProcessCaptives(force, captive, scenario))
                     {
@@ -842,12 +844,11 @@ namespace Sango.Core
 
         private static void ReleaseCaptive(Force force, Person captive, Scenario scenario)
         {
+#if SANGO_DEBUG
+            Sango.Log.Info($"{force.Name}在{captive.CurrentCity.Name}释放了{captive.BelongForce?.Name}的{captive.Name}！");
+#endif
             // 直接调用Person.Escape方法释放俘虏
             captive.Escape(EscapeType.Released, force);
-
-#if SANGO_DEBUG
-            Sango.Log.Info($"{force.Name}释放了{captive.BelongForce?.Name}的{captive.Name}！");
-#endif
         }
 
         private static void ProcessRansomRequests(Force force, Scenario scenario)

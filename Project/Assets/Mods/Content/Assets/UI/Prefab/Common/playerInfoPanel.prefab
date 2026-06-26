@@ -1275,6 +1275,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragRect: {fileID: 2864087745169988394}
+  uiCamera: {fileID: 0}
+  isOverlayCamera: 0
 --- !u!114 &8607768965778301304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1527,9 +1529,17 @@ PrefabInstance:
       propertyPath: m_FontData.m_FontSize
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 4740490839819458799, guid: fbf69c01185293e468c9df3d8f8e8bb0, type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5461751415621520183, guid: fbf69c01185293e468c9df3d8f8e8bb0, type: 3}
+      propertyPath: m_Pivot.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5461751415621520183, guid: fbf69c01185293e468c9df3d8f8e8bb0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 218.9999
+      value: 136.299
       objectReference: {fileID: 0}
     - target: {fileID: 5461751415621520183, guid: fbf69c01185293e468c9df3d8f8e8bb0, type: 3}
       propertyPath: m_SizeDelta.y
@@ -1537,11 +1547,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5461751415621520183, guid: fbf69c01185293e468c9df3d8f8e8bb0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 61.8
+      value: 141.96269
       objectReference: {fileID: 0}
     - target: {fileID: 5461751415621520183, guid: fbf69c01185293e468c9df3d8f8e8bb0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.38325
+      value: 0.38328552
       objectReference: {fileID: 0}
     - target: {fileID: 6711594877233268086, guid: fbf69c01185293e468c9df3d8f8e8bb0, type: 3}
       propertyPath: m_Pivot.x
@@ -1652,26 +1662,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d812d58bfec964fbcb894fd939cc02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &2336108772939121581 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3085256993384790313, guid: fbf69c01185293e468c9df3d8f8e8bb0, type: 3}
-  m_PrefabInstance: {fileID: 773086891909626500}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8133194160033856195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2336108772939121581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28b9d10c4bd60c34799c18ab5949bbf9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OutlineColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
-  m_OutlineWidth: 1
-  m_gray: 0
 --- !u!224 &6313714167934795762 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6711594877233268086, guid: fbf69c01185293e468c9df3d8f8e8bb0, type: 3}

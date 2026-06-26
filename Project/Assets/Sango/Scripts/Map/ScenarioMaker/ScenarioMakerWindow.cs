@@ -39,6 +39,12 @@ namespace Sango.ScenarioMaker
         private Vector2 detailScroll = Vector2.zero;
 
         /// <summary>
+        /// 剧本列表滚动位置
+        /// 用于在没有剧本时展示 ShortScenario.all_scenario_info_list
+        /// </summary>
+        private Vector2 scenarioListScroll = Vector2.zero;
+
+        /// <summary>
         /// 列表搜索过滤
         /// </summary>
         private string searchFilter = "";
@@ -93,15 +99,18 @@ namespace Sango.ScenarioMaker
 
         /// <summary>
         /// 没有剧本时的提示界面
+        /// 展示所有可用的剧本文件，由玩家选择加载
         /// </summary>
         private void DrawNoScenario()
         {
-            GUILayout.Label("当前没有加载剧本");
+            GUILayout.Label("当前没有加载剧本，请从列表中选择一个剧本进行编辑");
+
+            GUILayout.BeginHorizontal();
             if (GUILayout.Button("新建剧本"))
             {
                 ScenarioMaker.Instance.NewScenario();
             }
-            if (GUILayout.Button("加载剧本"))
+            if (GUILayout.Button("加载其他剧本"))
             {
                 string[] path = WindowDialog.OpenFileDialog(
                     "加载剧本",
@@ -113,6 +122,39 @@ namespace Sango.ScenarioMaker
                     ScenarioMaker.Instance.LoadScenario(path[0]);
                 }
             }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Label("可选剧本列表");
+            scenarioListScroll = GUILayout.BeginScrollView(scenarioListScroll, GUILayout.Height(400f));
+
+            List<ShortScenario> list = ShortScenario.all_scenario_info_list;
+            if (list.Count == 0)
+            {
+                GUILayout.Label("暂无可用剧本文件");
+            }
+            else
+            {
+                foreach (ShortScenario shortScenario in list)
+                {
+                    if (shortScenario == null || shortScenario.Info == null)
+                    {
+                        continue;
+                    }
+
+                    string label = string.IsNullOrEmpty(shortScenario.ModName)
+                        ? shortScenario.GetIDName()
+                        : shortScenario.GetModIDName(shortScenario.ModName);
+
+                    if (GUILayout.Button(label))
+                    {
+                        ScenarioMaker.Instance.LoadScenario(shortScenario.FilePath);
+                        Sango.Log.Info($"加载剧本: {shortScenario.Name}");
+                        break;
+                    }
+                }
+            }
+
+            GUILayout.EndScrollView();
         }
 
         /// <summary>

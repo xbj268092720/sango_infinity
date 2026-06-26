@@ -467,7 +467,7 @@ namespace Sango.UI
         void UpdateFPS()
         {
             float FPS = 1f / deltaTime;
-            fpsText.text = $"FPS:{Math.Floor(FPS)}";
+            fpsText.text = $"Ver:{Application.version}  FPS:{Math.Floor(FPS)}";
         }
 
         void OnMessagePlaneVisible(bool b)

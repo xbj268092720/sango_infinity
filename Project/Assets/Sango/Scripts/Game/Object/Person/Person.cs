@@ -645,18 +645,18 @@ namespace Sango.Core
                 Brother.BrotherList.Add(this);
             }
 
-            if (IsPrisoner)
-            {
-                if (BelongTroop != null)
-                {
-                    BelongTroop.captiveList.Add(this);
-                }
-                else if (CurrentCity != null)
-                {
-                    CurrentCity.captiveList.Add(this);
-                }
-            }
-            else
+            if (!IsPrisoner)
+            //{
+            //    if (BelongTroop != null)
+            //    {
+            //        BelongTroop.captiveList.Add(this);
+            //    }
+            //    else if (CurrentCity != null)
+            //    {
+            //        CurrentCity.captiveList.Add(this);
+            //    }
+            //}
+            //else
             {
                 if (IsValid && BelongCity != null)
                 {
@@ -683,7 +683,10 @@ namespace Sango.Core
 
                         if (BelongForce != BelongCity.BelongForce || BelongCorps != BelongCity.BelongCorps)
                         {
-                            Sango.Log.Error($"[{Id}]{Name}归属force:{BelongForce.Name} corps:{BelongCorps.Name}, 但在city[{BelongCity.Id}] force:{BelongCity.BelongForce.Name} corps:{BelongCity.BelongCorps.Name}");
+                            Sango.Log.Error($"[{Id}]{Name}归属force:{BelongForce?.Name} corps:{BelongCorps?.Name}, 但在city[{BelongCity?.Name}] force:{BelongCity.BelongForce?.Name} corps:{BelongCity.BelongCorps?.Name}");
+
+                            BelongForce = BelongCity.BelongForce;
+                            BelongCorps = BelongCity.BelongCorps;
                         }
                     }
                 }
@@ -763,8 +766,15 @@ namespace Sango.Core
                         City dest = scenario.citySet.Get(missionTarget);
                         if (!this.IsSameForce(dest))
                         {
-                            ChangeCity(BelongForce.CapitalCity);
-                            SetMission(MissionType.PersonReturn, BelongForce.CapitalCity);
+                            if (BelongForce != null)
+                            {
+                                ChangeCity(BelongForce.CapitalCity);
+                                SetMission(MissionType.PersonReturn, BelongForce.CapitalCity);
+                            }
+                            else
+                            {
+                                ClearMission();
+                            }
                             return;
                         }
 
@@ -1265,6 +1275,12 @@ namespace Sango.Core
 #if SANGO_DEBUG
                 Sango.Log.Error($"不是囚犯,无法逃跑!");
 #endif
+                CurrentCity.RemoveCaptive(this);
+
+                if (BelongTroop != null)
+                {
+                    BelongTroop.RemoveCaptive(this);
+                }
                 return this;
             }
 

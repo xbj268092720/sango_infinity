@@ -944,6 +944,7 @@ namespace Sango.Tools
             }
         }
 
+        string[] blendModes = new string[] { "正常", "正片叠底" };
         public override void OnGUI()
         {
             GUILayout.BeginHorizontal();
@@ -987,7 +988,7 @@ namespace Sango.Tools
                 // 混合模式选择
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("混合模式", GUILayout.Width(80));
-                string[] blendModes = new string[] { "正常", "正片叠底" };
+              
                 int _blendMode = GUILayout.SelectionGrid(brushBlendMode, blendModes, 2);
                 if (_blendMode != brushBlendMode)
                 {

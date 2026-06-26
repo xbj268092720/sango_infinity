@@ -1049,6 +1049,9 @@ namespace Sango.Core
         /// <returns>是否可以攻击</returns>
         public static bool AICanAttack(City city, Scenario scenario)
         {
+            if (scenario.TurnCount < scenario.Variables.AIAttackProtectedCount)
+                return false;
+
             // 获取AI个性
             ForceAI.AIPersonalityType personality = GetAIPersonality(city);
 

@@ -625,6 +625,7 @@ namespace Sango.Tools
                     rect.y = Screen.height - 400;
                 else
                     rect.y = mousePosition.y;
+                rect.x += 100;
                 rect.width = 200;
                 rect.height = 400;
                 CustomPopup popup = EditorWindow.AddWindow<CustomPopup>(9999999, rect, DrawPopupWindow, "", Resources.Load<GUISkin>("GUISkin/PopupPanel")) as CustomPopup;

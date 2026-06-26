@@ -99,6 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragRect: {fileID: 0}
   uiCamera: {fileID: 0}
+  isOverlayCamera: 0
 --- !u!114 &7936165194791459842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,9 +430,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -21.9, y: -16}
+  m_AnchoredPosition: {x: 8.836792, y: -16}
   m_SizeDelta: {x: -28.341904, y: 27.1861}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &4873466489497892758
 CanvasRenderer:
   m_ObjectHideFlags: 0

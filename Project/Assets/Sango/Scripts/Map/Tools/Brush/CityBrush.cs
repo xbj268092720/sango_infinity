@@ -113,37 +113,60 @@ namespace Sango.Tools
         /// 当前选中的城市
         /// </summary>
         private City selectedCity = null;
-        
+
         /// <summary>
         /// 鼠标悬停的城市
         /// </summary>
         private City hoverCity = null;
-        
+
         /// <summary>
         /// 是否显示城市线路
         /// </summary>
         private bool showCityLines = false;
-        
+
+        /// <summary>
+        /// 工具栏标题数组
+        /// </summary>
+        private string[] toolbarTitle = new string[] { "无", "创建", "修改", "连接"/*, "所属", "区域", "地格" */};
+
+        public enum CityEditorType : int
+        {
+            None = 0,
+            Create,
+            Move,
+            Connect,
+            Belong,
+            Area,
+            Grid
+        }
+
+        private CityEditorType controlType = CityEditorType.None;
+
         /// <summary>
         /// 是否正在连接城市
         /// </summary>
         private bool isConnecting = false;
-        
+
+        /// <summary>
+        /// 是否正在
+        /// </summary>
+        private bool isMoving = false;
+
         /// <summary>
         /// 连接起始城市
         /// </summary>
         private City connectStartCity = null;
-        
+
         /// <summary>
         /// 线路渲染器列表
         /// </summary>
         private List<GameObject> lineRenderers = new List<GameObject>();
-        
+
         /// <summary>
         /// 属性编辑器窗口
         /// </summary>
         private CityPropertyEditorWindow propertyEditorWindow = null;
-        
+
         /// <summary>
         /// 连接提示信息
         /// </summary>
@@ -153,7 +176,7 @@ namespace Sango.Tools
         /// 当前城市类型
         /// </summary>
         private CityType currentCityType = CityType.City;
-        
+
         /// <summary>
         /// 城市类型名称数组
         /// </summary>
@@ -222,6 +245,7 @@ namespace Sango.Tools
             ClearLineRenderers();
             ClosePropertyEditorWindow();
             ClearPreviewModel();
+            controlType = CityEditorType.None;
         }
 
         /// <summary>
@@ -273,92 +297,124 @@ namespace Sango.Tools
 
         public override void Modify(Vector3 center, MapEditor editor)
         {
-            if (previewModel != null && selectedModelConfig != null)
+            switch (controlType)
             {
-                Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
-                Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
-                
-                City newCity = null;
-                switch (currentCityType)
-                {
-                    case CityType.Gate:
-                        newCity = new Gate();
-                        newCity.BuildingType = GameData.Instance.ScenarioCommonData.BuildingTypes.Get(2);
-                        break;
-                    case CityType.Port:
-                        newCity = new Port();
-                        newCity.BuildingType = GameData.Instance.ScenarioCommonData.BuildingTypes.Get(3);
-                        break;
-                    default:
-                        newCity = new City();
-                        newCity.BuildingType = GameData.Instance.ScenarioCommonData.BuildingTypes.Get(1);
-                        break;
-                }
-                newCity.CityLevelType = GameData.Instance.ScenarioCommonData.CityLevelTypes.Get(1);
-                newCity.x = offset.col;
-                newCity.y = offset.row;
-                newCity.Name = selectedModelConfig.Name;
-                newCity.model = selectedModelConfig.model;
-                
-                editor.scenario.citySet.Add(newCity);
-                newCity.Render = new EditorBuildingRender(newCity);
-                
-                Sango.Log.Info($"添加{cityTypeNames[(int)currentCityType]}: {newCity.Name}");
-                
-                if (showCityLines)
-                {
-                    CreateLineRenderers();
-                }
-
-                if (!Input.GetKey(KeyCode.LeftShift))
-                {
-                    ClearPreviewModel();
-                }
-            }
-            else
-            {
-                City city = GetCityAtPosition(center);
-                if (city != null)
-                {
-                    if (isConnecting && connectStartCity != null)
+                case CityEditorType.Create:
                     {
-                        if (connectStartCity != city)
+
+                        if (previewModel != null && selectedModelConfig != null)
                         {
-                            bool isNeighbor = connectStartCity.NeighborList.Contains(city);
-                            if (!isNeighbor)
+                            Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
+                            Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
+
+                            City newCity = null;
+                            switch (currentCityType)
                             {
-                                CityNeighborEditCommand command = new CityNeighborEditCommand(editor, connectStartCity, city, true, $"添加邻接城市: {connectStartCity.Name} - {city.Name}");
-                                editor.undoRedoManager.AddCommand(command, true);
-                                connectHint = $"添加邻接城市: {connectStartCity.Name} - {city.Name}";
-                                Sango.Log.Info($"添加邻接城市: {connectStartCity.Name} - {city.Name}");
-                                if (showCityLines)
+                                case CityType.Gate:
+                                    newCity = new Gate();
+                                    newCity.BuildingType = GameData.Instance.ScenarioCommonData.BuildingTypes.Get(2);
+                                    break;
+                                case CityType.Port:
+                                    newCity = new Port();
+                                    newCity.BuildingType = GameData.Instance.ScenarioCommonData.BuildingTypes.Get(3);
+                                    break;
+                                default:
+                                    newCity = new City();
+                                    newCity.BuildingType = GameData.Instance.ScenarioCommonData.BuildingTypes.Get(1);
+                                    break;
+                            }
+                            newCity.CityLevelType = GameData.Instance.ScenarioCommonData.CityLevelTypes.Get(1);
+                            newCity.x = offset.col;
+                            newCity.y = offset.row;
+                            newCity.model = selectedModelConfig.model;
+
+                            editor.scenario.citySet.Add(newCity);
+                            newCity.Name = $"[{newCity.Id}]{selectedModelConfig.Name}";
+
+                            newCity.Render = new EditorBuildingRender(newCity);
+
+                            Sango.Log.Info($"添加{cityTypeNames[(int)currentCityType]}: {newCity.Name}");
+
+                            //if (showCityLines)
+                            //{
+                            //    CreateLineRenderers();
+                            //}
+
+                            if (!Input.GetKey(KeyCode.LeftShift))
+                            {
+                                ClearPreviewModel();
+                            }
+                        }
+                    }
+                    break;
+                case CityEditorType.Connect:
+                    City city = GetCityAtPosition(center);
+                    if (city != null)
+                    {
+                        if (isConnecting && connectStartCity != null)
+                        {
+                            if (connectStartCity != city)
+                            {
+                                bool isNeighbor = connectStartCity.NeighborList.Contains(city);
+                                if (!isNeighbor)
                                 {
-                                    CreateLineRenderers();
+                                    CityNeighborEditCommand command = new CityNeighborEditCommand(editor, connectStartCity, city, true, $"添加邻接城市: {connectStartCity.Name} - {city.Name}");
+                                    editor.undoRedoManager.AddCommand(command, true);
+                                    connectHint = $"添加邻接城市: {connectStartCity.Name} - {city.Name}";
+                                    Sango.Log.Info($"添加邻接城市: {connectStartCity.Name} - {city.Name}");
+                                    if (showCityLines)
+                                    {
+                                        CreateLineRenderers();
+                                    }
+                                }
+                                else
+                                {
+                                    connectHint = $"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市";
+                                    Sango.Log.Warning($"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市");
                                 }
                             }
-                            else
+                            isConnecting = false;
+                            connectStartCity = null;
+                        }
+                        else
+                        {
+                            if (selectedCity != null && selectedCity.Render != null)
                             {
-                                connectHint = $"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市";
-                                Sango.Log.Warning($"城市 {city.Name} 已经是 {connectStartCity.Name} 的邻接城市");
+                                selectedCity.Render.SetFlash(false);
+                            }
+                            selectedCity = city;
+                            if (selectedCity != null && selectedCity.Render != null)
+                            {
+                                selectedCity.Render.SetFlash(true);
+                            }
+                            Sango.Log.Info($"选中城市: {city.Name}");
+                        }
+                    }
+                    break;
+                case CityEditorType.Move:
+                    {
+                        if(selectedCity == null)
+                        {
+                            selectedCity = GetCityAtPosition(center);
+                            if (selectedCity != null && selectedCity.Render != null)
+                            {
+                                selectedCity.Render.SetFlash(true);
                             }
                         }
-                        isConnecting = false;
-                        connectStartCity = null;
-                    }
-                    else
-                    {
-                        if (selectedCity != null && selectedCity.Render != null)
+                        else
                         {
-                            selectedCity.Render.SetFlash(false);
+                            Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
+                            Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
+                            selectedCity.x = offset.col;
+                            selectedCity.y = offset.row;
+                            if (selectedCity != null && selectedCity.Render != null)
+                            {
+                                selectedCity.Render.SetFlash(false);
+                            }
+                            selectedCity = null;
                         }
-                        selectedCity = city;
-                        if (selectedCity != null && selectedCity.Render != null)
-                        {
-                            selectedCity.Render.SetFlash(true);
-                        }
-                        Sango.Log.Info($"选中城市: {city.Name}");
                     }
-                }
+                    break;
             }
         }
 
@@ -367,121 +423,199 @@ namespace Sango.Tools
             GUILayout.Label("城池编辑");
             GUILayout.Space(10);
 
-            // 城市类型选择
-            GUILayout.Label("城市类型:");
-            int typeIndex = GUILayout.SelectionGrid((int)currentCityType, cityTypeNames, 3);
-            if (typeIndex != (int)currentCityType)
+            UnityEngine.Color lastColor = GUI.backgroundColor;
+            GUI.backgroundColor = UnityEngine.Color.cyan;
+            int editMode = GUILayout.SelectionGrid((int)controlType, toolbarTitle, 3, GUILayout.Height(90));
+            if (editMode != (int)controlType)
             {
-                currentCityType = (CityType)typeIndex;
-                UpdateModelList();
-                ClearPreviewModel();
+                controlType = (CityEditorType)editMode;
+                switch (controlType)
+                {
+                    case CityEditorType.Connect:
+                        CreateLineRenderers();
+                        break;
+                    default:
+                        ClearLineRenderers();
+                        break;
+                }
+                //OnEditTypeChange();
             }
-            GUILayout.Space(10);
-
-            // 模型选择列表
-            GUILayout.Label("选择模型:");
-            scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(356), GUILayout.Height(200));
-            foreach (var config in currentModelList)
+            GUI.backgroundColor = lastColor;
+            switch (controlType)
             {
-                GUILayout.BeginHorizontal();
-                bool isSelected = selectedModelConfig != null && selectedModelConfig.Id == config.Id;
-                UnityEngine.Color lastColor = GUI.backgroundColor;
-                GUI.backgroundColor = isSelected ? UnityEngine.Color.green : UnityEngine.Color.white;
-                if (GUILayout.Button(config.Name, GUILayout.Width(150)))
-                {
-                    SelectModel(config);
-                }
-                GUI.backgroundColor = lastColor;
-                GUILayout.Label($"ID: {config.Id}");
-                GUILayout.EndHorizontal();
-            }
-            GUILayout.EndScrollView();
-            GUILayout.Space(10);
-
-            // 当前选中模型提示
-            if (selectedModelConfig != null)
-            {
-                GUILayout.Label($"当前选中: {selectedModelConfig.Name}", new GUIStyle(GUI.skin.label) { normal = new GUIStyleState() { textColor = Color.green } });
-                GUILayout.Label("点击地图放置城市，右键取消", new GUIStyle(GUI.skin.label) { fontSize = 12 });
-            }
-            else
-            {
-                GUILayout.Label("请先选择一个模型", new GUIStyle(GUI.skin.label) { normal = new GUIStyleState() { textColor = Color.yellow } });
-            }
-            GUILayout.Space(10);
-
-            // 显示城市线路开关
-            showCityLines = GUILayout.Toggle(showCityLines, "显示城市线路");
-            if (showCityLines != (lineRenderers.Count > 0))
-            {
-                if (showCityLines)
-                {
-                    CreateLineRenderers();
-                }
-                else
-                {
-                    ClearLineRenderers();
-                }
-            }
-            GUILayout.Space(10);
-
-            // 城市属性编辑按钮
-            if (selectedCity != null)
-            {
-                GUILayout.Label($"当前选中城市: {selectedCity.Name}");
-                GUILayout.Space(10);
-
-                // 连接城市按钮（只在选中城市时展示）
-                if (GUILayout.Button("连接城市"))
-                {
-                    isConnecting = true;
-                    connectStartCity = selectedCity;
-                    connectHint = $"开始连接城市，选择起始城市: {selectedCity.Name}";
-                    Sango.Log.Info($"开始连接城市，选择起始城市: {selectedCity.Name}");
-                }
-                
-                // 显示连接提示
-                if (!string.IsNullOrEmpty(connectHint))
-                {
-                    GUILayout.Space(5);
-                    GUILayout.Label(connectHint, new GUIStyle(GUI.skin.label) { fontSize = 12, normal = new GUIStyleState() { textColor = Color.yellow } });
-                }
-                
-                GUILayout.Space(10);
-
-                if (GUILayout.Button("编辑城市属性"))
-                {
-                    OpenPropertyEditorWindow();
-                }
-
-                // 显示邻接城市
-                GUILayout.Label("邻接城市:");
-                for (int i = 0; i < selectedCity.NeighborList.Count; i++)
-                {
-                    City neighbor = selectedCity.NeighborList[i];
-                    if (neighbor != null)
-                    {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label(neighbor.Name);
-                        if (GUILayout.Button("移除"))
+                case CityEditorType.None:
+                    { // 城市类型选择
+                        if (GUILayout.Button("编辑城市属性"))
                         {
-                            CityNeighborEditCommand command = new CityNeighborEditCommand(editor, selectedCity, neighbor, false, $"移除邻接城市: {selectedCity.Name} - {neighbor.Name}");
-                            editor.undoRedoManager.AddCommand(command, true);
-                            Sango.Log.Info($"移除邻接城市: {selectedCity.Name} - {neighbor.Name}");
-                            // 移除邻接城市后刷新linerenderer的展示
-                            if (showCityLines)
+                            OpenPropertyEditorWindow();
+                        }
+                    }
+                    break;
+                case CityEditorType.Create:
+                    { // 城市类型选择
+                        GUILayout.Label("城市类型:");
+                        int typeIndex = GUILayout.SelectionGrid((int)currentCityType, cityTypeNames, 3);
+                        if (typeIndex != (int)currentCityType)
+                        {
+                            currentCityType = (CityType)typeIndex;
+                            UpdateModelList();
+                            ClearPreviewModel();
+                        }
+                        GUILayout.Space(10);
+                        // 模型选择列表
+                        GUILayout.Label("选择模型:");
+                        scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(306), GUILayout.Height(200));
+                        foreach (var config in currentModelList)
+                        {
+                            GUILayout.BeginHorizontal();
+                            bool isSelected = selectedModelConfig != null && selectedModelConfig.Id == config.Id;
+                            lastColor = GUI.backgroundColor;
+                            GUI.backgroundColor = isSelected ? UnityEngine.Color.green : UnityEngine.Color.white;
+                            if (GUILayout.Button(config.Name, GUILayout.Width(150)))
                             {
-                                CreateLineRenderers();
+                                SelectModel(config);
+                            }
+                            GUI.backgroundColor = lastColor;
+                            GUILayout.Label($"ID: {config.Id}");
+                            GUILayout.EndHorizontal();
+                        }
+                        GUILayout.EndScrollView();
+                        GUILayout.Space(10);
+                        // 当前选中模型提示
+                        if (selectedModelConfig != null)
+                        {
+                            GUILayout.Label($"当前选中: {selectedModelConfig.Name}", new GUIStyle(GUI.skin.label) { normal = new GUIStyleState() { textColor = Color.green } });
+                            GUILayout.Label("点击地图放置城市，右键取消", new GUIStyle(GUI.skin.label) { fontSize = 12 });
+                        }
+                        else
+                        {
+                            GUILayout.Label("请先选择一个模型", new GUIStyle(GUI.skin.label) { normal = new GUIStyleState() { textColor = Color.yellow } });
+                        }
+                        GUILayout.Space(10);
+                    }
+                    break;
+                case CityEditorType.Connect:
+                    {
+                        // 城市属性编辑按钮
+                        if (selectedCity != null)
+                        {
+                            GUILayout.Label($"当前选中城市: {selectedCity.Name}");
+                            GUILayout.Space(10);
+
+                            // 连接城市按钮（只在选中城市时展示）
+                            if (GUILayout.Button("连接城市"))
+                            {
+                                isConnecting = true;
+                                connectStartCity = selectedCity;
+                                connectHint = $"开始连接城市，选择起始城市: {selectedCity.Name}";
+                                Sango.Log.Info($"开始连接城市，选择起始城市: {selectedCity.Name}");
+                            }
+
+                            // 显示连接提示
+                            if (!string.IsNullOrEmpty(connectHint))
+                            {
+                                GUILayout.Space(5);
+                                GUILayout.Label(connectHint, new GUIStyle(GUI.skin.label) { fontSize = 12, normal = new GUIStyleState() { textColor = Color.yellow } });
+                            }
+
+                            GUILayout.Space(10);
+
+                            //if (GUILayout.Button("移动城市"))
+                            //{
+                            //    OpenPropertyEditorWindow();
+                            //}
+
+                            //if (GUILayout.Button("编辑城市属性"))
+                            //{
+                            //    OpenPropertyEditorWindow();
+                            //}
+
+                            // 显示邻接城市
+                            GUILayout.Label("邻接城市:");
+                            for (int i = 0; i < selectedCity.NeighborList.Count; i++)
+                            {
+                                City neighbor = selectedCity.NeighborList[i];
+                                if (neighbor != null)
+                                {
+                                    GUILayout.BeginHorizontal();
+                                    GUILayout.Label(neighbor.Name);
+                                    if (GUILayout.Button("移除"))
+                                    {
+                                        CityNeighborEditCommand command = new CityNeighborEditCommand(editor, selectedCity, neighbor, false, $"移除邻接城市: {selectedCity.Name} - {neighbor.Name}");
+                                        editor.undoRedoManager.AddCommand(command, true);
+                                        Sango.Log.Info($"移除邻接城市: {selectedCity.Name} - {neighbor.Name}");
+                                        // 移除邻接城市后刷新linerenderer的展示
+                                        if (showCityLines)
+                                        {
+                                            CreateLineRenderers();
+                                        }
+                                    }
+                                    GUILayout.EndHorizontal();
+                                }
                             }
                         }
-                        GUILayout.EndHorizontal();
+                        else
+                        {
+                            GUILayout.Label("请选择一个城市");
+                        }
                     }
-                }
+                    break;
+                case CityEditorType.Move:
+                    {
+                        // 城市属性编辑按钮
+                        if (selectedCity != null)
+                        {
+                            GUILayout.Label($"当前选中城市: {selectedCity.Name}");
+                            GUILayout.Space(10);
+
+                            // 显示邻接城市
+                            GUILayout.Label("邻接城市:");
+                            for (int i = 0; i < selectedCity.NeighborList.Count; i++)
+                            {
+                                City neighbor = selectedCity.NeighborList[i];
+                                if (neighbor != null)
+                                {
+                                    GUILayout.BeginHorizontal();
+                                    GUILayout.Label(neighbor.Name);
+                                    if (GUILayout.Button("移除"))
+                                    {
+                                        CityNeighborEditCommand command = new CityNeighborEditCommand(editor, selectedCity, neighbor, false, $"移除邻接城市: {selectedCity.Name} - {neighbor.Name}");
+                                        editor.undoRedoManager.AddCommand(command, true);
+                                        Sango.Log.Info($"移除邻接城市: {selectedCity.Name} - {neighbor.Name}");
+                                        // 移除邻接城市后刷新linerenderer的展示
+                                        if (showCityLines)
+                                        {
+                                            CreateLineRenderers();
+                                        }
+                                    }
+                                    GUILayout.EndHorizontal();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            GUILayout.Label("请选择一个城市");
+                        }
+                    }
+                    break;
             }
-            else
-            {
-                GUILayout.Label("请选择一个城市");
-            }
+
+            //// 显示城市线路开关
+            //showCityLines = GUILayout.Toggle(showCityLines, "显示城市线路");
+            //if (showCityLines != (lineRenderers.Count > 0))
+            //{
+            //    if (showCityLines)
+            //    {
+            //        CreateLineRenderers();
+            //    }
+            //    else
+            //    {
+            //        ClearLineRenderers();
+            //    }
+            //}
+            //GUILayout.Space(10);
+
+
         }
 
         /// <summary>
@@ -511,28 +645,50 @@ namespace Sango.Tools
 
         public override void DrawGizmos(Vector3 center)
         {
-            if (previewModel != null)
+            switch (controlType)
             {
-                Vector3 pos = center;
-                Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
-                Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
-                pos = editor.map.mapGrid.hexWorld.CoordsToPosition(offset.col, offset.row);
-                pos.y = editor.map.mapGrid.GetGridHeight(offset.col, offset.row);
-                previewModel.transform.position = pos;
-            }
-            else
-            {
-                City city = GetCityAtPosition(center);
-                if (city != hoverCity)
-                {
-                    hoverCity = city;
-                }
+                case CityEditorType.Move:
+                    {
+                        // 城市类型选择
+                        if (selectedCity != null)
+                        {
+                            Vector3 pos = center;
+                            Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
+                            Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
+                            pos = editor.map.mapGrid.hexWorld.CoordsToPosition(offset.col, offset.row);
+                            pos.y = editor.map.mapGrid.GetGridHeight(offset.col, offset.row);
+                            selectedCity.Render.MapObject.position = pos;
+                        }
+                    }
+                    break;
+                case CityEditorType.Create:
+                    {
+                        if (previewModel != null)
+                        {
+                            Vector3 pos = center;
+                            Sango.Hexagon.Hex hex = editor.map.mapGrid.hexWorld.PositionToHex(center);
+                            Sango.Hexagon.Coord offset = Sango.Hexagon.Coord.OffsetFromCube(hex);
+                            pos = editor.map.mapGrid.hexWorld.CoordsToPosition(offset.col, offset.row);
+                            pos.y = editor.map.mapGrid.GetGridHeight(offset.col, offset.row);
+                            previewModel.transform.position = pos;
+                        }
+                    }
+                    break;
+                case CityEditorType.Connect:
+                    {
+                        City city = GetCityAtPosition(center);
+                        if (city != hoverCity)
+                        {
+                            hoverCity = city;
+                        }
 
-                if (isConnecting && connectStartCity != null && hoverCity != null && hoverCity != connectStartCity)
-                {
-                    Gizmos.color = Color.yellow;
-                    Gizmos.DrawLine(connectStartCity.Render.MapObject.transform.position, hoverCity.Render.MapObject.transform.position);
-                }
+                        if (isConnecting && connectStartCity != null && hoverCity != null && hoverCity != connectStartCity)
+                        {
+                            Gizmos.color = Color.yellow;
+                            Gizmos.DrawLine(connectStartCity.Render.MapObject.transform.position, hoverCity.Render.MapObject.transform.position);
+                        }
+                    }
+                    break;
             }
         }
 
@@ -543,68 +699,106 @@ namespace Sango.Tools
                 return;
             }
 
-            if (previewModel != null)
+            switch (controlType)
             {
-                if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
-                {
-                    ClearPreviewModel();
-                    return;
-                }
-
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastLayer))
-                {
-                    if (hit.point != lastCenter)
+                case CityEditorType.Move:
                     {
-                        if (!IsPointerOverUI() && Input.GetMouseButtonDown(0))
+                        // 城市类型选择
+                        if (selectedCity != null)
                         {
-                            Modify(hit.point, editor);
-                            lastCenter = hit.point;
+                            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+                            {
+                                Vector3 pos = editor.map.mapGrid.hexWorld.CoordsToPosition(selectedCity.x, selectedCity.y);
+                                pos.y = editor.map.mapGrid.GetGridHeight(selectedCity.x, selectedCity.y);
+                                selectedCity.Render.MapObject.position = pos;
+                                selectedCity = null;
+                                return;
+                            }
+
+                            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                            RaycastHit hit;
+                            if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastLayer))
+                            {
+                                if (hit.point != lastCenter)
+                                {
+                                    if (Input.GetMouseButtonDown(0))
+                                    {
+                                        Modify(hit.point, editor);
+                                        lastCenter = hit.point;
+                                        return;
+                                    }
+                                    DrawGizmos(hit.point);
+                                }
+                            }
                         }
-                        DrawGizmos(hit.point);
                     }
-                }
-                return;
-            }
-
-            if (showCityLines && lineRenderers.Count > 0)
-            {
-                UpdateLineRenderers();
-            }
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                if (isConnecting)
-                {
-                    isConnecting = false;
-                    connectStartCity = null;
-                    connectHint = "连接操作已取消";
-                    Sango.Log.Info("连接操作已取消");
-                }
-                else if (selectedCity != null)
-                {
-                    if (selectedCity.Render != null)
+                    break;
+                case CityEditorType.Create:
                     {
-                        selectedCity.Render.SetFlash(false);
+                        if (previewModel != null)
+                        {
+                            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+                            {
+                                ClearPreviewModel();
+                                return;
+                            }
+
+                            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                            RaycastHit hit;
+                            if (Physics.Raycast(ray, out hit, editor.map.showLimitLength + 2000, editor.rayCastLayer))
+                            {
+                                if (hit.point != lastCenter)
+                                {
+                                    if (!IsPointerOverUI() && Input.GetMouseButtonDown(0))
+                                    {
+                                        Modify(hit.point, editor);
+                                        lastCenter = hit.point;
+                                        return;
+                                    }
+                                    DrawGizmos(hit.point);
+                                }
+                            }
+                        }
+
+                        if (selectedCity != null && Input.GetKeyDown(KeyCode.Delete))
+                        {
+                            editor.scenario.citySet.Remove(selectedCity);
+                            selectedCity.Render?.Clear();
+                            Sango.Log.Info($"删除城市: {selectedCity.Name}");
+                            selectedCity = null;
+                        }
                     }
-                    selectedCity = null;
-                    Sango.Log.Info("取消选择城市");
-                }
+                    break;
+                case CityEditorType.Connect:
+                    {
+                        if (lineRenderers.Count > 0)
+                        {
+                            UpdateLineRenderers();
+                        }
+
+                        if (Input.GetMouseButtonDown(1))
+                        {
+                            if (isConnecting)
+                            {
+                                isConnecting = false;
+                                connectStartCity = null;
+                                connectHint = "连接操作已取消";
+                                Sango.Log.Info("连接操作已取消");
+                            }
+                            else if (selectedCity != null)
+                            {
+                                if (selectedCity.Render != null)
+                                {
+                                    selectedCity.Render.SetFlash(false);
+                                }
+                                selectedCity = null;
+                                Sango.Log.Info("取消选择城市");
+                            }
+                        }
+                    }
+                    break;
             }
 
-            if (selectedCity != null && Input.GetKeyDown(KeyCode.Delete))
-            {
-                editor.scenario.citySet.Remove(selectedCity);
-                selectedCity.Render?.Clear();
-                Sango.Log.Info($"删除城市: {selectedCity.Name}");
-                selectedCity = null;
-                
-                if (showCityLines)
-                {
-                    CreateLineRenderers();
-                }
-            }
 
             if (!IsPointerOverUI() && Input.GetMouseButtonDown(0))
             {

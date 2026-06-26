@@ -237,5 +237,20 @@ namespace Sango
             return poolObj;
         }
 
+        public static GameObject Create(string assetsPath, System.Action<GameObject> onCreate)
+        {
+            GameObject poolObj = Get(assetsPath);
+            if (poolObj == null)
+            {
+                poolObj = ObjectLoader.LoadObject<GameObject>(assetsPath);
+                if (poolObj != null)
+                {
+                    onCreate?.Invoke(poolObj);
+                    Add(assetsPath, poolObj);
+                    poolObj = Get(assetsPath);
+                }
+            }
+            return poolObj;
+        }
     }
 }
