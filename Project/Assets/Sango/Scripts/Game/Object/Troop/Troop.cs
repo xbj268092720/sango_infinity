@@ -1640,6 +1640,7 @@ namespace Sango.Core
             {
                 city.AddCaptive(p);
                 p.ChangeCurrentCity(city);
+                p.CurrentCity = city;
                 p.BelongTroop = null;
             });
             captiveList.Clear();

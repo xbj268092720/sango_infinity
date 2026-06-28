@@ -1396,7 +1396,7 @@ namespace Sango.Core
         public int DistanceDays(City otherCity)
         {
             if (otherCity == null) return 0;
-            City thisCity = BelongTroop != null ? BelongTroop.cell.BelongCity : BelongCity;
+            City thisCity = BelongTroop != null ? BelongTroop.cell.BelongCity : (BelongCity == null ? CurrentCity : BelongCity) ;
             return otherCity.Distance(thisCity);
         }
 

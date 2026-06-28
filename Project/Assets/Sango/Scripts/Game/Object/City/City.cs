@@ -677,7 +677,7 @@ namespace Sango.Core
                 person.BelongCity.allPersons.Remove(person);
                 person.BelongCity.wildPersons.Remove(person);
                 person.BelongCity.freePersons.Remove(person);
-                person.BelongCity = null;
+                person.BelongCity = this;
             }
             if (!breakCircal)
                 person.BeCaptive(this, true);

@@ -74,7 +74,7 @@ using Sango.Core; namespace Sango.UI
         public void OnSelectTargetPerson()
         {
             GameSystem.GetSystem<PersonSelectSystem>().Start(currentSystem.targetList,
-               currentSystem.target, 1, OnTargetPersonChange, currentSystem.customTargetTitleList, currentSystem.customTargetTitleName);
+               currentSystem.target, 1, OnTargetPersonChange, currentSystem.customTargetTitleList, currentSystem.customTargetTitleName, -1);
 
         }
 

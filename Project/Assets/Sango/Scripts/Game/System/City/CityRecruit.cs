@@ -67,35 +67,44 @@ namespace Sango.Core.Player
             {
                 if (!x.IsSameForce(TargetCity))
                 {
-                    int dis = x.Distance(TargetCity);
-                    if (dis < 10)
+                    //int dis = x.Distance(TargetCity);
+                    //if (dis < 10)
                     {
-                        x.allPersons.ForEach(y => { targetList.Add(y); });
+                        x.allPersons.ForEach(y => { 
+                            if(y.state != (int)PersonStateType.Governor)
+                                targetList.Add(y); 
+                        
+                        });
                         x.wildPersons.ForEach(y => { targetList.Add(y); });
-                        x.captiveList.ForEach(y => { targetList.Add(y); });
                     }
                 }
                 else
                 {
-                    int dis = x.Distance(TargetCity);
-                    if (dis < 10)
+                    //int dis = x.Distance(TargetCity);
+                    //if (dis < 10)
                     {
                         x.wildPersons.ForEach(y => { targetList.Add(y); });
+                        x.captiveList.ForEach(y => { targetList.Add(y); });
                     }
                 }
             });
             targetList.Sort((a, b) =>
             {
-                bool aIsWild = a.BelongForce == null;
-                bool bIsWild = b.BelongForce == null;
-
-                if (aIsWild != bIsWild)
-                    return aIsWild ? -1 : 1;
-
-                if (aIsWild)
-                    return a.DistanceDays(TargetCity).CompareTo(b.DistanceDays(TargetCity));
-
-                return a.loyalty.CompareTo(b.loyalty);
+                if (a.state == b.state)
+                {
+                    if (a.loyalty == b.loyalty)
+                    {
+                        return a.DistanceDays(TargetCity).CompareTo(b.DistanceDays(TargetCity));
+                    }
+                    else
+                    {
+                        return a.loyalty.CompareTo(b.loyalty);
+                    }
+                }
+                else
+                {
+                    return -a.state.CompareTo(b.state);
+                }
             });
 
             if (customActionTitleList == null)
@@ -120,11 +129,11 @@ namespace Sango.Core.Player
         {
             this.target = target;
             personList.Clear();
-            
+
             if (target.Count > 0)
             {
                 counsellorRecommendList.Clear();
-                
+
                 for (int i = 0; i < TargetCity.freePersons.Count; i++)
                 {
                     Person person = TargetCity.freePersons[i];
@@ -134,14 +143,14 @@ namespace Sango.Core.Player
                         counsellorRecommendList.Add(person);
                     }
                 }
-                
+
                 counsellorRecommendList.Sort((a, b) =>
                 {
                     int probA = GameFormula.Instance.RecruitPersonProbability(a, target[0], 0);
                     int probB = GameFormula.Instance.RecruitPersonProbability(b, target[0], 0);
                     return probB.CompareTo(probA);
                 });
-                
+
                 if (counsellorRecommendList.Count > 0)
                 {
                     personList.Add(counsellorRecommendList[0]);
