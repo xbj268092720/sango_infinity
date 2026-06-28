@@ -72,7 +72,7 @@ namespace Sango.Core.Player
                 personList.Add(leader);
 
             TargetTroop.morale = TargetCity.morale;
-            TargetTroop.MaxMorale = TargetCity.MaxMorale;
+            //TargetTroop.MaxMorale = TargetCity.MaxMorale;
             TargetTroop.energy = TargetCity.energy;
             TargetTroop.Leader = leader;
             TargetTroop.Member1 = null;

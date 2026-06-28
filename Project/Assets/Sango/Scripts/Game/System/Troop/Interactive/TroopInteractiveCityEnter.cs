@@ -60,10 +60,11 @@ namespace Sango.Core.Player
             TargetTroop.ActionOver = true;
             TargetTroop.Render?.UpdateRender();
 
+            Done();
+
             if (ActionCell.building != null && ActionCell.building.IsSameForce(TargetTroop) && ActionCell.building.IsCityBase())
                 TargetTroop.EnterCity(ActionCell.building as City);
 
-            Done();
         }
     }
 }

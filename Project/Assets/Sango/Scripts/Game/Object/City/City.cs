@@ -666,10 +666,19 @@ namespace Sango.Core
 #if SANGO_DEBUG
             Sango.Log.Info($"*{Name} -> captiveList 添加 {person.Name} ");
 #endif
+            person.ClearMission();
             person.state = (int)PersonStateType.Prisoner;
             captiveList.Add(person);
+            person.BelongForce?.BeCaptiveList.Remove(person);
             person.BelongForce?.BeCaptiveList.Add(person);
             person.ChangeCurrentCity(this);
+            if (person.BelongCity != null)
+            {
+                person.BelongCity.allPersons.Remove(person);
+                person.BelongCity.wildPersons.Remove(person);
+                person.BelongCity.freePersons.Remove(person);
+                person.BelongCity = null;
+            }
             if (!breakCircal)
                 person.BeCaptive(this, true);
             return person;
@@ -1667,6 +1676,8 @@ namespace Sango.Core
                 if (building.isComplate && GameRandom.Chance(30))
                 {
                     building.ChangeCorps(atk.BelongCorps);
+                    building.Builder?.Clear();
+                    building.Workers?.Clear();
                 }
                 else
                 {
@@ -1681,6 +1692,12 @@ namespace Sango.Core
                 Sango.Log.Info($"{BelongForce.Name} 灭亡!!!");
 #endif
                 BelongForce.IsAlive = false;
+                BelongForce.BeCaptiveList.ForEach(x =>
+                {
+                    x.BelongForce = null;
+                    x.BelongCorps = null;
+                });
+                BelongForce.BeCaptiveList.Clear();
 
                 // 势力灭亡事件
                 GameEvent.OnForceFall?.Invoke(BelongForce, this, atk);

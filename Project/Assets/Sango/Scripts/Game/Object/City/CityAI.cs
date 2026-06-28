@@ -294,7 +294,7 @@ namespace Sango.Core
             Troop troop = scenario.CreateTroop();
             troop.energy = city.energy;
             troop.morale = city.morale;
-            troop.MaxMorale = city.MaxMorale;
+            //troop.MaxMorale = city.MaxMorale;
             troop.Leader = leader;
             troop.TroopType = troopType;
             if (target.troops < target.TroopsLimit)
@@ -595,7 +595,7 @@ namespace Sango.Core
             Troop troop = scenario.CreateTroop();
             troop.energy = city.energy;
             troop.morale = city.morale;
-            troop.MaxMorale = city.MaxMorale;
+            //troop.MaxMorale = city.MaxMorale;
             troop.Leader = builders[0];
             troop.TroopType = troopType;
             troop.troops = maxTroopNum;
@@ -1398,7 +1398,7 @@ namespace Sango.Core
             Troop troop = scenario.CreateTroop();
             troop.energy = city.energy;
             troop.morale = city.morale;
-            troop.MaxMorale = city.MaxMorale;
+            //troop.MaxMorale = city.MaxMorale;
             troop.Leader = people[0];
             troop.TroopType = spType;
          
@@ -1470,7 +1470,7 @@ namespace Sango.Core
             Troop troop = scenario.CreateTroop();
             troop.energy = city.energy;
             troop.morale = city.morale;
-            troop.MaxMorale = city.MaxMorale;
+            //troop.MaxMorale = city.MaxMorale;
             troop.IsAlive = true;
             troop.Leader = leader;
             troop.TroopType = troopType;

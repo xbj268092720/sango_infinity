@@ -90,7 +90,7 @@ namespace Sango.Core
                     GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
                     {
                         GameDialog.Close();
-                        Done();
+                        Back();
                         doneAction?.Invoke(this);
                     });
                     dialog1.SetPerson(target);
@@ -100,7 +100,7 @@ namespace Sango.Core
 
             if (tryLimit <= 0 && atker == null && fallCity == null)
             {
-                Done();
+                Back();
                 doneAction?.Invoke(this);
             }
         }
@@ -126,7 +126,7 @@ namespace Sango.Core
                     GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"{target.ColorName}愿为主公献犬马之劳", () =>
                     {
                         GameDialog.Close();
-                        Done();
+                        Back();
                         doneAction?.Invoke(this);
                     });
                     dialog1.SetPerson(target);
@@ -143,7 +143,7 @@ namespace Sango.Core
             Force releaseForce = atker?.BelongForce ?? fallCity?.BelongForce;
             target.SetMission(MissionType.PersonReturn, target.BelongCity);
             GameEvent.OnPersonRelease?.Invoke(target, releaseForce);
-            Done();
+            Back();
             doneAction?.Invoke(this);
         }
 
@@ -154,7 +154,7 @@ namespace Sango.Core
             Force executeForce = atker?.BelongForce ?? fallCity?.BelongForce;
             target.Dead();
             GameEvent.OnPersonExecute?.Invoke(target, executeForce);
-            Done();
+            Back();
             doneAction?.Invoke(this);
         }
 
@@ -166,14 +166,14 @@ namespace Sango.Core
                 target.BeCaptive(fallCity);
             else if (atker != null)
                 target.BeCaptive(atker);
-            Done();
+            Back();
             doneAction?.Invoke(this);
         }
 
         public void Cancel()
         {
             result = -1;
-            Done();
+            Back();
             doneAction?.Invoke(this);
         }
     }

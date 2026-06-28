@@ -27,7 +27,7 @@ namespace Sango.Render
                 for (int i = captiveList.Count - 1; i >= 0; i--)
                 {
                     Person person = captiveList[i];
-                    if (atk.BelongForce.Governor.JobRecruitPerson(person, atk.BelongCity, 0))
+                    if (atk.BelongForce.Governor.JobRecruitPerson(person, atk.BelongCity, 1))
                     {
 #if SANGO_DEBUG
                         Sango.Log.Info($"{person.Name} 加入了 {atk.BelongForce} 势力!!!");
@@ -56,7 +56,7 @@ namespace Sango.Render
             else
             {
                 //展示武将
-                GameSystem.GetSystem<PersonRecruit>().Start(atk, captiveList[0], 0, 3, x =>
+                GameSystem.GetSystem<PersonRecruit>().Start(atk, captiveList[0], 1, 3, x =>
                 {
                     captiveList.RemoveAt(0);
                     Next();
@@ -76,6 +76,9 @@ namespace Sango.Render
 
         public override bool Update(Scenario scenario, float deltaTime)
         {
+            if (!atk.ActionOver)
+                return IsDone;
+
             return IsDone;
         }
     }

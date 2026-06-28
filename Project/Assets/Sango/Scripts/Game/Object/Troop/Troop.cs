@@ -158,7 +158,7 @@ namespace Sango.Core
         /// <summary>
         /// 最大士气
         /// </summary>
-        public int MaxMorale { get; set; }
+        public int MaxMorale => BelongCity?.MaxMorale ?? 100;
 
         /// <summary>
         /// 移动能力
@@ -1318,14 +1318,17 @@ namespace Sango.Core
                     captives.Add(Member2);
                 }
 
-                if(captives.Count > 0)
+                if (captives.Count > 0)
                 {
                     CityRecruitPersonWhenTroopFallEvent te = RenderEvent.Instance.Create<CityRecruitPersonWhenTroopFallEvent>();
                     te.Init(captives, atkTroop);
-                    //RenderEvent.Instance.Add(te);
+                    RenderEvent.Instance.Add(te);
                 }
             }
+        }
 
+        public void ReleaseCaptive()
+        {
             for (int i = 0; i < captiveList.Count; i++)
             {
                 Person person = captiveList[i];
@@ -1667,14 +1670,58 @@ namespace Sango.Core
                 return;
             }
 
+            //missionParams1 == 1 是AI运输的
             if (!TroopType.isFight && missionParams1 <= 0)
             {
-                // 运输武将返回所属城市
-                ForEachPerson((person) =>
+                if (BelongCorps.IsPlayer)
                 {
-                    person.ChangeCurrentCity(city);
-                    person.SetMission(MissionType.PersonReturn, person.BelongCity);
-                });
+                    List<Person> pList = new List<Person>();
+                    ForEachPerson((person) =>
+                    {
+                        pList.Add(person);
+
+                    });
+
+                    PlayerChoice.ChoiceData[] choiceDatas = new PlayerChoice.ChoiceData[]
+                    {
+                        new PlayerChoice.ChoiceData()
+                        {
+                           lab = $"返回{BelongCity.ColorName}",
+                           call = () =>
+                           {
+                               foreach(Person person in pList)
+                               {
+                                   person.ChangeCurrentCity(city);
+                                   person.SetMission(MissionType.PersonReturn, person.BelongCity);
+                               }
+                               pList.Clear();
+                           }
+                        },
+                        new PlayerChoice.ChoiceData()
+                        {
+                           lab = $"将其留在{city.ColorName}",
+                           call = () =>
+                           {
+                               foreach(Person person in pList)
+                               {
+                                   person.ChangeCity(city);
+                                   person.ChangeCurrentCity(city);
+                               }
+                               pList.Clear();
+                           }
+                        }
+                    };
+                    GameSystem.GetSystem<PlayerChoice>().Start(choiceDatas);
+                }
+                else
+                {
+                    // 运输武将返回所属城市
+                    ForEachPerson((person) =>
+                    {
+                        person.ChangeCurrentCity(city);
+                        person.SetMission(MissionType.PersonReturn, person.BelongCity);
+                    });
+                }
             }
             else
             {
@@ -1694,11 +1741,7 @@ namespace Sango.Core
 
         public override void Clear()
         {
-            captiveList.ForEach(x =>
-            {
-                x.Escape(EscapeType.TroopDestroyed);
-            });
-            captiveList.Clear();
+            ReleaseCaptive();
 
             if (actionList != null)
             {
@@ -1937,10 +1980,19 @@ namespace Sango.Core
 #if SANGO_DEBUG
             Sango.Log.Info($"*{Name} -> captiveList 添加 {person.Name} ");
 #endif
+            person.ClearMission();
             person.state = (int)PersonStateType.Prisoner;
             captiveList.Add(person);
+            person.BelongForce?.BeCaptiveList.Remove(person);
             person.BelongForce?.BeCaptiveList.Add(person);
             person.BelongTroop = this;
+            if (person.BelongCity != null)
+            {
+                person.BelongCity.allPersons.Remove(person);
+                person.BelongCity.wildPersons.Remove(person);
+                person.BelongCity.freePersons.Remove(person);
+                person.BelongCity = null;
+            }
             return person;
         }
 

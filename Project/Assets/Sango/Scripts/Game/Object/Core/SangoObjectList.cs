@@ -61,7 +61,7 @@ namespace Sango.Core
 
             if (!objects.Contains(obj))
             {
-                Sango.Log.Error("不能移除不存在的!!!");
+                Sango.Log.Warning("不能移除不存在的!!!");
             }
 #endif
 

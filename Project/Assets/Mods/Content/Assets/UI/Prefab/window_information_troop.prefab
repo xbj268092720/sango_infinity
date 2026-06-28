@@ -861,6 +861,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragRect: {fileID: 9219872030424774454}
+  uiCamera: {fileID: 0}
+  isOverlayCamera: 0
 --- !u!114 &5124759911530436490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4371,6 +4373,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8734080045334747305}
     m_Modifications:
+    - target: {fileID: 41875278812042590, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1300206916860926844, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
       propertyPath: m_SizeDelta.y
       value: 480.068
@@ -4382,6 +4388,10 @@ PrefabInstance:
     - target: {fileID: 1300206916860926844, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -240.03902
+      objectReference: {fileID: 0}
+    - target: {fileID: 2145552203595095680, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2951465661886067264, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
       propertyPath: m_Pivot.x
@@ -4475,6 +4485,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4407810939325318550, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4886674363898830660, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -4510,6 +4524,10 @@ PrefabInstance:
     - target: {fileID: 6755675338330611584, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
       propertyPath: m_Name
       value: object_list
+      objectReference: {fileID: 0}
+    - target: {fileID: 6924416725548881342, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8499813370117178159, guid: 7f65bf3d5cf10f549b998d64b9844f07, type: 3}
       propertyPath: m_IsActive

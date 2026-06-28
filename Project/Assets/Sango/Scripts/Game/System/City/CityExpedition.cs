@@ -100,7 +100,7 @@ namespace Sango.Core.Player
             TargetTroop.WaterTroopType = ActivedWaterTroopTypes[CurSelectWaterTrropTypeIndex];
 
             TargetTroop.morale = TargetCity.morale;
-            TargetTroop.MaxMorale = TargetCity.MaxMorale;
+            //TargetTroop.MaxMorale = TargetCity.MaxMorale;
             TargetTroop.energy = TargetCity.energy;
             if (TargetTroop.troops == 0)
             {

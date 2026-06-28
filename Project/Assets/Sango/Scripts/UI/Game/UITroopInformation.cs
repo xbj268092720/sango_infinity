@@ -151,7 +151,17 @@ using Sango.Core; namespace Sango.UI
 
         public void OnCaptiveButton()
         {
-
+            personList.Clear();
+            Target.captiveList.ForEach(x =>
+            {
+                personList.Add(x);
+            });
+            List<Person> result_list = new List<Person>();
+            PersonSelectSystem personSelectSystem = GameSystem.GetSystem<PersonSelectSystem>();
+            personSelectSystem.Start(
+                personList,
+                result_list, 1, OnPersonSelected, null, null);
+            personSelectSystem.donotFinishThisSystem = true;
         }
 
     }

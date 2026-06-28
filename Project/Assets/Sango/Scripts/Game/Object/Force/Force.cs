@@ -127,7 +127,6 @@ namespace Sango.Core
         [JsonProperty]
         public SangoObjectList<Technique> Techniques = new SangoObjectList<Technique>();
 
-
         /// <summary>
         /// 本国被俘虏
         /// </summary>

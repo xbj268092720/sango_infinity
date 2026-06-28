@@ -19,7 +19,7 @@ namespace Sango.Core
         public void Start(Troop target)
         {
             Target = target;
-            all_objects = default_objects;
+            all_objects = new List<SangoObject>() { target };
             Push();
         }
 
@@ -63,7 +63,9 @@ namespace Sango.Core
 
         protected virtual void OnTroopRightMouseButtonContextMenuShow(IContextMenuData menuData, Troop troop)
         {
+            default_objects.Clear();
             Target = troop;
+            default_objects.Add(troop);
             if (CityMenuCanShow())
                 menuData.Add(Name, 20, null, OnClickMenuItem, true);
         }

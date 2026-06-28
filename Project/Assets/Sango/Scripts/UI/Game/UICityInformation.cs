@@ -64,6 +64,7 @@ using Sango.Core; namespace Sango.UI
         public Button port_gate_btn;
         public Button troop_btn;
         public Button person_btn;
+        public Button captive_btn;
         List<Person> personList = new List<Person>();
         List<Troop> troopList = new List<Troop>();
 
@@ -111,6 +112,7 @@ using Sango.Core; namespace Sango.UI
             port_gate_btn.interactable = (city.portList.Count + city.gateList.Count) > 0;
             troop_btn.interactable = city.allTroops.Count > 0;
             person_btn.interactable = city.allPersons.Count > 0;
+            captive_btn.interactable = city.captiveList.Count > 0;
 
             if (city.IsCity())
             {
@@ -304,6 +306,21 @@ using Sango.Core; namespace Sango.UI
                 personList.Add(x);
             });
             personList.AddRange(Target.wildPersons);
+            List<Person> result_list = new List<Person>();
+            PersonSelectSystem personSelectSystem = GameSystem.GetSystem<PersonSelectSystem>();
+            personSelectSystem.Start(
+                personList,
+                result_list, 1, OnPersonSelected, null, null);
+            personSelectSystem.donotFinishThisSystem = true;
+        }
+
+        public void OnCaptiveButton()
+        {
+            personList.Clear();
+            Target.captiveList.ForEach(x =>
+            {
+                personList.Add(x);
+            });
             List<Person> result_list = new List<Person>();
             PersonSelectSystem personSelectSystem = GameSystem.GetSystem<PersonSelectSystem>();
             personSelectSystem.Start(

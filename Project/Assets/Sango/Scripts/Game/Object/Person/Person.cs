@@ -645,52 +645,49 @@ namespace Sango.Core
                 Brother.BrotherList.Add(this);
             }
 
-            if (!IsPrisoner)
-            //{
-            //    if (BelongTroop != null)
-            //    {
-            //        BelongTroop.captiveList.Add(this);
-            //    }
-            //    else if (CurrentCity != null)
-            //    {
-            //        CurrentCity.captiveList.Add(this);
-            //    }
-            //}
-            //else
+            if (IsAlive)
             {
-                if (IsValid && BelongCity != null)
+                if (IsPrisoner)
                 {
-
-                    if (Invisible)
-                    {
-                        BelongCity.invisiblePersons.Add(this);
-                    }
-                    else if (IsWild)
-                    {
-                        BelongCity.wildPersons.Add(this);
-                    }
-                    else
-                    {
-                        BelongCity.allPersons.Add(this);
-                        if (state == (int)PersonStateType.Leader)
-                        {
-                            BelongCity.Leader = this;
-                        }
-                        else if (state == (int)PersonStateType.Governor)
-                        {
-                            BelongCity.Leader = this;
-                        }
-
-                        if (BelongForce != BelongCity.BelongForce || BelongCorps != BelongCity.BelongCorps)
-                        {
-                            Sango.Log.Error($"[{Id}]{Name}归属force:{BelongForce?.Name} corps:{BelongCorps?.Name}, 但在city[{BelongCity?.Name}] force:{BelongCity.BelongForce?.Name} corps:{BelongCity.BelongCorps?.Name}");
-
-                            BelongForce = BelongCity.BelongForce;
-                            BelongCorps = BelongCity.BelongCorps;
-                        }
-                    }
+                    if (BelongForce != null)
+                        BelongForce.BeCaptiveList.Add(this);
                 }
+                else
+                {
+                    if (IsValid && BelongCity != null)
+                    {
 
+                        if (Invisible)
+                        {
+                            BelongCity.invisiblePersons.Add(this);
+                        }
+                        else if (IsWild)
+                        {
+                            BelongCity.wildPersons.Add(this);
+                        }
+                        else
+                        {
+                            BelongCity.allPersons.Add(this);
+                            if (state == (int)PersonStateType.Leader)
+                            {
+                                BelongCity.Leader = this;
+                            }
+                            else if (state == (int)PersonStateType.Governor)
+                            {
+                                BelongCity.Leader = this;
+                            }
+
+                            if (BelongForce != BelongCity.BelongForce || BelongCorps != BelongCity.BelongCorps)
+                            {
+                                Sango.Log.Error($"[{Id}]{Name}归属force:{BelongForce?.Name} corps:{BelongCorps?.Name}, 但在city[{BelongCity?.Name}] force:{BelongCity.BelongForce?.Name} corps:{BelongCity.BelongCorps?.Name}");
+
+                                BelongForce = BelongCity.BelongForce;
+                                BelongCorps = BelongCity.BelongCorps;
+                            }
+                        }
+                    }
+
+                }
             }
 
 
@@ -1048,7 +1045,7 @@ namespace Sango.Core
 #endif
                 if (!IsWild)
                 {
-                    BelongCity.RemovePerson(this);
+                    BelongCity?.RemovePerson(this);
                     city.AddPerson(this);
                     BelongCity = city;
                     if (BelongCorps != city.BelongCorps)
@@ -1062,7 +1059,7 @@ namespace Sango.Core
                 }
                 else
                 {
-                    BelongCity.RemoveWildPerson(this);
+                    BelongCity?.RemoveWildPerson(this);
                     city.AddWildPerson(this);
                     BelongCity = city;
                 }
@@ -1286,18 +1283,16 @@ namespace Sango.Core
 
             if (BelongTroop != null)
             {
-                ChangeCurrentCity(BelongTroop.CurrentCity);
+                City currentCity = BelongTroop.CurrentCity;
                 BelongTroop.RemoveCaptive(this);
+                ChangeCurrentCity(currentCity);
                 BelongTroop = null;
-            }
-            else
-            {
-                CurrentCity.RemoveCaptive(this);
             }
 
             if (BelongForce != null && BelongForce.IsAlive)
             {
                 state = (int)PersonStateType.Normal;
+                ChangeCity(BelongForce.CapitalCity);
                 SetMission(MissionType.PersonReturn, BelongCity);
             }
             else
