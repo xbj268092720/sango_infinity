@@ -104,11 +104,11 @@ namespace Sango.Tools
         public static void OnGUI(Render.MapLayer layer)
         {
             int count = layer.layerDatas.Length;
-           scrollPos_layer = GUILayout.BeginScrollView(scrollPos_layer, GUILayout.Width(340), GUILayout.Height(150 * ((count < 4) ? count : 4)));
+           scrollPos_layer = GUILayout.BeginScrollView(scrollPos_layer, GUILayout.Width(280), GUILayout.Height(150 * ((count < 4) ? count : 4)));
             for (int i = 0; i < count; i++)
             {
                 Render.MapLayer.LayerData data = layer.layerDatas[i];
-                GUILayout.Box("层: " + i, GUILayout.Width(300), GUILayout.Height(150));
+                GUILayout.Box("层: " + i, GUILayout.Width(260), GUILayout.Height(150));
                 UnityEngine.Rect r = GUILayoutUtility.GetLastRect();
                 OnGUI(data, r, i, i == layer.layerDatas.Length - 1);
             }

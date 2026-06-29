@@ -1027,7 +1027,7 @@ namespace Sango.Tools
 
                 GUILayout.BeginVertical();
                 GUILayout.Space(8);
-                float _opacity = GUILayout.HorizontalSlider(opacity, 0f, 255f);
+                float _opacity = GUILayout.HorizontalSlider(opacity, 0f, 20f);
                 if (_opacity != opacity)
                 {
                     opacity = _opacity;
@@ -1040,7 +1040,7 @@ namespace Sango.Tools
             GUILayout.Space(8);
             UnityEngine.Color lastColor = GUI.backgroundColor;
             GUI.backgroundColor = UnityEngine.Color.cyan;
-            int editMode = GUILayout.SelectionGrid(currentEditMode, toolbarTitle, 3, GUILayout.Height(90));
+            int editMode = GUILayout.SelectionGrid(currentEditMode, toolbarTitle, 3, GUILayout.Width(250),GUILayout.Height(90));
             if (editMode != currentEditMode)
             {
                 currentEditMode = editMode;
@@ -1219,7 +1219,7 @@ namespace Sango.Tools
 
                         // 笔刷选择
                         int brushRow = textures.Length > 0 ? (textures.Length - 1) / 4 + 1 : 1;
-                        int sel = GUILayout.SelectionGrid(brushIndex, textures, 4, GUILayout.MaxWidth(224), GUILayout.MaxHeight(brushRow * 56));
+                        int sel = GUILayout.SelectionGrid(brushIndex, textures, 4, GUILayout.Width(204), GUILayout.MaxHeight(brushRow * 56));
                         if (sel != brushIndex)
                         {
                             brushIndex = sel;
