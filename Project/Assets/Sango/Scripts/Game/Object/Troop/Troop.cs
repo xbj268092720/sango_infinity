@@ -346,19 +346,21 @@ namespace Sango.Core
         /// <summary>
         /// 攻击力
         /// </summary>
-        public int Attack => extraAttack + (IsInWater ? waterAttack : landAttack);
+        public int Attack => extraAttack + (IsInWater ? waterAttack : landAttack) + trrainBonusAtk;
 
         public int waterAttack;
         public int landAttack;
         public int extraAttack;
+        public int trrainBonusAtk;
         /// <summary>
         /// 防御力
         /// </summary>
-        public int Defence => extraDefence + (IsInWater ? waterDefence : landDefence);
+        public int Defence => extraDefence + (IsInWater ? waterDefence : landDefence) + trrainBonusDef;
 
         public int waterDefence;
         public int landDefence;
         public int extraDefence;
+        public int trrainBonusDef;
 
         /// <summary>
         /// 建设力
@@ -431,6 +433,7 @@ namespace Sango.Core
 
             buffManager.Init(this);
             GameEvent.OnTroopEnterCell?.Invoke(this, cell, null);
+            UpdateTerrainBonus(cell);
         }
 
         public virtual bool Run(Corps corps, Force force, Scenario scenario)
@@ -457,6 +460,7 @@ namespace Sango.Core
                 s.Init(this, s.skill);
             }
             PrepeareFoodCost();
+
             //MemberList?.InitCache();// = new SangoObjectList<Person>().FromString(_memberListStr, scenario.personSet);
         }
 
@@ -1597,6 +1601,21 @@ namespace Sango.Core
             return MoveTo(tryToDest);
         }
 
+        void UpdateTerrainBonus(Cell destCell)
+        {
+            // 地形影响
+            int terrainId = destCell.TerrainType.Id;
+            if (TroopType.terrainIncreaseAtkBonus != null && terrainId < TroopType.terrainIncreaseAtkBonus.Length)
+                trrainBonusAtk = TroopType.terrainIncreaseAtkBonus[terrainId];
+            else
+                trrainBonusAtk = 0;
+
+            if (TroopType.terrainDecreaseDefenceBonus != null && terrainId < TroopType.terrainDecreaseDefenceBonus.Length)
+                trrainBonusDef = TroopType.terrainDecreaseDefenceBonus[terrainId];
+            else
+                trrainBonusDef = 0;
+        }
+
         public void UpdateCell(Cell destCell, Cell lastCell, bool isEndMove)
         {
             //TODO: 地格更新,需要处理一些事件
@@ -1614,6 +1633,7 @@ namespace Sango.Core
                 destCell.fire.BurnTroop(this);
 
             Render.UpdateModelByCell(destCell);
+            UpdateTerrainBonus(destCell);
 
             if (isEndMove)
             {

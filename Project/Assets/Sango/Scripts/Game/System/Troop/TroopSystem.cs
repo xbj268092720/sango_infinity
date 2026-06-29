@@ -84,6 +84,7 @@ namespace Sango.Core.Player
             // 这个一定先清理
             ClearShowMovePath();
             ClearShowMoveRange();
+            movePath.Clear();
         }
 
         public void ShowMoveRange()
@@ -126,7 +127,7 @@ namespace Sango.Core.Player
             for (int i = 0, count = movePath.Count; i < count; ++i)
             {
                 Cell c = movePath[i];
-                mapRender.SetGridMaskColor(c.x, c.y, Color.green);
+                mapRender.SetGridMaskColor(c.x, c.y, Color.black);
             }
             mapRender.EndSetGridMask();
         }
@@ -148,6 +149,9 @@ namespace Sango.Core.Player
 
                         if (!TargetTroop.MoveRange.Contains(cell))
                         {
+                            movePath.Clear();
+                            Scenario.Cur.Map.GetMovePath(TargetTroop, cell, movePath);
+                            ShowMovePath();
                             GameSystem.GetSystem<TroopInteractiveDialog>().Start(TargetTroop, cell, clickPosition);
                             return;
                         }

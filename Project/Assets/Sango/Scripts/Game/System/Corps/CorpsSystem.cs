@@ -139,7 +139,15 @@ namespace Sango.Core.Player
             GameSystem.GetSystem<CorpsSelectSystem>().Start(corps_list,
             target_corps_list, 1, (x) =>
             {
+                if(x.Count <= 0)
+                {
+                    return;
+                }
+
                 Corps t = x[0];
+                if (t.number == 1)
+                    return;
+
                 GameDialog.Open($"要将{t.ColorName}解散吗?", () =>
                 {
                     GameDialog.Close();

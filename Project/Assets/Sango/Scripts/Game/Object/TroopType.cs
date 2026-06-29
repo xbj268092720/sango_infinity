@@ -166,7 +166,26 @@ namespace Sango.Core
         /// 对于每种地形的防御加成值
         /// </summary>
         [JsonProperty] public float[] terrainDefenceBonus;
-         
+
+        /// <summary>
+        /// 自身处于每种地形对战法成功率加成值
+        /// </summary>
+        [JsonProperty] public int[] terrainIncreaseSucecessBonus;
+
+        /// <summary>
+        /// 目标处于每种地形的对成功率的降低值
+        /// </summary>
+        [JsonProperty] public int[] terrainDecreaseSucecessBonus;
+
+        /// <summary>
+        /// 目标处于每种地形的对攻击力的加成
+        /// </summary>
+        [JsonProperty] public int[] terrainIncreaseAtkBonus;
+
+        /// <summary>
+        /// 目标处于每种地形的对防御力的加成
+        /// </summary>
+        [JsonProperty] public int[] terrainDecreaseDefenceBonus;
 
         public int MoveCost(Cell cell)
         {

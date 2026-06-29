@@ -6,6 +6,8 @@
 5. 新增一个地图贴图美化测试Mod
 6. 修复工作内政下破城后保留的内政设置还在被原有工作者免费打工.
 7. 新增玩家运输部队到达城市后弹出留在城市或者返回原城市的选项界面
+8. (兵种特性)新增terrainIncreaseSucecessBonus(自身处于每种地形对自己战法成功率加成值) 和 terrainDecreaseSucecessBonus(自身处于每种地形对攻击者战法成功率影响值)
+9. (兵种特性)新增terrainIncreaseAtkBonus(自身处于每种地形对自己攻击力加成值) 和 terrainDecreaseDefenceBonus(自身处于每种地形对自己防御力加成)
 
 0.0.53
 1. 修复部分可能卡死的代码

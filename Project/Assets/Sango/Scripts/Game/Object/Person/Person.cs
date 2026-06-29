@@ -1041,7 +1041,7 @@ namespace Sango.Core
             {
                 last = BelongCity;
 #if SANGO_DEBUG
-                Sango.Log.Info($"*{BelongForce?.Name}的{Name} 改变所属城市 {BelongCity.Name} => {city.Name}");
+                Sango.Log.Info($"*{BelongForce?.Name}的{Name} 改变所属城市 {BelongCity?.Name} => {city.Name}");
 #endif
                 if (!IsWild)
                 {

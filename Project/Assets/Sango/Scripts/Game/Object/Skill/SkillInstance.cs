@@ -381,6 +381,7 @@ namespace Sango.Core
             // 除开计略,目标只有有控制状态,必中
             if (spellCell.troop != null && !IsStrategy() && spellCell.troop.HasControlBuff())
                 return true;
+
             Troop troop = master;
             int baseSuccessRate = 0;
             Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(baseSuccessRate);

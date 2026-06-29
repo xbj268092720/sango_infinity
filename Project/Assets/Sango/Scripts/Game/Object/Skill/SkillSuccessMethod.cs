@@ -56,6 +56,26 @@ namespace Sango.Core
             public override int Calculate(SkillInstance skillInstance, Troop troop, Cell spellCell)
             {
                 int V = skillInstance.successRate + Mathf.Max(0, troop.TroopTypeLv - 1) * Scenario.Cur.Variables.skillSuccessRateAddByAbility;
+
+                // 地形影响
+                if (troop.TroopType.terrainIncreaseSucecessBonus != null && troop.cell.TerrainType != null)
+                {
+                    int terrainId = troop.cell.TerrainType.Id;
+                    if (terrainId < troop.TroopType.terrainIncreaseSucecessBonus.Length)
+                    {
+                        V += troop.TroopType.terrainIncreaseSucecessBonus[terrainId];
+                    }
+                }
+
+                if(spellCell.troop != null && spellCell.troop.TroopType.terrainDecreaseSucecessBonus != null && spellCell.TerrainType != null)
+                {
+                    int terrainId = spellCell.TerrainType.Id;
+                    if (terrainId < spellCell.troop.TroopType.terrainIncreaseSucecessBonus.Length)
+                    {
+                        V -= spellCell.troop.TroopType.terrainIncreaseSucecessBonus[terrainId];
+                    }
+                }
+
                 return V;
             }
         }
