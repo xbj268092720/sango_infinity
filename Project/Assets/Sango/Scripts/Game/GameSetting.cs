@@ -333,7 +333,7 @@ namespace Sango.Core
         public void ApplyLargeFontSettings()
         {
             PlayerPrefs.SetInt("IsLargeFontEnabled", IsLargeFontEnabled ? 1 : 0);
-            PlayerPrefs.SetFloat("LargeFontScaleFactor", LargeFontScaleFactor);
+            PlayerPrefs.SetInt("LargeFontScaleFactor", LargeFontScaleFactor);
             PlayerPrefs.Save();
         }
 

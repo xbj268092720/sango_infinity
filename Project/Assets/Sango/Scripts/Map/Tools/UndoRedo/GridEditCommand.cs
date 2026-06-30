@@ -96,6 +96,7 @@ namespace Sango.Tools.UndoRedo
                 {
                     case EditType.TerrainType:
                         gridData.terrainType = (byte)value;
+                        editor.map.mapGrid.BeginUpdateMovable(change.col, change.row);
                         break;
                     
                     case EditType.Area:
@@ -149,9 +150,11 @@ namespace Sango.Tools.UndoRedo
             //}
 
             gridBrush.terrainTypeMaskTex.Apply(false);
+            editor.map.mapGrid.EndUpdateMovable();
+
 
         }
-        
+
         /// <summary>
         /// 销毁命令，在命令被舍弃时调用
         /// </summary>

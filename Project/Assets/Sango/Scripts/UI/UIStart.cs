@@ -79,5 +79,10 @@ namespace Sango.UI
             Window.Instance.Open("window_mod_manager");
             Window.Instance.Close("window_start");
         }
+
+        public void JumpBilibili()
+        {
+            Application.OpenURL("https://space.bilibili.com/3546816591170057");
+        }
     }
 }

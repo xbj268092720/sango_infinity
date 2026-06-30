@@ -1054,7 +1054,7 @@ namespace RTEditor
         /// is useful because it allows us to avoid selecting objects when clicking on UI 
         /// elements.
         /// </summary>
-        private bool WereAnyUIElementsHovered()
+        public bool WereAnyUIElementsHovered()
         {
             if (IsOverUIHandler != null && IsOverUIHandler())
                 return true;

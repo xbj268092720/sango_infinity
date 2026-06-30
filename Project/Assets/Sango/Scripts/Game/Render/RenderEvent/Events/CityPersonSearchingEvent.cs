@@ -7,12 +7,14 @@ namespace Sango.Render
         public City city;
         public Person person;
         public Person target;
+        public int searchingType = 0; // 1是工作制
 
         public void Init(City city, Person person)
         {
             this.city = city;
             this.person = person;
             this.target = null;
+            searchingType = 0;
             IsDone = false;
         }
         public override void Enter(Scenario scenario)
@@ -20,7 +22,7 @@ namespace Sango.Render
             int rs = city.DoJobSearching(person, out target);
             if (rs < 0)
             {
-                if (city.BelongCorps.IsPlayer)
+                if (city.BelongCorps.IsPlayer && searchingType == 0)
                 {
                     GameDialog.IDialog dialog3 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, "很遗憾, 什么都没有发现...", () =>
                     {
@@ -73,12 +75,19 @@ namespace Sango.Render
                         }
                         else if (x.result == 0)
                         {
-                            GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"很遗憾，\n未能招募到{target.ColorName}", () =>
+                            if (searchingType == 0)
                             {
-                                GameDialog.Close();
+                                GameDialog.IDialog dialog1 = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"很遗憾，\n未能招募到{target.ColorName}", () =>
+                                {
+                                    GameDialog.Close();
+                                    IsDone = true;
+                                });
+                                dialog1.SetPerson(person);
+                            }
+                            else
+                            {
                                 IsDone = true;
-                            });
-                            dialog1.SetPerson(person);
+                            }
                         }
                         else
                             IsDone = true;
@@ -88,13 +97,19 @@ namespace Sango.Render
             }
             else
             {
-
-                GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"发现了资金{rs}", () =>
+                if (searchingType == 0)
                 {
-                    GameDialog.Close();
+                    GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"发现了资金{rs}", () =>
+                    {
+                        GameDialog.Close();
+                        IsDone = true;
+                    });
+                    dialog.SetPerson(person);
+                }
+                else
+                {
                     IsDone = true;
-                });
-                dialog.SetPerson(person);
+                }
             }
         }
 

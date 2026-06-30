@@ -48,8 +48,9 @@ using Sango.Core; namespace Sango.UI
             {
                 targetForce.text = target.BelongForce != null ? target.BelongForce.Name : "--";
                 targetLoyalty.text = target.loyalty.ToString();
-                targetDays.text = $"{10 * target.BelongCity.Distance(TargetCity)}日";
-                targetCityName.text = target.BelongCity.Name;
+                City where = target.BelongCity ?? target.CurrentCity;
+                targetDays.text = $"{10 * where.Distance(TargetCity)}日";
+                targetCityName.text = where.Name;
             }
             else
             {

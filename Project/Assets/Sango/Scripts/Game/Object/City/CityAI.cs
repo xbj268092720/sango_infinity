@@ -229,7 +229,7 @@ namespace Sango.Core
         {
             if (city.wildPersons.Count > 0 && city.freePersons.Count > 0)
             {
-                for (int i = 0; i < city.wildPersons.Count; i++)
+                for (int i = city.wildPersons.Count - 1; i >= 0; i--)
                 {
                     Person target = city.wildPersons[i];
                     Person recommandPerson = ForceAI.CounsellorRecommendRecruitPerson(city.freePersons, target, null);

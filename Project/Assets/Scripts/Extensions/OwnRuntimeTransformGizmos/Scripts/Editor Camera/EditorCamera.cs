@@ -431,6 +431,9 @@ namespace RTEditor
             if (RuntimeEditorApplication.Instance.ScrollGridUpDownShortcut.IsActive() ||
                 RuntimeEditorApplication.Instance.ScrollGridUpDownStepShortcut.IsActive()) return;
 
+            if (EditorObjectSelection.Instance.WereAnyUIElementsHovered())
+                return;
+
             // Zoom if necessary
             float scrollSpeed = Input.GetAxis("Mouse ScrollWheel");
             if (scrollSpeed != 0.0f)

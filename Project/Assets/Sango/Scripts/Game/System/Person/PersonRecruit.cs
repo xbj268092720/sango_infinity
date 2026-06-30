@@ -45,7 +45,7 @@ namespace Sango.Core
         {
             result = 0;
             this.tryLimit = tryLimit;
-            this.recruitor = atker.BelongForce.Governor;
+            this.recruitor = atker.Leader;
             this.fallCity = null;
             this.atker = atker;
             this.target = target;

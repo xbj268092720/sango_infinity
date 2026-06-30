@@ -1308,16 +1308,16 @@ namespace Sango.Core
                 Troop atkTroop = (Troop)atk;
                 int p = Math.Max(0, atkTroop.GetCaptureChangce() - GetEscapeChangce());
                 List<Person> captives = new List<Person>();
-                if (GameRandom.Chance(100))
+                if (GameRandom.Chance(p) && Leader.state != (int)PersonStateType.Governor)
                 {
                     captives.Add(Leader);
                 }
-                if (Member1 != null && GameRandom.Chance(100))
+                if (Member1 != null && GameRandom.Chance(p) && Member1.state != (int)PersonStateType.Governor)
                 {
                     captives.Add(Member1);
                 }
 
-                if (Member2 != null && GameRandom.Chance(100))
+                if (Member2 != null && GameRandom.Chance(p) && Member2.state != (int)PersonStateType.Governor)
                 {
                     captives.Add(Member2);
                 }

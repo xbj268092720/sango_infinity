@@ -1742,7 +1742,6 @@ namespace Sango.Core
                 if (person != null && person.IsSameForce(atk))
                 {
                     RemoveCaptive(person);
-                    person.BelongCity.RemovePerson(person);
                     person.ChangeBelongCity(this);
                     AddPerson(person);
                 }
@@ -2847,7 +2846,7 @@ namespace Sango.Core
             int apCost = JobType.GetJobCostAP(jobId);
 
             freePersons.Remove(person);
-            if (dest.BelongCity == person.BelongCity)
+            if (dest.CurrentCity == person.CurrentCity)
             {
                 CityRecruitPersonEvent te = RenderEvent.Instance.Create<CityRecruitPersonEvent>();
                 te.Init(person, dest);
@@ -2857,7 +2856,7 @@ namespace Sango.Core
             }
             else
             {
-                person.SetMission(MissionType.PersonRecruitPerson, dest, 100, dest.BelongCity.Id);
+                person.SetMission(MissionType.PersonRecruitPerson, dest, 100, dest.CurrentCity.Id);
                 BelongCorps.ReduceActionPoint(apCost);
                 return false;
             }

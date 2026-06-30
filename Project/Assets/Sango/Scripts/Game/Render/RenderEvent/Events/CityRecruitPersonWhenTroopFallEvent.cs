@@ -27,18 +27,18 @@ namespace Sango.Render
                 for (int i = captiveList.Count - 1; i >= 0; i--)
                 {
                     Person person = captiveList[i];
-                    if (atk.BelongForce.Governor.JobRecruitPerson(person, atk.BelongCity, 1))
+                    if (atk.Leader.JobRecruitPerson(person, atk.BelongCity, 1))
                     {
 #if SANGO_DEBUG
                         Sango.Log.Info($"{person.Name} 加入了 {atk.BelongForce} 势力!!!");
 #endif
-                        captiveList.RemoveAt(i);
                     }
                     else
                     {
                         person.BeCaptive(atk);
                     }
                 }
+                captiveList.Clear();
                 IsDone = true;
                 return;
             }

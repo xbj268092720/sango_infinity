@@ -843,10 +843,25 @@ namespace Sango.Core
                     case (int)BuildingKindType.RecruitBuilding:
                         if (building.Workers != null)
                         {
+                            // 人才府自动走军师推荐去登庸在野武将
+                            if (city.wildPersons.Count > 0)
+                            {
+                                for (int i = city.wildPersons.Count - 1; i >= 0; i--)
+                                {
+                                    Person target = city.wildPersons[i];
+                                    Person recommandPerson = ForceAI.CounsellorRecommendRecruitPerson(city.freePersons, target, null);
+                                    if (recommandPerson != null)
+                                    {
+                                        city.JobRecruitPerson(recommandPerson, target);
+                                    }
+                                }
+                            }
+
                             building.Workers.ForEach((worker) =>
                             {
                                 CityPersonSearchingEvent te = RenderEvent.Instance.Create<CityPersonSearchingEvent>();
                                 te.Init(city, worker);
+                                te.searchingType = 1;
                                 RenderEvent.Instance.Add(te);
                             });
                         }

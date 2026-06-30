@@ -309,7 +309,7 @@ namespace Sango.Tools
             }, true, ViewIs311Camera);
             menuData.Add("视图/重置相机", () =>
             {
-                map.mapCamera.position = new Vector3(500, 0, 500);
+                map.mapCamera.position = new Vector3(500, 250, 500);
                 map.mapCamera.lookRotate = new Vector3(90, -90, 0);
                 ViewIs311Camera = false;
                 SetCameraControlType(0);

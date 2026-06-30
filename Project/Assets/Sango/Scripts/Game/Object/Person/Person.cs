@@ -1095,7 +1095,7 @@ namespace Sango.Core
             City last = BelongCity;
             BelongCity = city;
 #if SANGO_DEBUG
-            Sango.Log.Info($"*{BelongForce?.Name}的{Name} 改变所属城市 {last.Name} -> {city.Name}");
+            Sango.Log.Info($"*{BelongForce?.Name}的{Name} 改变所属城市 {last?.Name} -> {city.Name}");
 #endif
             if (BelongCorps != city.BelongCorps)
                 BelongCorps = city.BelongCorps;
@@ -1287,6 +1287,10 @@ namespace Sango.Core
                 BelongTroop.RemoveCaptive(this);
                 ChangeCurrentCity(currentCity);
                 BelongTroop = null;
+            }
+            else
+            {
+                CurrentCity.RemoveCaptive(this);
             }
 
             if (BelongForce != null && BelongForce.IsAlive)
