@@ -6,6 +6,9 @@ QQ群: 526620498
 百度网盘: https://pan.baidu.com/s/1ZfS9KJfLem8cM-TKQUh5WQ?pwd=y1b8
 夸克网盘: https://pan.quark.cn/s/caee627a27f6?pwd=bXbJ
 
+0.0.55
+1. 修复登庸俘虏导致的BUG
+
 0.0.54
 1. 重新梳理俘虏逻辑,新增击破部队有概率俘虏对面武将,每个武将分别计算概率,概率定义在剧本参数中
 2. 修复部队详情界面的问题,俘虏现在可以查看了

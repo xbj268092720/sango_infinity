@@ -155,7 +155,7 @@ namespace Sango.Core.Player
             GameEvent.OnPersonEscape += OnPersonEscape;
             GameEvent.OnPersonRelease += OnPersonRelease;
             GameEvent.OnPersonExecute += OnPersonExecute;
-
+            GameEvent.OnPersonLevelUp += OnPersonLevelUp;
         }
         
         /// <summary>
@@ -164,7 +164,7 @@ namespace Sango.Core.Player
         /// </summary>
         public override void Clear()
         {
-            GameEvent.OnScenarioInit += OnScenarioInit;
+            GameEvent.OnScenarioInit -= OnScenarioInit;
             GameEvent.OnDayUpdate -= OnDayUpdate;
             GameEvent.OnScenarioStart -= OnScenarioStart;
             GameEvent.OnScenarioEnd -= OnScenarioEnd;
@@ -176,6 +176,7 @@ namespace Sango.Core.Player
             GameEvent.OnPersonEscape -= OnPersonEscape;
             GameEvent.OnPersonRelease -= OnPersonRelease;
             GameEvent.OnPersonExecute -= OnPersonExecute;
+            GameEvent.OnPersonLevelUp -= OnPersonLevelUp;
         }
 
         /// <summary>
@@ -516,6 +517,22 @@ namespace Sango.Core.Player
             {
                 message = $"我方斩杀了{person.ColorName}！";
                 _AddTextMessage(message, executeForce, 0, 0);
+            }
+        }
+
+        /// <summary>
+        /// 俘虏被斩杀事件处理方法
+        /// </summary>
+        /// <param name="person">被斩杀的俘虏</param>
+        /// <param name="executeForce">斩杀方势力</param>
+        private void OnPersonLevelUp(Person person)
+        {
+            // 检查是否为当前玩家势力
+            string message;
+            if (person.IsCurPlayer)
+            {
+                message = $"{person.ColorName}升级到{person.Level.Id}级！";
+                _AddTextMessage(message, person.BelongForce, 0, 0);
             }
         }
     }
