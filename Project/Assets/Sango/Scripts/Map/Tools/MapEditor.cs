@@ -124,6 +124,7 @@ namespace Sango.Tools
         {
             skin = Resources.Load<GUISkin>("GUISkin/MapEditor");
             timeInterval = 1.0f / frameLimit;
+            UnityEngine.Application.targetFrameRate = 60;
             Sango.Path.Init();
             //Path.AddSearchPath("D:/project_tk/Build/Mods/CoreMap");
             string assetsPath = $"{Sango.Path.ContentRootPath}/Assets/Map/{DefaultContentName}";
@@ -762,12 +763,12 @@ namespace Sango.Tools
 
         public void Update()
         {
-            currentTime += Time.deltaTime;
-            if (currentTime < timeInterval)
-                return;
+            //currentTime += Time.deltaTime;
+            //if (currentTime < timeInterval)
+            //    return;
 
-            while (currentTime >= timeInterval)
-                currentTime = currentTime - timeInterval;
+            //while (currentTime >= timeInterval)
+            //    currentTime = currentTime - timeInterval;
 
             // 处理快捷键（使用快捷键配置类）
             if (shortcuts.IsUndoPressed())
@@ -943,8 +944,8 @@ namespace Sango.Tools
                 brush = CheckBrush();
                 if (brush != null)
                 {
+                    SetModelSelectionMod(currentEditMode == (int)EditorModType.Model);
                     brush.OnEnter();
-                    SetModelSelectionMod(currentEditMode == (int)EditorModType.Model || currentEditMode == (int)EditorModType.City);
                 }
             }
             GUI.backgroundColor = lastColor;

@@ -180,6 +180,16 @@ namespace Sango.Core
         [JsonProperty]
         public Official Official { get; set; }
 
+        public bool CanUpgradeOfficial
+        {
+            get
+            {
+                if (Official == null)
+                    return false;
+                return Official.meritNeeds > 0 && merit >= Official.meritNeeds;
+            }
+        }
+
         /// <summary>
         /// 忠诚
         /// </summary>
@@ -1400,7 +1410,7 @@ namespace Sango.Core
         public int DistanceDays(City otherCity)
         {
             if (otherCity == null) return 0;
-            City thisCity = BelongTroop != null ? BelongTroop.cell.BelongCity : (BelongCity == null ? CurrentCity : BelongCity) ;
+            City thisCity = BelongTroop != null ? BelongTroop.cell.BelongCity : (BelongCity == null ? CurrentCity : BelongCity);
             return otherCity.Distance(thisCity);
         }
 
@@ -1566,5 +1576,6 @@ namespace Sango.Core
         {
             EquippedArmor = null;
         }
+
     }
 }

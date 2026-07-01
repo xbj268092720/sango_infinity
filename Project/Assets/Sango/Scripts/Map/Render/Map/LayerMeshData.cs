@@ -120,9 +120,8 @@ namespace Sango.Render
             if (normalCache != null) mesh.SetNormals(normalCache.Values, 0, normalCache.Count, Flags);
             if (triangleCache != null) mesh.SetTriangles(triangleCache.Values, 0, triangleCache.Count, 0, true);
             mesh.RecalculateBounds();
-            //mesh.RecalculateNormals();
-            mesh.MarkModified();
-            mesh.MarkDynamic();
+            if(Tools.MapEditor.IsEditOn)
+                mesh.RecalculateNormals();
         }
 
         public void Dispose()

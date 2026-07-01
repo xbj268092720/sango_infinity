@@ -577,7 +577,7 @@ namespace Sango.Core
         public static SortTitle SortByBelongCorps = new SortTitle()
         {
             name = "军团",
-            width = 60,
+            width = 85,
             valueGetCall = x => x.BelongCorps?.Name ?? "",
             personSortFunc = (a, b) => SangoObject.Compare(a.BelongCorps, b.BelongCorps),
         };
@@ -874,6 +874,19 @@ namespace Sango.Core
             personSortFunc = (a, b) => Building.Compare(a.workingBuilding, b.workingBuilding),
         };
 
+        public static SortTitle SortByUpgradeOffical = new SortTitle()
+        {
+            name = "可晋升",
+            width = 50,
+            valueGetCall = x =>
+            {
+                return x.CanUpgradeOfficial ? "○" : "✕";
+            },
+            personSortFunc = (a, b) =>
+            {
+                return a.CanUpgradeOfficial.CompareTo(b.CanUpgradeOfficial);
+            },
+        };
 
         public static List<ObjectSortTitle> DefaultSortList = new List<ObjectSortTitle>
         {

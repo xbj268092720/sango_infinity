@@ -362,7 +362,7 @@ namespace Sango.Tools
                                     editor.undoRedoManager.AddCommand(command, true);
                                     connectHint = $"添加邻接城市: {connectStartCity.Name} - {city.Name}";
                                     Sango.Log.Info($"添加邻接城市: {connectStartCity.Name} - {city.Name}");
-                                    if (showCityLines)
+                                    //if (showCityLines)
                                     {
                                         CreateLineRenderers();
                                     }
@@ -429,6 +429,8 @@ namespace Sango.Tools
             if (editMode != (int)controlType)
             {
                 controlType = (CityEditorType)editMode;
+
+               editor.SetModelSelectionMod(controlType == CityEditorType.Move);
                 switch (controlType)
                 {
                     case CityEditorType.Connect:
