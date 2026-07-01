@@ -37,7 +37,8 @@ namespace Sango.Core.Player
             // 点击内政地块-弹出开发按钮-点击开发按钮弹出开发界面
             else if (clickCell.IsInterior && clickCell.IsEmpty())
             {
-                if (clickCell.BelongCity.BelongForce == Scenario.Cur.CurRunForce && clickCell.BelongCity.BelongForce.IsPlayer)
+                Force cellBelongForce = clickCell.BelongCity.BelongCity != null ? clickCell.BelongCity.BelongCity.BelongForce : clickCell.BelongCity.BelongForce;
+                if (cellBelongForce == Scenario.Cur.CurRunForce && cellBelongForce.IsPlayer)
                 {
                     ContextMenuData.MenuData.Clear();
                     GameEvent.OnCellContextMenuShow?.Invoke(ContextMenuData.MenuData, clickCell);

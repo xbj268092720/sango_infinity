@@ -158,6 +158,7 @@ public class SimpleBuilder
             options = buildOptions
         };
 
+        UnityEditor.PlayerSettings.Android.bundleVersionCode = UnityEditor.PlayerSettings.Android.bundleVersionCode + 1;
         BuildPipeline.BuildPlayer(playerOptions);
 
         Log.Info("Android平台构建完成", Log.LogType.Game);

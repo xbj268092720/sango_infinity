@@ -22,6 +22,17 @@ public class GameStart : MonoBehaviour
 
     void Awake()
     {
+
+    //    StartCoroutine(GitDownloader.DownloadAndExtract(
+    //    "https://github.com/tankyc/sango_infinity/tree/main",
+    //    "D:/target/folder",
+    //    progress => UnityEngine.Debug.Log($"下载进度: {progress * 100f:F1}%"),
+    //    result => {
+    //        if (result.IsSuccess) UnityEngine.Debug.Log("完成: " + result.ExtractTargetPath);
+    //        else UnityEngine.Debug.LogError("失败: " + result.ErrorMessage);
+    //    }
+    //));
+
         initObject.SetActive(true);
         GameEvent.OnGameInit += OnGameInit;
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN

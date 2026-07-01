@@ -1218,7 +1218,7 @@ namespace Sango.Core
 #if SANGO_DEBUG
                     Sango.Log.Info($"{person.Name}逃跑!");
 #endif
-                    GameEvent.OnPersonEscape?.Invoke(person, this);
+                    //GameEvent.OnPersonEscape?.Invoke(person, this);
                 }
             }
 
