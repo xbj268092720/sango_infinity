@@ -164,12 +164,11 @@ namespace Sango.Core.Player
                     {
                         TargetTroop.ActionOver = true;
                         // 委任维修
-                        if(!targetBuildCell.building.isComplate)
+                        if(targetBuildCell.building != null && !targetBuildCell.building.isComplate)
                         {
                             TargetTroop.SetMission(MissionType.TroopFixBuilding, targetBuildCell.building.Id);
                         }
                         TargetTroop.Render?.UpdateRender();
-
                         Done();
                     }
                 }

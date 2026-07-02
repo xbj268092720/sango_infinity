@@ -14,5 +14,6 @@ namespace Sango.Core
         public int cost;
         public int level;
         public int meritNeeds;
+        public string effect_desc;
     }
 }

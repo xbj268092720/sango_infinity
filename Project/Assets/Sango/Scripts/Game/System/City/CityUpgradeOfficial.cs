@@ -6,6 +6,12 @@ namespace Sango.Core.Player
     public class CityUpgradeOfficial : CityBaseSystem
     {
         public List<Person> targetList = new List<Person>();
+        public struct UpgradeOfficial
+        {
+            public Person person;
+            public Official official;
+        }
+        public List<UpgradeOfficial> upgradeList = new List<UpgradeOfficial>();
 
         public CityUpgradeOfficial()
         {
@@ -88,6 +94,17 @@ namespace Sango.Core.Player
         }
 
         public void AutoUpgrade()
+        {
+
+        }
+
+        public void SelectUpgradePerson(Person person)
+        {
+            //targetList.Remove(person);
+            //upgradeList.Add(person);
+        }
+
+        public void SelectOfficial(Official official)
         {
 
         }

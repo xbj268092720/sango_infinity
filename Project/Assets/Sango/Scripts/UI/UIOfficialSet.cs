@@ -11,9 +11,7 @@ namespace Sango.UI
     {
         public Text title;
         public List<ObjectSortTitle> sortItems;
-        public UIToggleItem[] toggleGroup;
         public UIObjectListItem[] uIObjectListItems;
-        public UIObjectListItem creatItemObj;
         public Scrollbar scrollbar;
         public Scrollbar scrollbar_h;
         protected List<UISortButton> sortButtonPool = new List<UISortButton>();
@@ -25,9 +23,18 @@ namespace Sango.UI
         protected int startIndex = 0;
         protected int itemWidth = 0;
         protected int itemCount = 0;
-
+        
         public RectTransform btnRoot;
         public UIButtonItem[] buttons;
+
+        public UIOfficialItem[] uiOfficialItems;
+        public Scrollbar official_scrollbar;
+        protected int officialIndex = 0;
+
+        public GameObject officialSelectPanel;
+        public UIOfficialItem[] uiSelectOfficialItems;
+        public UIPersonItem uIPersonItem;
+
 
         RectTransform[] uIObjectListItemsRect;
         bool dragFlag = false;
@@ -81,6 +88,19 @@ namespace Sango.UI
                 scrollbar.transform.parent.gameObject.SetActive(true);
                 scrollbar.size = (float)itemCount / (float)dataCount;
                 scrollbar.SetValueWithoutNotify(0);
+            }
+
+            officialIndex = 0;
+            dataCount = cityUpgradeOfficial.upgradeList.Count;
+            if (dataCount < uiOfficialItems.Length)
+            {
+                official_scrollbar.transform.parent.gameObject.SetActive(false);
+            }
+            else
+            {
+                official_scrollbar.transform.parent.gameObject.SetActive(true);
+                official_scrollbar.size = (float)itemCount / (float)dataCount;
+                official_scrollbar.SetValueWithoutNotify(0);
             }
 
             // 重置状态和位置
@@ -226,6 +246,27 @@ namespace Sango.UI
             }
         }
 
+        public void UpdateOfficialStartIndex(int startIndex)
+        {
+            for (int i = 0; i < uiOfficialItems.Length; i++)
+            {
+                UIOfficialItem listItem = uiOfficialItems[i];
+                int destIndex = i + startIndex;
+                listItem.index = destIndex;
+                if (destIndex < cityUpgradeOfficial.upgradeList.Count)
+                {
+                    CityUpgradeOfficial.UpgradeOfficial data = cityUpgradeOfficial.upgradeList[destIndex];
+                    listItem.SetPerson(data.person, data.official);
+                }
+                else
+                {
+                    listItem.SetPerson(null, null);
+                }
+
+            }
+        }
+
+
         public void OnSure()
         {
 
@@ -370,6 +411,12 @@ namespace Sango.UI
                 p.x = pos;
                 listItem.contentRect.anchoredPosition = p;
             }
+        }
+
+        public void OnOfficial_ScrollBarValueChange(float value)
+        {
+            officialIndex = (int)UnityEngine.Mathf.Lerp(0, cityUpgradeOfficial.upgradeList.Count - uiOfficialItems.Length, value);
+            UpdateOfficialStartIndex(officialIndex);
         }
     }
 }

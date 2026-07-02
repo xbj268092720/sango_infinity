@@ -122,11 +122,11 @@ namespace Sango.Core.Player
 
         public override int CalculateWonderNumber()
         {
-            if (CurSelectedItemType.itemType.IsMachine())
+            if (CurSelectedItemType != null && CurSelectedItemType.itemType.IsMachine())
             {
                 TurnAndDestNumber = TargetCity.JobCreateMachine(personList.ToArray(), CurSelectedItemType.itemType, TargetBuilding, true);
             }
-            else if (CurSelectedItemType.itemType.IsBoat())
+            else if (CurSelectedItemType != null && CurSelectedItemType.itemType.IsBoat())
             {
                 TurnAndDestNumber = TargetCity.JobCreateBoat(personList.ToArray(), CurSelectedItemType.itemType, TargetBuilding, true);
             }

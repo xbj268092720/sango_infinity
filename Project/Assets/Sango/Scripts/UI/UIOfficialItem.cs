@@ -68,6 +68,26 @@ namespace Sango.UI
             pressImg.enabled = b;
         }
 
-
+        public void SetPerson(Person person, Official official)
+        {
+            if(person == null)
+            {
+                uITextItems[0].SetText("");
+                uITextItems[1].SetText("");
+                uITextItems[2].SetText("");
+                uITextItems[3].SetText("");
+                uITextItems[4].SetText("");
+                uITextItems[5].SetText("");
+            }
+            else
+            {
+                uITextItems[0].SetText(official.Name);
+                uITextItems[1].SetText(person.Official.meritNeeds.ToString());
+                uITextItems[2].SetText(official.troopsLimit.ToString());
+                uITextItems[3].SetText(official.cost.ToString());
+                uITextItems[4].SetText(official.effect_desc);
+                uITextItems[5].SetText(person.ColorName);
+            }
+        }
     }
 }
