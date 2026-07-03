@@ -2744,8 +2744,8 @@
     },
     "59": {
       "BelongCity": 9,
-      "BelongCorps": 11,
-      "BelongForce": 11,
+      "BelongCorps": 0,
+      "BelongForce": 0,
       "BuildingType": 3,
       "CityLevelType": 1,
       "Id": 59,

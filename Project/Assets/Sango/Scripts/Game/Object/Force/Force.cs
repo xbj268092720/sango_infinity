@@ -563,7 +563,8 @@ namespace Sango.Core
             AICommandList.Add(ForceAI.AIDiplomacy);
             AICommandList.Add(ForceAI.AICaptives);
             AICommandList.Add(ForceAI.AITechniques);
-
+            AICommandList.Add(ForceAI.AISetOfficial);
+            
             GameEvent.OnForceAIPrepare?.Invoke(this, scenario);
         }
 

@@ -95,29 +95,29 @@ namespace Sango.Core
                         // 防御型AI更倾向于停战
                         int chance = personality == AIPersonalityType.Defensive ? 20 : 10;
                         if (GameRandom.Chance(chance))
-                            {
-                                // 计算附加金钱价值，关系越差，投入越多
-                                int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Truce, personality);
+                        {
+                            // 计算附加金钱价值，关系越差，投入越多
+                            int additionalValue = CalculateDiplomacyResourceValue(force, neighbor, relation, DiplomacyActionType.Truce, personality);
 
-                                // 计算成功率
-                                Person diplomat = FindSuitableDiplomat(force);
-                                if (diplomat != null)
+                            // 计算成功率
+                            Person diplomat = FindSuitableDiplomat(force);
+                            if (diplomat != null)
+                            {
+                                DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
+                                // 创建外交行为实例并计算成功率
+                                DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
+                                int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
+                                if (successRate >= 20)
                                 {
-                                    DiplomacyManager diplomacyManager = GameSystem.GetSystem<DiplomacyManager>();
-                                    // 创建外交行为实例并计算成功率
-                                    DiplomacyActionBase action = diplomacyManager.CreateDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
-                                    int successRate = diplomacyManager.CalculateDiplomacySuccessRate(action);
-                                    if (successRate >= 20)
+                                    bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
+                                    if (!success)
                                     {
-                                        bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.Truce, force, neighbor, diplomat, additionalValue);
-                                        if (!success)
-                                        {
-                                            RecordDiplomacyFailure(force, neighbor.Id);
-                                        }
-                                        return true;
+                                        RecordDiplomacyFailure(force, neighbor.Id);
                                     }
+                                    return true;
                                 }
                             }
+                        }
                     }
                 }
             }
@@ -371,7 +371,7 @@ namespace Sango.Core
 
             return true;
         }
-    
+
         /// <summary>
         /// 查找合适的外交使者
         /// </summary>
@@ -742,7 +742,7 @@ namespace Sango.Core
                 for (int i = 0; i < city.captiveList.Count; i++)
                 {
                     Person captive = city.captiveList[i];
-                    if(captive == null) continue;
+                    if (captive == null) continue;
 
                     // 检查是否可以招降
                     if (ProcessCaptives(force, captive, scenario))
@@ -857,7 +857,7 @@ namespace Sango.Core
             if (force.BeCaptiveList == null || force.BeCaptiveList.Count == 0)
                 return;
             force.BeCaptiveList.Sort(PersonSortFunction.SortByMilitaryAbility.Sort);
-         
+
             // 根据势力领袖的性格调整赎回概率
             int ransomChance = 50;
             if (force.Governor != null && force.Governor.personality != null)
@@ -2038,5 +2038,35 @@ namespace Sango.Core
 
             return maxP;
         }
+
+        public static bool AISetOfficial(Force force, Scenario scenario)
+        {
+            List<Official> match_officials = new List<Official>();
+            force.ForEachPerson(person =>
+            {
+                if (person.CanUpgradeOfficial)
+                {
+                    Official[] officials = person.Official.NextOfficials;
+                    match_officials.Clear();
+                    foreach (Official official in officials)
+                    {
+                        if (official.CheckPerson(person))
+                        {
+                            match_officials.Add(official);
+                        }
+                    }
+
+                    // AI随机给一个官职
+                    if (match_officials.Count > 0)
+                    {
+                        Official dst = match_officials[GameRandom.Range(match_officials.Count)];
+                        person.UpgradeOfficial(dst);
+                    }
+                }
+            });
+
+            return true;
+        }
     }
+
 }

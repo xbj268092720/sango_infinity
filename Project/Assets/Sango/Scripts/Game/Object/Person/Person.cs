@@ -1577,5 +1577,16 @@ namespace Sango.Core
             EquippedArmor = null;
         }
 
+        public void UpgradeOfficial(Official official)
+        {
+            Official last = Official;
+            int need = Official.meritNeeds;
+            Official = official;
+            merit -= need;
+#if SANGO_DEBUG
+            Sango.Log.Info($"@个人@{Name}官职升到[{Official.Name}]!!");
+#endif
+            GameEvent.OnPersonUpgradeOfficial?.Invoke(this, last);
+        }
     }
 }

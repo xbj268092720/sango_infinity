@@ -576,6 +576,11 @@ namespace Sango.Core
         public static EventDelegate<Person, City, City> OnPersonChangCurrentCity;
 
         /// <summary>
+        /// 武将官职晋升
+        /// </summary>
+        public static EventDelegate<Person, Official> OnPersonUpgradeOfficial;
+
+        /// <summary>
         /// 当单挑开始时
         /// </summary>
         public static EventDelegate<DuelSystem> OnDuelStart;
