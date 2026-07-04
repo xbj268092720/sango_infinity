@@ -15,6 +15,7 @@ namespace Sango.UI
         public Image selectImg;
         public Image overImg;
         public Image pressImg;
+        public Image disableImg;
         public UITextItem[] uITextItems;
         float lastPressTime;
         readonly float doubleClickTimer = 0.3f;
@@ -30,18 +31,18 @@ namespace Sango.UI
 
         public void Clear()
         {
-            
+
         }
 
         public void Set(string content)
         {
-            
+
         }
 
         public void Add(string content, int width)
         {
             UITextItem item;
-           
+
         }
 
         public void Set(int index, string content)
@@ -68,10 +69,10 @@ namespace Sango.UI
         public void SetPressd(bool b)
         {
             pressImg.enabled = b;
-            if(!b)
+            if (!b)
             {
-               float off = Time.realtimeSinceStartup - lastPressTime;
-                if(off <= doubleClickTimer)
+                float off = Time.realtimeSinceStartup - lastPressTime;
+                if (off <= doubleClickTimer)
                 {
                     onDoubleSelected?.Invoke(this);
                 }
@@ -85,7 +86,7 @@ namespace Sango.UI
 
         public void SetPerson(Person person, Official official)
         {
-            if(person == null)
+            if (person == null)
             {
                 uITextItems[0].SetText("");
                 uITextItems[1].SetText("");
@@ -93,16 +94,31 @@ namespace Sango.UI
                 uITextItems[3].SetText("");
                 uITextItems[4].SetText("");
                 uITextItems[5].SetText("");
+                if (uITextItems.Length > 6)
+                {
+                    uITextItems[6]?.SetText("");
+                }
             }
             else
             {
                 uITextItems[0].SetText(official.Name);
-                uITextItems[1].SetText(person.Official.meritNeeds.ToString());
-                uITextItems[2].SetText(official.troopsLimit.ToString());
-                uITextItems[3].SetText(official.cost.ToString());
-                uITextItems[4].SetText(official.effect_desc);
-                uITextItems[5].SetText(person.ColorName);
+                uITextItems[1].SetText(official.level.ToString());
+                uITextItems[2].SetText(person.Official.meritNeeds.ToString());
+                uITextItems[3].SetText(official.troopsLimit.ToString());
+                uITextItems[4].SetText(official.cost.ToString());
+                uITextItems[5].SetText(official.effect_desc);
+                if (uITextItems.Length > 6)
+                {
+                    uITextItems[6]?.SetText(person.ColorName);
+                }
+
             }
+        }
+
+        public void SetDisable(bool b)
+        {
+            if (disableImg != null)
+                disableImg.enabled = b;
         }
     }
 }

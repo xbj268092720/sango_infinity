@@ -100,6 +100,8 @@ namespace SKFramework
                     if (queue.Count > 0)
                     {
                         scrollPos = GUILayout.BeginScrollView(scrollPos);
+                        int fs = GUI.skin.label.fontSize;
+                        GUI.skin.label.fontSize = 35;
                         try
                         {
                             for (int i = 0; i < queue.Count; ++i)
@@ -123,6 +125,7 @@ namespace SKFramework
                         {
                             GUILayout.EndScrollView();
                         }
+                        GUI.skin.label.fontSize = fs;
                     }
                 }
                 finally

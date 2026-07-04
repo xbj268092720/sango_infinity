@@ -1217,7 +1217,8 @@ namespace Sango.Core
             BelongCity = city;
             BelongCorps = city.BelongCorps;
             BelongForce = city.BelongForce;
-            Official = Scenario.Cur.CommonData.Officials.Get(0);
+            UpgradeOfficial(Scenario.Cur.CommonData.Officials.Get(0));
+            merit = 0;
             state = (int)PersonStateType.Normal;
             BelongCity.AddPerson(this);
             return isSameCity;
@@ -1231,7 +1232,8 @@ namespace Sango.Core
             workingBuilding = null;
             loyalty = 0;
             BelongCity.RemovePerson(this);
-            Official = Scenario.Cur.CommonData.Officials.Get(0);
+            UpgradeOfficial(Scenario.Cur.CommonData.Officials.Get(0));
+            merit = 0;
             if (IsPrisoner)
             {
                 BelongCity = CurrentCity;
@@ -1259,7 +1261,6 @@ namespace Sango.Core
 
         public Person BeCaptive(City city, bool breakCircal = false)
         {
-            Official = Scenario.Cur.CommonData.Officials.Get(0);
             if (!breakCircal)
                 city.AddCaptive(this, true);
 #if SANGO_DEBUG
@@ -1270,7 +1271,6 @@ namespace Sango.Core
 
         public Person BeCaptive(Troop troop)
         {
-            Official = Scenario.Cur.CommonData.Officials.Get(0);
             troop.AddCaptive(this);
 #if SANGO_DEBUG
             Sango.Log.Info($"@人才@[{Name}]被<{troop.BelongForce.Name}>俘虏至{troop.Name}");
@@ -1588,7 +1588,7 @@ namespace Sango.Core
             last.OnPersonRemove(this);
             int need = Official.meritNeeds;
             Official = official;
-            Official.OnPersonRemove(this);
+            Official.OnPersonAdd(this);
             merit -= need;
 #if SANGO_DEBUG
             Sango.Log.Info($"@个人@{Name}官职升到[{Official.Name}]!!");

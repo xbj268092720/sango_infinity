@@ -23,7 +23,8 @@ namespace Sango.UI
         protected int startIndex = 0;
         protected int itemWidth = 0;
         protected int itemCount = 0;
-        
+        public Button sureButton;
+
         public RectTransform btnRoot;
         public UIButtonItem[] buttons;
 
@@ -37,6 +38,7 @@ namespace Sango.UI
         protected int selectOfficialIndex = 0;
         public Scrollbar select_official_scrollbar;
 
+        public Button select_official_sureButton;
 
         Person selectPerson;
         Official selectOfficial;
@@ -66,7 +68,7 @@ namespace Sango.UI
 
             itemWidth = GetContentWidth();
             itemCount = uIObjectListItems.Length;
-
+            officialSelectPanel.SetActive(false);
             bool show_scrollbar_h = maskRect.rect.width < itemWidth;
             scrollbar_h.gameObject.SetActive(show_scrollbar_h);
             if (show_scrollbar_h)
@@ -103,7 +105,7 @@ namespace Sango.UI
             else
             {
                 official_scrollbar.transform.parent.gameObject.SetActive(true);
-                official_scrollbar.size = (float)itemCount / (float)dataCount;
+                official_scrollbar.size = (float)uiOfficialItems.Length / (float)dataCount;
                 official_scrollbar.SetValueWithoutNotify(0);
             }
 
@@ -119,7 +121,7 @@ namespace Sango.UI
 
             UpdateSortContent();
             OnScrollBarValueChange(0);
-
+            UpdateOfficialStartIndex(0);
             foreach (RectTransform r in contentRect)
             {
                 Vector2 p = r.anchoredPosition;
@@ -130,7 +132,7 @@ namespace Sango.UI
             for (int j = 0; j < uIObjectListItems.Length; j++)
             {
                 UIObjectListItem listItem = uIObjectListItems[j];
-                listItem.onSelected = OnSelectPersonItem;
+                listItem.onSelected = OnPersonListSelected;
             }
             for (int j = 0; j < uiOfficialItems.Length; j++)
             {
@@ -142,23 +144,69 @@ namespace Sango.UI
                 UIOfficialItem listItem = uiSelectOfficialItems[j];
                 listItem.onSelected = OnSelectPersonOfficialItem;
             }
-            //bool hasButtons = objectSelectSystem.buttonDatas != null;
-            //btnRoot.gameObject.SetActive(hasButtons);
-            //if (hasButtons)
+
+            bool hasButtons = cityUpgradeOfficial.buttonDatas != null;
+            btnRoot.gameObject.SetActive(hasButtons);
+            if (hasButtons)
+            {
+                for (int i = 0; i < buttons.Length; i++)
+                {
+                    UIButtonItem buttonItem = buttons[i];
+                    if (i >= cityUpgradeOfficial.buttonDatas.Count)
+                    {
+                        buttonItem.gameObject.SetActive(false);
+                        continue;
+                    }
+                    ObjectsDisplaySystem.ButtonData buttonData = cityUpgradeOfficial.buttonDatas[i];
+                    buttonItem.gameObject.SetActive(true);
+                    buttonItem.SetTitle(buttonData.title).SetStyle(buttonData.style).BindAction(() =>
+                    {
+
+                        buttonData.action?.Invoke();
+                        UpdateContent();
+                    });
+                }
+            }
+            sureButton.interactable = cityUpgradeOfficial.upgradeList.Count > 0;
+        }
+
+        public void UpdateContent()
+        {
+            int dataCount = cityUpgradeOfficial.targetList.Count;
+            if (dataCount < itemCount)
+            {
+                scrollbar.transform.parent.gameObject.SetActive(false);
+            }
+            else
+            {
+                scrollbar.transform.parent.gameObject.SetActive(true);
+                scrollbar.size = (float)itemCount / (float)dataCount;
+            }
+
+            dataCount = cityUpgradeOfficial.upgradeList.Count;
+            if (dataCount < uiOfficialItems.Length)
+            {
+                official_scrollbar.transform.parent.gameObject.SetActive(false);
+            }
+            else
+            {
+                official_scrollbar.transform.parent.gameObject.SetActive(true);
+                official_scrollbar.size = (float)uiOfficialItems.Length / (float)dataCount;
+            }
+
+            //// 重置状态和位置
+            //for (int j = 0; j < uIObjectListItems.Length; j++)
             //{
-            //    for (int i = 0; i < buttons.Length; i++)
-            //    {
-            //        UIButtonItem buttonItem = buttons[i];
-            //        if (i >= objectSelectSystem.buttonDatas.Count)
-            //        {
-            //            buttonItem.gameObject.SetActive(false);
-            //            continue;
-            //        }
-            //        ObjectsDisplaySystem.ButtonData buttonData = objectSelectSystem.buttonDatas[i];
-            //        buttonItem.gameObject.SetActive(true);
-            //        buttonItem.SetTitle(buttonData.title).SetStyle(buttonData.style).BindAction(buttonData.action);
-            //    }
+            //    UIObjectListItem listItem = uIObjectListItems[j];
+            //    Vector2 p = listItem.contentRect.anchoredPosition;
+            //    p.x = 0;
+            //    listItem.contentRect.anchoredPosition = p;
+            //    listItem.SetOver(false);
             //}
+            //UpdateSortContent();
+            UpdateItemStartIndex(startIndex);
+            UpdateOfficialStartIndex(officialIndex);
+            sureButton.interactable = cityUpgradeOfficial.upgradeList.Count > 0;
         }
 
         public int GetContentWidth()
@@ -259,6 +307,11 @@ namespace Sango.UI
                 }
                 else
                 {
+                    for (int j = 0; j < sortItems.Count; j++)
+                    {
+                        ObjectSortTitle sortTitle = sortItems[j];
+                        listItem.Set(j, "");
+                    }
                     listItem.SetSelected(false);
                 }
 
@@ -330,6 +383,10 @@ namespace Sango.UI
 
         public void UpdateOfficialSelectPanel()
         {
+            lastSelectPersonOfficialItem?.SetSelected(false);
+            lastSelectPersonOfficialItem = null;
+            select_official_sureButton.interactable = false;
+
             if (currentSelectItem == null) return;
             selectOfficialIndex = 0;
             Official[] officials = selectPerson.Official.NextOfficials;
@@ -340,10 +397,10 @@ namespace Sango.UI
             else
             {
                 select_official_scrollbar.transform.parent.gameObject.SetActive(true);
-                select_official_scrollbar.size = (float)itemCount / (float)officials.Length;
+                select_official_scrollbar.size = (float)uiSelectOfficialItems.Length / (float)officials.Length;
                 select_official_scrollbar.SetValueWithoutNotify(0);
             }
-
+            uIPersonItem.SetPerson(selectPerson);
             UpdateSelectOfficialStartIndex(0);
         }
 
@@ -360,64 +417,14 @@ namespace Sango.UI
                 {
                     Official data = officials[destIndex];
                     listItem.SetPerson(person, data);
+                    listItem.SetDisable(!data.CheckPerson(person));
                 }
                 else
                 {
                     listItem.SetPerson(null, null);
                 }
+
             }
-        }
-
-        public void OnSelectOfficialSelect(UIObjectListItem item)
-        {
-            Person person = cityUpgradeOfficial.targetList[currentSelectItem.index];
-            Official[] officials = person.Official.NextOfficials;
-
-            if (item.index >= officials.Length)
-                return;
-
-        }
-
-        public void OnDragPersonListSelected(UIObjectListItem item)
-        {
-            //if (dragFlag && objectSelectSystem.IsPersonLimit())
-            //    return;
-
-            //if (!dragFlag && objectSelectSystem.IsPersonEmpty())
-            //    return;
-
-            //if (item.index >= objectSelectSystem.Objects.Count)
-            //    return;
-
-            //if (item.IsSelected() && !dragFlag)
-            //{
-            //    item.SetSelected(false);
-            //    objectSelectSystem.Remove(item.index);
-            //}
-            //else if (!item.IsSelected() && dragFlag)
-            //{
-            //    item.SetSelected(true);
-            //    objectSelectSystem.Add(item.index);
-            //}
-
-            //for (int i = 0; i < itemCount; i++)
-            //{
-            //    RectTransform itemRect = uIObjectListItemsRect[i];
-            //    UIObjectListItem listItem = uIObjectListItems[i];
-            //    if (listItem != item && RectTransformUtility.RectangleContainsScreenPoint(itemRect, Input.mousePosition, Sango.Core.Game.Instance.UICamera))
-            //    {
-            //        if (listItem.IsSelected() && !dragFlag)
-            //        {
-            //            listItem.SetSelected(false);
-            //            objectSelectSystem.Remove(listItem.index);
-            //        }
-            //        else if (!listItem.IsSelected() && dragFlag)
-            //        {
-            //            listItem.SetSelected(true);
-            //            objectSelectSystem.Add(listItem.index);
-            //        }
-            //    }
-            //}
         }
 
         public void OnScrollBarValueChange(float value)
@@ -464,25 +471,39 @@ namespace Sango.UI
         {
             cityUpgradeOfficial.AddSetPerson(selectPerson, selectOfficial);
             officialSelectPanel.SetActive(false);
-            UpdateOfficialStartIndex(officialIndex);
-            UpdateItemStartIndex(startIndex);
+            UpdateContent();
         }
-        
+
         public void OnCancelSelectOfficial()
         {
             officialSelectPanel.SetActive(false);
         }
 
-        public void OnSelectPersonItem(UIObjectListItem item)
-        {
-        }
-
         public void OnDoubleSelectOfficialItem(UIOfficialItem item)
         {
+            int destIndex = item.index;
+            if (destIndex < cityUpgradeOfficial.upgradeList.Count)
+            {
+                cityUpgradeOfficial.RemoveUpgrade(destIndex);
+                UpdateContent();
+            }
         }
 
+        UIOfficialItem lastSelectPersonOfficialItem;
         public void OnSelectPersonOfficialItem(UIOfficialItem item)
         {
+            Official[] officials = selectPerson.Official.NextOfficials;
+            int index = item.index;
+            if (index < 0 || index >= officials.Length) return;
+            Official dst = officials[index];
+            if (!dst.CheckPerson(selectPerson))
+                return;
+
+            lastSelectPersonOfficialItem?.SetSelected(false);
+            item.SetSelected(true);
+            lastSelectPersonOfficialItem = item;
+            selectOfficial = officials[item.index];
+            select_official_sureButton.interactable = true;
         }
     }
 }

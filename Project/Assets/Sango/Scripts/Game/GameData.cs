@@ -31,7 +31,7 @@ namespace Sango.Core
             {
                 scenarioCommonData.Load(file);
             });
-            ModManager.Instance.EnumDirectory("Data/Common", file =>
+            ModManager.Instance.EnumFiles("Data/Common", "*.json", System.IO.SearchOption.AllDirectories, file =>
             {
                 scenarioCommonData.Load(file);
             });
@@ -48,7 +48,7 @@ namespace Sango.Core
             {
                 ScenarioCommonData.Load(file);
             });
-            ModManager.Instance.EnumDirectory("Data/Common", file =>
+            ModManager.Instance.EnumFiles("Data/Common", "*.json", System.IO.SearchOption.AllDirectories, file =>
             {
                 ScenarioCommonData.Load(file);
             });
@@ -72,7 +72,7 @@ namespace Sango.Core
                 ModelConfigs = TKNewtonsoft.Json.JsonConvert.DeserializeObject<SangoObjectMap<ModelConfig>>(File.ReadAllText(file), jsonSerializerSettings);
 
             });
-            
+
             //SimpleJSON.JSONArray node = new SimpleJSON.JSONArray();
             //ModelConfigs.Save(node);
             //node.SaveToFile("D:/modelConfig.json");

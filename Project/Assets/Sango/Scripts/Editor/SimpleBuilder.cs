@@ -146,8 +146,13 @@ public class SimpleBuilder
             .Select(scene => scene.path)
             .ToArray();
 
+        if(isDevelopment)
+            PlayerSettings.SetAdditionalIl2CppArgs("--linker-flags=\"-Wl,--stub-group-size=115343360\"");
+        else
+            PlayerSettings.SetAdditionalIl2CppArgs("");
+
         BuildOptions buildOptions = isDevelopment
-            ? BuildOptions.Development
+            ? BuildOptions.Development | BuildOptions.AllowDebugging
             : BuildOptions.None;
 
         BuildPlayerOptions playerOptions = new BuildPlayerOptions

@@ -45,6 +45,10 @@ namespace Sango.Mod
         /// </summary>
         public string ModDir { internal set; get; }
         /// <summary>
+        /// 作者
+        /// </summary>
+        public string Author { internal set; get; }
+        /// <summary>
         /// Assembly名字
         /// </summary>
         public string EntryAssembly { internal set; get; }

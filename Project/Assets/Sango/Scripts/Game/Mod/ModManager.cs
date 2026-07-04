@@ -67,28 +67,31 @@ namespace Sango.Mod
                     string[] c_v = s.Split('=');
                     if (c_v.Length > 1)
                     {
-                        switch (c_v[0])
+                        switch (c_v[0].Trim())
                         {
                             case "id":
-                                mod.Id = c_v[1];
+                                mod.Id = c_v[1].Trim();
                                 break;
                             case "name":
-                                mod.Name = c_v[1];
+                                mod.Name = c_v[1].Trim();
                                 break;
                             case "description":
-                                mod.Description = c_v[1];
+                                mod.Description = c_v[1].Trim();
                                 break;
                             case "version":
-                                mod.Version = c_v[1];
+                                mod.Version = c_v[1].Trim();
                                 break;
                             case "depends":
-                                mod.Depends = c_v[1];
+                                mod.Depends = c_v[1].Trim();
                                 break;
                             case "poster":
-                                mod.Poster = c_v[1];
+                                mod.Poster = c_v[1].Trim();
                                 break;
                             case "assembly":
-                                mod.EntryAssembly = c_v[1];
+                                mod.EntryAssembly = c_v[1].Trim();
+                                break;
+                            case "author":
+                                mod.Author = c_v[1].Trim();
                                 break;
                         }
                     }
