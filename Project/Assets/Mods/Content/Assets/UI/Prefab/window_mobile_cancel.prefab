@@ -36,9 +36,9 @@ RectTransform:
   m_Father: {fileID: 5973749658295835790}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 837, y: 443}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -80, y: -71}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8836884965388764713
@@ -54,6 +54,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragRect: {fileID: 6180945499214224410}
+  uiCamera: {fileID: 0}
+  isOverlayCamera: 0
 --- !u!222 &4607555302192937807
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -209,24 +211,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 6180945499214224410}
     m_Modifications:
     - target: {fileID: 2747488509861702531, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2747488509861702531, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 58a2a46430ec12d40b57527345762103, type: 3}
+      objectReference: {fileID: 21300000, guid: a33e400b09413b640bbf7052dc42e80b, type: 3}
     - target: {fileID: 2904138685985169836, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Text
-      value: "\u53F3\u952E"
+      value: "\u8FD4\u56DE\u952E"
       objectReference: {fileID: 0}
     - target: {fileID: 2904138685985169836, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Color.b
-      value: 0.41304737
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2904138685985169836, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Color.g
-      value: 0.46038145
+      value: 0.2486937
       objectReference: {fileID: 0}
     - target: {fileID: 2904138685985169836, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Color.r
-      value: 0.9622642
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4394840638323533118, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Pivot.x

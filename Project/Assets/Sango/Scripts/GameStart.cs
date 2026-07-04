@@ -52,7 +52,7 @@ public class GameStart : MonoBehaviour
         }
 #endif
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_EDITOR
         canvasScaler.referenceResolution = new Vector2(1366, 768);
 #endif
         Screen.sleepTimeout = UnityEngine.SleepTimeout.NeverSleep;
