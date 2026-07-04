@@ -33,13 +33,23 @@ namespace Sango.Core
         public int valueFacter = 10000;
 
         /// <summary>
-        /// 最终能力值
+        /// 额外值
         /// </summary>
-        public int value;
+        public int extra_value;
+
+        /// <summary>
+        /// 能力值,计算出来的
+        /// </summary>
+        public int _value;
+
+        /// <summary>
+        /// 最终值
+        /// </summary>
+        public int Value => _value + extra_value;
 
         public override string ToString()
         {
-            return $"{baseValue},{valueExp},{valueFacter},{value}";
+            return $"{baseValue},{valueExp},{valueFacter},{_value}";
         }
 
         public IAarryDataObject FromArray(int[] content)
@@ -53,22 +63,22 @@ namespace Sango.Core
             changeType = Scenario.Cur.CommonData.AttributeChangeTypes.Get(changeId);
             if (count > 2) valueExp = content[2];
             if (count > 3) valueFacter = content[3];
-            if (count > 4) value = content[4];
+            if (count > 4) _value = content[4];
             return this;
         }
 
         public int[] ToArray()
         {
-            return new int[] { baseValue, changeType.Id, valueExp, valueFacter, value };
+            return new int[] { baseValue, changeType.Id, valueExp, valueFacter, _value };
         }
 
         public void Update()
         {
-            value = ((baseValue * changeType.GetAgeFactor(master.Age)) / 10000 + Math.Min(Scenario.Cur.Variables.MaxAttributeGet, (valueExp / Scenario.Cur.Variables.AttributeExpLevelNeed))) * valueFacter / 10000;
+            _value = ((baseValue * changeType.GetAgeFactor(master.Age)) / 10000 + Math.Min(Scenario.Cur.Variables.MaxAttributeGet, (valueExp / Scenario.Cur.Variables.AttributeExpLevelNeed))) * valueFacter / 10000;
         }
         public void SetExp(int exp)
         {
-            if (value - baseValue >= Scenario.Cur.Variables.MaxAttributeGet)
+            if (_value - baseValue >= Scenario.Cur.Variables.MaxAttributeGet)
                 return;
 
             if (valueExp != exp)

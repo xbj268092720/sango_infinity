@@ -8,15 +8,17 @@ namespace Sango.UI
     public class UIOfficialItem : MonoBehaviour
     {
         public int index;
-        public delegate void OnSelect(UIObjectListItem item);
-        public delegate void OnShow(UIObjectListItem item);
+        public delegate void OnSelect(UIOfficialItem item);
         public OnSelect onSelected;
-        public OnShow onShow;
+        public OnSelect onDoubleSelected;
         public RectTransform contentRect;
         public Image selectImg;
         public Image overImg;
         public Image pressImg;
         public UITextItem[] uITextItems;
+        float lastPressTime;
+        readonly float doubleClickTimer = 0.3f;
+        int clickCount = 0;
 
         void ScrollCellIndex(int idx)
         {
@@ -66,6 +68,19 @@ namespace Sango.UI
         public void SetPressd(bool b)
         {
             pressImg.enabled = b;
+            if(!b)
+            {
+               float off = Time.realtimeSinceStartup - lastPressTime;
+                if(off <= doubleClickTimer)
+                {
+                    onDoubleSelected?.Invoke(this);
+                }
+                else
+                {
+                    onSelected?.Invoke(this);
+                }
+                lastPressTime = Time.realtimeSinceStartup;
+            }
         }
 
         public void SetPerson(Person person, Official official)

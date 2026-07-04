@@ -108,5 +108,9 @@ namespace Sango.Core.Player
         {
 
         }
+        public void AddSetPerson(Person person, Official official)
+        {
+
+        }
     }
 }

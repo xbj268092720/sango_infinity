@@ -15,7 +15,7 @@ namespace Sango.Core
             writer.WriteValue(dest.changeType?.Id ?? 0);
             writer.WriteValue(dest.valueExp);
             writer.WriteValue(dest.valueFacter);
-            writer.WriteValue(dest.value);
+            writer.WriteValue(dest.Value);
             writer.WriteEndArray();
         }
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer, JsonProperty property, object target)

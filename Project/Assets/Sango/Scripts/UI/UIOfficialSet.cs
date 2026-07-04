@@ -39,6 +39,7 @@ namespace Sango.UI
 
 
         Person selectPerson;
+        Official selectOfficial;
         RectTransform[] uIObjectListItemsRect;
         bool dragFlag = false;
         UIObjectListItem currentSelectItem;
@@ -126,6 +127,21 @@ namespace Sango.UI
                 r.anchoredPosition = p;
             }
 
+            for (int j = 0; j < uIObjectListItems.Length; j++)
+            {
+                UIObjectListItem listItem = uIObjectListItems[j];
+                listItem.onSelected = OnSelectPersonItem;
+            }
+            for (int j = 0; j < uiOfficialItems.Length; j++)
+            {
+                UIOfficialItem listItem = uiOfficialItems[j];
+                listItem.onDoubleSelected = OnDoubleSelectOfficialItem;
+            }
+            for (int j = 0; j < uiSelectOfficialItems.Length; j++)
+            {
+                UIOfficialItem listItem = uiSelectOfficialItems[j];
+                listItem.onSelected = OnSelectPersonOfficialItem;
+            }
             //bool hasButtons = objectSelectSystem.buttonDatas != null;
             //btnRoot.gameObject.SetActive(hasButtons);
             //if (hasButtons)
@@ -442,6 +458,31 @@ namespace Sango.UI
             Official[] officials = selectPerson.Official.NextOfficials;
             selectOfficialIndex = (int)UnityEngine.Mathf.Lerp(0, officials.Length - uiSelectOfficialItems.Length, value);
             UpdateSelectOfficialStartIndex(selectOfficialIndex);
+        }
+
+        public void OnSureSelectOfficial()
+        {
+            cityUpgradeOfficial.AddSetPerson(selectPerson, selectOfficial);
+            officialSelectPanel.SetActive(false);
+            UpdateOfficialStartIndex(officialIndex);
+            UpdateItemStartIndex(startIndex);
+        }
+        
+        public void OnCancelSelectOfficial()
+        {
+            officialSelectPanel.SetActive(false);
+        }
+
+        public void OnSelectPersonItem(UIObjectListItem item)
+        {
+        }
+
+        public void OnDoubleSelectOfficialItem(UIOfficialItem item)
+        {
+        }
+
+        public void OnSelectPersonOfficialItem(UIOfficialItem item)
+        {
         }
     }
 }

@@ -451,27 +451,27 @@ namespace Sango.Core
         /// <summary>
         /// 统率
         /// </summary>
-        public int Command => command.value + GetEquipmentBonus(x => x.commandBonus);
+        public int Command => command.Value + GetEquipmentBonus(x => x.commandBonus);
 
         /// <summary>
         /// 武力
         /// </summary>
-        public int Strength => strength.value + GetEquipmentBonus(x => x.strengthBonus);
+        public int Strength => strength.Value + GetEquipmentBonus(x => x.strengthBonus);
 
         /// <summary>
         /// 智力
         /// </summary>
-        public int Intelligence => intelligence.value + GetEquipmentBonus(x => x.intelligenceBonus);
+        public int Intelligence => intelligence.Value + GetEquipmentBonus(x => x.intelligenceBonus);
 
         /// <summary>
         /// 政治
         /// </summary>
-        public int Politics => politics.value + GetEquipmentBonus(x => x.politicsBonus);
+        public int Politics => politics.Value + GetEquipmentBonus(x => x.politicsBonus);
 
         /// <summary>
         /// 魅力
         /// </summary>
-        public int Glamour => glamour.value + GetEquipmentBonus(x => x.glamourBonus);
+        public int Glamour => glamour.Value + GetEquipmentBonus(x => x.glamourBonus);
 
         /// <summary>
         /// 是否可登场
@@ -708,6 +708,9 @@ namespace Sango.Core
 
             if (Official == null)
                 Official = scenario.CommonData.Officials[0];
+
+            Official.OnPersonAdd(this);
+
             if (Level == null)
                 Level = scenario.CommonData.PersonLevels[0];
         }
@@ -1579,9 +1582,13 @@ namespace Sango.Core
 
         public void UpgradeOfficial(Official official)
         {
+            if (official == null) return;
+
             Official last = Official;
+            last.OnPersonRemove(this);
             int need = Official.meritNeeds;
             Official = official;
+            Official.OnPersonRemove(this);
             merit -= need;
 #if SANGO_DEBUG
             Sango.Log.Info($"@个人@{Name}官职升到[{Official.Name}]!!");
