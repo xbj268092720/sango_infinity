@@ -28,6 +28,9 @@
 
             if (troop.MoveRange.Contains(actionCell)) return false;
 
+            if(actionCell.troop.cell.BelongCity == troop.BelongCity || actionCell.troop.cell.BelongCity.BelongCity == troop.BelongCity )
+                return false;
+
             DestTroop = actionCell.troop as Troop;
             content = string.Format("前往驱逐敌方部队{0}。\n确定吗？", DestTroop.ColorName);
             return true;

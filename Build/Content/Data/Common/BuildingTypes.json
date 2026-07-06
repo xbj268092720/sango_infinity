@@ -261,9 +261,9 @@
       "techGain": 0,
       "desc": "阻碍部队行进的障碍物",
       "icon": "4846-8/4846-8_17",
-      "model": "Assets/Model/Prefab/4308.prefab",
-      "modelCreate": "Assets/Model/Prefab/4298.prefab",
-      "modelBroken": "Assets/Model/Prefab/4298.prefab"
+      "model": "Assets/Model/Prefab/tulei_p.prefab",
+      "modelCreate": "Assets/Model/Prefab/tulei_building.prefab",
+      "modelBroken": "Assets/Model/Prefab/tulei_broken.prefab"
     },
     "10": {
       "Id": 10,
@@ -285,9 +285,9 @@
       "techGain": 0,
       "desc": "阻碍部队行进的障碍物，比土垒坚固",
       "icon": "4846-8/4846-8_18",
-      "model": "Assets/Model/Prefab/4308.prefab",
-      "modelCreate": "Assets/Model/Prefab/4298.prefab",
-      "modelBroken": "Assets/Model/Prefab/4298.prefab"
+      "model": "Assets/Model/Prefab/tulei_p.prefab",
+      "modelCreate": "Assets/Model/Prefab/tulei_building.prefab",
+      "modelBroken": "Assets/Model/Prefab/tulei_broken.prefab"
     },
     "11": {
       "Id": 11,
@@ -311,8 +311,8 @@
       "effectAttrType": 2,
       "desc": "每回合对位于周围２～３区格内的敌方部队执行投石攻击",
       "icon": "4846-8/4846-8_19",
-      "model": "Assets/Model/Prefab/4308.prefab",
-      "modelCreate": "Assets/Model/Prefab/4298.prefab",
+      "model": "Assets/Model/Prefab/4485.prefab",
+      "modelCreate": "Assets/Model/Prefab/4447.prefab",
       "modelBroken": "Assets/Model/Prefab/4298.prefab"
     },
     "12": {
@@ -365,7 +365,15 @@
       "icon": "4846-8/4846-8_21",
       "model": "Assets/Model/Prefab/4308.prefab",
       "modelCreate": "Assets/Model/Prefab/4298.prefab",
-      "modelBroken": "Assets/Model/Prefab/4298.prefab"
+      "modelBroken": "Assets/Model/Prefab/4298.prefab",
+      "actionEntities": [
+        {
+          "class": "BuildingAddTroopMorale",
+          "value": 10,
+          "bound": 2,
+          "tartgetType": 0
+        }
+      ]
     },
     "14": {
       "Id": 14,

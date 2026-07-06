@@ -182,7 +182,11 @@ using Sango.Core; namespace Sango.UI
 
         private void Update()
         {
-            if (GameSystemManager.Instance.CurrentCommand != null)
+            if (GameSystemManager.Instance.CurrentCommand != null
+#if UNITY_ANDROID
+                && !(GameSystemManager.Instance.CurrentCommand is BuildingSystem)
+#endif
+                )
             {
                 ResetAllPanel(null);
             }

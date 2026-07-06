@@ -330,8 +330,8 @@ namespace Sango.Core
                     for (int j = 0; j < person.FeatureList.Count; j++)
                     {
                         Feature feature = person.FeatureList[j];
-                        if (feature.kind == (int)FeatureKindType.CityProduce)
-                            person.FeatureList[j].InitActions(sJobActions, sangoObjects);
+                        if (feature != null && feature.kind == (int)FeatureKindType.CityProduce)
+                            feature.InitActions(sJobActions, sangoObjects);
                     }
                 }
             }
@@ -345,8 +345,8 @@ namespace Sango.Core
                 for (int j = 0; j < person.FeatureList.Count; j++)
                 {
                     Feature feature = person.FeatureList[j];
-                    if (feature.kind == (int)FeatureKindType.CityProduce)
-                        person.FeatureList[j].InitActions(sJobActions, sangoObjects);
+                    if (feature != null && feature.kind == (int)FeatureKindType.CityProduce)
+                        feature.InitActions(sJobActions, sangoObjects);
                 }
             }
         }
