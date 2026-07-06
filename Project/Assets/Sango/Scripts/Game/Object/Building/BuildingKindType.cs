@@ -136,9 +136,9 @@ namespace Sango.Core
         SpBuilding1 = 41,
 
         /// <summary>
-        /// 巡查局
+        /// 军事府
         /// </summary>
-        PatrolBureau = 42,
+        MilitaryOffice = 42,
 
         /// <summary>
         /// 人才府

@@ -69,6 +69,9 @@ namespace Sango.Core
             GameEvent.OnCitySeasonStart -= OnCitySeasonStart;
             GameEvent.OnCityCalculateHarvest -= OnCityCalculateHarvest;
             GameEvent.OnCityAIPrepare -= OnCityAIPrepare;
+
+
+
         }
 
 
@@ -125,7 +128,7 @@ namespace Sango.Core
                 AICommandList.Add(CityAI.AITradeFood);
                 AICommandList.Add(CityAI.AITrainTroop);
                 AICommandList.Add(CityAI.AIRewardPerson);
-                
+
                 if (city.troops < city.itemStore.TotalNumber)
                     AICommandList.Add(CityAI.AIRecruitTroop);
                 else
@@ -147,7 +150,7 @@ namespace Sango.Core
             // 计算基础收入
             city.totalGainFood = city.BaseGainFood + city.agriculture * variables.agriculture_add_food;
             city.totalGainGold = city.BaseGainGold + city.commerce * variables.commerce_add_gold;
-            
+
             // 人口对金钱收入的影响
             if (variables.populationEnable)
             {

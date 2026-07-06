@@ -155,6 +155,13 @@ namespace Sango.Core
         [JsonProperty]
         public int morale;
 
+        public void AddMorale(int value)
+        {
+            morale += value;
+            if(morale > MaxMorale) morale = MaxMorale;
+            else if(morale < 0) morale = 0;
+        }
+
         /// <summary>
         /// 最大士气
         /// </summary>

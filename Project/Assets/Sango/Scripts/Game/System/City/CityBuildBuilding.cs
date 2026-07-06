@@ -74,7 +74,7 @@ namespace Sango.Core.Player
             canBuildBuildingType.Clear();
             Scenario.Cur.CommonData.BuildingTypes.ForEach(x =>
             {
-                if (x.IsIntrior && x.level == 1 && x.IsValid(TargetCity.BelongForce) && x.canBuild)
+                if (x.IsIntrior && x.level == 1 && x.IsValid(TargetCity) && x.canBuild)
                 {
                     canBuildBuildingType.Add(x);
                 }

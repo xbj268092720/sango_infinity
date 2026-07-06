@@ -55,16 +55,46 @@ namespace Sango.Render
             }
         }
 
+        public virtual GameObject PlayEffect(string assets)
+        {
+            if (MapObject == null || MapObject.visible == false) return null;
+
+            if (!string.IsNullOrEmpty(assets))
+            {
+                GameObject obj = PoolManager.Get(assets);
+                if (obj == null)
+                {
+                    obj = Sango.Loader.ObjectLoader.LoadObject<GameObject>(assets);
+                    if (obj != null)
+                    {
+                        PoolManager.Add(assets, obj);
+                        obj = PoolManager.Get(assets);
+                    }
+                }
+
+                if (obj != null)
+                {
+                    obj.transform.SetParent(MapObject.transform, false);
+                    obj.SetActive(true);
+
+                    return obj;
+                }
+            }
+
+            return null;
+        }
+
         public virtual void SetFlash(bool b)
         {
-           
+
         }
 
         public virtual void UpdateRender() { }
         public virtual void ShowInfo(int damage, int damageType) {; }
         public virtual void ShowSkill(SkillInstance skill, bool isFail, bool isCritical) {; }
 
-        public virtual void OnModelVisibleChange(MapObject obj) {
+        public virtual void OnModelVisibleChange(MapObject obj)
+        {
 
             onModelVisibleChangeFunction?.Invoke(obj);
         }

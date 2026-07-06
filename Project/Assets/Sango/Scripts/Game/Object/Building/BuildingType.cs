@@ -26,6 +26,11 @@ namespace Sango.Core
         [JsonProperty] public int productCost;
 
         /// <summary>
+        /// 限制类型 0无限制 1限制一座 2港口限制一座 3大都市限制一座 4全地图限制一座
+        /// </summary>
+        [JsonProperty] public int limitType;
+
+        /// <summary>
         /// 工作类型
         /// </summary>
         [JsonProperty] public int jobId;
@@ -102,8 +107,29 @@ namespace Sango.Core
 
         public bool IsValid(Force force)
         {
+            if (force == null) return false;
             if (needTech > 0)
                 return force.HasTechnique(needTech);
+            return true;
+        }
+
+        public bool IsValid(City city)
+        {
+            if (!IsValid(city.BelongForce))
+                return false;
+
+            /// 限制类型 0无限制 1限制一座 2港口限制一座 3大都市限制一座 4全地图限制一座
+            switch (limitType)
+            {
+                case 1:
+                    return city.GetBuildingNumber(kind) < 1;
+                case 2:
+                    return city.GetBuildingNumber(kind) < 1 && city.portList.Count > 0;
+                case 3:
+                    return city.GetBuildingNumber(kind) < 1 && city.CityLevelType.Id > 2;
+                case 4:
+                    return false;
+            }
             return true;
         }
 

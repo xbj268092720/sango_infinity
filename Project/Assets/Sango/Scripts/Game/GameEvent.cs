@@ -605,6 +605,27 @@ namespace Sango.Core
         /// </summary>
         public static EventDelegate<DuelSystem, Person, Person, AttackResult> OnDuelAction;
 
+        /// <summary>
+        /// 当获取工作AP消耗的时候
+        /// </summary>
+        public static EventDelegate<JobType, int, OverrideData<int>> OnGetJobCostAP;
+
+        /// <summary>
+        /// 当获取工作花费的时候
+        /// </summary>
+        public static EventDelegate<JobType, int, OverrideData<int>> OnGetJobCost;
+
+        /// <summary>
+        /// 当获取工作功绩的时候
+        /// </summary>
+        public static EventDelegate<JobType, int, OverrideData<int>> OnGetJobMeritGain;
+
+        /// <summary>
+        /// 当获取工作技巧的时候
+        /// </summary>
+        public static EventDelegate<JobType, int, OverrideData<int>> OnGetJobTPGain;
+
+
         #region Diplomacy
         /// <summary>
         /// 执行结盟

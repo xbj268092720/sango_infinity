@@ -1,5 +1,8 @@
+using Sango.Core.Tools;
 using Sango.Render;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace Sango.Core
@@ -24,6 +27,8 @@ namespace Sango.Core
 
         public override void Init()
         {
+            Clear();
+
             // 增加剧本参数,用来修改内政类型, 工作模块启动的时候默认为当前类型,修改后才可以启动经典内政
             GameEvent.OnScenarioVariablesSetting += OnScenarioVariablesSetting;
 
@@ -32,6 +37,8 @@ namespace Sango.Core
             GameEvent.OnScenarioEnd += OnScenarioEnd;
             GameEvent.OnInitBuildingMiniPanel += OnInitBuildingMiniPanel;
             GameEvent.OnGameSave += OnGameSave;
+
+            GameEvent.OnGetJobCostAP += OnGetJobCostAP;
 
         }
 
@@ -48,11 +55,31 @@ namespace Sango.Core
         public override void Clear()
         {
             GameEvent.OnScenarioVariablesSetting -= OnScenarioVariablesSetting;
-            GameEvent.OnScenarioInit += OnScenarioInit;
-            GameEvent.OnScenarioEnd += OnScenarioEnd;
+            GameEvent.OnScenarioInit -= OnScenarioInit;
+            GameEvent.OnScenarioEnd -= OnScenarioEnd;
             GameEvent.OnInitBuildingMiniPanel -= OnInitBuildingMiniPanel;
             GameEvent.OnGameSave -= OnGameSave;
+            GameEvent.OnGetJobCostAP -= OnGetJobCostAP;
         }
+
+        void OnGetJobCostAP(JobType jobType, int cost, OverrideData<int> overrideData)
+        {
+            // 工作制下面这些政策不消耗AP
+            switch((CityJobType)jobType.Id)
+            {
+                case CityJobType.Inspection:
+                case CityJobType.TrainTroops:
+                case CityJobType.Searching:
+                case CityJobType.RecruitTroops:
+                case CityJobType.CreateItems:
+                case CityJobType.CreateMachine:
+                case CityJobType.CreateBoat:
+                case CityJobType.CreateHorse:
+                    overrideData.Set(0);
+                    break;
+            }
+        }
+
 
         void OnScenarioInit(Scenario scenario)
         {
@@ -130,6 +157,12 @@ namespace Sango.Core
             GameEvent.OnCityTurnEnd += OnCityTurnEnd;
             GameEvent.OnCityContextMenuShow += OnCityContextMenuShow;
             GameEvent.OnCityAIPrepare += OnCityAIPrepare;
+
+            Scenario.Cur.CommonData.BuildingTypes.ForEach(x =>
+            {
+                if (x.Id >= 42 && x.Id <= 43)
+                    x.canBuild = true;
+            });
         }
 
         void ScenarioClear()
@@ -142,6 +175,13 @@ namespace Sango.Core
             GameEvent.OnCityTurnEnd -= OnCityTurnEnd;
             GameEvent.OnCityContextMenuShow -= OnCityContextMenuShow;
             GameEvent.OnCityAIPrepare -= OnCityAIPrepare;
+
+            Scenario.Cur.CommonData.BuildingTypes.ForEach(x =>
+            {
+                if (x.Id >= 42 && x.Id <= 43)
+                    x.canBuild = false;
+            });
+
         }
 
         void OnCityAIPrepare(City city, Scenario scenario)
@@ -194,9 +234,9 @@ namespace Sango.Core
             {
                 bool b = city.GetExtensionData<bool>("AppointWorking");
                 if (!b)
-                    menuData.Add(GameLanguage.GetString(10000003), 0, city, OnClickMenuItem_CityAutoWorking, true);
+                    menuData.Add(GameLanguage.GetString(10000003), 99999, city, OnClickMenuItem_CityAutoWorking, true);
                 else
-                    menuData.Add(GameLanguage.GetString(10000004), 0, city, OnClickMenuItem_CityAutoWorking, true);
+                    menuData.Add(GameLanguage.GetString(10000004), 99999, city, OnClickMenuItem_CityAutoWorking, true);
             }
         }
 
@@ -681,6 +721,11 @@ namespace Sango.Core
             float targetMachineNumber = 100f;
             float targetSecurity = 90;
             float targetMorale = 100;
+            if (city.IsBorderCity)
+            {
+                targetMorale = city.MaxMorale;
+                targetGold = 500;
+            }
 
             float goldP = city.gold / targetGold;
             float foodP = city.food / targetFood;
@@ -693,7 +738,7 @@ namespace Sango.Core
             float boatP = totalBoatNum / targetBoatNumber;
             int totalMachineNum = city.itemStore.GetNumber(new int[] { (int)ItemStoreKindType.Helepolis, (int)ItemStoreKindType.Catapult });
             float machineP = totalMachineNum / targetMachineNumber;
-            float securityP = (city.security - 50) / (targetSecurity - 50);
+            float securityP = Math.Max(0, city.security - 50) / (targetSecurity - 50);
             float moraleP = city.morale / targetMorale;
 
             List<PBuilding> pBuildings = new List<PBuilding>();
@@ -803,13 +848,11 @@ namespace Sango.Core
                             }
                         }
                         break;
-                    case (int)BuildingKindType.PatrolBureau:
-                        if (securityP < 1)
-                            pBuildings.Add(new PBuilding() { p = securityP, building = building });
-                        break;
-                    case (int)BuildingKindType.TrainTroopBuilding:
-                        if (moraleP < 1)
-                            pBuildings.Add(new PBuilding() { p = moraleP, building = building });
+                    case (int)BuildingKindType.MilitaryOffice:
+                        if (securityP < 1 || moraleP < 1)
+                        {
+                            pBuildings.Add(new PBuilding() { p = Math.Min(securityP, moraleP), building = building });
+                        }
                         break;
                     case (int)BuildingKindType.RecruitBuilding:
                         pBuildings.Add(new PBuilding() { p = 100, building = building });
@@ -1016,21 +1059,30 @@ namespace Sango.Core
                             building.AccumulatedProduct = 0;
                         }
                         break;
-                    case (int)BuildingKindType.PatrolBureau:
+                    case (int)BuildingKindType.MilitaryOffice:
+
                         if (building.AccumulatedProduct > 0)
                         {
-                            city.AddSecurity(building.AccumulatedProduct);
-                            city.Render?.UpdateRender();
-                            building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Security);
-                            building.AccumulatedProduct = 0;
-                        }
-                        break;
-                    case (int)BuildingKindType.TrainTroopBuilding:
-                        if (building.AccumulatedProduct > 0)
-                        {
-                            city.AddMorale(building.AccumulatedProduct);
-                            city.Render?.UpdateRender();
-                            building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Morale);
+                            float targetSecurity = 90;
+                            float targetMorale = 100;
+                            if (city.IsBorderCity)
+                                targetMorale = city.MaxMorale;
+
+                            float securityP = Math.Max(0, city.security - 50) / (targetSecurity - 50);
+                            float moraleP = city.morale / targetMorale;
+
+                            if (moraleP <= securityP)
+                            {
+                                city.AddMorale(building.AccumulatedProduct);
+                                city.Render?.UpdateRender();
+                                building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Morale);
+                            }
+                            else
+                            {
+                                city.AddSecurity(building.AccumulatedProduct);
+                                city.Render?.UpdateRender();
+                                building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Security);
+                            }
                             building.AccumulatedProduct = 0;
                         }
                         break;
@@ -1087,8 +1139,8 @@ namespace Sango.Core
                 (int)BuildingKindType.Farm,
                 (int)BuildingKindType.Barracks,
                 (int)BuildingKindType.BlacksmithShop,
-                (int)BuildingKindType.PatrolBureau,
-                (int)BuildingKindType.TrainTroopBuilding,
+                (int)BuildingKindType.MilitaryOffice,
+        //        (int)BuildingKindType.TrainTroopBuilding,
                 (int)BuildingKindType.RecruitBuilding,
                 (int)BuildingKindType.Farm,// 10小城
 
@@ -1125,8 +1177,8 @@ namespace Sango.Core
                 (int)BuildingKindType.Farm,
                 (int)BuildingKindType.Barracks,
                 (int)BuildingKindType.BlacksmithShop,
-                (int)BuildingKindType.PatrolBureau,
-                (int)BuildingKindType.TrainTroopBuilding,
+                (int)BuildingKindType.MilitaryOffice,
+      //          (int)BuildingKindType.TrainTroopBuilding,
                 (int)BuildingKindType.RecruitBuilding,
                 (int)BuildingKindType.Farm,// 10小城
 
@@ -1163,8 +1215,8 @@ namespace Sango.Core
                 (int)BuildingKindType.Farm,
                 (int)BuildingKindType.Barracks,
                 (int)BuildingKindType.BlacksmithShop,
-                (int)BuildingKindType.PatrolBureau,
-                (int)BuildingKindType.TrainTroopBuilding,
+                (int)BuildingKindType.MilitaryOffice,
+       //         (int)BuildingKindType.TrainTroopBuilding,
                 (int)BuildingKindType.RecruitBuilding,
                 (int)BuildingKindType.Farm,// 10小城
 
@@ -1201,8 +1253,8 @@ namespace Sango.Core
                 (int)BuildingKindType.Farm,
                 (int)BuildingKindType.Barracks,
                 (int)BuildingKindType.BlacksmithShop,
-                (int)BuildingKindType.PatrolBureau,
-                (int)BuildingKindType.TrainTroopBuilding,
+                (int)BuildingKindType.MilitaryOffice,
+          //      (int)BuildingKindType.TrainTroopBuilding,
                 (int)BuildingKindType.RecruitBuilding,
                 (int)BuildingKindType.Farm,// 10小城
 

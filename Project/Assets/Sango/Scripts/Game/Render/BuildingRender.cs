@@ -4,6 +4,7 @@ using Sango.UI;
 using Sango.Core;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace Sango.Render
 {
@@ -14,6 +15,15 @@ namespace Sango.Render
         UGUIWindow HeadBar { get; set; }
         bool isComplate = false;
         bool isUpgrading = false;
+
+        protected struct LinkData
+        {
+            public Building start;
+            public Building end;
+            public GameObject model;
+        }
+
+        protected List<LinkData> linkDatas;
 
         public BuildingRender()
         {

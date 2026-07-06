@@ -1064,6 +1064,23 @@ namespace Sango.Core
         }
 
         /// <summary>
+        /// 月度金钱收入
+        /// </summary>
+        /// <param name="scenario">场景对象</param>
+        /// <returns>是否成功</returns>
+        public override bool OnYearStart(Scenario scenario)
+        {
+            // 每年1月清理黑市
+            allBuildings.ForEach(building =>
+            {
+                if (building.BuildingType.kind == (int)BuildingKindType.BlackMarket)
+                    building.OnFall(null);
+            });
+
+            return base.OnYearStart(scenario);
+        }
+
+        /// <summary>
         /// 每日开始时的处理
         /// </summary>
         /// <param name="scenario">场景对象</param>

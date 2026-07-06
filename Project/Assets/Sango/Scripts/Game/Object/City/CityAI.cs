@@ -622,8 +622,8 @@ namespace Sango.Core
                 (int)BuildingKindType.Farm,
                 (int)BuildingKindType.Barracks,
                 (int)BuildingKindType.BlacksmithShop,
-                (int)BuildingKindType.PatrolBureau,
-                (int)BuildingKindType.TrainTroopBuilding,
+                (int)BuildingKindType.MilitaryOffice,
+               // (int)BuildingKindType.TrainTroopBuilding,
                 (int)BuildingKindType.RecruitBuilding,
                 (int)BuildingKindType.Farm,// 10小城
 
@@ -660,8 +660,8 @@ namespace Sango.Core
                 (int)BuildingKindType.Farm,
                 (int)BuildingKindType.Barracks,
                 (int)BuildingKindType.BlacksmithShop,
-                (int)BuildingKindType.PatrolBureau,
-                (int)BuildingKindType.TrainTroopBuilding,
+                (int)BuildingKindType.MilitaryOffice,
+               // (int)BuildingKindType.TrainTroopBuilding,
                 (int)BuildingKindType.RecruitBuilding,
                 (int)BuildingKindType.Farm,// 10小城
 
@@ -698,8 +698,8 @@ namespace Sango.Core
                 (int)BuildingKindType.Farm,
                 (int)BuildingKindType.Barracks,
                 (int)BuildingKindType.BlacksmithShop,
-                (int)BuildingKindType.PatrolBureau,
-                (int)BuildingKindType.TrainTroopBuilding,
+                (int)BuildingKindType.MilitaryOffice,
+                //(int)BuildingKindType.TrainTroopBuilding,
                 (int)BuildingKindType.RecruitBuilding,
                 (int)BuildingKindType.Farm,// 10小城
 
@@ -736,8 +736,8 @@ namespace Sango.Core
                 (int)BuildingKindType.Farm,
                 (int)BuildingKindType.Barracks,
                 (int)BuildingKindType.BlacksmithShop,
-                (int)BuildingKindType.PatrolBureau,
-                (int)BuildingKindType.TrainTroopBuilding,
+                (int)BuildingKindType.MilitaryOffice,
+               // (int)BuildingKindType.TrainTroopBuilding,
                 (int)BuildingKindType.RecruitBuilding,
                 (int)BuildingKindType.Farm,// 10小城
 
