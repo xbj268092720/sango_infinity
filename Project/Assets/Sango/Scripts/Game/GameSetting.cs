@@ -145,9 +145,7 @@ namespace Sango.Core
             // 监听剧本初始化事件
             GameEvent.OnScenarioInit += OnScenarioInit;
 
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
             ApplyAllSettings();
-#endif
         }
 
         /// <summary>
