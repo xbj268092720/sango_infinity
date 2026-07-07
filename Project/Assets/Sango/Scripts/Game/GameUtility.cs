@@ -275,7 +275,7 @@ namespace Sango.Core
 
         public static int Method_TroopBuildAbility(Troop troop)
         {
-            return (int)(troop.BuildPower * Math.Min(1f, (float)troop.troops / 1000) + 300 * (1f - Math.Pow(1.0 - (Math.Max(troop.troops, 5000.0) / 5000.0), 1.451)));
+            return (int)(troop.BuildPower * Math.Min(1f, (float)troop.troops / 1000) + 300 * (1f - Math.Pow(1.0 - (Math.Min(troop.troops, 5000.0) / 5000.0), 1.451)));
         }
 
         /// <summary>

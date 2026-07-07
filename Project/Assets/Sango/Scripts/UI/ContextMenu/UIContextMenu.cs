@@ -2,10 +2,14 @@
 using UnityEngine;
 
 using Sango.Core;
+using Unity.VisualScripting;
+
 namespace Sango.UI
 {
     public class UIContextMenu : UGUIWindow
     {
+        //public RectTransform[] returnButtons;
+
         public RectTransform[] menuRoot;
         public UIMenuItem[] menuItem;
         public RectTransform menuLine;
@@ -27,6 +31,16 @@ namespace Sango.UI
             {
                 menuRoot[i].localScale = Vector3.one * 1.4f;
             }
+
+//            for(int i = 0; i < returnButtons.Length; ++i)
+//            {
+//                returnButtons[i].gameObject.SetActive(true);
+//            }
+//#else
+//            for(int i = 0; i < returnButtons.Length; ++i)
+//            {
+//                returnButtons[i].gameObject.SetActive(false);
+//            }
 #endif
 
         }
@@ -123,5 +137,10 @@ namespace Sango.UI
 
             return showDepth < 0;
         }
+
+        //public void OnReturn()
+        //{
+        //    GameController.Instance.OnCancel();
+        //}
     }
 }

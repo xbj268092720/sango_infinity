@@ -18,9 +18,12 @@ namespace Sango.Core.Player
         public BuildingType targetBuildingType;
 
         protected bool isShow = false;
+        protected string iconRes;
+        protected List<GameObject> spellIconList = new List<GameObject>();
         protected bool isMoving = false;
         public TroopActionBuild()
         {
+            iconRes = "Assets/UI/Prefab/worldIcon_3.prefab";
             customMenuName = "建造";
             customMenuOrder = 1;
         }
@@ -120,6 +123,15 @@ namespace Sango.Core.Player
                 if (!MovePath.Contains(c))
                     mapRender.SetGridMaskColor(c.x, c.y, Color.red);
                 mapRender.SetDarkMaskColor(c.x, c.y, Color.black);
+                GameObject resObj = PoolManager.Create(iconRes);
+                if (resObj != null)
+                {
+                    spellIconList.Add(resObj);
+                    resObj.transform.parent = null;
+                    resObj.transform.position = c.Position;
+                    if (!resObj.activeSelf)
+                        resObj.SetActive(true);
+                }
             }
             mapRender.EndSetGridMask();
             mapRender.EndSetDarkMask();
@@ -127,6 +139,12 @@ namespace Sango.Core.Player
 
         protected void ClearShowBuildRange()
         {
+            for (int i = 0, count = spellIconList.Count; i < count; ++i)
+            {
+                PoolManager.Recycle(spellIconList[i]);
+            }
+            spellIconList.Clear();
+
             MapRender mapRender = MapRender.Instance;
             mapRender.SetDarkMask(false);
             if (buildRangeCell.Count == 0) return;
@@ -144,6 +162,12 @@ namespace Sango.Core.Player
 
         public override void OnDestroy()
         {
+            for (int i = 0, count = spellIconList.Count; i < count; ++i)
+            {
+                PoolManager.Recycle(spellIconList[i]);
+            }
+            spellIconList.Clear();
+
             Window.Instance.Close("window_troop_build");
             ClearShowBuildRange();
             buildRangeCell.Clear();
@@ -196,6 +220,18 @@ namespace Sango.Core.Player
                         {
                             Cell stayCell = MovePath[MovePath.Count - 1];
                             targetBuildCell = cell;
+
+                            ClearShowBuildRange();
+
+                            GameObject resObj = PoolManager.Create(iconRes);
+                            if (resObj != null)
+                            {
+                                spellIconList.Add(resObj);
+                                resObj.transform.parent = null;
+                                resObj.transform.position = cell.Position;
+                                if (!resObj.activeSelf)
+                                    resObj.SetActive(true);
+                            }
 
                             GameSystem.GetSystem<TroopActionMenu>().troopRender.Clear();
                             ContextMenu.CloseAll();
