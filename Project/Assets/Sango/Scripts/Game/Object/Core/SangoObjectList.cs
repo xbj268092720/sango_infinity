@@ -48,7 +48,21 @@ namespace Sango.Core
                 return;
             }
 #endif
-            objects[obj.Id] = obj;
+            bool find = false;
+            for (int i = objects.Count - 1; i >= 0; i--)
+            {
+                T o = objects[i];
+                if (o != null && o.Id == obj.Id)
+                {
+                    objects[i] = obj;
+                    find = true;
+                    break;
+                }
+            }
+            if(find)
+            {
+                objects.Add(obj);
+            }
         }
         public override void Remove(T obj)
         {
@@ -64,8 +78,6 @@ namespace Sango.Core
                 Sango.Log.Warning("不能移除不存在的!!!");
             }
 #endif
-
-
             objects.Remove(obj);
         }
 
@@ -116,7 +128,6 @@ namespace Sango.Core
         }
         public override T this[int aIndex] { get { return objects[aIndex]; } set { } }
 
-
         public override T Find(int id)
         {
             for (int i = 0; i < objects.Count; i++)
@@ -130,7 +141,7 @@ namespace Sango.Core
 
         public override bool Contains(int id)
         {
-            return objects.Find(x => x.Id == id) != null;
+            return objects.Find(x => x != null && x.Id == id) != null;
         }
 
         public override bool Contains(T t)

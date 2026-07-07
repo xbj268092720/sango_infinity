@@ -34,7 +34,7 @@ namespace Sango.Core
                     if (!string.IsNullOrEmpty(lastPropertyName))
                     {
                         int Id = int.Parse(lastPropertyName);
-                        T exsist = dest.Get(Id);
+                        T exsist = dest.Find(Id);
                         if (exsist != null)
                         {
                             serializer.Populate(reader, exsist);
