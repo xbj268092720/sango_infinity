@@ -24,8 +24,8 @@ namespace Sango.Core
     {
         public int BelongForce;
         public int BelongCity;
-        public int headIconID;
-        public int imageID;
+        public string headIconID;
+        public string imageID;
     }
 
 

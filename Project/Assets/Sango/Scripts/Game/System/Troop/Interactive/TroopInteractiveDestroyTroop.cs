@@ -25,9 +25,9 @@
 
             if (!actionCell.troop.IsEnemy(TargetTroop)) return false;
 
-            if (troop.MoveRange.Contains(actionCell)) return false;
+            //if (troop.MoveRange.Contains(actionCell)) return false;
 
-            DestTroop = actionCell.troop as Troop;
+            DestTroop = actionCell.troop;
             content = string.Format("前往歼灭敌方部队{0}。\n确定吗？", DestTroop.ColorName);
             return true;
 

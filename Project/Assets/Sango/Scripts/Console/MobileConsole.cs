@@ -25,6 +25,7 @@ namespace SKFramework
         private List<LogData> logList;
 
         public bool Visible = false;
+        public bool HasError = false;
 
         public string cmd = "";
 
@@ -40,25 +41,30 @@ namespace SKFramework
 
         #region 开关,在移动设备上3点触控打开,或者在PC上鼠标左右键同时点击打开
         private float CoolDown_ = 0;
-        void Update()
-        {
-            if (Visible && Input.GetKeyDown(KeyCode.Escape))
-            {
-                Visible = false;
-                return;
-            }
+        //        void Update()
+        //        {
+        //            if (Visible && Input.GetKeyDown(KeyCode.Escape))
+        //            {
+        //                Visible = false;
+        //                return;
+        //            }
 
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
-            //if (Input.GetMouseButton(0) && Input.GetMouseButton(1) && Time.time - CoolDown_ > 2.0f)
-#else
-            if (Input.touchCount > 3 && Time.time - CoolDown_ > 2.0f)
-            {
-                Visible = !Visible;
-                CoolDown_ = Time.time;
-            }
-#endif
+        //#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+        //            //if (Input.GetMouseButton(0) && Input.GetMouseButton(1) && Time.time - CoolDown_ > 2.0f)
+        //            if (Input.GetKeyDown(KeyCode.Escape))
+        //            {
+        //                Visible = true;
+        //                return;
+        //            }
+        //#else
+        //            if (Input.touchCount > 3 && Time.time - CoolDown_ > 2.0f)
+        //            {
+        //                Visible = !Visible;
+        //                CoolDown_ = Time.time;
+        //            }
+        //#endif
 
-        }
+        //        }
         #endregion // 开关
 
         private Rect rcWindow_;
@@ -100,8 +106,6 @@ namespace SKFramework
                     if (queue.Count > 0)
                     {
                         scrollPos = GUILayout.BeginScrollView(scrollPos);
-                        int fs = GUI.skin.label.fontSize;
-                        GUI.skin.label.fontSize = 35;
                         try
                         {
                             for (int i = 0; i < queue.Count; ++i)
@@ -125,7 +129,6 @@ namespace SKFramework
                         {
                             GUILayout.EndScrollView();
                         }
-                        GUI.skin.label.fontSize = fs;
                     }
                 }
                 finally
@@ -133,8 +136,12 @@ namespace SKFramework
                     if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return) SendCmd();
 
                     GUILayout.BeginHorizontal();
-                    cmd = GUILayout.TextField(cmd);
-                    if (GUILayout.Button("发送", GUILayout.Width(100))) SendCmd();
+                    //cmd = GUILayout.TextField(cmd);
+                    //if (GUILayout.Button("发送", GUILayout.Width(100))) SendCmd();
+                    Color color = GUI.color;
+                    GUI.color = Color.red;
+                    if (GUILayout.Button("关闭调试窗口", GUILayout.Height(30))) Visible = false;
+                    GUI.color = color;
                     GUILayout.EndHorizontal();
 
                     GUILayout.EndVertical();
@@ -152,12 +159,15 @@ namespace SKFramework
 
             errorStyle = new GUIStyle();
             errorStyle.normal.textColor = Color.red;
+            errorStyle.fontSize = 25;
 
             waringStyle = new GUIStyle();
             waringStyle.normal.textColor = Color.yellow;
+            waringStyle.fontSize = 25;
 
             normalStyle = new GUIStyle();
             normalStyle.normal.textColor = Color.green;
+            normalStyle.fontSize = 25;
 
             logList = new List<LogData>(MAX_LOG);
 
@@ -175,6 +185,7 @@ namespace SKFramework
                 case LogType.Exception:
                 case LogType.Error:
                     logList.Add(new LogData(condition + stackTrace, 2));
+                    HasError = true;
                     break;
                 case LogType.Warning:
                     logList.Add(new LogData(condition, 1));

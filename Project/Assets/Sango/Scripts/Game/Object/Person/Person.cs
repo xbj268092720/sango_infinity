@@ -102,12 +102,12 @@ namespace Sango.Core
         /// <summary>
         /// 头像id
         /// </summary>
-        [JsonProperty] public int headIconID;
+        [JsonProperty] public string headIconID;
 
         /// <summary>
         /// 立绘id
         /// </summary>
-        [JsonProperty] public int imageID;
+        [JsonProperty] public string imageID;
 
         /// <summary>
         /// 性别

@@ -1,3 +1,4 @@
+using Sango.Core.Player;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,7 +62,7 @@ namespace Sango.Core
                     diplomacyManager.AddRelation(sender, receiver, 50);
                     // 添加日志记录
                     string message = $"{receiver.ColorName}派遣使者访问{sender.ColorName}，带来了友好的问候，关系增加了50点！";
-                    Sango.Log.Info(message);
+                    PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
 #if SANGO_DEBUG
                     Sango.Log.Info($"@外交事件@{receiver.Name} 的使者访问了 {sender.Name}，关系增加了50点！");
 #endif
@@ -83,7 +84,8 @@ namespace Sango.Core
                     diplomacyManager.ReduceRelation(sender, receiver, 100);
                     // 添加日志记录
                     string message = $"{sender.ColorName}与{receiver.ColorName}在边境发生了冲突，关系减少了100点！";
-                    Sango.Log.Info(message);
+                    PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
+
 #if SANGO_DEBUG
                     Sango.Log.Info($"@外交事件@{sender.Name} 与 {receiver.Name} 在边境发生了冲突，关系减少了100点！");
 #endif
@@ -107,7 +109,8 @@ namespace Sango.Core
                     if (success)
                     {
                         string message = $"{receiver.ColorName}向{sender.ColorName}提出了贸易合作的提议，双方达成了通商协议！";
-                        Sango.Log.Info(message);
+                        PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
+
                     }
                 }
             });
@@ -127,7 +130,8 @@ namespace Sango.Core
                     bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.AllianceRequest, receiver, sender);
                     // 添加日志记录
                     string message = $"{receiver.ColorName}邀请{sender.ColorName}结成同盟！";
-                    Sango.Log.Info(message);
+                    PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
+
                 }
             });
 
@@ -146,7 +150,8 @@ namespace Sango.Core
                     bool success = diplomacyManager.PerformDiplomacyAction(DiplomacyActionType.TruceRequest, receiver, sender);
                     // 添加日志记录
                     string message = $"{receiver.ColorName}请求与{sender.ColorName}停战！";
-                    Sango.Log.Info(message);
+                    PlayerMessage.AddTextMessage(message, sender, sender.CapitalCity.x, sender.CapitalCity.y);
+
                 }
             });
         }
