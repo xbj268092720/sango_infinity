@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 343771877319657062}
   - component: {fileID: 6813810385695972106}
   - component: {fileID: -2518018354366576341}
+  - component: {fileID: 4979177139562410347}
   m_Layer: 0
   m_Name: p_jinlan
   m_TagString: Untagged
@@ -69,6 +70,22 @@ MonoBehaviour:
   targetRandomRadius: 10
   flightTimeRange: {x: 1, y: 2}
   spawnOffsetRadius: 6
+--- !u!111 &4979177139562410347
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7665689748669366024}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 88c8e257795b4c746a2098fd5722cc78, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 88c8e257795b4c746a2098fd5722cc78, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1001 &3015292185898233989
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -12,7 +12,8 @@
                     !TargetTroop.IsEnemy(Troop) ||
 
                     // 出了边境即可
-                    TargetTroop.cell.BelongCity != Troop.BelongCity && TargetTroop.cell.BelongCity.BelongCity != Troop.BelongCity
+                    !TargetTroop.cell.BelongCity.IsSameForce(Troop)
+
                     );
             }
         }

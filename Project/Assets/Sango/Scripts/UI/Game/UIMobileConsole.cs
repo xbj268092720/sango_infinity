@@ -11,6 +11,7 @@ namespace Sango.UI
         public MobileConsole mobileConsole;
         public RectTransform red;
         public RectTransform backgroundMask;
+        public RectTransform info;
         bool showRed = false;
         bool showBg = false;
         public void OnConsole()
@@ -18,6 +19,21 @@ namespace Sango.UI
             mobileConsole.Visible = true;
             backgroundMask.gameObject.SetActive(true);
             showBg = true;
+        }
+
+        private void Start()
+        {
+            info.gameObject.SetActive(false);
+            if (UnityEngine.PlayerPrefs.GetInt("game_show_info", 0) == 0)
+            {
+                GameEvent.OnScenarioStart += OnScenarioStart;
+                UnityEngine.PlayerPrefs.SetInt("game_show_info", 1);
+            }
+        }
+
+        void OnScenarioStart(Scenario scenario)
+        {
+            info.gameObject.SetActive(true);
         }
 
         private void Update()

@@ -18,6 +18,12 @@
             }
         }
 
+        public TroopInteractiveBanishTroop()
+        {
+            customMenuName = "驱逐";
+            customMenuOrder = 0;
+        }
+
         protected override bool Check(Troop troop, Cell actionCell)
         {
             if (troop.IsTransport) return false;
@@ -28,7 +34,7 @@
 
             if (troop.MoveRange.Contains(actionCell)) return false;
 
-            if(actionCell.troop.cell.BelongCity == troop.BelongCity || actionCell.troop.cell.BelongCity.BelongCity == troop.BelongCity )
+            if (!actionCell.troop.cell.BelongCity.IsSameForce(troop))
                 return false;
 
             DestTroop = actionCell.troop as Troop;

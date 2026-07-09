@@ -1017,6 +1017,11 @@ namespace Sango.Core
 
         public void TransformToCity(City dest)
         {
+            // 如果转移主公到其他军团城市,需要解散目标军团
+            if(IsGovernor && dest.BelongCorps != BelongCorps)
+            {
+                BelongForce.DeleteCorps(dest.BelongCorps);
+            }
             BelongCity.RemovePerson(this);
             ChangeBelongCity(dest);
             dest.AddPerson(this);

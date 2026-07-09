@@ -156,7 +156,7 @@ namespace Sango.Mod
 #endif
                 ShortScenario shortScenario = ShortScenario.Add(file);
                 shortScenario.Info.id = count + shortScenario.Info.id;
-                shortScenario.ModName = Id;
+                shortScenario.ModName = Name;
                 Scenario scenario = Scenario.Add(file);
                 scenario.Info.id = count + scenario.Info.id;
             });

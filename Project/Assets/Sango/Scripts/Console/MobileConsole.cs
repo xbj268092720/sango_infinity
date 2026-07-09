@@ -102,10 +102,19 @@ namespace SKFramework
                 GUILayout.BeginVertical();
                 try
                 {
+                    //GUILayout.BeginHorizontal();
+                    //cmd = GUILayout.TextField(cmd);
+                    //if (GUILayout.Button("发送", GUILayout.Width(100))) SendCmd();
+                    Color color = GUI.color;
+                    GUI.color = Color.cyan;
+                    if (GUILayout.Button("关闭调试窗口", GUILayout.Height(60))) Visible = false;
+                    GUI.color = color;
+                    //GUILayout.EndHorizontal();
+                    int width = (int)(Screen.width - EDGE_X * 2 - 30);
                     var queue = this.logList;
                     if (queue.Count > 0)
                     {
-                        scrollPos = GUILayout.BeginScrollView(scrollPos);
+                        scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.MaxWidth(width));
                         try
                         {
                             for (int i = 0; i < queue.Count; ++i)
@@ -114,13 +123,13 @@ namespace SKFramework
                                 switch (s.type)
                                 {
                                     case 0:
-                                        GUILayout.Label(s.str, normalStyle);
+                                        GUILayout.Label(s.str, normalStyle, GUILayout.Width(width - 10));
                                         break;
                                     case 1:
-                                        GUILayout.Label(s.str, waringStyle);
+                                        GUILayout.Label(s.str, waringStyle, GUILayout.Width(width - 10));
                                         break;
                                     case 2:
-                                        GUILayout.Label(s.str, errorStyle);
+                                        GUILayout.Label(s.str, errorStyle, GUILayout.Width(width - 10));
                                         break;
                                 }
                             }
@@ -135,14 +144,7 @@ namespace SKFramework
                 {
                     if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return) SendCmd();
 
-                    GUILayout.BeginHorizontal();
-                    //cmd = GUILayout.TextField(cmd);
-                    //if (GUILayout.Button("发送", GUILayout.Width(100))) SendCmd();
-                    Color color = GUI.color;
-                    GUI.color = Color.red;
-                    if (GUILayout.Button("关闭调试窗口", GUILayout.Height(30))) Visible = false;
-                    GUI.color = color;
-                    GUILayout.EndHorizontal();
+
 
                     GUILayout.EndVertical();
                 }
@@ -159,15 +161,18 @@ namespace SKFramework
 
             errorStyle = new GUIStyle();
             errorStyle.normal.textColor = Color.red;
-            errorStyle.fontSize = 25;
+            errorStyle.fontSize = 30;
+            errorStyle.wordWrap = true;
 
             waringStyle = new GUIStyle();
             waringStyle.normal.textColor = Color.yellow;
-            waringStyle.fontSize = 25;
+            waringStyle.fontSize = 30;
+            waringStyle.wordWrap = true;
 
             normalStyle = new GUIStyle();
             normalStyle.normal.textColor = Color.green;
-            normalStyle.fontSize = 25;
+            normalStyle.fontSize = 30;
+            normalStyle.wordWrap = true;
 
             logList = new List<LogData>(MAX_LOG);
 

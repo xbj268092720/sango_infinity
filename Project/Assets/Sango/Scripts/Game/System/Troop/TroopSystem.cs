@@ -152,7 +152,7 @@ namespace Sango.Core.Player
                             movePath.Clear();
                             Scenario.Cur.Map.GetMovePath(TargetTroop, cell, movePath);
                             ShowMovePath();
-                            GameSystem.GetSystem<TroopInteractiveDialog>().Start(TargetTroop, cell, clickPosition);
+                            GameSystem.GetSystem<TroopInteractiveMenu>().Start(TargetTroop, cell, clickPosition);
                             return;
                         }
 

@@ -1076,37 +1076,8 @@ namespace Sango.Core
 
         public void ResetCorps(Corps corps, Corps copy)
         {
-            corps.Comander.state = (int)PersonStateType.Normal;
-            corps.Comander = copy.Comander;
-            corps.Comander.state = (int)PersonStateType.Commander;
-            ForEachCity(x =>
-            {
-                if (x.BelongCorps == corps)
-                    x.BelongCorps = CapitalCorps;
-            });
-            ForEachPerson(x =>
-            {
-                if (x.BelongCorps == corps)
-                    x.BelongCorps = CapitalCorps;
-            });
-            ForEachBuilding(x =>
-            {
-                if (x.BelongCorps == corps)
-                    x.BelongCorps = CapitalCorps;
-            });
-            foreach (var city in copy.inti_cities)
-            {
-                city.BelongCorps = corps;
-                foreach (Person person in city.allPersons)
-                {
-                    person.BelongCorps = corps;
-                }
-                foreach (Building building in city.allBuildings)
-                {
-                    building.BelongCorps = corps;
-                }
-            }
-            GameEvent.OnCorpsCreate?.Invoke(corps, Scenario.Cur);
+            DeleteCorps(corps);
+            CreateCorps(copy);
         }
 
         /// <summary>

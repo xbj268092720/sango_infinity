@@ -13,6 +13,7 @@ namespace UnityEngine.UI
         public bool dontResetCachePosition = true;
         RectTransform cacheTrans;
         RectTransform uiRoot;
+
         public void Start()
         {
             cur_delayTime = delayTime;
@@ -41,6 +42,8 @@ namespace UnityEngine.UI
         public bool JudgmentUiInScreen(bool w, bool h)
         {
             if (!w && !h) return false;
+            if (cacheTrans == null) return false;
+            if (uiRoot == null) return false;
 
             RectTransform rect = cacheTrans;
             rect.anchoredPosition -= offset;
@@ -56,12 +59,18 @@ namespace UnityEngine.UI
                 leftX = pos.x - rect.sizeDelta.x * pivotVec.x * rect.localScale.x;
                 rightX = pos.x + rect.sizeDelta.x * (1 - pivotVec.x) * rect.localScale.x;
                 float ScreenWidthHalf = uiRoot.sizeDelta.x / 2;
-                if (rightX > ScreenWidthHalf)
+                bool r_out_screen = rightX > ScreenWidthHalf;
+                bool l_out_screen = leftX < -ScreenWidthHalf;
+
+                if (rightX - leftX > ScreenWidthHalf * 2)
+                    return false;
+
+                if (r_out_screen)
                 {
                     isInScreen = false;
                     moveDistance.x = ScreenWidthHalf - rightX;
                 }
-                else if (leftX < -ScreenWidthHalf)
+                else if (l_out_screen)
                 {
                     isInScreen = false;
                     moveDistance.x = -ScreenWidthHalf - leftX;
@@ -73,12 +82,19 @@ namespace UnityEngine.UI
                 downY = pos.y - rect.sizeDelta.y * pivotVec.y * rect.localScale.y;
                 upY = pos.y + rect.sizeDelta.y * (1 - pivotVec.y) * rect.localScale.y;
                 float ScreenHeightHalf = uiRoot.sizeDelta.y / 2;
-                if (upY > ScreenHeightHalf)
+
+                bool u_out_screen = upY > ScreenHeightHalf;
+                bool d_out_screen = downY < -ScreenHeightHalf;
+
+                if (upY - downY > ScreenHeightHalf * 2)
+                    return false;
+
+                if (u_out_screen)
                 {
                     isInScreen = false;
                     moveDistance.y = ScreenHeightHalf - upY;
                 }
-                else if (downY < -ScreenHeightHalf)
+                else if (d_out_screen)
                 {
                     isInScreen = false;
                     moveDistance.y = -ScreenHeightHalf - downY;
@@ -87,7 +103,7 @@ namespace UnityEngine.UI
             moveDistance.x = moveDistance.x + pos.x;
             moveDistance.y = moveDistance.y + pos.y;
             //RectTransform parentRectTransform = rect.parent.GetComponent<RectTransform>();
-            rect.transform.position = uiRoot.TransformPoint(moveDistance);
+            rect.position = uiRoot.TransformPoint(moveDistance);
             rect.anchoredPosition += offset;
             //GameDebug.Log($"----------JudgmentUiInScreen ,[{isInScreen}],[{moveDistance}] ,[{ScreenWidthHalf}],[{ScreenHeightHalf}]");
             return isInScreen;
@@ -103,10 +119,14 @@ namespace UnityEngine.UI
                 cur_delayTime -= Time.deltaTime;
                 return;
             }
+
             //cacheTrans.anchoredPosition = cachePosition;
 
-            // 左
-            JudgmentUiInScreen(judgmentWidth, judgmentHeight);
+            if(cachePosition != cacheTrans.anchoredPosition)
+            {
+                JudgmentUiInScreen(judgmentWidth, judgmentHeight);
+                cachePosition = cacheTrans.anchoredPosition;
+            }
         }
     }
 }

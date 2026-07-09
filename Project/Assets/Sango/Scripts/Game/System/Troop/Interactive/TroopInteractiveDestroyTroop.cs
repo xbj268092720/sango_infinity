@@ -17,6 +17,12 @@
             }
         }
 
+        public TroopInteractiveDestroyTroop()
+        {
+            customMenuName = "歼灭";
+            customMenuOrder = 0;
+        }
+
         protected override bool Check(Troop troop, Cell actionCell)
         {
             if(troop.IsTransport) return false;

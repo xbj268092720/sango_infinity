@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2562960979304051191}
   - component: {fileID: 7530849502644865340}
   - component: {fileID: 8339484105742832346}
+  - component: {fileID: -3247392141039864414}
   m_Layer: 8
   m_Name: Troops7
   m_TagString: Untagged
@@ -85,6 +86,23 @@ MonoBehaviour:
   targetRandomRadius: 10
   flightTimeRange: {x: 1, y: 2}
   spawnOffsetRadius: 6
+--- !u!111 &-3247392141039864414
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595152285662661739}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 7c6955d90c8f9b64fb23c75715e08dcc, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 7c6955d90c8f9b64fb23c75715e08dcc, type: 2}
+  - {fileID: 7400000, guid: 88c8e257795b4c746a2098fd5722cc78, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &8489193187587142834
 GameObject:
   m_ObjectHideFlags: 0

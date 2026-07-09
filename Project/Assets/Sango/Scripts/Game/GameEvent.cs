@@ -125,6 +125,7 @@ namespace Sango.Core
         public static EventDelegate<IContextMenuData, City> OnCityContextMenuShow;
         public static EventDelegate<IContextMenuData, Troop> OnTroopContextMenuShow;
         public static EventDelegate<IContextMenuData, Troop, Cell> OnTroopActionContextMenuShow;
+        public static EventDelegate<IContextMenuData, Troop, Cell> OnInteractiveContextMenuShow;
         public static EventDelegate<IContextMenuData> OnRightMouseButtonContextMenuShow;
         public static EventDelegate<IContextMenuData, City> OnCityRightMouseButtonContextMenuShow;
         public static EventDelegate<IContextMenuData, Building> OnBuildingRightMouseButtonContextMenuShow;
