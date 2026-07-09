@@ -399,6 +399,16 @@ namespace Sango.Core
         /// </summary>
         public int Glamour { get; private set; }
 
+        /// <summary>
+        /// 是否忽略陆地ZOC
+        /// </summary>
+        public bool ignoreLandZOC = false;
+
+        /// <summary>
+        /// 是否忽略水上ZOC
+        /// </summary>
+        public bool ignoreWaterZOC = false;
+
         public override ObjectRender GetRender() { return Render; }
         public TroopRender Render { get; private set; }
         bool isMissionPrepared = false;

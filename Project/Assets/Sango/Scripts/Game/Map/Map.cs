@@ -209,6 +209,10 @@ namespace Sango.Core
         /// <returns>是否在势力范围</returns>
         public bool IsZOC(Troop troops, Cell cell)
         {
+            // 判断忽略ZOC
+            if ((troops.ignoreLandZOC && !cell.IsWater) || (troops.ignoreWaterZOC && cell.IsWater))
+                return false;
+
             if (cell.building != null && !cell.building.IsEnemy(troops))
                 return false;
 

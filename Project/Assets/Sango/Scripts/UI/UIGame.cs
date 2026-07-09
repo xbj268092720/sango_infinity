@@ -154,7 +154,7 @@ namespace Sango.UI
             GameEvent.OnSeasonUpdate -= OnSeasonUpdate;
             GameEvent.OnForceGainTechniquePoint -= OnForceGainTechniquePoint;
             GameEvent.OnCorpsActionPointChange -= OnCorpsActionPointChange;
-
+            GameSystem.GetSystem<PlayerMessage>().onVisibleChange -= OnMessagePlaneVisible;
 
         }
 
@@ -472,7 +472,7 @@ namespace Sango.UI
 
         void OnMessagePlaneVisible(bool b)
         {
-            messageObj.SetActive(!b);
+            messageObj?.SetActive(!b);
         }
 
         public void Update()
