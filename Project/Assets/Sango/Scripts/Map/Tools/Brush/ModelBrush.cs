@@ -452,7 +452,7 @@ namespace Sango.Tools
             model = PoolManager.Create(modelConfig.model);
             if (model != null)
             {
-                model.transform.parent = null;
+                model.transform.SetParent(null);
                 model.SetActive(true);
             }
         }

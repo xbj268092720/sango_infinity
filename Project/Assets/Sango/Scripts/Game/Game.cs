@@ -72,6 +72,7 @@ namespace Sango.Core
             Condition.Init();
             BuffEffect.Init();
             SkillEffect.Init();
+            Trigger.Init();
             PersonFunctions.Init();
             TroopCompareFunction.Init();
             SkillSuccessMethod.Init();

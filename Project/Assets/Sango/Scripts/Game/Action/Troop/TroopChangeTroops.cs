@@ -32,5 +32,11 @@ namespace Sango.Core.Action
             if (!CheckTroop(defencer, atker, skill)) return;
             overrideData.Value = overrideData.Value * (100 + value) / 100;
         }
+
+        public override void Execute(Trigger trigger)
+        {
+
+        }
+
     }
 }

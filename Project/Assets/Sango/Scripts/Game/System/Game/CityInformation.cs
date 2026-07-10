@@ -32,6 +32,7 @@ namespace Sango.Core
         public override void Init()
         {
             Name = "都市情报";
+            Clear();
             GameEvent.OnCityRightMouseButtonContextMenuShow += OnCityRightMouseButtonContextMenuShow;
             GameEvent.OnGameSettingContextMenuShow += OnGameSettingContextMenuShow;
 

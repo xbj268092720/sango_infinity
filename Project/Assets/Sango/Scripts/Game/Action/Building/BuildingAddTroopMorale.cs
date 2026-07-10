@@ -55,7 +55,7 @@ namespace Sango.Core.Action
         static List<Troop> target_list = new List<Troop>();
         void OnBuildingTurnEnd(Building building, Scenario scenario)
         {
-            if (building == Building)
+            if (building == Building && building.isComplate)
             {
                 target_list.Clear();
                 if (bound == -1)

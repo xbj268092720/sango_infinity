@@ -39,13 +39,13 @@ namespace Sango.Core.Object.Arrow
             
             // 创建一个简单的箭头模型
             GameObject arrowModel = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            arrowModel.transform.parent = arrow.transform;
+            arrowModel.transform.SetParent(arrow.transform, false);
             arrowModel.transform.localScale = new Vector3(0.1f, 0.5f, 0.1f);
             arrowModel.transform.localPosition = new Vector3(0, 0.25f, 0);
             
             // 创建箭头
             GameObject arrowHead = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            arrowHead.transform.parent = arrow.transform;
+            arrowHead.transform.SetParent(arrow.transform, false);
             arrowHead.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
             arrowHead.transform.localPosition = new Vector3(0, 0.6f, 0);
             arrowHead.transform.localRotation = Quaternion.Euler(0, 0, 180);

@@ -54,7 +54,7 @@ namespace Sango.Core.Object.Arrow
                 
                 // 获取或创建弓箭
                 GameObject arrow = GetOrCreateArrow();
-                arrow.transform.parent = null;
+                arrow.transform.SetParent(null);
                 arrow.transform.position = spawnPosition;
                 arrow.SetActive(true);
                 

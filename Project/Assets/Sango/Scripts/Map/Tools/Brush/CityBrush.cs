@@ -277,7 +277,7 @@ namespace Sango.Tools
             previewModel = PoolManager.Create(selectedModelConfig.model);
             if (previewModel != null)
             {
-                previewModel.transform.parent = null;
+                previewModel.transform.SetParent(null);
                 previewModel.SetActive(true);
             }
         }

@@ -20,6 +20,11 @@ namespace Sango.Core.Action
         public abstract void Clear();
 
         /// <summary>
+        /// 执行动作
+        /// </summary>
+        public abstract void Execute(Trigger trigger);
+
+        /// <summary>
         /// 动作创建委托
         /// </summary>
         public delegate ActionBase ActionCreator();

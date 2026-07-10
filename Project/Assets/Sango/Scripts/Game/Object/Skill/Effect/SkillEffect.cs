@@ -30,8 +30,6 @@ namespace Sango.Core
             public Corps TargetCorps => atk_cell.troop?.BelongCorps ?? atk_cell.building?.BelongCorps;
             public Force ActionForce => self.master.master.BelongForce;
             public Force TargetForce => atk_cell.troop?.BelongForce ?? atk_cell.building?.BelongForce;
-            public BuildingBase ActiveBuildingBase => self.master.master.cell.building;
-            public BuildingBase TargetBuildingBase => atk_cell.building;
             public Fire ActiveFire => self.master.master.cell.fire;
             public Fire TargetFire => atk_cell.fire;
             public object ActionObject => self;

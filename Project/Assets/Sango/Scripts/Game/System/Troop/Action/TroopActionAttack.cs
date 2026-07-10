@@ -101,7 +101,7 @@ namespace Sango.Core.Player
                 if (resObj != null)
                 {
                     spellIconList.Add(resObj);
-                    resObj.transform.parent = null;
+                    resObj.transform.SetParent(null);
                     resObj.transform.position = c.Position;
                     if (!resObj.activeSelf)
                         resObj.SetActive(true);

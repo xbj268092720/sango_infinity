@@ -532,6 +532,11 @@ namespace Sango.Core
         public static EventDelegate<Troop, SangoObject, SkillInstance, int, OverrideData<int>> OnTroopChangeTroops;
 
         /// <summary>
+        /// 当部队气力变化时
+        /// </summary>
+        public static EventDelegate<Troop, int, OverrideData<int>> OnTroopChangeMorale;
+
+        /// <summary>
         /// 当部队兵力变化时
         /// </summary>
         public static EventDelegate<Corps> OnCorpsActionPointChange;
@@ -545,6 +550,26 @@ namespace Sango.Core
         /// 技能实例计算属性时
         /// </summary>
         public static EventDelegate<Troop, SkillInstance> OnSkillCalculateAttribute;
+
+        /// <summary>
+        /// 技能实例命中敌人时候
+        /// </summary>
+        public static EventDelegate<SkillInstance, Troop, OverrideData<int>> OnSkillDamageTroop;
+
+        /// <summary>
+        /// 技能实例命中建筑士兵
+        /// </summary>
+        public static EventDelegate<SkillInstance, BuildingBase, OverrideData<int>> OnSkillDamageBuildingTroops;
+
+        /// <summary>
+        /// 技能实例命中建筑耐久
+        /// </summary>
+        public static EventDelegate<SkillInstance, BuildingBase, OverrideData<int>> OnSkillDamageBuildingDurability;
+
+        /// <summary>
+        /// 技能实例效果触发结束
+        /// </summary>
+        public static EventDelegate<SkillInstance> OnSkillActionOver;
 
         /// <summary>
         /// 当武将逃跑时

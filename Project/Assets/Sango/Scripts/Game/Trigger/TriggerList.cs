@@ -15,12 +15,12 @@ namespace Sango.Core
             return triggerList;
         }
 
-        public override void Active(TriggerCall call)
+        public override void Init(TriggerCall call)
         {
             if (triggers != null)
             {
                 for (int i = 0; i < triggers.Length; ++i)
-                    triggers[i].Active(triggerCall);
+                    triggers[i].Init(triggerCall);
             }
         }
 

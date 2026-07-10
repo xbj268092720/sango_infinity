@@ -89,7 +89,9 @@ namespace Sango.Core
             Register("SkillIsCritical", CraeteHandle<SkillIsCritical>);
             Register("SkillIsNormalSkill", CraeteHandle<SkillIsNormalSkill>);
             Register("SkillIsStrategySkill", CraeteHandle<SkillIsStrategySkill>);
-
+            Register("SkillTargetCellCheck", CraeteHandle<SkillTargetCellCheck>);
+            Register("SkillIdInList", CraeteHandle<SkillIdInList>);
+            
             // Person
             Register("PersonAttributeCompare", CraeteHandle<PersonAttributeCheck>);
             Register("PersonLoyaltyCheck", CraeteHandle<PersonLoyaltyCheck>);

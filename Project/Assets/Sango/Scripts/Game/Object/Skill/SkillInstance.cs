@@ -485,7 +485,7 @@ namespace Sango.Core
                 master.Render.FaceTo(spellCell.Position);
                 tempTimelineCellList.Clear();
                 GetAttackCells(master, spellCell, tempTimelineCellList);
-                
+
                 // 重置时间轴实例
                 if (timelineInstance != null)
                 {
@@ -546,9 +546,11 @@ namespace Sango.Core
                 {
                     int damage = Troop.CalculateSkillDamage(troop, beAtkTroop, this) * criticalFactor / 100;
                     if (damage < 0)
-                    {
                         damage = 0;
-                    }
+
+                    GameEvent.OnSkillDamageTroop?.Invoke(this, beAtkTroop, GameUtility.IntOverrideData.Set(damage));
+                    damage = GameUtility.IntOverrideData.Value;
+
                     beAtkTroop.ChangeTroops(-damage, troop, this, 0);
                     int ep = damage / 100;
                     if (!beAtkTroop.IsAlive) ep += 50;
@@ -622,19 +624,12 @@ namespace Sango.Core
                 }
 
                 BuildingBase beAtkBuildingBase = atkCell.building;
-
                 if (beAtkBuildingBase != null && this.canDamageBuilding && (troop.IsEnemy(beAtkBuildingBase) || this.canDamageTeam))
                 {
                     // 一个目标只会收到一次伤害
                     if (activedTargetList.Contains(beAtkBuildingBase))
                         continue;
                     activedTargetList.Add(beAtkBuildingBase);
-
-                    int damage = Troop.CalculateSkillDamage(troop, beAtkBuildingBase, this) * criticalFactor / 100;
-#if SANGO_DEBUG
-                    Sango.Log.Info($"{troop.BelongForce.Name}的[{troop.Name} - {troop.TroopType.Name}] 使用<{this.Name}> 攻击 {beAtkBuildingBase.BelongForce?.Name}的 [{beAtkBuildingBase.Name}], 造成耐久伤害:{damage}, 目标剩余耐久: {beAtkBuildingBase.durability}");
-#endif
-                    int ep = damage / 10;
                     if (beAtkBuildingBase is City)
                     {
                         City city = (City)beAtkBuildingBase;
@@ -642,12 +637,14 @@ namespace Sango.Core
 #if SANGO_DEBUG
                         Sango.Log.Info($"{troop.BelongForce.Name}的[{troop.Name} - {troop.TroopType.Name}] 使用<{this.Name}> 攻击 {beAtkBuildingBase.BelongForce?.Name}的 [{beAtkBuildingBase.Name}], 造成兵力伤害:{damage_troops}, 目标剩余兵力: {city.troops}");
 #endif
+                        GameEvent.OnSkillDamageBuildingTroops?.Invoke(this, beAtkBuildingBase, GameUtility.IntOverrideData.Set(damage_troops));
+                        damage_troops = GameUtility.IntOverrideData.Value;
+                        int ep = damage_troops / 100;
                         if (!city.ChangeTroops(-damage_troops, troop, city.BelongForce != null))
                         {
                             ep += 100;
                             troop.ForEachPerson(p =>
                             {
-                                int ep = damage / 100;
                                 p.GainExp(ep);
                                 p.merit += ep;
                             });
@@ -659,12 +656,18 @@ namespace Sango.Core
                         }
                     }
 
+                    int damage = Troop.CalculateSkillDamage(troop, beAtkBuildingBase, this) * criticalFactor / 100;
+#if SANGO_DEBUG
+                    Sango.Log.Info($"{troop.BelongForce.Name}的[{troop.Name} - {troop.TroopType.Name}] 使用<{this.Name}> 攻击 {beAtkBuildingBase.BelongForce?.Name}的 [{beAtkBuildingBase.Name}], 造成耐久伤害:{damage}, 目标剩余耐久: {beAtkBuildingBase.durability}");
+#endif
+                    GameEvent.OnSkillDamageBuildingDurability?.Invoke(this, beAtkBuildingBase, GameUtility.IntOverrideData.Set(damage));
+                    damage = GameUtility.IntOverrideData.Value;
+
                     if (beAtkBuildingBase.ChangeDurability(-damage, troop))
                     {
-                        ep += 100;
+                        int ep = damage / 10 + 100;
                         troop.ForEachPerson(p =>
                         {
-                            int ep = damage / 100;
                             p.GainExp(ep);
                             p.merit += ep;
                         });
@@ -675,9 +678,9 @@ namespace Sango.Core
                     }
                     else
                     {
+                        int ep = damage / 10;
                         troop.ForEachPerson(p =>
                         {
-                            int ep = damage / 100;
                             p.GainExp(ep);
                             p.merit += ep;
                         });
@@ -703,6 +706,8 @@ namespace Sango.Core
                             }
                         }
                     }
+
+
                 }
             }
 
@@ -712,11 +717,10 @@ namespace Sango.Core
 
             if (troop.IsAlive)
             {
-                troop.morale -= this.costEnergy;
-                if (troop.morale < 0)
-                    troop.morale = 0;
-                troop.Render.UpdateRender();
+                troop.ChangeMorale(-this.costEnergy);          
             }
+
+            GameEvent.OnSkillActionOver?.Invoke(this);
         }
 
         public void DoOffset(Troop troop, Troop targetTroop, int targetDamage)
@@ -932,7 +936,7 @@ namespace Sango.Core
             InitSkillEffects();
             if (effects == null || effects.Count == 0) return;
 
-            foreach(Cell target in atkCellList)
+            foreach (Cell target in atkCellList)
             {
                 effects.ForEach(s => s.Action(target));
             }

@@ -13,7 +13,6 @@ namespace Sango.Core.Action
     /// </summary>
     public class TroopSkillCalculateSuccess : TroopTroopActionBase
     {
-        bool before;
         public override void Init(JObject p, params SangoObject[] sangoObjects)
         {
             base.Init(p, sangoObjects);

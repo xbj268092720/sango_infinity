@@ -155,13 +155,6 @@ namespace Sango.Core
         [JsonProperty]
         public int morale;
 
-        public void AddMorale(int value)
-        {
-            morale += value;
-            if(morale > MaxMorale) morale = MaxMorale;
-            else if(morale < 0) morale = 0;
-        }
-
         /// <summary>
         /// 最大士气
         /// </summary>
@@ -504,9 +497,10 @@ namespace Sango.Core
                 // 伤兵直接抛弃
                 woundedTroops = 0;
                 // 减少士气
-                morale = (int)System.Math.Ceiling(morale * 0.5f);
+                morale = (int)System.Math.Ceiling(morale * 0.3f);
                 if (morale < 0)
                     morale = 0;
+
                 if (troops < 500)
                 {
                     Clear();
@@ -1261,9 +1255,7 @@ namespace Sango.Core
             num = overrideData.Value;
 
             if (num == 0)
-            {
                 return IsAlive;
-            }
 
             if (Render != null)
                 Render.ShowInfo(num, (int)InfoType.Troop);
@@ -1304,6 +1296,25 @@ namespace Sango.Core
             }
 
             return IsAlive;
+        }
+
+        public void ChangeMorale(int num, bool showInfo = true)
+        {
+            GameEvent.OnTroopChangeMorale?.Invoke(this, morale, GameUtility.IntOverrideData.Set(num));
+            num = GameUtility.IntOverrideData.Value;
+            if (num == 0)
+                return;
+            
+            morale += num;
+
+            if (morale < 0)
+                morale = 0;
+            else if (morale > MaxMorale)
+                morale = MaxMorale;
+
+            if (showInfo)
+                Render?.ShowInfo(num, (int)InfoType.Morale);
+            Render?.UpdateRender();
         }
 
         public int GetCaptureChangce()

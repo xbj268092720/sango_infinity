@@ -250,7 +250,7 @@ namespace Sango.Tools
             if (previewLabel == null)
             {
                 GameObject labelObj = new GameObject("PreviewMapLabel");
-                labelObj.transform.parent = null;
+                labelObj.transform.SetParent(null);
                 labelObj.SetActive(true);
 
                 MapLabel label = labelObj.AddComponent<MapLabel>();

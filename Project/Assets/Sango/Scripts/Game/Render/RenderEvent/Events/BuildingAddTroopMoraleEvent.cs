@@ -85,12 +85,10 @@ namespace Sango.Render
             for (int i = 0; i < target_list.Count; i++)
             {
                 Troop troop = target_list[i];
-                troop.AddMorale(value);
+                troop.ChangeMorale(value);
 #if SANGO_DEBUG
                 Sango.Log.Info($"{building.BelongForce.Name}的[{building.Name}] 对 {troop.Name} 恢复 {value} 气力:, 目标剩余气力: {troop.morale}");
 #endif
-                troop.Render?.ShowInfo(value, (int)InfoType.Morale);
-                troop.Render?.UpdateRender();
             }
 
             isAction = true;

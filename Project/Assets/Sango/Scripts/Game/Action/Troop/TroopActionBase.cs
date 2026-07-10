@@ -29,8 +29,7 @@ namespace Sango.Core.Action
             public Corps TargetCorps => atk_cell.troop?.BelongCorps ?? atk_cell.building?.BelongCorps;
             public Force ActionForce => self.master.BelongForce;
             public Force TargetForce => atk_cell.troop?.BelongForce ?? atk_cell.building?.BelongForce;
-            public BuildingBase ActiveBuildingBase => self.master.cell.building;
-            public BuildingBase TargetBuildingBase => atk_cell.building;
+
             public Fire ActiveFire => self.master.cell.fire;
             public Fire TargetFire => atk_cell.fire;
             public object ActionObject => self;
@@ -104,6 +103,10 @@ namespace Sango.Core.Action
             if ((isRangeSkill == 1 && !skill.IsRange()) || (isRangeSkill == 2 && skill.IsRange()))
                 return false;
             return true;
+        }
+
+        public override void Execute(Trigger trigger)
+        {
         }
 
     }
