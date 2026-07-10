@@ -310,6 +310,16 @@ namespace Sango.Core
         }
 
         /// <summary>
+        /// 是否是普攻
+        /// </summary>
+        /// <returns></returns>
+        public bool IsNormal()
+        {
+            return skill.costEnergy == 0;
+        }
+
+
+        /// <summary>
         ///  是否是单体技能
         /// </summary>
         /// <returns></returns>
@@ -376,7 +386,7 @@ namespace Sango.Core
         public bool CheckSuccess(Cell spellCell)
         {
             // 普通攻击,必中
-            if (costEnergy == 0) return true;
+            if (IsNormal()) return true;
 
             // 除开计略,目标只有有控制状态,必中
             if (spellCell.troop != null && !IsStrategy() && spellCell.troop.HasControlBuff())
@@ -384,9 +394,9 @@ namespace Sango.Core
 
             Troop troop = master;
             int baseSuccessRate = 0;
-            Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(baseSuccessRate);
+            Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(baseSuccessRate);
             GameEvent.OnTroopBeforeCalculateSkillSuccess?.Invoke(troop, this, spellCell, overrideData);
-            baseSuccessRate = overrideData.Value;
+            baseSuccessRate = overrideData.ValueAndRecycle;
 
             if (baseSuccessRate >= 100)
             {
@@ -407,9 +417,9 @@ namespace Sango.Core
 
             baseSuccessRate = skillSuccessMethod.Calculate(this, troop, spellCell);
 
-            overrideData = GameUtility.IntOverrideData.Set(baseSuccessRate);
+            overrideData = Tools.OverrideData<int>.Create(baseSuccessRate);
             GameEvent.OnTroopAfterCalculateSkillSuccess?.Invoke(troop, this, spellCell, overrideData);
-            baseSuccessRate = overrideData.Value;
+            baseSuccessRate = overrideData.ValueAndRecycle;
 
 #if SANGO_DEBUG
             Sango.Log.Info($"{troop.BelongForce.Name}的[{troop.Name} 部队 准备释放技能: {Name} =>({spellCell.x},{spellCell.y})] 成功率:{baseSuccessRate}");
@@ -443,13 +453,13 @@ namespace Sango.Core
             Troop troop = master;
 
             // 必爆流程判断
-            Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(0);
+            Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(0);
             GameEvent.OnTroopBeforeCalculateSkillSuccess?.Invoke(troop, this, spellCell, overrideData);
-            if (overrideData.Value >= 100)
+            if (overrideData.ValueAndRecycle >= 100)
             {
-                overrideData = GameUtility.IntOverrideData.Set(scenarioVariables.skillCriticalFactor);
+                overrideData = Tools.OverrideData<int>.Create(scenarioVariables.skillCriticalFactor);
                 GameEvent.OnTroopCalculateSkillCriticalFactor?.Invoke(troop, this, spellCell, overrideData);
-                tempCriticalFactor = overrideData.Value;
+                tempCriticalFactor = overrideData.ValueAndRecycle;
                 return tempCriticalFactor;
             }
 
@@ -461,17 +471,17 @@ namespace Sango.Core
             }
 
             int basCriticalRate = skillCriticalMethod.Calculate(this, troop, spellCell);
-            overrideData = GameUtility.IntOverrideData.Set(basCriticalRate);
+            overrideData = Tools.OverrideData<int>.Create(basCriticalRate);
             GameEvent.OnTroopAfterCalculateSkillSuccess?.Invoke(troop, this, spellCell, overrideData);
-            basCriticalRate = overrideData.Value;
+            basCriticalRate = overrideData.ValueAndRecycle;
 
             int criticalFactor = 100;
             if (GameRandom.Chance(basCriticalRate))
             {
                 criticalFactor = scenarioVariables.skillCriticalFactor;
-                overrideData = GameUtility.IntOverrideData.Set(criticalFactor);
+                overrideData = Tools.OverrideData<int>.Create(criticalFactor);
                 GameEvent.OnTroopCalculateSkillCriticalFactor?.Invoke(troop, this, spellCell, overrideData);
-                criticalFactor = overrideData.Value;
+                criticalFactor = overrideData.ValueAndRecycle;
             }
             tempCriticalFactor = criticalFactor;
             return criticalFactor;
@@ -500,6 +510,7 @@ namespace Sango.Core
                 if (isComplete)
                 {
                     master.Render.SetAniShow(0);
+                    GameEvent.OnSkillRenderEnd?.Invoke(this, spellCell);
                     return true;
                 }
             }
@@ -516,6 +527,7 @@ namespace Sango.Core
                 if (time > 2.5f)
                 {
                     master.Render.SetAniShow(0);
+                    GameEvent.OnSkillRenderEnd?.Invoke(this, spellCell);
                     return true;
                 }
             }
@@ -531,6 +543,7 @@ namespace Sango.Core
             ScenarioVariables scenarioVariables = scenario.Variables;
             Troop targetTroop = spellCell.troop;
             BuildingBase targetBuilding = spellCell.building;
+            Tools.OverrideData<int> overrideData;
 
             List<SangoObject> activedTargetList = new List<SangoObject>();
             //TODO: 释放技能
@@ -548,8 +561,9 @@ namespace Sango.Core
                     if (damage < 0)
                         damage = 0;
 
-                    GameEvent.OnSkillDamageTroop?.Invoke(this, beAtkTroop, GameUtility.IntOverrideData.Set(damage));
-                    damage = GameUtility.IntOverrideData.Value;
+                    overrideData = Tools.OverrideData<int>.Create(damage);
+                    GameEvent.OnSkillDamageTroop?.Invoke(this, beAtkTroop, overrideData);
+                    damage = overrideData.ValueAndRecycle;
 
                     beAtkTroop.ChangeTroops(-damage, troop, this, 0);
                     int ep = damage / 100;
@@ -567,9 +581,9 @@ namespace Sango.Core
                     {
                         targetDamage = damage;
                         int hitBack = beAtkTroop.GetAttackBackFactor(this, Scenario.Cur.Map.Distance(troop.cell, spellCell));
-                        Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(hitBack);
+                        overrideData = Tools.OverrideData<int>.Create(hitBack);
                         GameEvent.OnTroopCalculateAttackBack?.Invoke(troop, beAtkTroop, this, scenario, overrideData);
-                        hitBack = overrideData.Value;
+                        hitBack = overrideData.ValueAndRecycle;
 
                         if (hitBack > 0)
                         {
@@ -637,8 +651,9 @@ namespace Sango.Core
 #if SANGO_DEBUG
                         Sango.Log.Info($"{troop.BelongForce.Name}的[{troop.Name} - {troop.TroopType.Name}] 使用<{this.Name}> 攻击 {beAtkBuildingBase.BelongForce?.Name}的 [{beAtkBuildingBase.Name}], 造成兵力伤害:{damage_troops}, 目标剩余兵力: {city.troops}");
 #endif
-                        GameEvent.OnSkillDamageBuildingTroops?.Invoke(this, beAtkBuildingBase, GameUtility.IntOverrideData.Set(damage_troops));
-                        damage_troops = GameUtility.IntOverrideData.Value;
+                        overrideData = Tools.OverrideData<int>.Create(damage_troops);
+                        GameEvent.OnSkillDamageBuildingTroops?.Invoke(this, beAtkBuildingBase, overrideData);
+                        damage_troops = overrideData.ValueAndRecycle;
                         int ep = damage_troops / 100;
                         if (!city.ChangeTroops(-damage_troops, troop, city.BelongForce != null))
                         {
@@ -660,8 +675,9 @@ namespace Sango.Core
 #if SANGO_DEBUG
                     Sango.Log.Info($"{troop.BelongForce.Name}的[{troop.Name} - {troop.TroopType.Name}] 使用<{this.Name}> 攻击 {beAtkBuildingBase.BelongForce?.Name}的 [{beAtkBuildingBase.Name}], 造成耐久伤害:{damage}, 目标剩余耐久: {beAtkBuildingBase.durability}");
 #endif
-                    GameEvent.OnSkillDamageBuildingDurability?.Invoke(this, beAtkBuildingBase, GameUtility.IntOverrideData.Set(damage));
-                    damage = GameUtility.IntOverrideData.Value;
+                    overrideData = Tools.OverrideData<int>.Create(damage);
+                    GameEvent.OnSkillDamageBuildingDurability?.Invoke(this, beAtkBuildingBase, overrideData);
+                    damage = overrideData.ValueAndRecycle;
 
                     if (beAtkBuildingBase.ChangeDurability(-damage, troop))
                     {
@@ -692,9 +708,9 @@ namespace Sango.Core
                             if (hitBack > 0)
                             {
                                 int atkBack = beAtkBuildingBase.GetAttackBack();
-                                Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(atkBack);
+                                overrideData = Tools.OverrideData<int>.Create(atkBack);
                                 GameEvent.OnBuildCalculateAttackBack?.Invoke(troop, spellCell, beAtkBuildingBase, this, overrideData);
-                                atkBack = overrideData.Value;
+                                atkBack = overrideData.ValueAndRecycle;
                                 if (atkBack > 0)
                                 {
                                     int hitBackDmg = (int)System.Math.Ceiling(hitBack * Troop.CalculateSkillDamage(beAtkBuildingBase, troop, atkBack));

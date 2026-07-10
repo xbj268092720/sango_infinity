@@ -572,6 +572,11 @@ namespace Sango.Core
         public static EventDelegate<SkillInstance> OnSkillActionOver;
 
         /// <summary>
+        /// 技能实例效果触发结束
+        /// </summary>
+        public static EventDelegate<SkillInstance, Cell> OnSkillRenderEnd;
+
+        /// <summary>
         /// 当武将逃跑时
         /// </summary>
         public static EventDelegate<Person, SangoObject> OnPersonEscape;

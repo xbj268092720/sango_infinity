@@ -84,14 +84,14 @@ namespace Sango.Core
 
             turnCount = GameUtility.Method_ResearchCounter(totalValue, turnCount);
 
-            Tools.OverrideData<int> goldOverride = GameUtility.IntOverrideData.Set(goldNeed);
-            Tools.OverrideData<int> tpOverride = new OverrideData<int>(tpNeed);
-            Tools.OverrideData<int> turnCountOveride = new OverrideData<int>(turnCount);
+            Tools.OverrideData<int> goldOverride = Tools.OverrideData<int>.Create(goldNeed);
+            Tools.OverrideData<int> tpOverride = Tools.OverrideData<int>.Create(tpNeed);
+            Tools.OverrideData<int> turnCountOveride = Tools.OverrideData<int>.Create(turnCount);
 
             GameEvent.OnCityResearchCost?.Invoke(city, personList, this, goldOverride, tpOverride, turnCountOveride);
-            goldNeed = goldOverride.Value;
-            tpNeed = tpOverride.Value;
-            turnCount = turnCountOveride.Value;
+            goldNeed = goldOverride.ValueAndRecycle;
+            tpNeed = tpOverride.ValueAndRecycle;
+            turnCount = turnCountOveride.ValueAndRecycle;
 
             city.ClearJobFeature();
             return new int[] { goldNeed, tpNeed, turnCount };

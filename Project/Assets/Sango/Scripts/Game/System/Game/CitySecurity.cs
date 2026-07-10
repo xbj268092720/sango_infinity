@@ -53,11 +53,12 @@ namespace Sango.Core
                     return;
 
                 // 换季,治安降低
-                Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(scenario.Variables.securityChangeOnSeasonStart);
+                Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(scenario.Variables.securityChangeOnSeasonStart);
                 GameEvent.OnCitySecurityChangeOnSeasonStart?.Invoke(city, overrideData);
                 city.AddSecurity(overrideData.Value);
                 city.Render?.UpdateRender();
                 city.Render?.ShowInfo(overrideData.Value, (int)InfoType.Security);
+                overrideData.Recycle();
             });
         }
 
@@ -74,11 +75,12 @@ namespace Sango.Core
                     return;
 
                 // 换季,治安降低
-                Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(-1);
+                Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(-1);
                 GameEvent.OnCitySecurityChangeOnSeasonStart?.Invoke(city, overrideData);
                 city.AddSecurity(overrideData.Value);
                 city.Render?.UpdateRender();
                 city.Render?.ShowInfo(overrideData.Value, (int)InfoType.Security);
+                overrideData.Recycle();
             });
         }
 

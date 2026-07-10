@@ -44,7 +44,7 @@ namespace Sango.Render
 
             if(!troop.IsPlayer)
             {
-                if (skill.costEnergy > 0)
+                if (!skill.IsNormal())
                     troop.Render.ShowSkill(skill, false, true);
             }
         }
@@ -83,7 +83,7 @@ namespace Sango.Render
                     {
                         isCritWindowShown = true;
 
-                        if (skill.costEnergy > 0)
+                        if (!skill.IsNormal())
                             troop.Render.ShowSkill(skill, false, true);
                     }
                     return IsDone;

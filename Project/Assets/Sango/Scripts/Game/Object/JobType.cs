@@ -18,9 +18,9 @@ namespace Sango.Core
             JobType t = Scenario.Cur.CommonData.JobTypes.Get(jobId);
             if (t != null)
             {
-                OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(t.cost);
+                OverrideData<int> overrideData = Tools.OverrideData<int>.Create(t.cost);
                 GameEvent.OnGetJobCost?.Invoke(t, t.cost, overrideData);
-                return overrideData.Value;
+                return overrideData.ValueAndRecycle;
             }
             return 0;
         }
@@ -30,9 +30,9 @@ namespace Sango.Core
             JobType t = Scenario.Cur.CommonData.JobTypes.Get(jobId);
             if (t != null)
             {
-                OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(t.costAP);
+                OverrideData<int> overrideData = Tools.OverrideData<int>.Create(t.costAP);
                 GameEvent.OnGetJobCost?.Invoke(t, t.costAP, overrideData);
-                return overrideData.Value;
+                return overrideData.ValueAndRecycle;
             }
             return 0;
         }
@@ -41,9 +41,9 @@ namespace Sango.Core
             JobType t = Scenario.Cur.CommonData.JobTypes.Get(jobId);
             if (t != null)
             {
-                OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(t.meritGain);
+                OverrideData<int> overrideData = Tools.OverrideData<int>.Create(t.meritGain);
                 GameEvent.OnGetJobCost?.Invoke(t, t.costAP, overrideData);
-                return overrideData.Value;
+                return overrideData.ValueAndRecycle;
             }
             return 0;
         }
@@ -52,9 +52,9 @@ namespace Sango.Core
             JobType t = Scenario.Cur.CommonData.JobTypes.Get(jobId);
             if (t != null)
             {
-                OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(t.tpGain);
+                OverrideData<int> overrideData = Tools.OverrideData<int>.Create(t.tpGain);
                 GameEvent.OnGetJobCost?.Invoke(t, t.costAP, overrideData);
-                return overrideData.Value;
+                return overrideData.ValueAndRecycle;
             }
             return 0;
         }

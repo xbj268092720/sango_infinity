@@ -270,9 +270,9 @@ namespace Sango.Core
 #if SANGO_DEBUG
             Sango.Log.Info($"[{BelongCity.Name}]{stringBuilder}完成{Name}建造!!");
 #endif
-            Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(techniquePointGain);
+            Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(techniquePointGain);
             GameEvent.OnCityJobGainTechniquePoint?.Invoke(BelongCity, jobId, Workers.objects.ToArray(), overrideData);
-            techniquePointGain = overrideData.Value;
+            techniquePointGain = overrideData.ValueAndRecycle;
 
             BelongForce.GainTechniquePoint(techniquePointGain);
             Render.UpdateRender();
@@ -308,9 +308,9 @@ namespace Sango.Core
 #if SANGO_DEBUG
             Sango.Log.Info($"[{BelongCity.Name}]{stringBuilder}完成{Name}建造!!");
 #endif
-            Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(techniquePointGain);
+            Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(techniquePointGain);
             GameEvent.OnCityJobGainTechniquePoint?.Invoke(BelongCity, jobId, Builder.objects.ToArray(), overrideData);
-            techniquePointGain = overrideData.Value;
+            techniquePointGain = overrideData.ValueAndRecycle;
 
             BelongForce.GainTechniquePoint(techniquePointGain);
             Builder = null;
@@ -349,9 +349,9 @@ namespace Sango.Core
 #if SANGO_DEBUG
             Sango.Log.Info($"[{BelongCity.Name}]{stringBuilder}完成{Name}升级!!");
 #endif
-            Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(techniquePointGain);
+            Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(techniquePointGain);
             GameEvent.OnCityJobGainTechniquePoint?.Invoke(BelongCity, jobId, Builder.objects.ToArray(), overrideData);
-            techniquePointGain = overrideData.Value;
+            techniquePointGain = overrideData.ValueAndRecycle;
 
             BelongForce.GainTechniquePoint(techniquePointGain);
             Builder = null;

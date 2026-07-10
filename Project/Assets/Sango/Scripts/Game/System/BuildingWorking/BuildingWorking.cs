@@ -65,7 +65,7 @@ namespace Sango.Core
         void OnGetJobCostAP(JobType jobType, int cost, OverrideData<int> overrideData)
         {
             // 工作制下面这些政策不消耗AP
-            switch((CityJobType)jobType.Id)
+            switch ((CityJobType)jobType.Id)
             {
                 case CityJobType.Inspection:
                 case CityJobType.TrainTroops:
@@ -488,13 +488,13 @@ namespace Sango.Core
             int jobId = buildingType.jobId;
             JobType jobType = Scenario.Cur.CommonData.JobTypes.Get(jobId);
             GameUtility.InitJobFeature(building.Workers, belongCity, building);
-            Tools.OverrideData<int> overrideData = null;
+            Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(0);
 
             // 建筑累积收益
             if (buildingType.foodGain > 0)
             {
                 int value = buildingType.foodGain / classiceGainFactor * totalFactor / 10000;
-                overrideData = GameUtility.IntOverrideData.Set(value);
+                overrideData.Value = value;
                 GameEvent.OnBuildingCalculateFoodGain?.Invoke(building, overrideData);
                 building.AccumulatedFood += overrideData.Value;
             }
@@ -502,7 +502,7 @@ namespace Sango.Core
             if (buildingType.goldGain > 0)
             {
                 int value = buildingType.goldGain / classiceGainFactor * totalFactor / 10000;
-                overrideData = GameUtility.IntOverrideData.Set(value);
+                overrideData.Value = value;
                 GameEvent.OnBuildingCalculateGoldGain?.Invoke(building, overrideData);
                 building.AccumulatedGold += overrideData.Value;
             }
@@ -510,7 +510,7 @@ namespace Sango.Core
             if (buildingType.populationGain > 0)
             {
                 int value = buildingType.populationGain / classiceGainFactor * totalFactor / 10000;
-                overrideData = GameUtility.IntOverrideData.Set(value);
+                overrideData.Value = value;
                 GameEvent.OnBuildingCalculatePopulationGain?.Invoke(building, overrideData);
                 building.AccumulatedPopulation += overrideData.Value;
             }
@@ -521,7 +521,7 @@ namespace Sango.Core
             if (hasWorker)
             {
                 // 计算工作消耗
-                overrideData = GameUtility.IntOverrideData.Set(productCost);
+                overrideData.Value = productCost;
                 GameEvent.OnCityCheckJobCost?.Invoke(belongCity, jobId, personArray, overrideData);
                 productCost = overrideData.Value;
 
@@ -554,7 +554,7 @@ namespace Sango.Core
                 {
                     // 计算建筑实际产出
                     int product = buildingType.product;
-                    overrideData = GameUtility.IntOverrideData.Set(product);
+                    overrideData.Value = product;
                     GameEvent.OnBuildingCalculateProduct?.Invoke(building, overrideData);
                     product = overrideData.Value;
 
@@ -564,7 +564,7 @@ namespace Sango.Core
                         case (int)BuildingKindType.Barracks:
                             {
                                 int value = product * totalFactor / 10000;
-                                overrideData = GameUtility.IntOverrideData.Set(value);
+                                overrideData .Value = value;
                                 GameEvent.OnCityJobResult?.Invoke(belongCity, jobId, personArray, overrideData);
 
                                 // 治安对征兵的影响
@@ -581,7 +581,8 @@ namespace Sango.Core
                         default:
                             {
                                 int value = product * totalFactor / 10000;
-                                overrideData = GameUtility.IntOverrideData.Set(value);
+                                overrideData.Value = value;
+
                                 GameEvent.OnCityJobResult?.Invoke(belongCity, jobId, personArray, overrideData);
                                 building.AccumulatedProduct += overrideData.Value;
                             }
@@ -598,12 +599,13 @@ namespace Sango.Core
                 {
                     // 闲置产出
                     int value = buildingType.emptyProduct * leader_factor / 100;
-                    overrideData = GameUtility.IntOverrideData.Set(value);
+                    overrideData.Value = value;
+
                     GameEvent.OnBuildingCalculateProduct?.Invoke(building, overrideData);
                     building.AccumulatedProduct += overrideData.Value;
                 }
             }
-
+            overrideData.Recycle();
             GameUtility.ClearJobFeature();
         }
 

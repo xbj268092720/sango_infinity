@@ -7,13 +7,19 @@ namespace Sango.Core.Action
     /// 某兵种类型战法的增减伤害  
     /// value： 增加值(百分比) , Execute为绝对值
     /// </summary>
-    public class TroopChangeMorale : TroopActionBase
+    public class TroopComboAttack : TroopActionBase
     {
-        int targetType = 0;
+        int skillType;
+        int count;
+        int probability;
+        int currentCount;
         public override void Init(JObject p, params SangoObject[] sangoObjects)
         {
             base.Init(p, sangoObjects);
-            targetType = p.Value<int>("targetType");
+            skillType = p.Value<int>("skillType");
+            count = p.Value<int>("count");
+            probability = p.Value<int>("probability");
+            currentCount = 0;
         }
 
         public override void Clear()
@@ -24,23 +30,18 @@ namespace Sango.Core.Action
         public override void Execute(Trigger trigger)
         {
             if(trigger == null) return;
-
             if (trigger.ActionTroop != Troop) return;
-
-            if(targetType == 0)
+            if (trigger.ActionSkill == null) return;
+            if(!trigger.ActionSkill.IsStrategy() && trigger.ActionSkill.IsNormal())
+            if (currentCount < count)
             {
-                if (trigger.ActionTroop == null) return;
+                currentCount++;
+                if(GameRandom.Chance(probability))
+                {
 
-                trigger.ActionTroop.ChangeMorale(value);
+                }
+                
             }
-            else if (targetType == 1)
-            {
-                if (trigger.TargetTroop == null) return;
-
-                trigger.TargetTroop.ChangeMorale(value);
-            }
-
-            
         }
     }
 }

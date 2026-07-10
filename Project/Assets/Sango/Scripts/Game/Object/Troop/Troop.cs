@@ -721,9 +721,9 @@ namespace Sango.Core
         public void CalculateMaxTroops()
         {
             int max = Leader.TroopsLimit;
-            Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(max);
+            Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(max);
             GameEvent.OnTroopCalculateMaxTroops?.Invoke(Leader.BelongCity, this, overrideData);
-            MaxTroops = overrideData.Value;
+            MaxTroops = overrideData.ValueAndRecycle;
         }
 
         public int MoveCost(Cell cell)
@@ -1250,9 +1250,9 @@ namespace Sango.Core
 
         public bool ChangeTroops(int num, SangoObject atk, SkillInstance skill, int atkBack)
         {
-            Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(num);
+            Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(num);
             GameEvent.OnTroopChangeTroops?.Invoke(this, atk, skill, atkBack, overrideData);
-            num = overrideData.Value;
+            num = overrideData.ValueAndRecycle;
 
             if (num == 0)
                 return IsAlive;
@@ -1300,8 +1300,10 @@ namespace Sango.Core
 
         public void ChangeMorale(int num, bool showInfo = true)
         {
-            GameEvent.OnTroopChangeMorale?.Invoke(this, morale, GameUtility.IntOverrideData.Set(num));
-            num = GameUtility.IntOverrideData.Value;
+            Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(num);
+            GameEvent.OnTroopChangeMorale?.Invoke(this, morale, overrideData);
+            num = overrideData.ValueAndRecycle;
+
             if (num == 0)
                 return;
             

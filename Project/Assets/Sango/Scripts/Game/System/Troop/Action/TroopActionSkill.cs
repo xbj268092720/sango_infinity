@@ -29,7 +29,7 @@ namespace Sango.Core.Player
                 for (int i = 0, count = list.Count; i < count; ++i)
                 {
                     SkillInstance skill = list[i];
-                    if (skill.costEnergy > 0)
+                    if (!skill.IsNormal())
                     {
                         bool isValid = skill.CanBeSpell(TargetTroop);
                         if(isValid)

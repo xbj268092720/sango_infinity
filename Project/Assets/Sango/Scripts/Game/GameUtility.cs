@@ -10,12 +10,12 @@ namespace Sango.Core
     public class GameUtility
     {
 
-        public static OverrideData<int> IntOverrideData = new OverrideData<int>(0);
-        public static OverrideData<int> IntOverrideData2 = new OverrideData<int>(0);
-        public static OverrideData<int> IntOverrideData3 = new OverrideData<int>(0);
-        public static OverrideData<float> FloatOverrideData = new OverrideData<float>(0);
-        public static OverrideData<float> FloatOverrideData2 = new OverrideData<float>(0);
-        public static OverrideData<float> FloatOverrideData3 = new OverrideData<float>(0);
+        //public static OverrideData<int> IntOverrideData = new OverrideData<int>(0);
+        //public static OverrideData<int> IntOverrideData2 = new OverrideData<int>(0);
+        //public static OverrideData<int> IntOverrideData3 = new OverrideData<int>(0);
+        //public static OverrideData<float> FloatOverrideData = new OverrideData<float>(0);
+        //public static OverrideData<float> FloatOverrideData2 = new OverrideData<float>(0);
+        //public static OverrideData<float> FloatOverrideData3 = new OverrideData<float>(0);
 
         public static System.Random RandomDigit = new System.Random();
         static int[] v_factor = new int[] { 0, 100, 120, 150 };

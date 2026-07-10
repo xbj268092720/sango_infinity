@@ -101,7 +101,9 @@ namespace Sango.Core.Action
             Register("CityImproveJobResult", CraeteHandle<CityImproveJobResult>);
             Register("CityImproveJobCounterResult", CraeteHandle<CityImproveJobCounterResult>);
             Register("TroopIgnoreZOC", CraeteHandle<TroopIgnoreZOC>);
-            
+            Register("TroopTriggerAction", CraeteHandle<TroopTriggerAction>);
+            Register("TroopChangeMorale", CraeteHandle<TroopChangeMorale>);
+
         }
 
     }

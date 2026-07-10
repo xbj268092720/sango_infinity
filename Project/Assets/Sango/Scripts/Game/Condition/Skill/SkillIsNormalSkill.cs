@@ -13,7 +13,7 @@ namespace Sango.Core
             SkillInstance skill = database.ActionSkill;
             if (skill != null)
             {
-                return (skill.costEnergy == 0) == (result == 1);
+                return (skill.IsNormal()) == (result == 1);
             }
             return false;
         }

@@ -272,7 +272,7 @@ namespace Sango.Core
         public virtual int GetDefence() { return 50; }
         public float GetAttackBackFactor(SkillInstance skill, int distance)
         {
-            if (skill.IsRange() && skill.costEnergy == 0 && distance > 1)
+            if (skill.IsRange() && skill.IsNormal() && distance > 1)
                 return 0.7f;
             else if (!skill.IsRange() && distance == 1)
                 return 0.9f;

@@ -28,7 +28,7 @@ namespace Sango.Render
             {
                 troop.Render.SetSmokeShow(true);
             }
-            if (skill.costEnergy > 0)
+            if (!skill.IsNormal())
                 troop.Render.ShowSkill(skill, false, false);
         }
 

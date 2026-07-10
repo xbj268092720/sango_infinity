@@ -163,17 +163,17 @@ namespace Sango.Core
             {
                 if (x.isComplate)
                 {
-                    Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(x.BuildingType.foodGain);
+                    Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(x.BuildingType.foodGain);
                     GameEvent.OnBuildingCalculateFoodGain?.Invoke(x, overrideData);
-                    city.totalGainFood += overrideData.Value;
+                    city.totalGainFood += overrideData.ValueAndRecycle;
 
-                    overrideData = GameUtility.IntOverrideData.Set(x.BuildingType.goldGain);
+                    overrideData = Tools.OverrideData<int>.Create(x.BuildingType.goldGain);
                     GameEvent.OnBuildingCalculateGoldGain?.Invoke(x, overrideData);
-                    city.totalGainGold += overrideData.Value;
+                    city.totalGainGold += overrideData.ValueAndRecycle;
 
-                    overrideData = GameUtility.IntOverrideData.Set(x.BuildingType.populationGain);
+                    overrideData = Tools.OverrideData<int>.Create(x.BuildingType.populationGain);
                     GameEvent.OnBuildingCalculatePopulationGain?.Invoke(x, overrideData);
-                    city.population_increase_factor += overrideData.Value;
+                    city.population_increase_factor += overrideData.ValueAndRecycle;
                 }
             });
 
@@ -208,11 +208,12 @@ namespace Sango.Core
             if (city.IsCity())
             {
                 // 治安降低
-                Tools.OverrideData<int> overrideData = GameUtility.IntOverrideData.Set(scenario.Variables.securityChangeOnSeasonStart);
+                Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(scenario.Variables.securityChangeOnSeasonStart);
                 GameEvent.OnCitySecurityChangeOnSeasonStart?.Invoke(city, overrideData);
                 city.AddSecurity(overrideData.Value);
                 if (overrideData.Value != 0)
                     city.Render?.ShowInfo(overrideData.Value, (int)InfoType.Security);
+                overrideData.Recycle();
             }
             city.Render?.UpdateRender();
         }

@@ -5,42 +5,113 @@
       "Name": "飞将",
       "desc": "于陆上时不考虑ＺＯＣ、对武力低的敌部队施展战法成功时会心一击",
       "level": 4,
-      "kind": 1
+      "kind": 1,
+      "actionEntities": [
+        {
+          "class": "TroopIgnoreZOC",
+          "value": 1
+        },
+        {
+          "class": "TroopSkillCalculateCritical",
+          "value": 100,
+          "condition": {
+            "class": "andList",
+            "list": [
+              {
+                "class": "TroopAttributeCompare",
+                "attType": "strength",
+                "result": 1
+              },
+              {
+                "class": "SkillIsNormalSkill",
+                "result": 0
+              },
+              {
+                "class": "SkillIsStrategySkill",
+                "result": 0
+              }
+            ]
+          }
+        }
+      ]
     },
     "2": {
       "Id": 2,
       "Name": "遁走",
       "desc": "于陆上时不考虑ＺＯＣ",
       "level": 3,
-      "kind": 1
+      "kind": 1,
+      "actionEntities": [
+        {
+          "class": "TroopIgnoreZOC",
+          "value": 1
+        }
+      ]
     },
     "3": {
       "Id": 3,
       "Name": "强行",
       "desc": "增加兵器、输送部队以外的陆上部队之移动力",
       "level": 3,
-      "kind": 1
+      "kind": 1,
+      "actionEntities": [
+        {
+          "class": "TroopAddMoveAbility",
+          "value": 8,
+          "kinds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        }
+      ]
     },
     "4": {
       "Id": 4,
       "Name": "长驱",
       "desc": "增加骑兵部队的移动力",
       "level": 2,
-      "kind": 1
+      "kind": 1,
+      "actionEntities": [
+        {
+          "class": "TroopAddMoveAbility",
+          "value": 8,
+          "kinds": [
+            5
+          ]
+        }
+      ]
     },
     "5": {
       "Id": 5,
       "Name": "推进",
       "desc": "于水上时不考虑ＺＯＣ",
       "level": 2,
-      "kind": 1
+      "kind": 1,
+      "actionEntities": [
+        {
+          "class": "TroopIgnoreZOC",
+          "value": 0
+        }
+      ]
     },
     "6": {
       "Id": 6,
       "Name": "操舵",
       "desc": "增加水上的移动力",
       "level": 2,
-      "kind": 1
+      "kind": 1,
+      "actionEntities": [
+        {
+          "class": "TroopAddMoveAbility",
+          "value": 8,
+          "kinds": [
+            6
+          ]
+        }
+      ]
     },
     "7": {
       "Id": 7,
@@ -54,7 +125,16 @@
       "Name": "搬运",
       "desc": "增加输送部队的移动力",
       "level": 2,
-      "kind": 1
+      "kind": 1,
+      "actionEntities": [
+        {
+          "class": "TroopAddMoveAbility",
+          "value": 8,
+          "kinds": [
+            7
+          ]
+        }
+      ]
     },
     "9": {
       "Id": 9,
@@ -68,14 +148,48 @@
       "Name": "扫荡",
       "desc": "被攻击的敌方部队气力减少（小）",
       "level": 2,
-      "kind": 2
+      "kind": 2,
+      "actionEntities": [
+        {
+          "class": "TroopTriggerAction",
+          "triggerList": [
+            {
+              "class": "TriggerWhenSkillHitTroop"
+            }
+          ],
+          "actionList": [
+            {
+              "class": "TroopChangeMorale",
+              "targetType": 1,
+              "value": -5
+            }
+          ]
+        }
+      ]
     },
     "11": {
       "Id": 11,
       "Name": "威风",
       "desc": "被攻击的敌方部队气力减少（大）",
       "level": 3,
-      "kind": 2
+      "kind": 2,
+      "actionEntities": [
+        {
+          "class": "TroopTriggerAction",
+          "triggerList": [
+            {
+              "class": "TriggerWhenSkillHitTroop"
+            }
+          ],
+          "actionList": [
+            {
+              "class": "TroopChangeMorale",
+              "targetType": 1,
+              "value": -10
+            }
+          ]
+        }
+      ]
     },
     "12": {
       "Id": 12,
@@ -110,21 +224,61 @@
       "Name": "乱战",
       "desc": "于森林中攻击时施展会心一击",
       "level": 2,
-      "kind": 2
+      "kind": 2,
+      "actionEntities": [
+        {
+          "class": "TroopSkillCalculateCritical",
+          "value": 100,
+          "condition": {
+            "class": "andList",
+            "list": [
+              {
+                "class": "TerrainCheck",
+                "checkTarget": "self",
+                "terrainType": 6
+              }
+            ]
+          }
+        }
+      ]
     },
     "17": {
       "Id": 17,
       "Name": "待伏",
       "desc": "伏兵成功时施展会心一击",
       "level": 2,
-      "kind": 4
+      "kind": 4,
+      "actionEntities": [
+        {
+          "class": "TroopSkillCalculateCritical",
+          "value": 100,
+          "condition": {
+            "class": "SkillIdInList",
+            "ids": [
+              27
+            ],
+            "result": 1
+          }
+        }
+      ]
     },
     "18": {
       "Id": 18,
       "Name": "攻城",
       "desc": "攻击据点、设施、建筑物时施展会心一击",
       "level": 3,
-      "kind": 2
+      "kind": 2,
+      "actionEntities": [
+        {
+          "class": "TroopSkillCalculateCritical",
+          "value": 100,
+          "condition": {
+            "class": "SkillTargetCellCheck",
+            "targetType": "buildingBase",
+            "result": 1
+          }
+        }
+      ]
     },
     "19": {
       "Id": 19,

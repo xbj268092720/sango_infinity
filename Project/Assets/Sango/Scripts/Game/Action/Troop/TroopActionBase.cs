@@ -87,7 +87,7 @@ namespace Sango.Core.Action
         /// <returns></returns>
         public bool CheckIsNormalSkill(SkillInstance skill, int isNormalSkill)
         {
-            if ((isNormalSkill == 1 && skill.costEnergy > 0) || (isNormalSkill == 2 && skill.costEnergy == 0))
+            if ((isNormalSkill == 1 && !skill.IsNormal()) || (isNormalSkill == 2 && skill.IsNormal()))
                 return false;
             return true;
         }

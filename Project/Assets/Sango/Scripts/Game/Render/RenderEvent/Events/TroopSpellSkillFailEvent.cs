@@ -37,7 +37,7 @@ namespace Sango.Render
                 replaceSkill = skill.IsRange() ? troop.NormalRangeSkill : troop.NormalSkill;
             }
 
-            if (skill.costEnergy > 0)
+            if (!skill.IsNormal())
                 troop.Render.ShowSkill(skill, true, false);
         }
 
