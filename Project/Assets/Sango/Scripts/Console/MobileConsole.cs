@@ -193,10 +193,10 @@ namespace SKFramework
                     HasError = true;
                     break;
                 case LogType.Warning:
-                    logList.Add(new LogData(condition, 1));
+                    //logList.Add(new LogData(condition, 1));
                     break;
                 default:
-                    logList.Add(new LogData(condition, 0));
+                    //logList.Add(new LogData(condition, 0));
                     break;
             }
         }

@@ -2874,6 +2874,7 @@ namespace Sango.Core
             else
             {
                 person.SetMission(MissionType.PersonRecruitPerson, dest, 100, dest.CurrentCity.Id);
+                person.ActionOver = true;
                 BelongCorps.ReduceActionPoint(apCost);
                 return false;
             }

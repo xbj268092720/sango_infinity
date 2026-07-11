@@ -67,7 +67,7 @@ namespace Sango.Mod
                     string[] c_v = s.Split('=');
                     if (c_v.Length > 1)
                     {
-                        switch (c_v[0].Trim())
+                        switch (c_v[0].Trim().ToLower())
                         {
                             case "id":
                                 mod.Id = c_v[1].Trim();

@@ -1,0 +1,27 @@
+using Sango.Core.Tools;
+
+namespace Sango.Core
+{
+    public class TriggerWhenSkillAfterHitTroop : SkillTrigger
+    {
+        public override void Init(TriggerCall call)
+        {
+            base.Init(call);
+            GameEvent.OnSkillDamageTroopAfter += OnSkillDamageTroopAfter;
+        }
+
+        public override void Clear()
+        {
+            GameEvent.OnSkillDamageTroopAfter -= OnSkillDamageTroopAfter;
+        }
+
+        public void OnSkillDamageTroopAfter(SkillInstance skill, Troop target, OverrideData<int> damage)
+        {
+            atk_cell = target.cell;
+            this.skill = skill;
+            damageOverride = damage;
+            triggerCall?.Invoke(this);
+        }
+
+    }
+}

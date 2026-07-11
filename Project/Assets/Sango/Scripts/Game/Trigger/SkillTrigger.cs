@@ -5,9 +5,10 @@ namespace Sango.Core
 {
     public abstract class SkillTrigger : Trigger
     {
-        protected Cell atk_cell;
-        protected SkillInstance skill;
-        protected OverrideData<int> damageOverride;
+        public Cell atk_cell;
+        public SkillInstance skill;
+        public OverrideData<int> damageOverride;
+
         public override SkillInstance ActionSkill => skill;
         public override SkillInstance TargetSkill => null;
         public override Person ActionPerson => skill.master.Leader;
@@ -27,5 +28,6 @@ namespace Sango.Core
         public override Fire TargetFire => atk_cell.fire;
         public override object ActionObject => skill;
         public override object TargetObject => atk_cell;
+        public override OverrideData<int> DamageOverride => damageOverride;
     }
 }

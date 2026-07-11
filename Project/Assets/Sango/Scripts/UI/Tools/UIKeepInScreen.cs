@@ -10,6 +10,7 @@ namespace UnityEngine.UI
         public float delayTime = 0;
         float cur_delayTime = 0;
         public Vector2 cachePosition;
+        public Vector2 update_cachePosition;
         public bool dontResetCachePosition = true;
         RectTransform cacheTrans;
         RectTransform uiRoot;
@@ -122,10 +123,10 @@ namespace UnityEngine.UI
 
             //cacheTrans.anchoredPosition = cachePosition;
 
-            if(cachePosition != cacheTrans.anchoredPosition)
+            if(update_cachePosition != cacheTrans.anchoredPosition)
             {
                 JudgmentUiInScreen(judgmentWidth, judgmentHeight);
-                cachePosition = cacheTrans.anchoredPosition;
+                update_cachePosition = cacheTrans.anchoredPosition;
             }
         }
     }

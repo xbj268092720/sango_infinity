@@ -201,12 +201,15 @@ namespace Sango
                     string fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(text, entry.FullName));
                     if (System.IO.Path.GetFileName(fullPath).Length == 0)
                     {
-                        System.IO.Directory.CreateDirectory(fullPath);
+                        if(!System.IO.Directory.Exists(fullPath))
+                            System.IO.Directory.CreateDirectory(fullPath);
                     }
                     else
                     {
-                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath));
-                        entry.ExtractToFile(fullPath, overwrite: false);
+                        string dirName = System.IO.Path.GetDirectoryName(fullPath);
+                        if (!System.IO.Directory.Exists(dirName))
+                            System.IO.Directory.CreateDirectory(dirName);
+                        entry.ExtractToFile(fullPath, overwrite: true);
                     }
                     cur_count++;
                     progress?.Invoke((float)cur_count / count * 0.7f);
@@ -231,12 +234,15 @@ namespace Sango
                     string fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(text, entry.FullName));
                     if (System.IO.Path.GetFileName(fullPath).Length == 0)
                     {
-                        System.IO.Directory.CreateDirectory(fullPath);
+                        if (!System.IO.Directory.Exists(fullPath))
+                            System.IO.Directory.CreateDirectory(fullPath);
                     }
                     else
                     {
-                        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath));
-                        entry.ExtractToFile(fullPath, overwrite: false);
+                        string dirName = System.IO.Path.GetDirectoryName(fullPath);
+                        if (!System.IO.Directory.Exists(dirName))
+                            System.IO.Directory.CreateDirectory(dirName);
+                        entry.ExtractToFile(fullPath, overwrite: true);
                     }
                     cur_count++;
                     progress?.Invoke(0.7f + (float)cur_count / count * 0.3f);

@@ -23,6 +23,7 @@ namespace Sango.Core
         public virtual Fire TargetFire => null;
         public virtual object ActionObject => null;
         public virtual object TargetObject => null;
+        public virtual Tools.OverrideData<int> DamageOverride => null;
 
         public delegate void TriggerCall(Trigger trigger);
         public TriggerCall triggerCall;
@@ -87,6 +88,9 @@ namespace Sango.Core
         public static void Init()
         {
             Register("TriggerWhenSkillHitTroop", CraeteHandle<TriggerWhenSkillHitTroop>);
+            Register("TriggerWhenSkillRenderEnd", CraeteHandle<TriggerWhenSkillRenderEnd>);
+            Register("TriggerWhenSkillAfterHitTroop", CraeteHandle<TriggerWhenSkillAfterHitTroop>);
+
         }
     }
 }

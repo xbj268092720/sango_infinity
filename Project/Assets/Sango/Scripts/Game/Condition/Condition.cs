@@ -78,7 +78,8 @@ namespace Sango.Core
             Register("andList", CraeteHandle<ConditionAndList>);
             Register("orList", CraeteHandle<ConditionOrList>);
             Register("DistanceCheck", CraeteHandle<DistanceCheck>);
-
+            Register("ProbabilityCheck", CraeteHandle<ProbabilityCheck>);
+            
             // Troop
             Register("TroopAttributeCompare", CraeteHandle<TroopAttributeCompare>);
             Register("TroopStatusCheck", CraeteHandle<TroopStatusCheck>);

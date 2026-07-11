@@ -103,8 +103,6 @@ public class GameStart : MonoBehaviour
 
             if (Directory.Exists(Path.ContentRootPath))
                 Directory.Delete(Path.ContentRootPath);
-            if (Directory.Exists(Path.ModRootPath))
-                Directory.Delete(Path.ModRootPath);
 
             // 从streamingAssets中拷贝zip到存储盘
             Platform.CopyContentAndModZipFile((f) =>

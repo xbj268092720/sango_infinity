@@ -510,7 +510,6 @@ namespace Sango.Core
                 if (isComplete)
                 {
                     master.Render.SetAniShow(0);
-                    GameEvent.OnSkillRenderEnd?.Invoke(this, spellCell);
                     return true;
                 }
             }
@@ -527,7 +526,6 @@ namespace Sango.Core
                 if (time > 2.5f)
                 {
                     master.Render.SetAniShow(0);
-                    GameEvent.OnSkillRenderEnd?.Invoke(this, spellCell);
                     return true;
                 }
             }
@@ -561,11 +559,12 @@ namespace Sango.Core
                     if (damage < 0)
                         damage = 0;
 
-                    overrideData = Tools.OverrideData<int>.Create(damage);
-                    GameEvent.OnSkillDamageTroop?.Invoke(this, beAtkTroop, overrideData);
-                    damage = overrideData.ValueAndRecycle;
+                    Tools.OverrideData<int> damage_overrideData = Tools.OverrideData<int>.Create(damage);
+                    GameEvent.OnSkillDamageTroop?.Invoke(this, beAtkTroop, damage_overrideData);
+                    damage = damage_overrideData.Value;
 
                     beAtkTroop.ChangeTroops(-damage, troop, this, 0);
+
                     int ep = damage / 100;
                     if (!beAtkTroop.IsAlive) ep += 50;
                     troop.ForEachPerson(p =>
@@ -635,6 +634,8 @@ namespace Sango.Core
                             }
                         }
                     }
+
+                    GameEvent.OnSkillDamageTroopAfter?.Invoke(this, beAtkTroop, damage_overrideData);
                 }
 
                 BuildingBase beAtkBuildingBase = atkCell.building;

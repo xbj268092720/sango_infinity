@@ -402,8 +402,16 @@ namespace Sango.Core.Player
         {
             if (person.IsCurPlayer)
             {
-                string message = $"{person.ColorName}已成功从{fromCity.ColorName}转移到{toCity.ColorName}！";
-                _AddTextMessage(message, person.BelongForce, toCity.x, toCity.y);
+                if(fromCity == toCity)
+                {
+                    string message = $"{person.ColorName}已经回到{toCity.ColorName}！";
+                    _AddTextMessage(message, person.BelongForce, toCity.x, toCity.y);
+                }
+                else
+                {
+                    string message = $"{person.ColorName}已成功从{fromCity.ColorName}转移到{toCity.ColorName}！";
+                    _AddTextMessage(message, person.BelongForce, toCity.x, toCity.y);
+                }
             }
         }
         
@@ -534,7 +542,19 @@ namespace Sango.Core.Player
             if (person.IsCurPlayer)
             {
                 message = $"{person.ColorName}升级到{person.Level.Id}级！";
-                _AddTextMessage(message, person.BelongForce, 0, 0);
+                int x, y = 0;
+                if(person.BelongTroop != null)
+                {
+                    x = person.BelongTroop.x;
+                    y = person.BelongTroop.y;
+                }
+                else
+                {
+                    x = person.CurrentCity.x;
+                    y = person.CurrentCity.y;
+                }
+
+                _AddTextMessage(message, person.BelongForce, x, y);
             }
         }
 

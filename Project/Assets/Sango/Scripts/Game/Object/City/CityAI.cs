@@ -187,7 +187,7 @@ namespace Sango.Core
         /// <returns>是否完成</returns>
         public static bool AISearching(City city, Scenario scenario)
         {
-            if ((city.invisiblePersons.Count > 0 && city.freePersons.Count > 0 && GameRandom.Chance(30)) || GameRandom.Chance(10))
+            if ((city.invisiblePersons.Count > 0 && city.freePersons.Count > 0 && GameRandom.Chance(80)) || GameRandom.Chance(20))
             {
                 Person[] recommandList = ForceAI.CounsellorRecommendSearching(city.freePersons, city, recommandSearchingFeatrues);
                 if (recommandList != null && recommandList.Length > 0)

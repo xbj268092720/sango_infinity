@@ -154,7 +154,7 @@
           "class": "TroopTriggerAction",
           "triggerList": [
             {
-              "class": "TriggerWhenSkillHitTroop"
+              "class": "TriggerWhenSkillAfterHitTroop"
             }
           ],
           "actionList": [
@@ -178,7 +178,7 @@
           "class": "TroopTriggerAction",
           "triggerList": [
             {
-              "class": "TriggerWhenSkillHitTroop"
+              "class": "TriggerWhenSkillAfterHitTroop"
             }
           ],
           "actionList": [
@@ -203,7 +203,41 @@
       "Name": "连击",
       "desc": "施展一般攻击时，可连续攻击２次",
       "level": 2,
-      "kind": 2
+      "kind": 2,
+      "actionEntities": [
+        {
+          "class": "TroopTriggerAction",
+          "triggerList": [
+            {
+              "class": "TriggerWhenSkillRenderEnd"
+            }
+          ],
+          "actionList": [
+            {
+              "class": "TroopComboAttack",
+              "count": 1,
+              "condition": {
+                "class": "andList",
+                "list": [
+                  {
+                    "class": "SkillIsNormalSkill",
+                    "result": 1
+                  }
+                ]
+              },
+              "comboCondition": {
+                "class": "andList",
+                "list": [
+                  {
+                    "class": "ProbabilityCheck",
+                    "probability": 5000
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
     },
     "14": {
       "Id": 14,
@@ -313,14 +347,37 @@
       "Name": "攻心",
       "desc": "攻击时可将敌方部队的一部分士兵吸收到自军部队中",
       "level": 2,
-      "kind": 2
+      "kind": 2,
+      "actionEntities": [
+        {
+          "class": "TroopTriggerAction",
+          "triggerList": [
+            {
+              "class": "TriggerWhenSkillAfterHitTroop"
+            }
+          ],
+          "actionList": [
+            {
+              "class": "TroopRecure",
+              "percent": 10
+            }
+          ]
+        }
+      ]
     },
     "24": {
       "Id": 24,
       "Name": "驱逐",
       "desc": "施展一般攻击时会心一击",
       "level": 3,
-      "kind": 2
+      "kind": 2,
+      "actionEntities": [
+        {
+          "class": "TroopSkillCalculateCritical",
+          "value": 100,
+          "isNormal": 1
+        }
+      ]
     },
     "25": {
       "Id": 25,

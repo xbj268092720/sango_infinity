@@ -380,9 +380,12 @@ using Sango.Core; namespace Sango.UI
         {
             if (msg != null)
             {
-                Cell cell = Scenario.Cur.Map.GetCell(msg.x, msg.y);
-                if (cell != null)
-                    MapRender.Instance.MoveCameraTo(cell.Position, 0.3f);
+                if(msg.x > 0 &&  msg.y > 0)
+                {
+                    Cell cell = Scenario.Cur.Map.GetCell(msg.x, msg.y);
+                    if (cell != null)
+                        MapRender.Instance.MoveCameraTo(cell.Position, 0.3f);
+                }
             }
         }
     }

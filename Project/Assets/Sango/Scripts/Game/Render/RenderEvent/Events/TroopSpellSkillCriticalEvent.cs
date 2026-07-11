@@ -70,6 +70,7 @@ namespace Sango.Render
                 Action();
                 troop?.Render?.SetAniShow(0);
                 IsDone = true;
+                GameEvent.OnSkillRenderEnd?.Invoke(skill, spellCell);
                 return IsDone;
             }
 
@@ -91,6 +92,10 @@ namespace Sango.Render
             }
             
             IsDone = skill.UpdateRender(spellCell, scenario, time, Action);
+            if (IsDone)
+            {
+                GameEvent.OnSkillRenderEnd?.Invoke(skill, spellCell);
+            }
             time += deltaTime;
             return IsDone;
         }

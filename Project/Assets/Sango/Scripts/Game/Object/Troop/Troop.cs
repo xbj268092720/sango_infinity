@@ -1121,8 +1121,8 @@ namespace Sango.Core
         internal static List<TroopMoveEvent> tempMoveEventList = new List<TroopMoveEvent>(32);
         internal static List<Cell> spellRangeCells = new List<Cell>(256);
         internal bool isMoving = false;
-        IRenderEventBase moveRenderEvent = null;
-        IRenderEventBase actionRenderEvent = null;
+        internal IRenderEventBase moveRenderEvent = null;
+        internal IRenderEventBase actionRenderEvent = null;
 
         public bool MoveTo(Cell destCell)
         {

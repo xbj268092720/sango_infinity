@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+using UnityEngine;
+
+namespace Sango.UI
 {
     public class UIPersonInformation : UGUIWindow
     {
@@ -79,6 +82,10 @@ using Sango.Core; namespace Sango.UI
             uIObjectList.SelectDefaultObject(Target);
             windiwTitle.text = currentSystem.Name;
             tabs[0].isOn = true;
+            RectTransform labRect = descLabel.label.GetComponent<RectTransform>();
+            Vector2 aPos = labRect.anchoredPosition;
+            aPos.y = 0;
+            labRect.anchoredPosition = aPos;
             Show(Target);
         }
 
@@ -121,7 +128,7 @@ using Sango.Core; namespace Sango.UI
             forceNameLabel.text = PersonSortFunction.SortByBelongForce.GetValueStr(Target);
             corpsNameLabel.text = PersonSortFunction.SortByBelongCorps.GetValueStr(Target);
             belongCityLabel.text = PersonSortFunction.SortByBelongCity.GetValueStr(Target);
-            whereLabel.text = PersonSortFunction.SortByBelongCity.GetValueStr(Target);
+            whereLabel.text = PersonSortFunction.SortByCurrentCity.GetValueStr(Target);
             stateLabel.text = PersonSortFunction.SortByState.GetValueStr(Target);
             loyaltyLabel.text = PersonSortFunction.SortByLoyalty.GetValueStr(Target);
             meritLabel.text = PersonSortFunction.SortByMerit.GetValueStr(Target);
@@ -146,14 +153,23 @@ using Sango.Core; namespace Sango.UI
             injuryyLabel.text = "";// PersonSortFunction.SortBySex.GetValueStr(Target);
             itemCountLabel.text = "0";// PersonSortFunction.SortByPersonality.GetValueStr(Target);
             staminaLabel.text = PersonSortFunction.SortByStamina.GetValueStr(Target);
+            sexLabel.text = PersonSortFunction.SortBySex.GetValueStr(Target);
 
             int index = 0;
-            troopTypeLvLabel[index++].text = PersonSortFunction.SortBySpearLv.GetValueStr(Target);
-            troopTypeLvLabel[index++].text = PersonSortFunction.SortByHalberdLv.GetValueStr(Target);
-            troopTypeLvLabel[index++].text = PersonSortFunction.SortByCrossbowLv.GetValueStr(Target);
-            troopTypeLvLabel[index++].text = PersonSortFunction.SortByRideLv.GetValueStr(Target);
-            troopTypeLvLabel[index++].text = PersonSortFunction.SortByWaterLv.GetValueStr(Target);
-            troopTypeLvLabel[index++].text = PersonSortFunction.SortByMachineLv.GetValueStr(Target);
+            troopTypeLvLabel[index++].SetTitle(PersonSortFunction.SortBySpearLv.GetValueStr(Target));
+            troopTypeLvLabel[index++].SetTitle(PersonSortFunction.SortByHalberdLv.GetValueStr(Target));
+            troopTypeLvLabel[index++].SetTitle(PersonSortFunction.SortByCrossbowLv.GetValueStr(Target));
+            troopTypeLvLabel[index++].SetTitle(PersonSortFunction.SortByRideLv.GetValueStr(Target));
+            troopTypeLvLabel[index++].SetTitle(PersonSortFunction.SortByWaterLv.GetValueStr(Target));
+            troopTypeLvLabel[index++].SetTitle(PersonSortFunction.SortByMachineLv.GetValueStr(Target));
+
+            index = 0;
+            troopTypeLvLabel[index++].text = PersonSortFunction.SortBySpearLv.name;
+            troopTypeLvLabel[index++].text = PersonSortFunction.SortByHalberdLv.name;
+            troopTypeLvLabel[index++].text = PersonSortFunction.SortByCrossbowLv.name;
+            troopTypeLvLabel[index++].text = PersonSortFunction.SortByRideLv.name;
+            troopTypeLvLabel[index++].text = PersonSortFunction.SortByWaterLv.name;
+            troopTypeLvLabel[index++].text = PersonSortFunction.SortByMachineLv.name;
 
             featureLabel.text = PersonSortFunction.SortByFeatureList.GetValueStr(Target);
             featureDescLabel.text = PersonSortFunction.SortByFeatureDesc.GetValueStr(Target);

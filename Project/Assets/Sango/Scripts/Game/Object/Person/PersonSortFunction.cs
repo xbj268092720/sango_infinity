@@ -602,7 +602,13 @@ namespace Sango.Core
         {
             name = "所在",
             width = 60,
-            valueGetCall = x => x.CurrentCity?.Name ?? "",
+            valueGetCall = (x) => {
+
+                if (x.BelongTroop != null)
+                    return x.BelongTroop.Name;
+                else
+                    return x.CurrentCity?.Name ?? "";
+                },
             personSortFunc = (a, b) => SangoObject.Compare(a.CurrentCity, b.CurrentCity),
         };
 

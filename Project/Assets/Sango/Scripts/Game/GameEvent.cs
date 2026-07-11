@@ -557,6 +557,11 @@ namespace Sango.Core
         public static EventDelegate<SkillInstance, Troop, OverrideData<int>> OnSkillDamageTroop;
 
         /// <summary>
+        /// 技能实例命中敌人之后
+        /// </summary>
+        public static EventDelegate<SkillInstance, Troop, OverrideData<int>> OnSkillDamageTroopAfter;
+
+        /// <summary>
         /// 技能实例命中建筑士兵
         /// </summary>
         public static EventDelegate<SkillInstance, BuildingBase, OverrideData<int>> OnSkillDamageBuildingTroops;

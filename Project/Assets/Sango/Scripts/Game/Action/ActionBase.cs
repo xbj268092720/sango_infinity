@@ -103,7 +103,9 @@ namespace Sango.Core.Action
             Register("TroopIgnoreZOC", CraeteHandle<TroopIgnoreZOC>);
             Register("TroopTriggerAction", CraeteHandle<TroopTriggerAction>);
             Register("TroopChangeMorale", CraeteHandle<TroopChangeMorale>);
-
+            Register("TroopComboAttack", CraeteHandle<TroopComboAttack>);
+            Register("TroopRecure", CraeteHandle<TroopRecure>);
+            
         }
 
     }

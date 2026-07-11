@@ -1119,7 +1119,7 @@ namespace Sango.Core
                 BelongCorps = city.BelongCorps;
             if (BelongForce != city.BelongForce)
                 BelongForce = city.BelongForce;
-            GameEvent.OnPersonChangeBelongCity?.Invoke(this, city, last);
+            GameEvent.OnPersonChangeBelongCity?.Invoke(this, last, city);
             return last;
         }
 
