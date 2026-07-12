@@ -263,7 +263,10 @@ using Sango.Core; namespace Sango.UI
             List<City> port_gate_list = new List<City>();
             port_gate_list.AddRange(Target.portList);
             port_gate_list.AddRange(Target.gateList);
-            List<City> result_list = new List<City>();
+
+            if (port_gate_list.Count == 0) return;
+
+            List<City> result_list = new List<City>() { port_gate_list[0] };
             PortGateSelectSystem portGateSelectSystem = GameSystem.GetSystem<PortGateSelectSystem>();
             portGateSelectSystem.Start(
                 port_gate_list,
@@ -273,6 +276,7 @@ using Sango.Core; namespace Sango.UI
 
         void OnPortGateSelected(List<City> port_gate)
         {
+            if (port_gate.Count == 0) return;
             List<SangoObject> port_gate_list = new List<SangoObject>();
             port_gate_list.AddRange(Target.portList);
             port_gate_list.AddRange(Target.gateList);
