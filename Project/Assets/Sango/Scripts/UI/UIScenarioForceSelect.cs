@@ -227,6 +227,8 @@ namespace Sango.UI
 
         public void SetPlayer(UIMapCitySelectItem item, ShortCity city, bool b)
         {
+            if (city.BelongForce == 0) return;
+
             ShortScenario scenario = ShortScenario.CurSelected;
             ShortForce force = scenario.forceSet[city.BelongForce];
             if (force == null) return;

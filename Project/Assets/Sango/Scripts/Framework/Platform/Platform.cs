@@ -159,24 +159,24 @@ namespace Sango
                 File.WriteAllBytes(zipSavePath, request.downloadHandler.data);
             }
 
-            path = System.IO.Path.Combine(Sango.Path.StreamingAssetsPath, ModZipFile);
-            uri = new System.Uri(path).AbsoluteUri;
-            request = UnityWebRequest.Get(uri);
-            unityWebRequestAsyncOperation = request.SendWebRequest();
-            while (!unityWebRequestAsyncOperation.isDone)
-            {
-                progress?.Invoke(0.5f + unityWebRequestAsyncOperation.progress * 0.5f);
-                Thread.Sleep(10);
-            }
+            //path = System.IO.Path.Combine(Sango.Path.StreamingAssetsPath, ModZipFile);
+            //uri = new System.Uri(path).AbsoluteUri;
+            //request = UnityWebRequest.Get(uri);
+            //unityWebRequestAsyncOperation = request.SendWebRequest();
+            //while (!unityWebRequestAsyncOperation.isDone)
+            //{
+            //    progress?.Invoke(0.5f + unityWebRequestAsyncOperation.progress * 0.5f);
+            //    Thread.Sleep(10);
+            //}
 
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                string zipSavePath = System.IO.Path.Combine(Sango.Path.PersistentDataPathPath, ModZipFile);
-                if (File.Exists(zipSavePath))
-                    File.Delete(zipSavePath);
+            //if (request.result == UnityWebRequest.Result.Success)
+            //{
+            //    string zipSavePath = System.IO.Path.Combine(Sango.Path.PersistentDataPathPath, ModZipFile);
+            //    if (File.Exists(zipSavePath))
+            //        File.Delete(zipSavePath);
 
-                File.WriteAllBytes(zipSavePath, request.downloadHandler.data);
-            }
+            //    File.WriteAllBytes(zipSavePath, request.downloadHandler.data);
+            //}
         }
 
 
@@ -212,42 +212,42 @@ namespace Sango
                         entry.ExtractToFile(fullPath, overwrite: true);
                     }
                     cur_count++;
-                    progress?.Invoke((float)cur_count / count * 0.7f);
+                    progress?.Invoke((float)cur_count / count);
                 }
             }
 
-            zipSavePath = System.IO.Path.Combine(Sango.Path.PersistentDataPathPath, ModZipFile);
-            source = ZipFile.Open(zipSavePath, ZipArchiveMode.Read, null);
-            directoryInfo = System.IO.Directory.CreateDirectory(Sango.Path.PersistentDataPathPath);
-            text = directoryInfo.FullName;
-            length = text.Length;
-            if (length != 0 && text[length - 1] != System.IO.Path.DirectorySeparatorChar)
-            {
-                text += System.IO.Path.DirectorySeparatorChar;
-            }
-            count = source.Entries.Count;
-            cur_count = 0;
-            if (count > 0)
-            {
-                foreach (ZipArchiveEntry entry in source.Entries)
-                {
-                    string fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(text, entry.FullName));
-                    if (System.IO.Path.GetFileName(fullPath).Length == 0)
-                    {
-                        if (!System.IO.Directory.Exists(fullPath))
-                            System.IO.Directory.CreateDirectory(fullPath);
-                    }
-                    else
-                    {
-                        string dirName = System.IO.Path.GetDirectoryName(fullPath);
-                        if (!System.IO.Directory.Exists(dirName))
-                            System.IO.Directory.CreateDirectory(dirName);
-                        entry.ExtractToFile(fullPath, overwrite: true);
-                    }
-                    cur_count++;
-                    progress?.Invoke(0.7f + (float)cur_count / count * 0.3f);
-                }
-            }
+            //zipSavePath = System.IO.Path.Combine(Sango.Path.PersistentDataPathPath, ModZipFile);
+            //source = ZipFile.Open(zipSavePath, ZipArchiveMode.Read, null);
+            //directoryInfo = System.IO.Directory.CreateDirectory(Sango.Path.PersistentDataPathPath);
+            //text = directoryInfo.FullName;
+            //length = text.Length;
+            //if (length != 0 && text[length - 1] != System.IO.Path.DirectorySeparatorChar)
+            //{
+            //    text += System.IO.Path.DirectorySeparatorChar;
+            //}
+            //count = source.Entries.Count;
+            //cur_count = 0;
+            //if (count > 0)
+            //{
+            //    foreach (ZipArchiveEntry entry in source.Entries)
+            //    {
+            //        string fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(text, entry.FullName));
+            //        if (System.IO.Path.GetFileName(fullPath).Length == 0)
+            //        {
+            //            if (!System.IO.Directory.Exists(fullPath))
+            //                System.IO.Directory.CreateDirectory(fullPath);
+            //        }
+            //        else
+            //        {
+            //            string dirName = System.IO.Path.GetDirectoryName(fullPath);
+            //            if (!System.IO.Directory.Exists(dirName))
+            //                System.IO.Directory.CreateDirectory(dirName);
+            //            entry.ExtractToFile(fullPath, overwrite: true);
+            //        }
+            //        cur_count++;
+            //        progress?.Invoke(0.7f + (float)cur_count / count * 0.3f);
+            //    }
+            //}
             progress?.Invoke(1);
         }
 

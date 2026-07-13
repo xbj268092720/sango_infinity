@@ -13,6 +13,7 @@ namespace Sango.UI
 
         public UIPersonItem[] personItems;
         public UIBuildingTypeItem[] productItems;
+        public UIBuildingTypeItem autoProductItem;
 
         public UITextField value_target;
         public UITextField value_attr;
@@ -40,8 +41,11 @@ namespace Sango.UI
                 });
 
             product_items_list.Clear();
-            if (targetBuildingType.productItems != null && targetBuildingType.productItems.Length > 0)
+            if (targetBuildingType.productItems != null && targetBuildingType.productItems.Length > 1)
             {
+                autoProductItem.onSelected = OnSelectAutoProduct;
+                autoProductItem.SetSelected(TargetBuilding.ProductItemId == 0);
+
                 for (int i = 0; i < targetBuildingType.productItems.Length; i++)
                 {
                     int itemId = targetBuildingType.productItems[i];
@@ -59,8 +63,6 @@ namespace Sango.UI
                     {
                         item.gameObject.SetActive(true);
                         ItemType itemType = product_items_list[i];
-                        if (TargetBuilding.ProductItemId == 0)
-                            TargetBuilding.ProductItemId = itemType.Id;
                         item.SetItemType(itemType).SetNum(TargetBuilding.BelongCity.itemStore.GetNumber(itemType.storeKind)).SetSelected(itemType.Id == TargetBuilding.ProductItemId);
                         item.onSelected = OnSelectProduct;
                     }
@@ -73,8 +75,19 @@ namespace Sango.UI
             ShowContent();
         }
 
+        void OnSelectAutoProduct(UIBuildingTypeItem item)
+        {
+            TargetBuilding.ProductItemId = 0;
+            for (int i = 0; i < productItems.Length; i++)
+            {
+                productItems[i].SetSelected(false);
+            }
+            autoProductItem.SetSelected(true);
+        }
+
         void OnSelectProduct(UIBuildingTypeItem item)
         {
+            autoProductItem.SetSelected(false); 
             TargetBuilding.ProductItemId = item.obj.Id;
             for (int i = 0; i < productItems.Length; i++)
             {

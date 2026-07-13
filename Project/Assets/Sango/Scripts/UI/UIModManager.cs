@@ -260,7 +260,7 @@ namespace Sango.UI
                 {
                     Mod.Mod mod = allMods[destIndex];
                     listItem.SetSelected(selectedIndex == destIndex).
-                        SetEnabled(destIndex < enabledCount);
+                        SetEnabled(enabledMods.Contains(mod));
                     listItem.BindToggleCall(OnToggleMod);
                     listItem.onUpCall = OnModUp;
                     listItem.onDownCall = OnModDown;

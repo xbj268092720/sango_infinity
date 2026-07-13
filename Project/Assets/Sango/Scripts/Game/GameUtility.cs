@@ -445,6 +445,22 @@ namespace Sango.Core
                     return false;
             }
         }
+
+        readonly static string[] endStr = new string[] { "B", "K", "M", "G" };
+        public static string FormatFileSizeStr(long fileSize)
+        {
+            int idx = 0;
+            double n = 0;
+            while (fileSize > 1024 && idx < endStr.Length)
+            {
+                fileSize = fileSize / 1024;
+                n = (double)fileSize / 1024f;
+                idx++;
+            }
+
+            return $"{n.ToString("F2")}{endStr[idx]}";
+
+        }
     }
 
 

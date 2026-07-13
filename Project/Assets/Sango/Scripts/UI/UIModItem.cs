@@ -47,8 +47,23 @@ namespace Sango.UI
             {
                 enableToggle.gameObject.SetActive(mod.IsValidMod());
                 downloadBtn.gameObject.SetActive(mod.CanUpgrage());
-                SetName(mod.Name).
-                SetVersion(mod.Version);
+                SetName(mod.Name);
+                if (mod.CanUpgrage())
+                {
+                    if (mod.IsValidMod())
+                    {
+                        string txt = $"当前版本:{mod.Version}, 线上版本:{mod.UrlVersion}.下载大小:{GameUtility.FormatFileSizeStr(mod.Size)}";
+
+                    }
+                    else
+                    {
+                        string txt = $"线上版本:{mod.UrlVersion}.下载大小:{GameUtility.FormatFileSizeStr(mod.Size)}";
+                    }
+                }
+                else
+                {
+                    SetVersion(mod.Version);
+                }
             }
             else
             {
@@ -172,7 +187,6 @@ namespace Sango.UI
         {
             if (mod != null && mod.IsDownloading())
             {
-                Sango.Log.Error(mod.loadProgress);
                 progressImg.enabled = true;
                 progressImg.fillAmount = mod.loadProgress;
             }

@@ -56,6 +56,9 @@ namespace Sango.Mod
         /// 源url
         /// </summary>
         public string Url { internal set; get; }
+
+        public long Size;
+
         /// <summary>
         /// 源version
         /// </summary>

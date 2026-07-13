@@ -31,7 +31,7 @@ namespace Sango.Core
             if (t != null)
             {
                 OverrideData<int> overrideData = Tools.OverrideData<int>.Create(t.costAP);
-                GameEvent.OnGetJobCost?.Invoke(t, t.costAP, overrideData);
+                GameEvent.OnGetJobCostAP?.Invoke(t, t.costAP, overrideData);
                 return overrideData.ValueAndRecycle;
             }
             return 0;

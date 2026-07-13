@@ -672,6 +672,7 @@ MonoBehaviour:
   offset: {x: 0, y: 0}
   delayTime: 0
   cachePosition: {x: 0, y: 0}
+  update_cachePosition: {x: 0, y: 0}
   dontResetCachePosition: 1
 --- !u!1 &9039031632039893254
 GameObject:
@@ -771,10 +772,10 @@ MonoBehaviour:
   - {fileID: 6430188462215132630}
   - {fileID: 2248304550277536992}
   productItems:
-  - {fileID: 5969940484889801675}
   - {fileID: 8759843534792094414}
   - {fileID: 462100589690082499}
   - {fileID: 7952217379870528100}
+  autoProductItem: {fileID: 5969940484889801675}
   value_target: {fileID: 2957361391634344120}
   value_attr: {fileID: 4020890456375355268}
   value_product: {fileID: 3042794692206843920}
@@ -871,17 +872,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2389320062123717354, guid: 9a37dcd8939bbd2478c2db197176fe6b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 813bb8059cf897e4e8a31bc84499e7e0, type: 3}
+    - target: {fileID: 3867456562864656105, guid: 9a37dcd8939bbd2478c2db197176fe6b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4744885705670463011, guid: 9a37dcd8939bbd2478c2db197176fe6b, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5657079945702439855, guid: 9a37dcd8939bbd2478c2db197176fe6b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4b839a7fb569dd248995efb4a9a20bcd, type: 3}
     - target: {fileID: 6708058820569531363, guid: 9a37dcd8939bbd2478c2db197176fe6b, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6747839930072076739, guid: 9a37dcd8939bbd2478c2db197176fe6b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4b839a7fb569dd248995efb4a9a20bcd, type: 3}
     - target: {fileID: 7861255650681535854, guid: 9a37dcd8939bbd2478c2db197176fe6b, type: 3}
       propertyPath: m_Name
       value: itemTypeItem
+      objectReference: {fileID: 0}
+    - target: {fileID: 8039985680990555819, guid: 9a37dcd8939bbd2478c2db197176fe6b, type: 3}
+      propertyPath: m_Text
+      value: "\u81EA\u52A8"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a37dcd8939bbd2478c2db197176fe6b, type: 3}

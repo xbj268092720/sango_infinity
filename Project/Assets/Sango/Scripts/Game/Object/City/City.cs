@@ -1780,7 +1780,7 @@ namespace Sango.Core
             }
 
             CityRecruitPersonWhenCityFallEvent te = RenderEvent.Instance.Create<CityRecruitPersonWhenCityFallEvent>();
-            te.Init(temp_captive_list, this, escapeCity, atk, escapeCity == null ? 2 : 0);
+            te.Init(temp_captive_list, this, escapeCity, atk, escapeCity == null ? (int)PersonRecruitType.OnForceFall : (int)PersonRecruitType.OnCityFall);
             RenderEvent.Instance.Add(te);
 
         }

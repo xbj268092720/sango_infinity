@@ -237,10 +237,17 @@ namespace Sango.Core
                     menuData.Add(GameLanguage.GetString(10000003), 99999, city, OnClickMenuItem_CityAutoWorking, true);
                 else
                     menuData.Add(GameLanguage.GetString(10000004), 99999, city, OnClickMenuItem_CityAutoWorking, true);
+
+                menuData.Add("自动设置", 99998, city, OnClickMenuItem_AutoSetWorking, true);
             }
         }
 
         void OnClickMenuItem_CityAutoWorking(IContextMenuItem contextMenuItem)
+        {
+            AppointWorking(TargetCity, Scenario.Cur);
+        }
+
+        void OnClickMenuItem_AutoSetWorking(IContextMenuItem contextMenuItem)
         {
             bool b = !TargetCity.GetExtensionData<bool>("AppointWorking");
             TargetCity.SetExtensionData<bool>("AppointWorking", b);
@@ -257,6 +264,7 @@ namespace Sango.Core
             }
         }
 
+
         protected virtual void OnBuildingContextMenuShow(IContextMenuData menuData, BuildingBase building)
         {
             if (building.BelongCity != null && building.BelongForce != null && building.BelongForce.IsPlayer && building.BelongForce == Scenario.Cur.CurRunForce)
@@ -268,6 +276,9 @@ namespace Sango.Core
 
                 // 工作(自动)
                 menuData.Add(GameLanguage.GetString(10000002), 11, null, OnClickMenuItem_AutoWorkerSet, true);
+
+                // 清理
+                menuData.Add(GameLanguage.GetString(10000005), 12, null, OnClickMenuItem_ClearWorkerSet, true);
             }
         }
 
@@ -275,6 +286,24 @@ namespace Sango.Core
         {
             // 工作设置
             Enter();
+        }
+
+        protected virtual void OnClickMenuItem_ClearWorkerSet(IContextMenuItem contextMenuItem)
+        {
+            // 工作设置
+            City belongCity = TargetBuilding.BelongCity;
+            if (belongCity == null) return;
+
+            if (TargetBuilding.Workers != null)
+            {
+                TargetBuilding.Workers.ForEach((person) =>
+                {
+                    person.workingBuilding = null;
+                });
+                TargetBuilding.Workers.Clear();
+            }
+
+            TargetBuilding.Render.UpdateRender();
         }
 
         protected virtual void OnClickMenuItem_AutoWorkerSet(IContextMenuItem contextMenuItem)
@@ -947,6 +976,7 @@ namespace Sango.Core
                     case (int)BuildingKindType.BlacksmithShop:
                         if (building.AccumulatedProduct > 0)
                         {
+                            int p = building.ProductItemId;
                             if (building.ProductItemId == 0)
                             {
                                 // 设置产出
@@ -970,12 +1000,12 @@ namespace Sango.Core
                                 }
 
                                 int targetIndex = GameRandom.RandomWeightIndex(levelTotal);
-                                building.ProductItemId = targetIndex + 2;
+                                p = targetIndex + 2;
                             }
 
-                            city.AddItem(building.ProductItemId, building.AccumulatedProduct);
+                            city.AddItem(p, building.AccumulatedProduct);
                             city.Render?.UpdateRender();
-                            switch (building.ProductItemId)
+                            switch (p)
                             {
                                 case 2:
                                     building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Spear);
@@ -993,11 +1023,11 @@ namespace Sango.Core
                     case (int)BuildingKindType.Stable:
                         if (building.AccumulatedProduct > 0)
                         {
+                            int p = building.ProductItemId;
                             if (building.ProductItemId == 0)
-                            {
-                                building.ProductItemId = 5;
-                            }
-                            city.AddItem(5, building.AccumulatedProduct);
+                                p = 5;
+
+                            city.AddItem(p, building.AccumulatedProduct);
                             city.Render?.UpdateRender();
                             building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Horse);
                             building.AccumulatedProduct = 0;
@@ -1006,58 +1036,64 @@ namespace Sango.Core
                     case (int)BuildingKindType.BoatFactory:
                         if (building.AccumulatedProduct > 0)
                         {
+                            int targetBoatId = building.ProductItemId;
                             if (building.ProductItemId == 0)
                             {
-                                int targetBoatId = 12;
                                 ItemType _itemType = scenario.GetObject<ItemType>(targetBoatId);
                                 if (_itemType.IsValid(city.BelongForce))
                                 {
-                                    building.ProductItemId = targetBoatId;
+                                    targetBoatId = 12;
                                 }
                                 else
                                 {
-                                    building.ProductItemId = targetBoatId - 1;
+                                    targetBoatId = 11;
                                 }
                             }
 
-                            ItemType itemType = scenario.GetObject<ItemType>(building.ProductItemId);
+                            ItemType itemType = scenario.GetObject<ItemType>(targetBoatId);
                             city.AddItem(itemType.storeKind, building.AccumulatedProduct);
                             city.Render?.UpdateRender();
-                            building.Render?.ShowInfo(building.AccumulatedProduct, building.ProductItemId);
+                            building.Render?.ShowInfo(building.AccumulatedProduct, targetBoatId);
                             building.AccumulatedProduct = 0;
                         }
                         break;
                     case (int)BuildingKindType.MechineFactory:
                         if (building.AccumulatedProduct > 0)
                         {
-                            int monsterNum = city.itemStore.GetNumber((int)ItemStoreKindType.Helepolis);
-                            int towerNum = city.itemStore.GetNumber((int)ItemStoreKindType.Catapult);
+                            int p = building.ProductItemId;
 
-                            int tagetItemId;
-                            int totalNum;
-                            ItemType targetItemType;
-                            if (towerNum > monsterNum)
+                            if(building.ProductItemId == 0)
                             {
-                                tagetItemId = 7;
-                                totalNum = monsterNum;
-                                targetItemType = scenario.GetObject<ItemType>(tagetItemId);
-                                if (!targetItemType.IsValid(city.BelongForce))
-                                    tagetItemId--;
-                            }
-                            else
-                            {
-                                tagetItemId = 9;
-                                totalNum = towerNum;
-                                targetItemType = scenario.GetObject<ItemType>(tagetItemId);
-                                if (!targetItemType.IsValid(city.BelongForce))
-                                    tagetItemId--;
-                            }
-                            building.ProductItemId = tagetItemId;
+                                int monsterNum = city.itemStore.GetNumber((int)ItemStoreKindType.Helepolis);
+                                int towerNum = city.itemStore.GetNumber((int)ItemStoreKindType.Catapult);
 
-                            ItemType itemType = scenario.GetObject<ItemType>(building.ProductItemId);
+                                int tagetItemId;
+                                int totalNum;
+                                ItemType targetItemType;
+                                if (towerNum > monsterNum)
+                                {
+                                    tagetItemId = 7;
+                                    totalNum = monsterNum;
+                                    targetItemType = scenario.GetObject<ItemType>(tagetItemId);
+                                    if (!targetItemType.IsValid(city.BelongForce))
+                                        tagetItemId--;
+                                }
+                                else
+                                {
+                                    tagetItemId = 9;
+                                    totalNum = towerNum;
+                                    targetItemType = scenario.GetObject<ItemType>(tagetItemId);
+                                    if (!targetItemType.IsValid(city.BelongForce))
+                                        tagetItemId--;
+                                }
+
+                                p = tagetItemId;
+                            }
+
+                            ItemType itemType = scenario.GetObject<ItemType>(p);
                             city.AddItem(itemType.storeKind, building.AccumulatedProduct);
                             city.Render?.UpdateRender();
-                            building.Render?.ShowInfo(building.AccumulatedProduct, building.ProductItemId - 1);
+                            building.Render?.ShowInfo(building.AccumulatedProduct, p - 1);
                             building.AccumulatedProduct = 0;
                         }
                         break;
