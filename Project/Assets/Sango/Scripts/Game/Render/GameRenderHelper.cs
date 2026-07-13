@@ -69,7 +69,9 @@ namespace Sango.Core
         /// <returns>暴击图纹理</returns>
         public static Texture LoadCriticalImage(string id)
         {
-            string criticalPath = $"{CriticalImagePath}/{id}.png";
+            string criticalPath = $"{CriticalImagePath}/{id}";
+            if (string.IsNullOrEmpty(System.IO.Path.GetExtension(id)))
+                criticalPath += ".png";
 
             Texture criticalTexture = ObjectLoader.LoadObject<Texture>(criticalPath, "CriticalImage");
             if (criticalTexture == null)

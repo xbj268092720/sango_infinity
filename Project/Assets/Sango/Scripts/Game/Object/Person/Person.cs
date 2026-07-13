@@ -105,9 +105,19 @@ namespace Sango.Core
         [JsonProperty] public string headIconID;
 
         /// <summary>
-        /// 立绘id
+        /// 立绘id(弃用)
         /// </summary>
         [JsonProperty] public string imageID;
+
+        /// <summary>
+        /// 立绘id
+        /// </summary>
+        [JsonProperty] public string image;
+
+        /// <summary>
+        /// 立绘id
+        /// </summary>
+        [JsonProperty] public string image_old;
 
         /// <summary>
         /// 性别
@@ -1599,6 +1609,15 @@ namespace Sango.Core
             Sango.Log.Info($"@个人@{Name}官职升到[{Official.Name}]!!");
 #endif
             GameEvent.OnPersonUpgradeOfficial?.Invoke(this, last);
+        }
+
+        public static Person FormLib(PersonLib personLib)
+        {
+            Person person = new Person();
+            person.Id = personLib.Id;
+            person.image = personLib.image;
+            person.image_old = personLib.image_old;
+            return person;
         }
     }
 }

@@ -264,12 +264,12 @@ namespace Sango
                 Sango.File.Delete(path);
             }
             ZipFile.CreateFromDirectory(Sango.Path.ContentRootPath, path, System.IO.Compression.CompressionLevel.Optimal, true);
-            path = System.IO.Path.Combine(Application.streamingAssetsPath, Sango.Platform.ModZipFile);
-            if (Sango.File.Exists(path))
-            {
-                Sango.File.Delete(path);
-            }
-            ZipFile.CreateFromDirectory(Sango.Path.ModRootPath, path, System.IO.Compression.CompressionLevel.Optimal, true);
+            //path = System.IO.Path.Combine(Application.streamingAssetsPath, Sango.Platform.ModZipFile);
+            //if (Sango.File.Exists(path))
+            //{
+            //    Sango.File.Delete(path);
+            //}
+            //ZipFile.CreateFromDirectory(Sango.Path.ModRootPath, path, System.IO.Compression.CompressionLevel.Optimal, true);
             UnityEditor.AssetDatabase.Refresh();
         }
 #endif

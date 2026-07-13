@@ -55,6 +55,11 @@ namespace Sango.Core
         /// </summary>
         public static EventDelegate OnSystemStart;
 
+        /// <summary>
+        /// 在Mod更新的时候
+        /// </summary>
+        public static EventDelegate<Mod.Mod> OnModUpdate;
+
         #endregion Global
 
         #region Scenario

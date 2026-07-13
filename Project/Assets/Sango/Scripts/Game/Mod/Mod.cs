@@ -52,6 +52,16 @@ namespace Sango.Mod
         /// Assembly名字
         /// </summary>
         public string EntryAssembly { internal set; get; }
+        /// <summary>
+        /// 源url
+        /// </summary>
+        public string Url { internal set; get; }
+        /// <summary>
+        /// 源version
+        /// </summary>
+        public string UrlVersion { internal set; get; }
+        public float loadProgress = 0;
+        public bool isDownloading = false;
 
         public string ModDirName { internal set; get; }
 
@@ -164,6 +174,48 @@ namespace Sango.Mod
         public string GetFullPath(string path)
         {
             return $"{ModDir}/{path}";
+        }
+
+        public bool HasNewVersion()
+        {
+            return !string.IsNullOrEmpty(UrlVersion) && !string.IsNullOrEmpty(Version) && UrlVersion != Version;
+        }
+
+        public bool CanUpgrage()
+        {
+            return HasNewVersion() || !IsValidMod();
+        }
+
+        public bool IsDownloading()
+        {
+            return isDownloading;
+        }
+
+        public bool IsValidMod()
+        {
+            return !string.IsNullOrEmpty(ModDirName);
+        }
+
+        public void Download()
+        {
+            // 下载
+            isDownloading = true;
+            string rUrl = Url.Substring(0, Url.LastIndexOf("/"));
+            rUrl = rUrl.Substring(0, rUrl.LastIndexOf("/"));
+            string download = $"{rUrl}/{UrlVersion}/{Id}.zip";
+            loadProgress = 0;
+            App.Instance.StartCoroutine(GitDownloader.DownloadAndExtract(download, ModManager.MOD_ROOT_DIR,
+                (progress) =>
+                {
+                    loadProgress = progress;
+                },
+                (content) =>
+                {
+                    loadProgress = 1;
+                    ModManager.Instance.UpdateMod($"{content.ExtractTargetPath}/{Id}", this);
+                    isDownloading = false;
+                }
+            ));
         }
     }
 }

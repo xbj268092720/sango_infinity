@@ -7,8 +7,6 @@ namespace Sango.Core.Player
     [GameSystem]
     public class TroopActionReturn : TroopActionBase
     {
-        List<Cell> MovePath { get; set; }
-
         public TroopActionReturn()
         {
             customMenuName = "返回";
@@ -40,7 +38,7 @@ namespace Sango.Core.Player
 
         protected override void OnClickMenuItem(IContextMenuItem contextMenuItem)
         {
-
+            GameController.Instance.OnCancel();
         }
     }
 }

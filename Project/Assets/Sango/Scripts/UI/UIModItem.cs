@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     /// <summary>
     /// MOD项UI
@@ -15,15 +16,50 @@ using Sango.Core; namespace Sango.UI
         public Transform root;
         public Image pressImg;
         public Image overImg;
+        public Image progressImg;
+        public Image bgImg;
+        public UIButtonItem downloadBtn;
+        public Mod.Mod mod;
 
         public int targetIndex;
         private System.Action onClickCall;
         private System.Action<int, bool> onToggleCall;
         public System.Action<int> onUpCall;
         public System.Action<int> onDownCall;
+        public System.Action<UIModItem> onDownloadCall;
 
         public Button upButton;
         public Button downButton;
+        public void OnClickDownload()
+        {
+            //onDownloadCall?.Invoke(this);
+            if (mod != null)
+            {
+                if (!mod.IsDownloading())
+                    mod.Download();
+            }
+        }
+
+        public void SetMod(Mod.Mod m)
+        {
+            mod = m;
+            if (mod != null)
+            {
+                enableToggle.gameObject.SetActive(mod.IsValidMod());
+                downloadBtn.gameObject.SetActive(mod.CanUpgrage());
+                SetName(mod.Name).
+                SetVersion(mod.Version);
+            }
+            else
+            {
+                SetSelected(false);
+                SetEnabled(false);
+                SetName("");
+                SetVersion("");
+                enableToggle.gameObject.SetActive(false);
+                downloadBtn.gameObject.SetActive(false);
+            }
+        }
 
         public void OnClickUp()
         {
@@ -129,6 +165,21 @@ using Sango.Core; namespace Sango.UI
                 {
                     downButton.gameObject.SetActive(false);
                 }
+            }
+        }
+
+        private void Update()
+        {
+            if (mod != null && mod.IsDownloading())
+            {
+                Sango.Log.Error(mod.loadProgress);
+                progressImg.enabled = true;
+                progressImg.fillAmount = mod.loadProgress;
+            }
+            else
+            {
+                progressImg.enabled = false;
+                progressImg.fillAmount = 0;
             }
         }
     }

@@ -1,24 +1,27 @@
 ﻿
+using TKNewtonsoft.Json;
 using Sango.Core;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using TKNewtonsoft.Json.Linq;
 
 namespace Sango.Mod
 {
     public class ModManager : Singleton<ModManager>
     {
+        public string ModListInfoUrl = "https://gitcode.com/gametank/sango_infinity_mod_list/releases/download/list/mod_list.txt";
         public static string EditModName { get; set; }
         public static string MOD_ROOT_DIR = "Mods";
         public static string[] DEFAULT_MODS = { };
         //public static string[] DEFAULT_MODS = { };
 
-        public List<Mod> mModList;
+        public List<Mod> mEnabledModList;
         public Dictionary<string, Mod> mModMap;
 
         public Mod[] GetEnabledMods()
         {
-            return mModList.ToArray();
+            return mEnabledModList.ToArray();
         }
 
         public void Init()
@@ -33,7 +36,10 @@ namespace Sango.Mod
 
             MOD_ROOT_DIR = Path.ModRootPath;
 
-            mModList = new List<Mod>();
+            if (!Sango.Directory.Exists(MOD_ROOT_DIR))
+                Sango.Directory.Create(MOD_ROOT_DIR);
+
+            mEnabledModList = new List<Mod>();
             mModMap = new Dictionary<string, Mod>();
 
             string[] dirs = Directory.GetDirectories(MOD_ROOT_DIR, "*", System.IO.SearchOption.TopDirectoryOnly);
@@ -51,6 +57,61 @@ namespace Sango.Mod
                         }
                     }
                 }
+            }
+            InitForUrl();
+        }
+
+
+        public void InitForUrl()
+        {
+            App.Instance.StartCoroutine(GitDownloader.Get(ModListInfoUrl,
+                (progress) =>
+                {
+
+                },
+                (content) =>
+                {
+                    InitModList(content);
+                }
+            ));
+        }
+
+        void InitModList(string content)
+        {
+            if (string.IsNullOrEmpty(content))
+                return;
+
+            JObject jsonObject = JsonConvert.DeserializeObject<JObject>(content);
+            foreach (KeyValuePair<string, JToken> k in jsonObject)
+            {
+                string modId = k.Key;
+                string modUrl = k.Value.ToString();
+                Mod mod;
+                if (mModMap.TryGetValue(modId, out mod))
+                {
+                    mod.Url = modUrl;
+                }
+                else
+                {
+                    mod = new Mod();
+                    mod.Id = modId;
+                    mod.Url = modUrl;
+                    mModMap.Add(modId, mod);
+                }
+
+                // 加载详细内容
+                App.Instance.StartCoroutine(GitDownloader.Get(modUrl,
+                    (progress) =>
+                    {
+                        mod.loadProgress = progress;
+                    },
+                    (content) =>
+                    {
+                        mod.loadProgress = 1;
+                        LoadUrlMod(content, mod);
+                        //mod.Download();
+                    }
+                ));
             }
         }
 
@@ -101,12 +162,95 @@ namespace Sango.Mod
             return null;
         }
 
+        /// <summary>
+        /// 从网上下载下来后,更新mod信息
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="mod"></param>
+        public void UpdateMod(string path, Mod mod)
+        {
+            string info_file = $"{path}/mod.info";
+            if (File.Exists(info_file))
+            {
+                mod.ModDir = path;
+                mod.ModDirName = System.IO.Path.GetFileName(path);
+                string[] lines = File.ReadAllLines(info_file);
+                foreach (string s in lines)
+                {
+                    string[] c_v = s.Split('=');
+                    if (c_v.Length > 1)
+                    {
+                        switch (c_v[0].Trim().ToLower())
+                        {
+                            case "id":
+                                mod.Id = c_v[1].Trim();
+                                break;
+                            case "name":
+                                mod.Name = c_v[1].Trim();
+                                break;
+                            case "description":
+                                mod.Description = c_v[1].Trim();
+                                break;
+                            case "version":
+                                mod.Version = c_v[1].Trim();
+                                break;
+                            case "depends":
+                                mod.Depends = c_v[1].Trim();
+                                break;
+                            case "poster":
+                                mod.Poster = c_v[1].Trim();
+                                break;
+                            case "assembly":
+                                mod.EntryAssembly = c_v[1].Trim();
+                                break;
+                            case "author":
+                                mod.Author = c_v[1].Trim();
+                                break;
+                        }
+                    }
+                }
+            }
+            GameEvent.OnModUpdate?.Invoke(mod);
+        }
+
+        /// <summary>
+        /// 预先加载url中的mod信息
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="mod"></param>
+        public void LoadUrlMod(string content, Mod mod)
+        {
+            string[] lines = content.Split(new char[] { '\n' });
+            foreach (string s in lines)
+            {
+                string[] c_v = s.Split('=');
+                if (c_v.Length > 1)
+                {
+                    switch (c_v[0].Trim().ToLower())
+                    {
+                        case "name":
+                            mod.Name = c_v[1].Trim();
+                            break;
+                        case "description":
+                            mod.Description = c_v[1].Trim();
+                            break;
+                        case "version":
+                            mod.UrlVersion = c_v[1].Trim();
+                            break;
+                        case "author":
+                            mod.Author = c_v[1].Trim();
+                            break;
+                    }
+                }
+            }
+        }
+
         public string[] GetAllPath(string dirName)
         {
             List<string> path = new List<string>();
-            for (int i = 0; i < mModList.Count; i++)
+            for (int i = 0; i < mEnabledModList.Count; i++)
             {
-                Mod mod = mModList[i];
+                Mod mod = mEnabledModList[i];
                 path.Add(mod.GetFullPath(dirName));
             }
             return path.ToArray();
@@ -120,9 +264,9 @@ namespace Sango.Mod
                 mergeAction(baseFile);
                 return;
             }
-            for (int i = 0; i < mModList.Count; i++)
+            for (int i = 0; i < mEnabledModList.Count; i++)
             {
-                Mod mod = mModList[i];
+                Mod mod = mEnabledModList[i];
                 string destFile = mod.GetFullPath(filename);
                 if (File.Exists(destFile))
                 {
@@ -179,25 +323,26 @@ namespace Sango.Mod
             if (modNames == null)
                 modNames = LoadModList();
 
-
-           
             Scenario.OnModInitStart();
 
-            mModList.Clear();
+            mEnabledModList.Clear();
 
-            for (int i = 0; i < modNames.Length; i++)
+            if(modNames != null)
             {
-                Mod mod;
-                if (mModMap.TryGetValue(modNames[i], out mod))
+                for (int i = 0; i < modNames.Length; i++)
                 {
-                    mModList.Add(mod);
+                    Mod mod;
+                    if (mModMap.TryGetValue(modNames[i], out mod))
+                    {
+                        mEnabledModList.Add(mod);
+                    }
                 }
             }
 
-            for (int i = 0; i < mModList.Count; i++)
+            for (int i = 0; i < mEnabledModList.Count; i++)
             {
-                Mod mod = mModList[i];
-                Path.AddSearchPath($"{mod.ModDir}", true); 
+                Mod mod = mEnabledModList[i];
+                Path.AddSearchPath($"{mod.ModDir}", true);
                 mod.LoadLanguage();
                 mod.LoadScenario();
                 mod.LoadUI();
@@ -250,11 +395,11 @@ namespace Sango.Mod
         /// <param name="action"></param>
         public void EnumFiles(string path, System.Action<string> action)
         {
-            for (int i = 0; i < mModList.Count; i++)
+            for (int i = 0; i < mEnabledModList.Count; i++)
             {
-                Mod mod = mModList[i];
+                Mod mod = mEnabledModList[i];
                 string targetFile = mod.GetFullPath(path);
-                if(File.Exists(targetFile))
+                if (File.Exists(targetFile))
                     action(targetFile);
             }
         }
@@ -266,9 +411,9 @@ namespace Sango.Mod
         /// <param name="action"></param>
         public void EnumFiles(string path, string searchPattern, SearchOption searchOption, System.Action<string> action)
         {
-            for (int i = 0; i < mModList.Count; i++)
+            for (int i = 0; i < mEnabledModList.Count; i++)
             {
-                Mod mod = mModList[i];
+                Mod mod = mEnabledModList[i];
                 string targetDir = mod.GetFullPath(path);
                 Directory.EnumFiles(targetDir, searchPattern, searchOption, action);
             }
@@ -281,9 +426,9 @@ namespace Sango.Mod
         /// <param name="action"></param>
         public void EnumDirectory(string path, System.Action<string> action)
         {
-            for (int i = 0; i < mModList.Count; i++)
+            for (int i = 0; i < mEnabledModList.Count; i++)
             {
-                Mod mod = mModList[i];
+                Mod mod = mEnabledModList[i];
                 string targetFile = mod.GetFullPath(path);
                 if (Directory.Exists(targetFile))
                     action(targetFile);

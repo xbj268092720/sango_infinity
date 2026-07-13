@@ -137,6 +137,9 @@ namespace Sango.Core.Player
                 TargetCity.JobCreateItems(personList.ToArray(), CurSelectedItemType.itemType, TargetBuilding, true) };
             }
 
+            if (TurnAndDestNumber == null)
+                TurnAndDestNumber = new int[2] { 0, 0 };
+
             return TurnAndDestNumber[1];
         }
 

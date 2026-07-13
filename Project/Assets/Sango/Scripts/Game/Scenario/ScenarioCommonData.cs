@@ -153,6 +153,13 @@ namespace Sango.Core
         [JsonProperty]
         public SangoObjectSet<Argumentation> Argumentations = new SangoObjectSet<Argumentation>();
 
+        /// <summary>
+        /// 武将库
+        /// </summary>
+        [JsonConverter(typeof(SangoObjectSetConverter<PersonLib>))]
+        [JsonProperty] 
+        public SangoObjectSet<PersonLib> PersonLibrary = new SangoObjectSet<PersonLib>();
+
 
         public List<ItemType> ItemTypeList { get; set; }
 

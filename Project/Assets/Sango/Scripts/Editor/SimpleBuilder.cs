@@ -199,6 +199,7 @@ public class SimpleBuilder
         string[] directoriesToDelete = {
             System.IO.Path.Combine(publishPath, $"{productName}_BackUpThisFolder_ButDontShipItWithYourGame"),
             System.IO.Path.Combine(publishPath, $"{productName}_BurstDebugInformation_DoNotShip"),
+            System.IO.Path.Combine(publishPath, "Mods"),
             System.IO.Path.Combine(publishPath, "Save")
         };
 

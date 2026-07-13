@@ -160,8 +160,8 @@ namespace Sango
             request.Dispose();
 
             // 5. 解压 zip
-            try
-            {
+            //try
+            //{
                 Directory.Create(targetFolder);
                 using (ZipArchive archive = ZipFile.OpenRead(tempZipPath))
                 {
@@ -234,18 +234,19 @@ namespace Sango
 
                         cur++;
                         onProgress?.Invoke(0.7f + 0.3f * (cur / (float)count));
+                        yield return null;
                     }
                 }
-            }
-            catch (System.Exception e)
-            {
-                string extractErr = "解压失败: " + e.Message + " zip: " + tempZipPath + " 目标: " + targetFolder;
-                Log.Error(extractErr, Log.LogType.Download);
-                result.Error = GitDownloadError.ExtractError;
-                result.ErrorMessage = extractErr;
-                onComplete?.Invoke(result);
-                yield break;
-            }
+            //}
+            //catch (System.Exception e)
+            //{
+            //    string extractErr = "解压失败: " + e.Message + " zip: " + tempZipPath + " 目标: " + targetFolder;
+            //    Log.Error(extractErr, Log.LogType.Download);
+            //    result.Error = GitDownloadError.ExtractError;
+            //    result.ErrorMessage = extractErr;
+            //    onComplete?.Invoke(result);
+            //    yield break;
+            //}
 
             // 6. 清理临时 zip
             try { File.Delete(tempZipPath); } catch { }
@@ -255,6 +256,50 @@ namespace Sango
             Log.Info("Git 资源下载并解压完成: " + gitUrl + " -> " + targetFolder, Log.LogType.Download);
             onComplete?.Invoke(result);
         }
+
+        /// <summary>
+        /// 从 Git 链接下载并解压到目标文件夹(协程版)
+        /// 支持的 URL 形式:
+        ///   - https://github.com/owner/repo
+        ///   - https://github.com/owner/repo/tree/branch
+        ///   - https://github.com/owner/repo/tree/branch/sub/path
+        ///   - https://github.com/owner/repo/archive/refs/heads/branch.zip
+        ///   - https://github.com/owner/repo/archive/refs/tags/tag.zip
+        ///   - https://github.com/owner/repo/commit/sha
+        /// </summary>
+        /// <param name="gitUrl">Git 仓库地址</param>
+        /// <param name="targetFolder">解压目标文件夹(绝对路径)</param>
+        /// <param name="onProgress">进度回调,范围 0~1</param>
+        /// <param name="onComplete">完成回调,返回下载结果</param>
+        public static IEnumerator Get(string gitUrl, System.Action<float> onProgress, System.Action<string> onComplete)
+        {
+            
+            Log.Info("开始下载 Git 资源: " + gitUrl, Log.LogType.Download);
+
+            // 3. 使用 UnityWebRequest 下载 zip
+            UnityWebRequest request = UnityWebRequest.Get(gitUrl);
+            UnityWebRequestAsyncOperation op = request.SendWebRequest();
+            onProgress?.Invoke(0f);
+            while (!op.isDone)
+            {
+                onProgress?.Invoke(op.progress);
+                yield return null;
+            }
+            onProgress?.Invoke(1f);
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                string netErr = "网络请求失败: " + request.error + " URL: " + gitUrl;
+                Log.Error(netErr, Log.LogType.Download);
+                request.Dispose();
+                onComplete?.Invoke("");
+                yield break;
+            }
+            onComplete?.Invoke(request.downloadHandler.text);
+            Log.Info("Git 资源 下载完成: " + request.downloadHandler.text + " 大小: " + request.downloadHandler.data.Length, Log.LogType.Download);
+            request.Dispose();
+        }
+
 
         /// <summary>
         /// 同步阻塞版(仅用于编辑器或非主线程用途)

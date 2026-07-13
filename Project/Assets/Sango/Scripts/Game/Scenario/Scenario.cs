@@ -688,9 +688,17 @@ namespace Sango.Core
                     Map = new Map();
             }
 
-            JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
-
             CommonData = GameData.Instance.LoadNewCommonData();
+
+            if(CommonData.PersonLibrary != null)
+            {
+                CommonData.PersonLibrary.ForEach(personLib =>
+                {
+                    personSet.Add(Person.FormLib(personLib));
+                });
+            }
+
+            JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
 
             Map.Load(this);
 

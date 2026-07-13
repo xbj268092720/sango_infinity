@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Sango.Mod;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     /// <summary>
     /// MOD管理界面
@@ -60,6 +61,18 @@ using Sango.Core; namespace Sango.UI
             }
             startIndex = 0;
             OnScrollBarValueChange(0);
+            GameEvent.OnModUpdate += OnModUpdate;
+        }
+
+        public override void OnClose()
+        {
+            GameEvent.OnModUpdate -= OnModUpdate;
+            base.OnClose();
+        }
+
+        void OnModUpdate(Mod.Mod mod)
+        {
+            UpdateItemStartIndex(startIndex);
         }
 
         private void LoadModList()
@@ -77,7 +90,7 @@ using Sango.Core; namespace Sango.UI
             string[] enabledModNames = ModManager.Instance.LoadModList();
             if (enabledModNames != null)
             {
-                for(int i = 0; i < enabledModNames.Length;i++)
+                for (int i = 0; i < enabledModNames.Length; i++)
                 {
                     string modName = enabledModNames[i];
                     Mod.Mod mod = allMods.Find(x => x.Id == modName);
@@ -125,17 +138,17 @@ using Sango.Core; namespace Sango.UI
             {
                 enabledMods.Remove(mod);
             }
-            SortMod();
+            //SortMod();
             UpdateItemStartIndex(startIndex);
         }
 
         void SortMod()
         {
-            List<Mod.Mod> mods = new List<Mod.Mod> (enabledMods);
-            for(int i = 0; i < allMods.Count; i++)
+            List<Mod.Mod> mods = new List<Mod.Mod>(enabledMods);
+            for (int i = 0; i < allMods.Count; i++)
             {
                 Mod.Mod dest = allMods[i];
-                if(!enabledMods.Contains (dest))
+                if (!enabledMods.Contains(dest))
                     mods.Add(dest);
             }
             allMods = mods;
@@ -146,7 +159,7 @@ using Sango.Core; namespace Sango.UI
         {
             Mod.Mod mod = allMods[index];
             int i = 0;
-            for(int j = 1; j < enabledMods.Count; j++)
+            for (int j = 1; j < enabledMods.Count; j++)
             {
                 if (enabledMods[j] == mod)
                 {
@@ -157,7 +170,7 @@ using Sango.Core; namespace Sango.UI
                 else
                     i++;
             }
-            SortMod();
+            //SortMod();
             UpdateItemStartIndex(startIndex);
         }
 
@@ -177,7 +190,7 @@ using Sango.Core; namespace Sango.UI
                     i++;
             }
 
-            SortMod();
+            //SortMod();
             UpdateItemStartIndex(startIndex);
         }
 
@@ -198,10 +211,10 @@ using Sango.Core; namespace Sango.UI
             Mod.Mod mod = allMods[index];
             modInfoText.text = $"{mod.Name} v{mod.Version}";
             modDescriptionText.text = mod.Description;
-            
+
             if (modPosterImg != null && !string.IsNullOrEmpty(mod.Poster))
             {
-                    modPosterImg.enabled = true;
+                modPosterImg.enabled = true;
                 string posterPath = mod.GetFullPath(mod.Poster);
                 modPosterImg.texture = Loader.ObjectLoader.LoadObject<Texture>(posterPath, false, false);
             }
@@ -246,14 +259,16 @@ using Sango.Core; namespace Sango.UI
                 if (destIndex < totalCount)
                 {
                     Mod.Mod mod = allMods[destIndex];
-                    listItem.SetSelected(selectedIndex == destIndex).SetEnabled(destIndex < enabledCount).SetName(mod.Name).SetVersion(mod.Version).enableToggle.gameObject.SetActive(true);
+                    listItem.SetSelected(selectedIndex == destIndex).
+                        SetEnabled(destIndex < enabledCount);
                     listItem.BindToggleCall(OnToggleMod);
                     listItem.onUpCall = OnModUp;
                     listItem.onDownCall = OnModDown;
+                    listItem.SetMod(mod);
                 }
                 else
                 {
-                    listItem.SetSelected(false).SetEnabled(false).SetName("").SetVersion("").enableToggle.gameObject.SetActive(false);
+                    listItem.SetMod(null);
                 }
             }
         }
