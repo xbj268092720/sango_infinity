@@ -67,7 +67,7 @@ public class SimpleBuilder
             .ToArray();
 
         string version = Application.version;
-        string buildType = isDevelopment ? "_dev" : "_release";
+        string buildType = isDevelopment ? "_dev电脑版" : "_release电脑版";
         string productName = Application.productName;
         string exeName = $"{productName}.exe";
 
@@ -138,7 +138,7 @@ public class SimpleBuilder
         Platform.ZipContentToStreamingAssets();
 
         string version = Application.version;
-        string buildType = isDevelopment ? "_dev" : "_release";
+        string buildType = isDevelopment ? "_dev安卓" : "_release安卓";
         string productName = Application.productName;
         string buildPath = System.IO.Path.Combine(PublishRootPath, $"{productName}_v{version}{buildType}.apk");
         string[] scenes = EditorBuildSettings.scenes
@@ -147,6 +147,51 @@ public class SimpleBuilder
             .ToArray();
 
         if(isDevelopment)
+            PlayerSettings.SetAdditionalIl2CppArgs("--linker-flags=\"-Wl,--stub-group-size=115343360\"");
+        else
+            PlayerSettings.SetAdditionalIl2CppArgs("");
+
+        BuildOptions buildOptions = isDevelopment
+            ? BuildOptions.Development | BuildOptions.AllowDebugging
+            : BuildOptions.None;
+
+        BuildPlayerOptions playerOptions = new BuildPlayerOptions
+        {
+            scenes = scenes,
+            locationPathName = buildPath,
+            target = BuildTarget.Android,
+            options = buildOptions
+        };
+
+        UnityEditor.PlayerSettings.Android.bundleVersionCode = UnityEditor.PlayerSettings.Android.bundleVersionCode + 1;
+        BuildPipeline.BuildPlayer(playerOptions);
+
+        Log.Info("Android平台构建完成", Log.LogType.Game);
+
+        EditorUtility.DisplayDialog("发布完成", $"Android版本已发布成功！\n路径: {buildPath}", "确定");
+    }
+
+    private static void BuildIos(bool isDevelopment)
+    {
+
+        string winPackagePath = System.IO.Path.Combine(Sango.Path.ContentRootPath, "Package", "ios");
+        if (System.IO.Directory.Exists(winPackagePath))
+        {
+            System.IO.Directory.Delete(winPackagePath, true);
+        }
+
+        Platform.ZipContentToStreamingAssets();
+
+        string version = Application.version;
+        string buildType = isDevelopment ? "_dev" : "_release";
+        string productName = Application.productName;
+        string buildPath = System.IO.Path.Combine(PublishRootPath, $"{productName}_v{version}{buildType}.apk");
+        string[] scenes = EditorBuildSettings.scenes
+            .Where(scene => scene.enabled)
+            .Select(scene => scene.path)
+            .ToArray();
+
+        if (isDevelopment)
             PlayerSettings.SetAdditionalIl2CppArgs("--linker-flags=\"-Wl,--stub-group-size=115343360\"");
         else
             PlayerSettings.SetAdditionalIl2CppArgs("");

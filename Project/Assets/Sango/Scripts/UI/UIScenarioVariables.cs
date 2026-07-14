@@ -73,6 +73,7 @@ using Sango.Core; namespace Sango.UI
             AddNumberItem("治安对于收入的影响最低值", variables.securityInfluenceMax, 0, 100, (v) => { variables.securityInfluenceMax = v; });
             AddNumberItem("治安影响的正负范围", variables.securityInfluence, 0, 1, (v) => { variables.securityInfluence = v; });
             AddNumberItem("治安对征兵的影响值比例", variables.securityInfluenceRecruitTroops, 0, 1, (v) => { variables.securityInfluenceRecruitTroops = v; });
+            AddNumberItem("每一月治安下降最大数", variables.securityChangeOnMonthStart, -100, 0, (v) => { variables.securityChangeOnMonthStart = v; });
             AddNumberItem("每一季度治安下降最大数", variables.securityChangeOnSeasonStart, -100, 0, (v) => { variables.securityChangeOnSeasonStart = v; });
             AddNumberItem("建筑建造最大回合数", variables.BuildMaxTurn, 0, 100, (v) => { variables.BuildMaxTurn = v; });
             AddNumberItem("粮食倍率", variables.foodFactor, 0, 100, (v) => { variables.foodFactor = v; });

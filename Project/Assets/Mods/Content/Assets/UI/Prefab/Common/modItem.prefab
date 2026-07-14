@@ -691,8 +691,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -42.261963, y: 17.5}
-  m_SizeDelta: {x: 88.52399, y: 21.1462}
+  m_AnchoredPosition: {x: -167.45679, y: 16.633606}
+  m_SizeDelta: {x: 356.75, y: 20.2798}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &2999721043833945627
 CanvasRenderer:
@@ -715,7 +715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: dcef2bb2db1e9b243adfba24de0757ae, type: 2}
-  m_Color: {r: 0.9622642, g: 0.9622642, b: 0.9622642, a: 1}
+  m_Color: {r: 0.2688679, g: 0.91535956, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -724,7 +724,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 48a0223bfd5afd04c984eb6951bb3eaa, type: 3}
-    m_FontSize: 18
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -1027,6 +1027,7 @@ RectTransform:
   - {fileID: 4252006253539326306}
   - {fileID: 4713085693087558151}
   - {fileID: 242371257085412453}
+  - {fileID: 4345796236054482839}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1116,6 +1117,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 7643481032982129549}
+          m_TargetAssemblyTypeName: Sango.UI.UIModItem, Assembly-CSharp
+          m_MethodName: OnPressDown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - eventID: 3
     callback:
       m_PersistentCalls:
@@ -1127,6 +1140,18 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 7643481032982129549}
             m_ObjectArgumentAssemblyTypeName: Sango.UI.UIModItem, Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 7643481032982129549}
+          m_TargetAssemblyTypeName: Sango.UI.UIModItem, Assembly-CSharp
+          m_MethodName: OnPressUp
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -1154,9 +1179,159 @@ MonoBehaviour:
   progressImg: {fileID: 1928333102399440403}
   bgImg: {fileID: 8891945946117320134}
   downloadBtn: {fileID: 6086399087189188483}
+  deleteBtn: {fileID: 2976979857287166483}
   targetIndex: 0
   upButton: {fileID: 2987889819099417849}
   downButton: {fileID: 4578239758673945200}
+--- !u!1001 &2597770514803926172
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2605075196930982701}
+    m_Modifications:
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 66.007
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 29.7749
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -33.005005
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.1400003
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2416566462595743976, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_Text
+      value: "\u5220\u9664"
+      objectReference: {fileID: 0}
+    - target: {fileID: 2416566462595743976, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 2426165079917119271, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7643481032982129549}
+    - target: {fileID: 2426165079917119271, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnDeleteMod
+      objectReference: {fileID: 0}
+    - target: {fileID: 2426165079917119271, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sango.UI.UIModItem, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4666609888916775450, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_Name
+      value: button_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4666609888916775450, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5954924498792515230, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000030517578
+      objectReference: {fileID: 0}
+    - target: {fileID: 7780755950589059266, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7780755950589059266, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 97dc2a2c70f1f87498cbbd44214010ac, type: 3}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+--- !u!114 &2976979857287166483 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 963059955614031503, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+  m_PrefabInstance: {fileID: 2597770514803926172}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71cbda67568634b4883dd50d0d3ab32b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &4345796236054482839 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1748096098672503563, guid: 558f5f6df957dd44e96185e5c6a1831d, type: 3}
+  m_PrefabInstance: {fileID: 2597770514803926172}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5354051726718386829
 PrefabInstance:
   m_ObjectHideFlags: 0

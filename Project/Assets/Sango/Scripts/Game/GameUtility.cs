@@ -450,11 +450,11 @@ namespace Sango.Core
         public static string FormatFileSizeStr(long fileSize)
         {
             int idx = 0;
-            double n = 0;
+            double n = fileSize;
             while (fileSize > 1024 && idx < endStr.Length)
             {
-                fileSize = fileSize / 1024;
                 n = (double)fileSize / 1024f;
+                fileSize = fileSize / 1024;
                 idx++;
             }
 

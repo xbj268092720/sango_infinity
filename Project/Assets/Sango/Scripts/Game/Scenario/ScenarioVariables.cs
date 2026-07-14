@@ -381,6 +381,11 @@ namespace Sango.Core
         [JsonProperty] public int securityChangeOnSeasonStart = -5;
 
         /// <summary>
+        /// 每一月治安下降最大数
+        /// </summary>
+        [JsonProperty] public int securityChangeOnMonthStart = -1;
+
+        /// <summary>
         /// 适应名称
         /// </summary>
         [JsonProperty] public string[] personAbilityName = new string[] { "Ｃ", "Ｂ", "Ａ", "Ｓ" };

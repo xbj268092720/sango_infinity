@@ -2,7 +2,10 @@ using Sango.Core.Player;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+using System;
+
+namespace Sango.UI
 {
     public class UICitySearching : UGUIWindow
     {
@@ -62,10 +65,22 @@ using Sango.Core; namespace Sango.UI
             currentSystem.Exit();
         }
 
+        int GetMaxCount()
+        {
+            int pCount = TargetCity.freePersons.Count;
+            int apCost = JobType.GetJobCostAP((int)CityJobType.Searching);
+            if (apCost > 0)
+            {
+                return Math.Min(pCount, TargetCity.BelongCorps.ActionPoint / apCost);
+            }
+            else
+                return pCount;
+        }
+
         public void OnSelectPerson()
         {
             GameSystem.GetSystem<PersonSelectSystem>().Start(TargetCity.freePersons,
-               currentSystem.personList, TargetCity.BelongCorps.ActionPoint / JobType.GetJobCostAP((int)CityJobType.Searching), OnPersonChange, currentSystem.customTitleList, currentSystem.customTitleName);
+               currentSystem.personList, GetMaxCount(), OnPersonChange, currentSystem.customTitleList, currentSystem.customTitleName);
         }
 
         public virtual void OnPersonChange(List<Person> personList)

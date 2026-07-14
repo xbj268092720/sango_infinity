@@ -6,6 +6,7 @@ namespace Sango.Core
     /// <summary>
     /// 外交系统
     /// </summary>
+    [GameSystem]
     public class DiplomacySystem : GameSystem
     {
         /// <summary>
@@ -17,8 +18,6 @@ namespace Sango.Core
         /// 所有势力列表
         /// </summary>
         public List<Force> AllForces { get; private set; }
-
-
 
         /// <summary>
         /// 窗口名称

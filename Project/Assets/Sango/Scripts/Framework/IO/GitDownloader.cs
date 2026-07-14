@@ -159,84 +159,91 @@ namespace Sango
             Log.Info("Git 资源 zip 下载完成: " + tempZipPath + " 大小: " + request.downloadHandler.data.Length, Log.LogType.Download);
             request.Dispose();
 
+            int yieldCount = 0;
             // 5. 解压 zip
             //try
             //{
-                Directory.Create(targetFolder);
-                using (ZipArchive archive = ZipFile.OpenRead(tempZipPath))
+            Directory.Create(targetFolder);
+            using (ZipArchive archive = ZipFile.OpenRead(tempZipPath))
+            {
+                int count = archive.Entries.Count;
+                int cur = 0;
+                if (count <= 0)
                 {
-                    int count = archive.Entries.Count;
-                    int cur = 0;
-                    if (count <= 0)
-                    {
-                        // 空仓库,直接成功
-                        result.IsSuccess = true;
-                        onProgress?.Invoke(1f);
-                        try { File.Delete(tempZipPath); } catch { }
-                        onComplete?.Invoke(result);
-                        yield break;
-                    }
+                    // 空仓库,直接成功
+                    result.IsSuccess = true;
+                    onProgress?.Invoke(1f);
+                    try { File.Delete(tempZipPath); } catch { }
+                    onComplete?.Invoke(result);
+                    yield break;
+                }
 
-                    foreach (ZipArchiveEntry entry in archive.Entries)
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    // GitHub 下载的 zip 顶层会带一个 "repo-branch/" 目录
+                    // 如果指定了子目录则裁剪掉;否则保留整个仓库
+                    string entryName = entry.FullName.Replace('\\', '/');
+                    if (!string.IsNullOrEmpty(subFolder))
                     {
-                        // GitHub 下载的 zip 顶层会带一个 "repo-branch/" 目录
-                        // 如果指定了子目录则裁剪掉;否则保留整个仓库
-                        string entryName = entry.FullName.Replace('\\', '/');
-                        if (!string.IsNullOrEmpty(subFolder))
-                        {
-                            if (!entryName.StartsWith(subFolder + "/", System.StringComparison.OrdinalIgnoreCase)
-                                && !entryName.Equals(subFolder, System.StringComparison.OrdinalIgnoreCase))
-                            {
-                                cur++;
-                                onProgress?.Invoke(0.7f + 0.3f * (cur / (float)count));
-                                continue;
-                            }
-                            entryName = entryName.Substring(subFolder.Length);
-                            if (entryName.StartsWith("/"))
-                                entryName = entryName.Substring(1);
-                        }
-
-                        if (string.IsNullOrEmpty(entryName))
+                        if (!entryName.StartsWith(subFolder + "/", System.StringComparison.OrdinalIgnoreCase)
+                            && !entryName.Equals(subFolder, System.StringComparison.OrdinalIgnoreCase))
                         {
                             cur++;
                             onProgress?.Invoke(0.7f + 0.3f * (cur / (float)count));
                             continue;
                         }
+                        entryName = entryName.Substring(subFolder.Length);
+                        if (entryName.StartsWith("/"))
+                            entryName = entryName.Substring(1);
+                    }
 
-                        string destPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(targetFolder, entryName));
-                        // 防止 zip slip 漏洞
-                        string fullTarget = System.IO.Path.GetFullPath(targetFolder);
-                        if (!fullTarget.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                            fullTarget += System.IO.Path.DirectorySeparatorChar;
-                        if (!destPath.StartsWith(fullTarget, System.StringComparison.OrdinalIgnoreCase))
-                        {
-                            string slipErr = "检测到非法路径(可能的 zip slip 攻击): " + entryName;
-                            Log.Error(slipErr, Log.LogType.Download);
-                            result.Error = GitDownloadError.ExtractError;
-                            result.ErrorMessage = slipErr;
-                            onComplete?.Invoke(result);
-                            yield break;
-                        }
-
-                        if (string.IsNullOrEmpty(System.IO.Path.GetFileName(destPath)))
-                        {
-                            // 目录条目
-                            Directory.Create(destPath);
-                        }
-                        else
-                        {
-                            Directory.Create(System.IO.Path.GetDirectoryName(destPath));
-                            // overwrite:Git 仓库内文件可能存在重复条目
-                            if (File.Exists(destPath))
-                                File.Delete(destPath);
-                            entry.ExtractToFile(destPath);
-                        }
-
+                    if (string.IsNullOrEmpty(entryName))
+                    {
                         cur++;
                         onProgress?.Invoke(0.7f + 0.3f * (cur / (float)count));
+                        continue;
+                    }
+
+                    string destPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(targetFolder, entryName));
+                    // 防止 zip slip 漏洞
+                    string fullTarget = System.IO.Path.GetFullPath(targetFolder);
+                    if (!fullTarget.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                        fullTarget += System.IO.Path.DirectorySeparatorChar;
+                    if (!destPath.StartsWith(fullTarget, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        string slipErr = "检测到非法路径(可能的 zip slip 攻击): " + entryName;
+                        Log.Error(slipErr, Log.LogType.Download);
+                        result.Error = GitDownloadError.ExtractError;
+                        result.ErrorMessage = slipErr;
+                        onComplete?.Invoke(result);
+                        yield break;
+                    }
+
+                    if (string.IsNullOrEmpty(System.IO.Path.GetFileName(destPath)))
+                    {
+                        // 目录条目
+                        Directory.Create(destPath);
+                    }
+                    else
+                    {
+                        Directory.Create(System.IO.Path.GetDirectoryName(destPath));
+                        // overwrite:Git 仓库内文件可能存在重复条目
+                        if (File.Exists(destPath))
+                            File.Delete(destPath);
+                        entry.ExtractToFile(destPath);
+                    }
+
+                    cur++;
+                    onProgress?.Invoke(0.7f + 0.3f * (cur / (float)count));
+
+                    yieldCount++;
+                    if (yieldCount > 10)
+                    {
+                        yieldCount = 0;
                         yield return null;
                     }
                 }
+            }
             //}
             //catch (System.Exception e)
             //{
@@ -273,7 +280,7 @@ namespace Sango
         /// <param name="onComplete">完成回调,返回下载结果</param>
         public static IEnumerator Get(string gitUrl, System.Action<float> onProgress, System.Action<string> onComplete)
         {
-            
+
             Log.Info("开始下载 Git 资源: " + gitUrl, Log.LogType.Download);
 
             // 3. 使用 UnityWebRequest 下载 zip

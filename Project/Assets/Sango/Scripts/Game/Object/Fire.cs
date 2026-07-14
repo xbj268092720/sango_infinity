@@ -57,9 +57,16 @@ namespace Sango.Core
         public override void Clear()
         {
             base.Clear();
-            cell.fire = null;
-            Render.Clear();
-            Render = null;
+
+            if(cell != null)
+                cell.fire = null;
+
+            if (Render != null)
+            {
+                Render.Clear();
+                Render = null;
+            }
+
             Scenario.Cur.Remove(this);
             ActionOver = true;
             IsAlive = false;

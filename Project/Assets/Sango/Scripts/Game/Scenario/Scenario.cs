@@ -676,10 +676,12 @@ namespace Sango.Core
             if (Map != null && Map.CellSet != null)
                 return;
 
+            CommonData = GameData.Instance.LoadNewCommonData();
+
             if (!Info.isSave)
             {
-                if (CommonData == null)
-                    CommonData = GameData.Instance.LoadNewCommonData();
+                //if (CommonData == null)
+                //    CommonData = GameData.Instance.LoadNewCommonData();
 
                 if (Variables == null)
                     Variables = new ScenarioVariables();
@@ -688,9 +690,7 @@ namespace Sango.Core
                     Map = new Map();
             }
 
-            CommonData = GameData.Instance.LoadNewCommonData();
-
-            if(CommonData.PersonLibrary != null)
+            if (CommonData.PersonLibrary != null)
             {
                 CommonData.PersonLibrary.ForEach(personLib =>
                 {
@@ -699,6 +699,8 @@ namespace Sango.Core
             }
 
             JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
+
+            GameData.Instance.LoadCommonData(CommonData);
 
             Map.Load(this);
 
@@ -872,7 +874,7 @@ namespace Sango.Core
                 Map.Clear();
                 Map = null;
             }
-           
+
             forceSet.Clear();
             corpsSet.Clear();
             citySet.Clear();
@@ -882,7 +884,7 @@ namespace Sango.Core
             fireSet.Clear();
             allianceSet.Clear();
             RelationMap = null;
-            
+
             prepareList.Clear();
             eventReciveList.Clear();
         }
@@ -944,6 +946,34 @@ namespace Sango.Core
             }
 
             GameEvent.OnScenarioInit?.Invoke(this);
+
+            string dir = "D:/Mods111/fix_critical_image/Assets/CriticalImage/";
+            string dst = "D:/Mods111/fix_critical_image/Assets/used/";
+
+            personSet.ForEach(o =>
+            {
+                if (!string.IsNullOrEmpty(o.image))
+                {
+                    string img = dir + o.image;
+                    if (Sango.File.Exists(img))
+                    {
+                        string imgDst = dst + o.image;
+                        Sango.Directory.Create(imgDst, false);
+                        Sango.File.Move(img, imgDst);
+                    }
+                }
+                if (!string.IsNullOrEmpty(o.image_old))
+                {
+                    string img = dir + o.image_old;
+                    if (Sango.File.Exists(img))
+                    {
+                        string imgDst = dst + o.image_old;
+                        Sango.Directory.Create(imgDst, false);
+                        Sango.File.Move(img, imgDst);
+                    }
+                }
+            });
+
         }
 
         /// <summary>
@@ -1490,6 +1520,8 @@ namespace Sango.Core
         {
 
             Info.isSave = true;
+            ScenarioCommonData saveData = CommonData;
+            CommonData = null;
             View.cameraPosition = MapRender.Instance.mapCamera.position;
             View.cameraRotation = MapRender.Instance.mapCamera.lookRotate;
             View.cameraDistance = MapRender.Instance.mapCamera.distance;
@@ -1504,6 +1536,7 @@ namespace Sango.Core
             {
                 serializer.Serialize(writer, this);
             }
+            CommonData = saveData;
         }
 
         public void Export(string path)

@@ -76,8 +76,10 @@ namespace Sango
         {
             p = Mathf.Clamp01(p);
             int count = Mathf.CeilToInt(p * elementCount);
-            if (count < 0 || count > elementCount)
-                return;
+            if (count < 0)
+                count = 1;
+            else if (count > elementCount)
+                count = elementCount;
             showCount = count;
         }
         public void SetMat(Material mat)
@@ -262,13 +264,13 @@ namespace Sango
                 if (b)
                 {
                     //if (!smoke.isPlaying || smoke.isStopped)
-                        smoke.Play();
+                    smoke.Play();
 
                 }
                 else
                 {
                     //if (!smoke.isStopped)
-                        smoke.Stop();
+                    smoke.Stop();
                 }
             }
         }

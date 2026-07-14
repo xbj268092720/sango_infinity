@@ -205,16 +205,6 @@ namespace Sango.Core
 #if SANGO_DEBUG
             Sango.Log.Info($"城市：{city.Name}, 收获粮食：{harvest}, 现有粮食: {city.food}");
 #endif
-            if (city.IsCity())
-            {
-                // 治安降低
-                Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(scenario.Variables.securityChangeOnSeasonStart);
-                GameEvent.OnCitySecurityChangeOnSeasonStart?.Invoke(city, overrideData);
-                city.AddSecurity(overrideData.Value);
-                if (overrideData.Value != 0)
-                    city.Render?.ShowInfo(overrideData.Value, (int)InfoType.Security);
-                overrideData.Recycle();
-            }
             city.Render?.UpdateRender();
         }
 

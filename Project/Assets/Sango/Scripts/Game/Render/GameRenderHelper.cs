@@ -70,14 +70,20 @@ namespace Sango.Core
         public static Texture LoadCriticalImage(string id)
         {
             string criticalPath = $"{CriticalImagePath}/{id}";
-            if (string.IsNullOrEmpty(System.IO.Path.GetExtension(id)))
-                criticalPath += ".png";
+            string extension = System.IO.Path.GetExtension(id);
+            if (!string.IsNullOrEmpty(extension))
+                criticalPath = criticalPath.Substring(0, criticalPath.LastIndexOf('.'));
 
             Texture criticalTexture = ObjectLoader.LoadObject<Texture>(criticalPath, "CriticalImage");
             if (criticalTexture == null)
             {
-                criticalPath = $"{CriticalImagePath}/default.png";
-                criticalTexture = ObjectLoader.LoadObject<Texture>(criticalPath);
+                criticalPath = criticalPath.Replace(".png", ".jpg");
+                criticalTexture = ObjectLoader.LoadObject<Texture>(criticalPath, "CriticalImage");
+                if (criticalTexture == null)
+                {
+                    criticalPath = $"{CriticalImagePath}/default.png";
+                    criticalTexture = ObjectLoader.LoadObject<Texture>(criticalPath);
+                }
             }
             return criticalTexture;
         }

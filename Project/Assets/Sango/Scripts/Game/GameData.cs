@@ -24,6 +24,19 @@ namespace Sango.Core
             SkillConfigManager.Instance.Init();
         }
 
+
+        public void LoadCommonData(ScenarioCommonData scenarioCommonData)
+        {
+            Sango.Directory.EnumFiles(Path.ContentRootPath + "/Data/Common", file =>
+            {
+                scenarioCommonData.Load(file);
+            });
+            ModManager.Instance.EnumFiles("Data/Common", "*.json", System.IO.SearchOption.AllDirectories, file =>
+            {
+                scenarioCommonData.Load(file);
+            });
+        }
+
         public ScenarioCommonData LoadNewCommonData()
         {
             ScenarioCommonData scenarioCommonData = new ScenarioCommonData();

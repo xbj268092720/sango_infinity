@@ -41,7 +41,7 @@ namespace Sango.UI
                 });
 
             product_items_list.Clear();
-            if (targetBuildingType.productItems != null && targetBuildingType.productItems.Length > 1)
+            if (targetBuildingType.productItems != null && targetBuildingType.productItems.Length > 0)
             {
                 autoProductItem.onSelected = OnSelectAutoProduct;
                 autoProductItem.SetSelected(TargetBuilding.ProductItemId == 0);

@@ -199,6 +199,15 @@ namespace Sango.Core
             return moveCost[cell.TerrainType.Id];
         }
 
+        public bool IsValid(Force force)
+        {
+            // 检查科技
+            if (validTechId > 0 && !force.HasTechnique(validTechId))
+                return false;
+            else if (validTechId < 0 && force.HasTechnique(Math.Abs(validTechId)))
+                return false;
+            return true;
+        }
 
         // 获取当前可以组建的兵种
         public static void CheckActivTroopTypeList(List<Person> checkPersonList, List<TroopType> activeTroopTypes)
@@ -212,10 +221,7 @@ namespace Sango.Core
             {
                 if (!t.isFight) return;
 
-                // 检查科技
-                if (t.validTechId > 0 && !force.HasTechnique(t.validTechId))
-                    return;
-                else if (t.validTechId < 0 && force.HasTechnique(Math.Abs(t.validTechId)))
+                if (!t.IsValid(force))
                     return;
 
                 if (t.validItemId == 0)

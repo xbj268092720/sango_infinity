@@ -84,21 +84,7 @@ namespace Sango.Core
         /// 身分
         /// </summary>
         [JsonProperty]
-#if SANGO_DEBUG
-
-        public int state
-        {
-            get { return _state; }
-            set
-            {
-                _state = value;
-                Sango.Log.Info($"{Name}改变状态=> {PersonSortFunction.SortByState.GetValueStr(this)}");
-            }
-        }
-        private int _state;
-#else
         public int state;
-#endif
 
         /// <summary>
         /// 性格

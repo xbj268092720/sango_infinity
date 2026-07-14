@@ -161,12 +161,10 @@ namespace Sango.Loader
                 filePath = Path.FindFile(srcPath + ".png");
                 if (string.IsNullOrEmpty(filePath))
                 {
-                    filePath = Path.FindFile(srcPath + ".jpeg");
+                    filePath = Path.FindFile(srcPath + ".jpg");
                     if (string.IsNullOrEmpty(filePath))
                     {
-                        filePath = Path.FindFile(srcPath + ".tga");
-                        if (string.IsNullOrEmpty(filePath))
-                            filePath = Path.FindFile(srcPath + ".bmp");
+                        filePath = Path.FindFile(srcPath + ".jpeg");
                     }
                 }
             }

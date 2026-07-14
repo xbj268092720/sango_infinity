@@ -13,6 +13,7 @@ namespace Sango.UI
     {
         public Text modInfoText;
         public Text modDescriptionText;
+        public Text authorText;
         public RawImage modPosterImg;
         public Button backButton;
         public Button applyButton;
@@ -72,6 +73,12 @@ namespace Sango.UI
 
         void OnModUpdate(Mod.Mod mod)
         {
+            if(!ModManager.Instance.HasMod(mod))
+            {
+                allMods.Remove(mod);
+                enabledMods.Remove(mod);
+                totalCount = allMods.Count;
+            }
             UpdateItemStartIndex(startIndex);
         }
 
@@ -159,13 +166,13 @@ namespace Sango.UI
         {
             Mod.Mod mod = allMods[index];
             int i = 0;
-            for (int j = 1; j < enabledMods.Count; j++)
+            for (int j = 1; j < allMods.Count; j++)
             {
-                if (enabledMods[j] == mod)
+                if (allMods[j] == mod)
                 {
-                    Mod.Mod temp = enabledMods[i];
-                    enabledMods[i] = mod;
-                    enabledMods[j] = temp;
+                    Mod.Mod temp = allMods[i];
+                    allMods[i] = mod;
+                    allMods[j] = temp;
                 }
                 else
                     i++;
@@ -178,13 +185,13 @@ namespace Sango.UI
         {
             Mod.Mod mod = allMods[index];
             int i = 1;
-            for (int j = 0; j < enabledMods.Count - 1; j++)
+            for (int j = 0; j < allMods.Count - 1; j++)
             {
-                if (enabledMods[j] == mod)
+                if (allMods[j] == mod)
                 {
-                    Mod.Mod temp = enabledMods[i];
-                    enabledMods[i] = mod;
-                    enabledMods[j] = temp;
+                    Mod.Mod temp = allMods[i];
+                    allMods[i] = mod;
+                    allMods[j] = temp;
                 }
                 else
                     i++;
@@ -209,9 +216,12 @@ namespace Sango.UI
             }
 
             Mod.Mod mod = allMods[index];
-            modInfoText.text = $"{mod.Name} v{mod.Version}";
+            if (mod.IsValidMod())
+                modInfoText.text = $"{mod.Name} v{mod.Version}";
+            else
+                modInfoText.text = $"{mod.Name} v{mod.UrlVersion}";
             modDescriptionText.text = mod.Description;
-
+            authorText.text = mod.Author;
             if (modPosterImg != null && !string.IsNullOrEmpty(mod.Poster))
             {
                 modPosterImg.enabled = true;
@@ -229,9 +239,15 @@ namespace Sango.UI
         public void OnApply()
         {
 
+            List<Mod.Mod> sorted_list = new List<Mod.Mod>();
+            foreach (Mod.Mod mod in allMods)
+            {
+                if(enabledMods.Contains(mod))
+                    sorted_list.Add(mod);
+            }
 
             // 保存MOD列表
-            ModManager.Instance.SaveModList(enabledMods.ToArray());
+            ModManager.Instance.SaveModList(sorted_list.ToArray());
             //// 重新初始化MOD
             //ModManager.Instance.InitMods(enabledMods.ToArray());
             // 显示提示，需要重启游戏才能生效

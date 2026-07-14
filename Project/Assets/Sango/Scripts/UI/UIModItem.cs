@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Sango.Core;
+using Sango.Mod;
+
 namespace Sango.UI
 {
     /// <summary>
@@ -19,6 +21,7 @@ namespace Sango.UI
         public Image progressImg;
         public Image bgImg;
         public UIButtonItem downloadBtn;
+        public UIButtonItem deleteBtn;
         public Mod.Mod mod;
 
         public int targetIndex;
@@ -30,6 +33,8 @@ namespace Sango.UI
 
         public Button upButton;
         public Button downButton;
+        float pressTime;
+        bool isPress = false;
         public void OnClickDownload()
         {
             //onDownloadCall?.Invoke(this);
@@ -45,6 +50,7 @@ namespace Sango.UI
             mod = m;
             if (mod != null)
             {
+                deleteBtn.gameObject.SetActive(false);
                 enableToggle.gameObject.SetActive(mod.IsValidMod());
                 downloadBtn.gameObject.SetActive(mod.CanUpgrage());
                 SetName(mod.Name);
@@ -52,17 +58,21 @@ namespace Sango.UI
                 {
                     if (mod.IsValidMod())
                     {
-                        string txt = $"当前版本:{mod.Version}, 线上版本:{mod.UrlVersion}.下载大小:{GameUtility.FormatFileSizeStr(mod.Size)}";
-
+                        string txt = $"当前:{mod.Version}, 线上:{mod.UrlVersion}.大小:{GameUtility.FormatFileSizeStr(mod.Size)}";
+                        SetVersion(txt);
                     }
                     else
                     {
-                        string txt = $"线上版本:{mod.UrlVersion}.下载大小:{GameUtility.FormatFileSizeStr(mod.Size)}";
+                        string txt = $"线上:{mod.UrlVersion}.大小:{GameUtility.FormatFileSizeStr(mod.Size)}";
+                        SetVersion(txt);
                     }
                 }
                 else
                 {
-                    SetVersion(mod.Version);
+                    if (mod.IsValidMod())
+                        SetVersion(mod.Version);
+                    else
+                        SetVersion(mod.UrlVersion);
                 }
             }
             else
@@ -73,6 +83,7 @@ namespace Sango.UI
                 SetVersion("");
                 enableToggle.gameObject.SetActive(false);
                 downloadBtn.gameObject.SetActive(false);
+                deleteBtn.gameObject.SetActive(false);
             }
         }
 
@@ -101,6 +112,17 @@ namespace Sango.UI
                 modVersionText.text = version;
             }
             return this;
+        }
+
+        public void OnPressDown()
+        {
+            isPress = true;
+            pressTime = 0;
+        }
+
+        public void OnPressUp()
+        {
+            isPress = false;
         }
 
         public UIModItem SetEnabled(bool enabled)
@@ -194,6 +216,27 @@ namespace Sango.UI
             {
                 progressImg.enabled = false;
                 progressImg.fillAmount = 0;
+            }
+
+            if (mod != null)
+            {
+                if (isPress)
+                {
+                    pressTime += Time.deltaTime;
+                    if (pressTime > 3)
+                    {
+                        deleteBtn.gameObject.SetActive(true);
+                        isPress = false;
+                    }
+                }
+            }
+        }
+
+        public void OnDeleteMod()
+        {
+            if (mod != null)
+            {
+                ModManager.Instance.RemoveMod(mod);
             }
         }
     }

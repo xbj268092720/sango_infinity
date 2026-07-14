@@ -440,5 +440,19 @@ namespace Sango.Mod
                     action(targetFile);
             }
         }
+
+        public void RemoveMod(Mod mod)
+        {
+            if(mEnabledModList.Contains(mod))
+                mEnabledModList.Remove(mod);
+            mModMap.Remove(mod.Id);
+            Sango.Directory.Delete(mod.ModDir);
+            GameEvent.OnModUpdate?.Invoke(mod);
+        }
+
+        public bool HasMod(Mod mod)
+        {
+            return mModMap.ContainsKey(mod.Id);
+        }
     }
 }

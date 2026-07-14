@@ -15,12 +15,12 @@ namespace Sango.Core
             if (values == null || values.Length == 0) return this;
             for (int i = 0; i < values.Length; i += 2)
             {
-                int itemTypeId = values[i];
+                int storeKindId = values[i];
                 int number = values[i + 1];
                 TotalNumber += number;
-                ItemType itemType = Scenario.Cur.CommonData.ItemTypes.Get(itemTypeId);
+                ItemType itemType = Scenario.Cur.CommonData.ItemTypes.Get(storeKindId);
                 if (itemType == null) continue;
-                Items.Add(itemTypeId, number);
+                Items.Add(storeKindId, number);
             }
             return this;
         }
@@ -28,12 +28,12 @@ namespace Sango.Core
         public int[] ToArray()
         {
             List<int> ints = new List<int>();
-            foreach (int itemTypeId in Items.Keys)
+            foreach (int storeKindId in Items.Keys)
             {
-                int number = Items[itemTypeId];
+                int number = Items[storeKindId];
                 if (number > 0)
                 {
-                    ints.Add(itemTypeId);
+                    ints.Add(storeKindId);
                     ints.Add(number);
                 }
             }
@@ -43,11 +43,11 @@ namespace Sango.Core
         public ItemStore Copy()
         {
             ItemStore copy = new ItemStore();
-            foreach (int itemTypeId in Items.Keys)
+            foreach (int storeKindId in Items.Keys)
             {
-                int number = Items[itemTypeId];
+                int number = Items[storeKindId];
                 if (number > 0)
-                    copy.Items.Add(itemTypeId, number);
+                    copy.Items.Add(storeKindId, number);
             }
             copy.TotalNumber = TotalNumber;
             return copy;
@@ -58,18 +58,18 @@ namespace Sango.Core
             return Set(itemType.storeKind, number);
         }
 
-        public int Set(int itemTypeId, int number)
+        public int Set(int storeKindId, int number)
         {
-            if (Items.TryGetValue(itemTypeId, out int has))
+            if (Items.TryGetValue(storeKindId, out int has))
             {
                 TotalNumber -= has;
-                Items[itemTypeId] = number;
+                Items[storeKindId] = number;
                 TotalNumber += number;
                 return number;
             }
 
             TotalNumber += number;
-            Items.Add(itemTypeId, number);
+            Items.Add(storeKindId, number);
             return number;
         }
 
@@ -78,18 +78,18 @@ namespace Sango.Core
             return Add(itemType.storeKind, number);
         }
 
-        public int Add(int itemTypeId, int number)
+        public int Add(int storeKindId, int number)
         {
-            if (Items.TryGetValue(itemTypeId, out int has))
+            if (Items.TryGetValue(storeKindId, out int has))
             {
                 has += number;
-                Items[itemTypeId] = has;
+                Items[storeKindId] = has;
                 TotalNumber += number;
                 return has;
             }
 
             TotalNumber += number;
-            Items.Add(itemTypeId, number);
+            Items.Add(storeKindId, number);
             return number;
         }
 
@@ -97,11 +97,11 @@ namespace Sango.Core
         public void Add(ItemStore itemStore)
         {
             if (itemStore == null) return;
-            foreach (int itemTypeId in itemStore.Items.Keys)
+            foreach (int storeKindId in itemStore.Items.Keys)
             {
-                int number = itemStore.Items[itemTypeId];
+                int number = itemStore.Items[storeKindId];
                 if (number > 0)
-                    Add(itemTypeId, number);
+                    Add(storeKindId, number);
             }
         }
 
@@ -110,11 +110,11 @@ namespace Sango.Core
             return Remove(itemType.storeKind);
         }
 
-        public int Remove(int itemTypeId)
+        public int Remove(int storeKindId)
         {
-            if (Items.TryGetValue(itemTypeId, out int has))
+            if (Items.TryGetValue(storeKindId, out int has))
             {
-                Items.Remove(itemTypeId);
+                Items.Remove(storeKindId);
                 TotalNumber -= has;
                 return has;
             }
@@ -126,13 +126,13 @@ namespace Sango.Core
             return Remove(itemType.storeKind, number);
         }
 
-        public int Remove(int itemTypeId, int number)
+        public int Remove(int storeKindId, int number)
         {
-            if (Items.TryGetValue(itemTypeId, out int has))
+            if (Items.TryGetValue(storeKindId, out int has))
             {
                 number = Math.Min(has, number);
                 has -= number;
-                Items[itemTypeId] = has;
+                Items[storeKindId] = has;
                 TotalNumber -= number;
                 return has;
             }
@@ -143,27 +143,27 @@ namespace Sango.Core
         {
             if (itemStore == null) return TotalNumber;
 
-            foreach (int itemTypeId in itemStore.Items.Keys)
+            foreach (int storeKindId in itemStore.Items.Keys)
             {
-                int number = itemStore.Items[itemTypeId];
+                int number = itemStore.Items[storeKindId];
                 if (number > 0)
-                    Remove(itemTypeId, number);
+                    Remove(storeKindId, number);
             }
             return TotalNumber;
         }
 
-        public int GetNumber(int itemTypeId)
+        public int GetNumber(int storeKindId)
         {
-            if (Items.TryGetValue(itemTypeId, out int has))
+            if (Items.TryGetValue(storeKindId, out int has))
                 return has;
             return 0;
         }
 
-        public int GetNumber(int [] itemTypeId)
+        public int GetNumber(int [] storeKindId)
         {
             int total = 0;
-            for(int i = 0; i < itemTypeId.Length; i++)
-                total += GetNumber(itemTypeId[i]);
+            for(int i = 0; i < storeKindId.Length; i++)
+                total += GetNumber(storeKindId[i]);
             return total;
         }
 
@@ -180,10 +180,10 @@ namespace Sango.Core
             set { Add(itemType.storeKind, value); }
         }
 
-        public int this[int itemTypeId]
+        public int this[int storeKindId]
         {
-            get { return GetNumber(itemTypeId); }
-            set { Add(itemTypeId, value); }
+            get { return GetNumber(storeKindId); }
+            set { Add(storeKindId, value); }
         }
 
         public bool CheckItemEnough(int[] cost, int number)
@@ -191,9 +191,9 @@ namespace Sango.Core
             if (cost == null || cost.Length == 0) return true;
             for (int i = 0; i < cost.Length; i += 2)
             {
-                int itemTypeId = cost[i];
+                int storeKindId = cost[i];
                 int costN = cost[i + 1];
-                int have = GetNumber(itemTypeId);
+                int have = GetNumber(storeKindId);
                 int need = costN * number;
                 if (need % 1000 == 0)
                     need = need / 1000;
@@ -211,9 +211,9 @@ namespace Sango.Core
             if (cost == null || cost.Length == 0) return;
             for (int i = 0; i < cost.Length; i += 2)
             {
-                int itemTypeId = cost[i];
+                int storeKindId = cost[i];
                 int costN = cost[i + 1] * number / 1000;
-                Remove(itemTypeId, costN);
+                Remove(storeKindId, costN);
             }
         }
 
@@ -222,9 +222,9 @@ namespace Sango.Core
             if (cost == null || cost.Length == 0) return;
             for (int i = 0; i < cost.Length; i += 2)
             {
-                int itemTypeId = cost[i];
+                int storeKindId = cost[i];
                 int costN = cost[i + 1] * number / 1000;
-                Add(itemTypeId, costN);
+                Add(storeKindId, costN);
             }
         }
 
@@ -233,9 +233,9 @@ namespace Sango.Core
             if (cost == null || cost.Length == 0) return number;
             for (int i = 0; i < cost.Length; i += 2)
             {
-                int itemTypeId = cost[i];
+                int storeKindId = cost[i];
                 int costN = cost[i + 1];
-                int have = GetNumber(itemTypeId) * 1000 / costN;
+                int have = GetNumber(storeKindId) * 1000 / costN;
                 number = Math.Min(number, have);
             }
             return number;
@@ -251,24 +251,24 @@ namespace Sango.Core
             ItemStore itemStore = new ItemStore();
             if (part <= 0) return itemStore;
             if (part > 100) part = 100;
-            foreach (int itemTypeId in Items.Keys)
+            foreach (int storeKindId in Items.Keys)
             {
-                int number = Items[itemTypeId];
+                int number = Items[storeKindId];
                 if (number > 0)
                 {
                     int partNum = number * part / 100;
-                    itemStore.Add(itemTypeId, partNum);
+                    itemStore.Add(storeKindId, partNum);
                 }
             }
 
             if (!keep)
             {
-                foreach (int itemTypeId in itemStore.Items.Keys)
+                foreach (int storeKindId in itemStore.Items.Keys)
                 {
-                    int number = Items[itemTypeId];
+                    int number = Items[storeKindId];
                     if (number > 0)
                     {
-                        Items[itemTypeId] = Items[itemTypeId] - number;
+                        Items[storeKindId] = Items[storeKindId] - number;
                         TotalNumber -= number;
                     }
                 }

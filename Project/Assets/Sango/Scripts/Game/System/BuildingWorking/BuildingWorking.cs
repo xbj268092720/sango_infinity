@@ -64,6 +64,9 @@ namespace Sango.Core
 
         void OnGetJobCostAP(JobType jobType, int cost, OverrideData<int> overrideData)
         {
+            if (selectedWorkingType == 0)
+                return;
+
             // 工作制下面这些政策不消耗AP
             switch ((CityJobType)jobType.Id)
             {
@@ -242,12 +245,13 @@ namespace Sango.Core
             }
         }
 
-        void OnClickMenuItem_CityAutoWorking(IContextMenuItem contextMenuItem)
+        void OnClickMenuItem_AutoSetWorking(IContextMenuItem contextMenuItem)
         {
             AppointWorking(TargetCity, Scenario.Cur);
+            TargetCity.allBuildings.ForEach((building) => { if (building.isComplate) building.Render?.UpdateRender(); });
         }
 
-        void OnClickMenuItem_AutoSetWorking(IContextMenuItem contextMenuItem)
+        void OnClickMenuItem_CityAutoWorking(IContextMenuItem contextMenuItem)
         {
             bool b = !TargetCity.GetExtensionData<bool>("AppointWorking");
             TargetCity.SetExtensionData<bool>("AppointWorking", b);
@@ -593,7 +597,7 @@ namespace Sango.Core
                         case (int)BuildingKindType.Barracks:
                             {
                                 int value = product * totalFactor / 10000;
-                                overrideData .Value = value;
+                                overrideData.Value = value;
                                 GameEvent.OnCityJobResult?.Invoke(belongCity, jobId, personArray, overrideData);
 
                                 // 治安对征兵的影响
@@ -1062,7 +1066,7 @@ namespace Sango.Core
                         {
                             int p = building.ProductItemId;
 
-                            if(building.ProductItemId == 0)
+                            if (building.ProductItemId == 0)
                             {
                                 int monsterNum = city.itemStore.GetNumber((int)ItemStoreKindType.Helepolis);
                                 int towerNum = city.itemStore.GetNumber((int)ItemStoreKindType.Catapult);

@@ -68,12 +68,15 @@ namespace Sango.Core.Player
                     Cell n = stayCell.Neighbors[i];
                     if (n != null)
                     {
-                        for (int j = 0; j < canBuildBuildingType.Count; j++)
+                        if ((n.IsEmpty() && n.moveAble) || n.troop == TargetTroop)
                         {
-                            if (canBuildBuildingType[j].CanBuildToHere(n))
+                            for (int j = 0; j < canBuildBuildingType.Count; j++)
                             {
-                                buildRangeCell.Add(n);
-                                break;
+                                if (canBuildBuildingType[j].CanBuildToHere(n))
+                                {
+                                    buildRangeCell.Add(n);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -101,11 +104,14 @@ namespace Sango.Core.Player
             for (int i = 0; i < ActionCell.Neighbors.Length; i++)
             {
                 Cell n = ActionCell.Neighbors[i];
-                if (n != null && n.building == null && n.moveAble)
+                if (n != null)
                 {
-                    if (targetBuildingType.CanBuildToHere(n))
+                    if ((n.IsEmpty() && n.moveAble) || n.troop == TargetTroop)
                     {
-                        buildRangeCell.Add(n);
+                        if (targetBuildingType.CanBuildToHere(n))
+                        {
+                            buildRangeCell.Add(n);
+                        }
                     }
                 }
             }
@@ -188,7 +194,7 @@ namespace Sango.Core.Player
                     {
                         TargetTroop.ActionOver = true;
                         // 委任维修
-                        if(targetBuildCell.building != null && !targetBuildCell.building.isComplate)
+                        if (targetBuildCell.building != null && !targetBuildCell.building.isComplate)
                         {
                             TargetTroop.SetMission(MissionType.TroopFixBuilding, targetBuildCell.building.Id);
                         }

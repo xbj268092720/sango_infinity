@@ -386,7 +386,7 @@ using Sango.Core; namespace Sango.UI
                     for (int j = 0; j < targetTroop.LandTroopType.costItems.Length; j += 2)
                     {
                         int itemId = targetTroop.LandTroopType.costItems[j];
-                        if (itemId == itemType.Id)
+                        if (itemId == itemType.storeKind)
                         {
                             int need = targetTroop.LandTroopType.costItems[j + 1];
                             use = need * targetTroop.troops / 1000;
@@ -398,7 +398,7 @@ using Sango.Core; namespace Sango.UI
                     for (int j = 0; j < targetTroop.WaterTroopType.costItems.Length; j += 2)
                     {
                         int itemId = targetTroop.WaterTroopType.costItems[j];
-                        if (itemId == itemType.Id)
+                        if (itemId == itemType.storeKind)
                         {
                             int need = targetTroop.WaterTroopType.costItems[j + 1];
                             use = need * targetTroop.troops / 1000;

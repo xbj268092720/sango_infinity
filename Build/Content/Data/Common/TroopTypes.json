@@ -575,6 +575,7 @@
         40,
         39
       ],
+      "validTechId": -23,
       "costItems": [
         8,
         10
@@ -645,6 +646,7 @@
         40,
         39
       ],
+      "validTechId": 23,
       "costItems": [
         8,
         8

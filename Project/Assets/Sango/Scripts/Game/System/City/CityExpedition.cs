@@ -239,8 +239,8 @@ namespace Sango.Core.Player
             if (personList.Count <= 0)
                 return;
 
-            TargetTroop.CalculateMaxTroops();
             TargetTroop.CalculateAttribute(Scenario.Cur);
+            SetTroops(TargetTroop.MaxTroops);
         }
 
         public void SetLandType(TroopType troopType)
@@ -249,8 +249,8 @@ namespace Sango.Core.Player
             if (personList.Count <= 0)
                 return;
 
-            TargetTroop.CalculateMaxTroops();
             TargetTroop.CalculateAttribute(Scenario.Cur);
+            SetTroops(TargetTroop.MaxTroops);
         }
     }
 }

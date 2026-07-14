@@ -14,7 +14,7 @@ namespace Sango.Core.Player
         public List<BuildingType> canBuildBuildingType = new List<BuildingType>();
 
         public BuildingType TargetBuildingType { get; set; }
-
+        Cell lastEnterCell;
         public CityBuildBuilding()
         {
             customTitleName = "开发";
@@ -194,6 +194,7 @@ namespace Sango.Core.Player
                 SelectBuildingObject.position = (cell.Position);
                 SelectBuildingObject.rotation = cell.interiorModel.rotation;
                 cell.SetInteriorModelVisible(false);
+                lastEnterCell = cell;
             }
         }
 
@@ -205,6 +206,7 @@ namespace Sango.Core.Player
             if (cell.IsInterior && cell.building == null)
             {
                 cell.SetInteriorModelVisible(true);
+                lastEnterCell = null;
             }
         }
 
@@ -265,13 +267,12 @@ namespace Sango.Core.Player
 
             switch (eventType)
             {
-                case CommandEventType.Cancel:
-                case CommandEventType.RClickUp:
-                    {
-                        if (SelectBuildingObject == null)
-                            GameSystemManager.Instance.Back();
-                        break;
-                    }
+                case CommandEventType.Cancel:                //case CommandEventType.RClickUp:
+                //    {
+                        
+                //        break;
+                //    }
+
 
                 case CommandEventType.RClick:
                     {
@@ -283,9 +284,18 @@ namespace Sango.Core.Player
                                 SelectBuildingObject.Clear();
                                 SelectBuildingObject = null;
                             }
+                            if(lastEnterCell != null)
+                            {
+                                OnCellOverExit(lastEnterCell);
+                            }
                             GameController.Instance.onCellOverEnter -= OnCellOverEnter;
                             GameController.Instance.onCellOverStay -= OnCellOverStay;
                             GameController.Instance.onCellOverExit -= OnCellOverExit;
+                        }
+                        else
+                        {
+                            if (SelectBuildingObject == null)
+                                GameSystemManager.Instance.Back();
                         }
                         break;
                     }

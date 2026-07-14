@@ -1538,9 +1538,6 @@
       "workerLimit": 3,
       "product": 580,
       "jobId": 6,
-      "productItems": [
-        -1
-      ],
       "productCost": 200,
       "cost": 200,
       "radius": 0,
@@ -1569,9 +1566,6 @@
       "workerLimit": 3,
       "product": 700,
       "jobId": 6,
-      "productItems": [
-        -1
-      ],
       "productCost": 200,
       "cost": 200,
       "radius": 0,

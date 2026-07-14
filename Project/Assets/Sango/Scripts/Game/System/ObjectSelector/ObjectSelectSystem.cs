@@ -52,6 +52,11 @@ namespace Sango.Core.Player
 
         public void Add(int index)
         {
+            if(index < 0 || index >= Objects.Count)
+            {
+                return;
+            }
+
             if (!selected.Contains(Objects[index]))
             {
                 selected.Add(Objects[index]);
