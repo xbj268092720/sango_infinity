@@ -87,6 +87,7 @@ namespace Sango.Core
         public void BurnTroop(Troop troop)
         {
             if (troop == null) return;
+            if (troop.ignoreFire) return;
 
             int dmg = damage + intelligence * 2 - troop.Intelligence - troop.Defence;
            // if (troop.ChangeTroops(-dmg, this, false))

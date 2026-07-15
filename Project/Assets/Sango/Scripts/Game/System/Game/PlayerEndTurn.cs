@@ -62,7 +62,10 @@ namespace Sango.Core.Player
                     c.Render?.UpdateRender();
                 }
             }
-            Scenario.Cur.CurRunForce.CurRunCorps.ActionOver = true;
+
+            if(force.CurRunCorps != null)
+                force.CurRunCorps.ActionOver = true;
+
             Done();
         }
 

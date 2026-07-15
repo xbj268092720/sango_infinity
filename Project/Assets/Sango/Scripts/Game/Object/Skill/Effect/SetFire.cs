@@ -63,7 +63,7 @@ namespace Sango.Core
             {
                 fire = new Fire()
                 {
-                    damage = 300,
+                    damage = Scenario.Cur.Variables.baseFireDamage,
                     intelligence = master.master.Intelligence,
                     cell = targetCell,
                     counter = finalCount
@@ -76,6 +76,8 @@ namespace Sango.Core
                 fire.intelligence = master.master.Intelligence;
                 fire.counter = finalCount;
             }
+
+            GameEvent.OnFireAdd(master, fire);
 
             targetCell.fire = fire;
             fire.Action();

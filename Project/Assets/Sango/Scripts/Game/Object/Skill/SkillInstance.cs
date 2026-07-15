@@ -405,7 +405,13 @@ namespace Sango.Core
 #endif
                 return true;
             }
-
+           else if (baseSuccessRate <= 0)
+            {
+#if SANGO_DEBUG
+                Sango.Log.Info($"{troop.BelongForce.Name}的[{troop.Name} 部队 准备释放技能: {Name} =>({spellCell.x},{spellCell.y})] 成功率:{baseSuccessRate}");
+#endif
+                return false;
+            }
 
             if (skillSuccessMethod == null)
             {
@@ -454,7 +460,7 @@ namespace Sango.Core
 
             // 必爆流程判断
             Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(0);
-            GameEvent.OnTroopBeforeCalculateSkillSuccess?.Invoke(troop, this, spellCell, overrideData);
+            GameEvent.OnTroopBeforeCalculateSkillCritical?.Invoke(troop, this, spellCell, overrideData);
             if (overrideData.ValueAndRecycle >= 100)
             {
                 overrideData = Tools.OverrideData<int>.Create(scenarioVariables.skillCriticalFactor);
@@ -462,7 +468,11 @@ namespace Sango.Core
                 tempCriticalFactor = overrideData.ValueAndRecycle;
                 return tempCriticalFactor;
             }
-
+            else if(overrideData.ValueAndRecycle <= 0)
+            {
+                tempCriticalFactor = 100;
+                return tempCriticalFactor;
+            }
 
             if (skillCriticalMethod == null)
             {

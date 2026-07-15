@@ -500,7 +500,7 @@ namespace Sango.Core
         public static EventDelegate<Force, OverrideData<int>> OnForcePersonLoyaltyChangeProbability;
 
         /// <summary>
-        /// 可监听改计算战法成功率(百分比) 必爆, 设置100则为必中
+        /// 可监听改计算战法成功率(百分比) 必爆, 设置100则为必中, 设置为0则必不中
         /// City, Skill, spellCell, OverrideFunc
         /// </summary>
         public static EventDelegate<Troop, SkillInstance, Cell, OverrideData<int>> OnTroopBeforeCalculateSkillSuccess;
@@ -513,7 +513,7 @@ namespace Sango.Core
 
 
         /// <summary>
-        /// 可监听改计算战法暴击率(百分比) 必爆, 设置100则为必爆
+        /// 可监听改计算战法暴击率(百分比) 必爆, 设置100则为必爆, 设置为0则必不爆
         /// City, Skill, spellCell,  OverrideFunc
         /// </summary>
         public static EventDelegate<Troop, SkillInstance, Cell, OverrideData<int>> OnTroopBeforeCalculateSkillCritical;
@@ -585,6 +585,11 @@ namespace Sango.Core
         /// 技能实例效果触发结束
         /// </summary>
         public static EventDelegate<SkillInstance, Cell> OnSkillRenderEnd;
+
+        /// <summary>
+        /// 放火
+        /// </summary>
+        public static EventDelegate<SkillInstance, Fire> OnFireAdd;
 
         /// <summary>
         /// 当武将逃跑时

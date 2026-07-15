@@ -113,6 +113,8 @@ using Sango.Core; namespace Sango.UI
             AddNumberItem("基础技能暴击率(百分比)", variables.baseSkillCriticalRate, 0, 100, (v) => { variables.baseSkillCriticalRate = v; });
             AddNumberItem("武力对暴击的加成值", variables.skillCriticalRateAddByStength, 0, 100, (v) => { variables.skillCriticalRateAddByStength = v; });
             AddNumberItem("暴击倍率(百分比)", variables.skillCriticalFactor, 100, 300, (v) => { variables.skillCriticalFactor = v; });
+            AddNumberItem("基础火焰伤害", variables.baseFireDamage, 100, 3000, (v) => { variables.baseFireDamage = v; });
+            
 
             AddTitle("缴获与保留参数");
             AddNumberItem("近战击溃部队缴获的金钱比例(百分比)", variables.defeatTroopCanGainGoldFactor, 0, 100, (v) => { variables.defeatTroopCanGainGoldFactor = v; });

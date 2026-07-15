@@ -111,21 +111,24 @@ namespace Sango.Core.Player
             GameSystem.GetSystem<CorpsSelectSystem>().Start(corps_list,
             target_corps_list, 1, (x) =>
             {
-                Corps exsist = x[0];
-                targetCorps = new Corps();
-                targetCorps.Id = exsist.Id;
-                targetCorps.BelongForce = exsist.BelongForce;
-                targetCorps.number = exsist.number;
-                targetCorps.policy = exsist.policy;
-                targetCorps.Comander = exsist.Comander;
-                List<City> targetCityList = new List<City>();
-                exsist.BelongForce.ForEachCity(x =>
+                if (x.Count > 0)
                 {
-                    if (x.BelongCorps == exsist)
-                        targetCityList.Add(x);
-                });
-                targetCorps.inti_cities = targetCityList;
-                Window.Instance.Open("window_corps_setting", targetCorps, "军团", (System.Action)ResetCorps);
+                    Corps exsist = x[0];
+                    targetCorps = new Corps();
+                    targetCorps.Id = exsist.Id;
+                    targetCorps.BelongForce = exsist.BelongForce;
+                    targetCorps.number = exsist.number;
+                    targetCorps.policy = exsist.policy;
+                    targetCorps.Comander = exsist.Comander;
+                    List<City> targetCityList = new List<City>();
+                    exsist.BelongForce.ForEachCity(x =>
+                    {
+                        if (x.BelongCorps == exsist)
+                            targetCityList.Add(x);
+                    });
+                    targetCorps.inti_cities = targetCityList;
+                    Window.Instance.Open("window_corps_setting", targetCorps, "军团", (System.Action)ResetCorps);
+                }
             },
             CorpsSortFunction.DefaultSortList, "重編军团");
         }

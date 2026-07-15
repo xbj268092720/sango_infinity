@@ -10,8 +10,10 @@ namespace Sango.Core
 {
     [JsonObject(MemberSerialization.OptIn)]
 
-    public class ShortForce : SangoObject
+    public class ShortForce
     {
+        [JsonProperty(Order = -99)] public int Id;
+        [JsonProperty(Order = -98)] public string Name;
         [JsonProperty] public int Governor;
         [JsonProperty] public int Counsellor;
         [JsonProperty] public int Flag;
@@ -20,8 +22,10 @@ namespace Sango.Core
     }
 
     [JsonObject(MemberSerialization.OptOut)]
-    public class ShortPerson : SangoObject
+    public class ShortPerson
     {
+        [JsonProperty(Order = -99)] public int Id;
+        [JsonProperty(Order = -98)] public string Name;
         public int BelongForce;
         public int BelongCity;
         public string headIconID;
@@ -30,8 +34,10 @@ namespace Sango.Core
 
 
     [JsonObject(MemberSerialization.OptOut)]
-    public class ShortCity : SangoObject
+    public class ShortCity
     {
+        [JsonProperty(Order = -99)] public int Id;
+        [JsonProperty(Order = -98)] public string Name;
         public int BelongForce;
         public int BuildingType;
         public int x;
@@ -127,27 +133,27 @@ namespace Sango.Core
         {
             this.FilePath = filePath;
             LoadInfo();
-            LoadContent();
-            loadOK = true;
+           // LoadContent();
+            loadOK = false;
         }
 
         public ShortScenario(string filePath, bool notask)
         {
             this.FilePath = filePath;
             LoadInfo();
-            if (!notask)
-            {
-                LoadContent();
-                loadOK = true;
-            }
-            else
-            {
-                task = Task.Run(() =>
-                {
-                    LoadContent();
-                    loadOK = true;
-                });
-            }
+            //if (!notask)
+            //{
+            //    LoadContent();
+            //    loadOK = true;
+            //}
+            //else
+            //{
+            //    task = Task.Run(() =>
+            //    {
+            //        LoadContent();
+            //        loadOK = true;
+            //    });
+            //}
         }
 
         public static ShortScenario Add(string path)
@@ -189,19 +195,50 @@ namespace Sango.Core
 
         public void LoadContent()
         {
-
             LoadContent(FilePath);
         }
 
         public void LoadContent(string path)
         {
+            if (loadOK) return;
             Cur = this;
             if (CommonData == null)
-                CommonData = GameData.Instance.LoadNewCommonData();
-            if (Variables == null)
-                Variables = new ScenarioVariables();
+                CommonData = GameData.Instance.LoadCommonData();
 
-            JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
+            //if (Variables == null)
+            //    Variables = new ScenarioVariables();
+
+            using (StreamReader file = System.IO.File.OpenText(FilePath))
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                while (reader.Read()) // Advances to the next token in the JSON stream.
+                {
+                    if (reader.TokenType == JsonToken.StartObject) // Check for start of an object in the JSON stream.
+                    {
+                        if (!string.IsNullOrEmpty(reader.Path) )
+                        {
+                            if (reader.TokenType == JsonToken.StartObject) // Check for start of an object in the JSON stream.
+                            {
+                                if (!string.IsNullOrEmpty(reader.Path) && reader.Path == "forceSet")
+                                {
+                                    forceSet = JsonSerializer.CreateDefault().Deserialize<Dictionary<int, ShortForce>>(reader); // Deserialize the object.
+                                }
+                                else if (!string.IsNullOrEmpty(reader.Path) && reader.Path == "personSet")
+                                {
+                                    personSet = JsonSerializer.CreateDefault().Deserialize<Dictionary<int, ShortPerson>>(reader); // Deserialize the object.
+                                }
+                                else if (!string.IsNullOrEmpty(reader.Path) && reader.Path == "citySet")
+                                {
+                                    citySet = JsonSerializer.CreateDefault().Deserialize<Dictionary<int, ShortCity>>(reader); // Deserialize the object.
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            //JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
 
             // 玩家确定
             if (Info.playerForceList != null && Info.playerForceList.Length > 0)
@@ -228,6 +265,8 @@ namespace Sango.Core
             }
             else
                 Map = targetMap;
+
+            loadOK = true;
         }
 
         public string GetIDName()

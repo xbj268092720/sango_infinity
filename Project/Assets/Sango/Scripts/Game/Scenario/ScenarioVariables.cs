@@ -421,7 +421,10 @@ namespace Sango.Core
         /// </summary>
         [JsonProperty] public int pathfindingSafeCount = 100000;
 
-
+        /// <summary>
+        /// 基础火焰伤害
+        /// </summary>
+        [JsonProperty] public int baseFireDamage = 320;
         #region 外交系统参数
 
         /// <summary>

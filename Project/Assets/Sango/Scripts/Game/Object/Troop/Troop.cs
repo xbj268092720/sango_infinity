@@ -402,6 +402,11 @@ namespace Sango.Core
         /// </summary>
         public bool ignoreWaterZOC = false;
 
+        /// <summary>
+        /// 是否免疫火焰
+        /// </summary>
+        public bool ignoreFire = true;
+
         public override ObjectRender GetRender() { return Render; }
         public TroopRender Render { get; private set; }
         bool isMissionPrepared = false;

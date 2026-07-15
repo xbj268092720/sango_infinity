@@ -23,6 +23,10 @@ namespace Sango.Core
 
         // 基于经典产出的比例
         int classiceGainFactor = 5;
+
+        /// <summary>
+        /// 0是工作制 1是经典内政
+        /// </summary>
         int selectedWorkingType = 1;
 
         public override void Init()
@@ -64,7 +68,7 @@ namespace Sango.Core
 
         void OnGetJobCostAP(JobType jobType, int cost, OverrideData<int> overrideData)
         {
-            if (selectedWorkingType == 0)
+            if (selectedWorkingType == 1)
                 return;
 
             // 工作制下面这些政策不消耗AP
@@ -78,7 +82,7 @@ namespace Sango.Core
                 case CityJobType.CreateMachine:
                 case CityJobType.CreateBoat:
                 case CityJobType.CreateHorse:
-                    overrideData.Set(0);
+                    overrideData.Set(1);
                     break;
             }
         }

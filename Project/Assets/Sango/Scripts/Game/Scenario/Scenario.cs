@@ -733,9 +733,6 @@ namespace Sango.Core
                 });
             }
 
-
-
-
             prepareList.Add(forceSet);
             prepareList.Add(corpsSet);
             prepareList.Add(citySet);
@@ -1139,6 +1136,7 @@ namespace Sango.Core
             if (CurRunForce != null && CurRunForce.IsAlive)
             {
                 Info.curForceId = CurRunForce.Id;
+                Info.curForceName = CurRunForce.Name;
                 CurRunForce.OnForceTurnStart(this);
                 GameEvent.OnForceTurnStart?.Invoke(CurRunForce, this);
             }

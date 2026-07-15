@@ -142,19 +142,6 @@ namespace Sango.Core
             //DiplomacyEventManager.Instance.Init();
             
             GameData.Instance.Init();
-            while (true)
-            {
-                bool all_ready = true;
-                for (int i = 0; i < ShortScenario.all_scenario_info_list.Count; i++)
-                {
-                    if (!ShortScenario.all_scenario_info_list[i].loadOK)
-                    {
-                        all_ready = false;
-                        yield return null;
-                    }
-                }
-                if (all_ready) break;
-            }
 
             GameEvent.OnGameInit?.Invoke();
             GameState.Instance.ChangeState((int)GameState.State.GAME_START_MENU);

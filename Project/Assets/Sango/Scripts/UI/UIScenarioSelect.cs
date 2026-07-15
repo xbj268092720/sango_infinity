@@ -111,7 +111,9 @@ namespace Sango.UI
             }
 
             ShortScenario scenario = ShortScenario.all_scenario_info_list[curSelectIndex];
+            scenario.LoadContent();
             ScenarioInfo scenarioInfo = scenario.Info;
+
             scenarioInfoText.text = scenario.GetDateName();
             scenarioDescText.text = scenarioInfo.description;
             int i = 0;

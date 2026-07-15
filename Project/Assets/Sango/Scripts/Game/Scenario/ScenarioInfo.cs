@@ -24,6 +24,8 @@ namespace Sango.Core
         [JsonProperty]
         public int curForceId;
         [JsonProperty]
+        public string curForceName;
+        [JsonProperty]
         public string mapType;
         [JsonProperty]
         public int turnCount;

@@ -12,6 +12,7 @@ namespace UnityEngine.UI
         public Vector2 cachePosition;
         public Vector2 update_cachePosition;
         public bool dontResetCachePosition = true;
+        public bool updateAlways = false;
         RectTransform cacheTrans;
         RectTransform uiRoot;
 
@@ -122,11 +123,17 @@ namespace UnityEngine.UI
             }
 
             //cacheTrans.anchoredPosition = cachePosition;
-
-            if(update_cachePosition != cacheTrans.anchoredPosition)
+            if(updateAlways)
             {
                 JudgmentUiInScreen(judgmentWidth, judgmentHeight);
-                update_cachePosition = cacheTrans.anchoredPosition;
+            }
+            else
+            {
+                if (update_cachePosition != cacheTrans.anchoredPosition)
+                {
+                    JudgmentUiInScreen(judgmentWidth, judgmentHeight);
+                    update_cachePosition = cacheTrans.anchoredPosition;
+                }
             }
         }
     }

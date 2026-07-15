@@ -144,7 +144,7 @@ namespace Sango.UI
                 {
                     item.SetId(index + 1)
                         .SetInactive(false)
-                        .SetName(scenario.forceSet[scenario.Info.curForceId].Name)
+                        .SetName(scenario.Info.curForceName)
                         .SetSaveTime(scenario.Info.dateTime)
                         .SetNew(newestData == scenario);
                 }
@@ -245,7 +245,7 @@ namespace Sango.UI
 
             curSelectIndex = index;
             ShortScenario scenario = all_saved_scenario_list[index];
-
+            scenario.LoadContent();
             if (scenario == null)
             {
                 ResetScenarioDetail();
@@ -283,6 +283,7 @@ namespace Sango.UI
                 return false;
             }
 
+            scenario.LoadContent();
             ScenarioInfo scenarioInfo = scenario.Info;
             id.SetText((index + 1).ToString());
             name.SetText($"{scenarioInfo.year} 年 {scenarioInfo.month}月 {scenarioInfo.day}日   {scenarioInfo.name}");

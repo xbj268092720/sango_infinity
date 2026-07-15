@@ -13,10 +13,16 @@ namespace Sango.Core.Action
     /// </summary>
     public class TroopSkillCalculateSuccess : TroopTroopActionBase
     {
+        /// <summary>
+        /// 自己是否是目标
+        /// </summary>
+        bool selfIsTarget;
+
         public override void Init(JObject p, params SangoObject[] sangoObjects)
         {
             base.Init(p, sangoObjects);
-            if (value >= 100)
+            selfIsTarget = p.Value<bool>("selfIsTarget");
+            if (value >= 100 || value <= -100)
                 GameEvent.OnTroopBeforeCalculateSkillSuccess += OnTroopBeforeCalculateSkillSuccess;
             else
 
@@ -25,17 +31,24 @@ namespace Sango.Core.Action
 
         public override void Clear()
         {
-            if (value >= 100)
+            if (value >= 100 || value <= -100)
                 GameEvent.OnTroopBeforeCalculateSkillSuccess -= OnTroopBeforeCalculateSkillSuccess;
             else
                 GameEvent.OnTroopAfterCalculateSkillSuccess -= OnTroopBeforeCalculateSkillSuccess;
 
         }
 
-        void OnTroopBeforeCalculateSkillSuccess(Troop troop, SkillInstance skill, Cell cell, OverrideData<int> overrideData)
+        void OnTroopBeforeCalculateSkillSuccess(Troop troop, SkillInstance skill, Cell spellCell, OverrideData<int> overrideData)
         {
             if (Force != null && troop.BelongForce != Force) return;
-            if (Troop != null && Troop != troop) return;
+            if (!selfIsTarget)
+            {
+                if (Troop != null && Troop != troop) return;
+            }
+            else
+            {
+                if (Troop != null && Troop != spellCell.troop) return;
+            }
 
             if (!CheckIsNormalSkill(skill, isNormal))
                 return;
@@ -54,7 +67,7 @@ namespace Sango.Core.Action
             if (checkLand == 2 && kinds != null && !kinds.Contains(troop.WaterTroopType.kind))
                 return;
 
-            if (condition != null && !condition.Check(new TroopActionConditionDatabase(skill, cell)))
+            if (condition != null && !condition.Check(new TroopActionConditionDatabase(skill, spellCell)))
                 return;
 
             overrideData.Value += value;

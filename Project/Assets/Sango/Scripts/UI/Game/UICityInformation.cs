@@ -171,7 +171,7 @@ using Sango.Core; namespace Sango.UI
 
         void UpdateItemsContent()
         {
-            if (items_inited) return;
+            if (items_inited || itemPool == null) return;
             items_inited = true;
             itemPool.Reset();
             List<ItemType> ItemTypes = Target.BelongForce.createdItemTypes;
