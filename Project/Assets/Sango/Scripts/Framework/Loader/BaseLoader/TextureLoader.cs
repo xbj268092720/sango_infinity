@@ -158,15 +158,14 @@ namespace Sango.Loader
             string srcPath = filePath;
             if (!System.IO.Path.HasExtension(srcPath))
             {
-                filePath = Path.FindFile(srcPath + ".png");
-                if (string.IsNullOrEmpty(filePath))
+                string[] all_fs = new string[]
                 {
-                    filePath = Path.FindFile(srcPath + ".jpg");
-                    if (string.IsNullOrEmpty(filePath))
-                    {
-                        filePath = Path.FindFile(srcPath + ".jpeg");
-                    }
-                }
+                    srcPath + ".png",
+                    srcPath + ".jpg",
+                    srcPath + ".jpeg"
+                };
+
+                filePath = Path.FindFile(all_fs);
             }
             else
             {

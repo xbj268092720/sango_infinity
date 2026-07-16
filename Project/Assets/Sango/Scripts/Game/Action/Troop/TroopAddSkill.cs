@@ -4,10 +4,12 @@ using TKNewtonsoft.Json.Linq;
 namespace Sango.Core.Action
 {
     /// <summary>
-    /// 某兵种战法替换成新战法
-    /// value: 技能id kinds: 兵种类型
+    /// 改变某兵种类型战法的气力消耗
+    /// value： 改变值
+    /// kinds： 兵种类型 
+    /// condition： 额外条件
     /// </summary>
-    public class TroopAddSkill : ForceTroopActionBase
+    public class TroopAddSkill : TroopTroopActionBase
     {
         public override void Init(JObject p, params SangoObject[] sangoObjects)
         {
@@ -22,7 +24,9 @@ namespace Sango.Core.Action
 
         void OnTroopCalculateAttribute(Troop troop, Scenario scenario)
         {
-            if (Force != troop.BelongForce) return;
+            if (Force != null && troop.BelongForce != Force) return;
+            if (Troop != null && Troop != troop) return;
+
             Skill skill = scenario.GetObject<Skill>(value);
             if (kinds == null)
             {
@@ -32,9 +36,15 @@ namespace Sango.Core.Action
             else
             {
                 if (kinds.Contains(troop.LandTroopType.kind))
-                    troop.landSkills.Add(SkillInstance.Create(troop, skill));
+                {
+                    if(!troop.landSkills.Exists(x=>x.Id == value))
+                        troop.landSkills.Add(SkillInstance.Create(troop, skill));
+                }
                 if (kinds.Contains(troop.WaterTroopType.kind))
-                    troop.waterSkills.Add(SkillInstance.Create(troop, skill));
+                {
+                    if (!troop.waterSkills.Exists(x => x.Id == value))
+                        troop.waterSkills.Add(SkillInstance.Create(troop, skill));
+                }
             }
         }
     }

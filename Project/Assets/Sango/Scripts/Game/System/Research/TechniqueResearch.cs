@@ -53,6 +53,10 @@ namespace Sango.Core
                 {
                     Technique technique = force.AddTechnique(force.ResearchTechnique);
                     force.ResearchTechnique = 0;
+
+                    // 刷新部队属性
+                    force.ForEachTroop(t => t.CalculateAttribute(scenario));
+
                     GameEvent.OnForceResearchComplete?.Invoke(force, technique);
                     if (force.IsPlayer)
                     {

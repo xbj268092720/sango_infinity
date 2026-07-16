@@ -359,5 +359,13 @@ namespace Sango.UI
             item.SetSelected(true);
             OnSelectMod(selectedIndex);
         }
+
+        public void RefreshModList()
+        {
+            if (ModManager.Instance.HasError)
+                ModManager.Instance.InitForUrl();
+            else
+                OnOpen();
+        }
     }
 }

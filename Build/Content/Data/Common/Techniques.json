@@ -19,7 +19,7 @@
       "counter": 3,
       "effects": [
         {
-          "class": "TroopChangeTroops",
+          "class": "TroopChangeDamage",
           "value": 10,
           "kinds": [
             2
@@ -85,7 +85,7 @@
       "needTech": 3,
       "effects": [
         {
-          "class": "TroopChangeTroops",
+          "class": "TroopChangeDamage",
           "value": 15,
           "kinds": [
             2
@@ -133,7 +133,7 @@
       "counter": 3,
       "effects": [
         {
-          "class": "TroopChangeTroops",
+          "class": "TroopChangeDamage",
           "value": 10,
           "kinds": [
             3
@@ -199,7 +199,7 @@
       "needTech": 7,
       "effects": [
         {
-          "class": "TroopChangeTroops",
+          "class": "TroopChangeDamage",
           "value": 15,
           "kinds": [
             3
@@ -247,7 +247,7 @@
       "counter": 3,
       "effects": [
         {
-          "class": "TroopChangeTroops",
+          "class": "TroopChangeDamage",
           "value": 10,
           "kinds": [
             4
@@ -291,7 +291,17 @@
       ],
       "techPointCost": 5000,
       "counter": 6,
-      "needTech": 10
+      "needTech": 10,
+      "effects": [
+        {
+          "class": "TroopChangeSkillSpellRange",
+          "value": 1,
+          "isRange": 1,
+          "kinds": [
+            4
+          ]
+        }
+      ]
     },
     "12": {
       "Id": 12,
@@ -313,7 +323,7 @@
       "needTech": 11,
       "effects": [
         {
-          "class": "TroopChangeTroops",
+          "class": "TroopChangeDamage",
           "value": 15,
           "kinds": [
             4
@@ -361,7 +371,7 @@
       "counter": 3,
       "effects": [
         {
-          "class": "TroopChangeTroops",
+          "class": "TroopChangeDamage",
           "value": 10,
           "kinds": [
             5
@@ -386,7 +396,16 @@
       ],
       "techPointCost": 3000,
       "counter": 4,
-      "needTech": 13
+      "needTech": 13,
+      "effects": [
+        {
+          "class": "TroopAddMoveAbility",
+          "value": 10,
+          "kinds": [
+            5
+          ]
+        }
+      ]
     },
     "15": {
       "Id": 15,
@@ -427,7 +446,7 @@
       "needTech": 15,
       "effects": [
         {
-          "class": "TroopChangeTroops",
+          "class": "TroopChangeDamage",
           "value": 15,
           "kinds": [
             5
@@ -755,7 +774,25 @@
       ],
       "techPointCost": 3000,
       "counter": 4,
-      "needTech": 29
+      "needTech": 29,
+      "effects": [
+        {
+          "class": "TroopChangeSkillSpellRange",
+          "value": 2,
+          "condition": {
+            "class": "andList",
+            "list": [
+              {
+                "class": "SkillIdInList",
+                "ids": [
+                  22
+                ],
+                "result": 1
+              }
+            ]
+          }
+        }
+      ]
     },
     "31": {
       "Id": 31,

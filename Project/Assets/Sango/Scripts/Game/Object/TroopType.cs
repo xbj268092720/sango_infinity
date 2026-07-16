@@ -95,7 +95,7 @@ namespace Sango.Core
         /// <summary>
         /// 初始技能
         /// </summary>
-        [JsonProperty] public List<int> skills = new List<int>();
+        [JsonProperty] public int[] skills;
 
         /// <summary>
         /// 组建1000人所消耗的道具(兵器,战马,船等) 

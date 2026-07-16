@@ -12,6 +12,8 @@ namespace Sango.Core
         [JsonProperty]
         public string name;
         [JsonProperty]
+        public int type;
+        [JsonProperty]
         public string tag;
         [JsonProperty]
         public string description;

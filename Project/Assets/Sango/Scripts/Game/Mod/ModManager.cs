@@ -60,10 +60,10 @@ namespace Sango.Mod
             }
             InitForUrl();
         }
-
-
+        public bool HasError = false;
         public void InitForUrl()
         {
+            HasError = false;
             App.Instance.StartCoroutine(GitDownloader.Get(ModListInfoUrl,
                 (progress) =>
                 {
@@ -71,6 +71,9 @@ namespace Sango.Mod
                 },
                 (content) =>
                 {
+                    if (string.IsNullOrEmpty(content))
+                        HasError = true;
+
                     InitModList(content);
                 }
             ));
@@ -81,6 +84,7 @@ namespace Sango.Mod
             if (string.IsNullOrEmpty(content))
                 return;
 
+            HasError = false;
             JObject jsonObject = JsonConvert.DeserializeObject<JObject>(content);
             foreach (KeyValuePair<string, JToken> k in jsonObject)
             {
@@ -107,6 +111,9 @@ namespace Sango.Mod
                     },
                     (content) =>
                     {
+                        if (string.IsNullOrEmpty(content))
+                            HasError = true;
+
                         mod.loadProgress = 1;
                         LoadUrlMod(content, mod);
                         //mod.Download();

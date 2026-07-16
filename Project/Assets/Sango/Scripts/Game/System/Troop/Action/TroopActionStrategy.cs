@@ -36,7 +36,7 @@ namespace Sango.Core.Player
                             skill.GetSpellRange(TargetTroop, ActionCell, spellRangeCell);
                             foreach (Cell c in spellRangeCell)
                             {
-                                if (skill.CanSpeellToHere(TargetTroop, c))
+                                if (skill.CanSpellToHere(TargetTroop, c))
                                 {
                                     isValid = true;
                                     break;
@@ -79,7 +79,7 @@ namespace Sango.Core.Player
                 spellSkill.GetSpellRange(TargetTroop, stayCell, rangeCell);
                 foreach (Cell c in rangeCell)
                 {
-                    if (spellSkill.CanSpeellToHere(TargetTroop, c))
+                    if (spellSkill.CanSpellToHere(TargetTroop, c))
                     {
                         spellRangeCell.Add(c);
                     }

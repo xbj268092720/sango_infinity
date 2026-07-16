@@ -103,7 +103,7 @@ namespace Sango
             string subFolder;
             if (!TryParseGitUrl(gitUrl, out zipUrl, out refType, out refName, out subFolder, out string errMsg))
             {
-                Log.Error("Git 链接解析失败: " + errMsg + " 原始URL: " + gitUrl, Log.LogType.Download);
+                Log.Warning("Git 链接解析失败: " + errMsg + " 原始URL: " + gitUrl, Log.LogType.Download);
                 result.Error = GitDownloadError.InvalidUrl;
                 result.ErrorMessage = errMsg;
                 onComplete?.Invoke(result);
@@ -133,7 +133,7 @@ namespace Sango
             if (request.result != UnityWebRequest.Result.Success)
             {
                 string netErr = "网络请求失败: " + request.error + " URL: " + zipUrl;
-                Log.Error(netErr, Log.LogType.Download);
+                Log.Warning(netErr, Log.LogType.Download);
                 result.Error = GitDownloadError.NetworkError;
                 result.ErrorMessage = netErr;
                 request.Dispose();
@@ -149,7 +149,7 @@ namespace Sango
             catch (System.Exception e)
             {
                 string writeErr = "写入 zip 文件失败: " + e.Message + " 路径: " + tempZipPath;
-                Log.Error(writeErr, Log.LogType.Download);
+                Log.Warning(writeErr, Log.LogType.Download);
                 result.Error = GitDownloadError.NetworkError;
                 result.ErrorMessage = writeErr;
                 request.Dispose();
@@ -212,7 +212,7 @@ namespace Sango
                     if (!destPath.StartsWith(fullTarget, System.StringComparison.OrdinalIgnoreCase))
                     {
                         string slipErr = "检测到非法路径(可能的 zip slip 攻击): " + entryName;
-                        Log.Error(slipErr, Log.LogType.Download);
+                        Log.Warning(slipErr, Log.LogType.Download);
                         result.Error = GitDownloadError.ExtractError;
                         result.ErrorMessage = slipErr;
                         onComplete?.Invoke(result);
@@ -297,7 +297,7 @@ namespace Sango
             if (request.result != UnityWebRequest.Result.Success)
             {
                 string netErr = "网络请求失败: " + request.error + " URL: " + gitUrl;
-                Log.Error(netErr, Log.LogType.Download);
+                Log.Warning(netErr, Log.LogType.Download);
                 request.Dispose();
                 onComplete?.Invoke("");
                 yield break;
@@ -326,7 +326,7 @@ namespace Sango
             string subFolder;
             if (!TryParseGitUrl(gitUrl, out zipUrl, out refType, out refName, out subFolder, out string errMsg))
             {
-                Log.Error("Git 链接解析失败: " + errMsg + " 原始URL: " + gitUrl, Log.LogType.Download);
+                Log.Warning("Git 链接解析失败: " + errMsg + " 原始URL: " + gitUrl, Log.LogType.Download);
                 result.Error = GitDownloadError.InvalidUrl;
                 result.ErrorMessage = errMsg;
                 return result;
@@ -349,7 +349,7 @@ namespace Sango
             if (request.result != UnityWebRequest.Result.Success)
             {
                 string netErr = "网络请求失败: " + request.error + " URL: " + zipUrl;
-                Log.Error(netErr, Log.LogType.Download);
+                Log.Warning(netErr, Log.LogType.Download);
                 result.Error = GitDownloadError.NetworkError;
                 result.ErrorMessage = netErr;
                 request.Dispose();
@@ -363,7 +363,7 @@ namespace Sango
             catch (System.Exception e)
             {
                 string writeErr = "写入 zip 文件失败: " + e.Message + " 路径: " + tempZipPath;
-                Log.Error(writeErr, Log.LogType.Download);
+                Log.Warning(writeErr, Log.LogType.Download);
                 result.Error = GitDownloadError.NetworkError;
                 result.ErrorMessage = writeErr;
                 request.Dispose();
@@ -409,7 +409,7 @@ namespace Sango
                         if (!destPath.StartsWith(fullTarget, System.StringComparison.OrdinalIgnoreCase))
                         {
                             string slipErr = "检测到非法路径(可能的 zip slip 攻击): " + entryName;
-                            Log.Error(slipErr, Log.LogType.Download);
+                            Log.Warning(slipErr, Log.LogType.Download);
                             result.Error = GitDownloadError.ExtractError;
                             result.ErrorMessage = slipErr;
                             return result;
@@ -435,7 +435,7 @@ namespace Sango
             catch (System.Exception e)
             {
                 string extractErr = "解压失败: " + e.Message + " zip: " + tempZipPath + " 目标: " + targetFolder;
-                Log.Error(extractErr, Log.LogType.Download);
+                Log.Warning(extractErr, Log.LogType.Download);
                 result.Error = GitDownloadError.ExtractError;
                 result.ErrorMessage = extractErr;
                 return result;

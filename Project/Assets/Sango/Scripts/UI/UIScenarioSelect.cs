@@ -16,6 +16,7 @@ namespace Sango.UI
         public Text scenarioDescText;
         public Text scenarioInfoText;
         public RawImage scenarioPosterImg;
+        public Text infoText;
 
         List<UIScenarioItem> selectedItems = new List<UIScenarioItem>();
 
@@ -23,58 +24,25 @@ namespace Sango.UI
         public RectTransform mapBounds;
         List<GameObject> cityList = new List<GameObject>();
 
+        List<ShortScenario> show_scenario_list = new List<ShortScenario>();
+        CreatePool<UIScenarioItem> CreatePool;
+
         public GameObject sureButton;
+        public Toggle firstToggle;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            CreatePool = new CreatePool<UIScenarioItem>(uIScenarioItem);
+        }
 
         public override void OnOpen()
         {
-            curSelectIndex = -1;
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
-            sureButton.SetActive(false);
-#else
-            sureButton.SetActive(true);
-#endif
-            int count = ShortScenario.all_scenario_info_list.Count;
-            for (int i = 0; i < count; i++)
-            {
-                ShortScenario scenario = ShortScenario.all_scenario_info_list[i];
-                UIScenarioItem item;
-                if (i < selectedItems.Count)
-                {
-                    item = selectedItems[i];
-                }
-                else
-                {
-                    item = GameObject.Instantiate(uIScenarioItem.gameObject, uIScenarioItem.transform.parent).GetComponent<UIScenarioItem>();
-                    selectedItems.Add(item);
-                }
-                item.gameObject.SetActive(true);
-                int selIndex = i;
-                item.targetIndex = selIndex;
-                item.SetName(scenario.GetIDName()).SetSelected(i == curSelectIndex);
-
-                if (!string.IsNullOrEmpty(scenario.ModName))
-                    item.SetModName(scenario.ModName);
-                else
-                    item.SetModName("");
-
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
-                item.BindCall(() => { OnNext(); });
-#else
-                item.BindCall(() => { OnSelectScenario(selIndex); });
-#endif
+            firstToggle?.SetIsOnWithoutNotify(true);
+            ShowScenarioByType(0);
 
 
-            }
 
-            for (int i = count; i < selectedItems.Count; i++)
-            {
-                selectedItems[i].gameObject.SetActive(false);
-            }
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
-            ShowScenario(curSelectIndex);
-#else
-            ShowScenario(0);
-#endif
         }
 
         public void Clear()
@@ -89,7 +57,8 @@ namespace Sango.UI
                 if (curSelectIndex >= 0 && curSelectIndex < selectedItems.Count)
                     selectedItems[curSelectIndex].SetSelected(false);
             }
-            selectedItems[index].SetSelected(true);
+            if(index < selectedItems.Count)
+                selectedItems[index].SetSelected(true);
             ShowScenario(index);
         }
 
@@ -110,7 +79,7 @@ namespace Sango.UI
                 return;
             }
 
-            ShortScenario scenario = ShortScenario.all_scenario_info_list[curSelectIndex];
+            ShortScenario scenario = show_scenario_list[curSelectIndex];
             scenario.LoadContent();
             ScenarioInfo scenarioInfo = scenario.Info;
 
@@ -172,16 +141,81 @@ namespace Sango.UI
             Window.Instance.Close("window_scenario_select");
         }
 
+        void ShowScenarioByType(int type)
+        {
+            show_scenario_list.Clear();
+
+            for (int i = 0; i < ShortScenario.all_scenario_info_list.Count; i++)
+            {
+                ShortScenario shortScenario = ShortScenario.all_scenario_info_list[i];
+                if (type == shortScenario.Info.type)
+                    show_scenario_list.Add(shortScenario);
+            }
+            infoText.enabled = show_scenario_list.Count == 1;
+            curSelectIndex = -1;
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            sureButton.SetActive(false);
+#else
+            sureButton.SetActive(true);
+#endif
+            selectedItems.Clear();
+            CreatePool.Reset();
+            int count = show_scenario_list.Count;
+            for (int i = 0; i < count; i++)
+            {
+                ShortScenario scenario = show_scenario_list[i];
+                UIScenarioItem item = CreatePool.Create();
+                item.transform.SetAsLastSibling();
+                item.gameObject.SetActive(true);
+                int selIndex = i;
+                item.targetIndex = selIndex;
+                item.SetName(scenario.GetIDName()).SetSelected(i == curSelectIndex);
+                selectedItems.Add(item);
+                if (!string.IsNullOrEmpty(scenario.ModName))
+                    item.SetModName(scenario.ModName);
+                else
+                    item.SetModName("");
+
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+                item.BindCall(() => { OnNext(); });
+#else
+                item.BindCall(() => { OnSelectScenario(selIndex); });
+#endif
+            }
+
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            ShowScenario(curSelectIndex);
+#else
+            ShowScenario(0);
+#endif
+        }
+
+        public void OnToggleScenarioType(bool index)
+        {
+            if (index)
+            {
+                ShowScenarioByType(0);
+            }
+        }
+
+        public void OnToggleScenarioTypePlayer(bool index)
+        {
+            if (index)
+            {
+                ShowScenarioByType(1);
+            }
+        }
+
         public void OnNext()
         {
             if (curSelectIndex == -1) return;
             GameMedia.Instance.PlayButtonSfx();
 
             Clear();
-            ShortScenario scenario = ShortScenario.all_scenario_info_list[curSelectIndex];
+            ShortScenario scenario = show_scenario_list[curSelectIndex];
             ShortScenario.CurSelected = scenario;
 
-            Scenario.CurSelected = new Scenario(Scenario.all_scenario_list[curSelectIndex].FilePath);
+            Scenario.CurSelected = new Scenario(show_scenario_list[curSelectIndex].FilePath);
 
             Window.Instance.Open("window_scenario_force_select");
             Window.Instance.Close("window_scenario_select");

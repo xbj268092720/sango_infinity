@@ -43,7 +43,7 @@ namespace Sango.Core.Player
                         skill.GetSpellRange(TargetTroop, stayCell, rangeCell);
                         foreach (Cell c in rangeCell)
                         {
-                            if (skill.CanSpeellToHere(TargetTroop, c))
+                            if (skill.CanSpellToHere(TargetTroop, c))
                             {
                                 spellRangeCell.Add(c);
                                 hasTarget = true;
@@ -61,7 +61,7 @@ namespace Sango.Core.Player
                         skill.GetSpellRange(TargetTroop, stayCell, rangeCell);
                         foreach (Cell c in rangeCell)
                         {
-                            if (skill.CanSpeellToHere(TargetTroop, c))
+                            if (skill.CanSpellToHere(TargetTroop, c))
                             {
                                 spellRangeCell.Add(c);
                                 hasTarget = true;
@@ -191,7 +191,7 @@ namespace Sango.Core.Player
                                     spellSkill = TargetTroop.NormalRangeSkill;
                             }
 
-                            if (!spellSkill.CanSpeellToHere(TargetTroop, cell))
+                            if (!spellSkill.CanSpellToHere(TargetTroop, cell))
                                 return;
 
                             GameSystem.GetSystem<TroopActionMenu>().troopRender.Clear();

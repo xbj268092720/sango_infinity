@@ -128,6 +128,7 @@ namespace Sango.Core
         public string FilePath { internal set; get; }
         Task task;
         public bool loadOK = false;
+        public bool loadFullPersons = false;
 
         public ShortScenario(string filePath)
         {
@@ -208,31 +209,82 @@ namespace Sango.Core
             //if (Variables == null)
             //    Variables = new ScenarioVariables();
 
+            // =====================================================================
+            //  使用自定义 JsonConverter<T> 实现的零反射、最高速反序列化路径。
+            //  - ShortForce / ShortPerson / ShortCity 均通过手写 token 解析完成
+            //    （ShortScenarioConverters.cs），不依赖反射 / JObject / Populate。
+            //  - 字典本身的反序列化由 JsonSerializer 自动使用已注册的值转换器，
+            //    整个分支没有反射调用。
+            //  - 只需手动流式扫描顶级属性名（forceSet / personSet / citySet），
+            //    其余字段由 reader.Skip() 一次性跳过。
+            //  - forceSet 加载完毕后，收集所有势力的 Governor/Counsellor ID，
+            //    personSet 使用 ShortPersonSetConverter 仅解析这些主公/军师，
+            //    其余 entry 通过 reader.Skip() 零开销跳过。
+            // =====================================================================
+            JsonSerializer serializer = JsonSerializer.CreateDefault();
+            serializer.Converters.Add(new ShortForceConverter());
+            serializer.Converters.Add(new ShortPersonConverter());
+            serializer.Converters.Add(new ShortCityConverter());
+
+            // 主公/军师武将 ID 集合，forceSet 加载完后填充
+            HashSet<int> mainPersonIds = null;
+
             using (StreamReader file = System.IO.File.OpenText(FilePath))
             using (JsonTextReader reader = new JsonTextReader(file))
             {
-                while (reader.Read()) // Advances to the next token in the JSON stream.
+                bool personSetLoaded = false;
+                while (!personSetLoaded && reader.Read()) // 流式推进，零反射定位目标属性
                 {
-                    if (reader.TokenType == JsonToken.StartObject) // Check for start of an object in the JSON stream.
+                    // 只对顶级属性名感兴趣，其余 token（StartObject / EndObject / 标量等）一律跳过
+                    if (reader.TokenType != JsonToken.PropertyName)
+                        continue;
+
+                    string propName = (string)reader.Value;
+                    switch (propName)
                     {
-                        if (!string.IsNullOrEmpty(reader.Path) )
-                        {
-                            if (reader.TokenType == JsonToken.StartObject) // Check for start of an object in the JSON stream.
+                        case "forceSet":
+                            // 推进到值（StartObject），反序列化字典
+                            if (reader.Read() && reader.TokenType == JsonToken.StartObject)
+                                forceSet = serializer.Deserialize<Dictionary<int, ShortForce>>(reader);
+
+                            // 收集所有势力的主公（Governor）与军师（Counsellor）ID
+                            if (forceSet != null)
                             {
-                                if (!string.IsNullOrEmpty(reader.Path) && reader.Path == "forceSet")
+                                mainPersonIds = new HashSet<int>();
+                                foreach (var force in forceSet.Values)
                                 {
-                                    forceSet = JsonSerializer.CreateDefault().Deserialize<Dictionary<int, ShortForce>>(reader); // Deserialize the object.
-                                }
-                                else if (!string.IsNullOrEmpty(reader.Path) && reader.Path == "personSet")
-                                {
-                                    personSet = JsonSerializer.CreateDefault().Deserialize<Dictionary<int, ShortPerson>>(reader); // Deserialize the object.
-                                }
-                                else if (!string.IsNullOrEmpty(reader.Path) && reader.Path == "citySet")
-                                {
-                                    citySet = JsonSerializer.CreateDefault().Deserialize<Dictionary<int, ShortCity>>(reader); // Deserialize the object.
+                                    if (force.Governor != 0) mainPersonIds.Add(force.Governor);
+                                    if (force.Counsellor != 0) mainPersonIds.Add(force.Counsellor);
                                 }
                             }
-                        }
+                            break;
+                        case "personSet":
+                            if (reader.Read() && reader.TokenType == JsonToken.StartObject)
+                            {
+                                if (mainPersonIds != null)
+                                {
+                                    // 仅加载主公/军师，其余 entry 走 reader.Skip() 零解析
+                                    ShortPersonSetConverter filter = new ShortPersonSetConverter(mainPersonIds);
+                                    personSet = (Dictionary<int, ShortPerson>)filter.ReadJson(
+                                        reader, typeof(Dictionary<int, ShortPerson>), null, serializer);
+                                }
+                                else
+                                {
+                                    // 没有 forceSet 时退回全量加载
+                                    personSet = serializer.Deserialize<Dictionary<int, ShortPerson>>(reader);
+                                }
+                            }
+                            // personSet 是最后一个真正需要的目标，加载完成即可跳出
+                            personSetLoaded = true;
+                            break;
+                        case "citySet":
+                            if (reader.Read() && reader.TokenType == JsonToken.StartObject)
+                                citySet = serializer.Deserialize<Dictionary<int, ShortCity>>(reader);
+                            break;
+                        default:
+                            // 跳过其他字段（Info / Map / Variables / CommonData 等）
+                            reader.Skip();
+                            break;
                     }
                 }
             }
@@ -267,6 +319,61 @@ namespace Sango.Core
                 Map = targetMap;
 
             loadOK = true;
+        }
+
+        public void LoadFullPersonContent()
+        {
+            if (loadFullPersons) return;
+            Cur = this;
+
+            // =====================================================================
+            //  使用自定义 JsonConverter<T> 实现的零反射、最高速反序列化路径。
+            //  - ShortForce / ShortPerson / ShortCity 均通过手写 token 解析完成
+            //    （ShortScenarioConverters.cs），不依赖反射 / JObject / Populate。
+            //  - 字典本身的反序列化由 JsonSerializer 自动使用已注册的值转换器，
+            //    整个分支没有反射调用。
+            //  - 只需手动流式扫描顶级属性名（forceSet / personSet / citySet），
+            //    其余字段由 reader.Skip() 一次性跳过。
+            //  - forceSet 加载完毕后，收集所有势力的 Governor/Counsellor ID，
+            //    personSet 使用 ShortPersonSetConverter 仅解析这些主公/军师，
+            //    其余 entry 通过 reader.Skip() 零开销跳过。
+            // =====================================================================
+            JsonSerializer serializer = JsonSerializer.CreateDefault();
+            serializer.Converters.Add(new ShortPersonConverter());
+
+            // 主公/军师武将 ID 集合，forceSet 加载完后填充
+            HashSet<int> mainPersonIds = null;
+
+            using (StreamReader file = System.IO.File.OpenText(FilePath))
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+                bool personSetLoaded = false;
+                while (!personSetLoaded && reader.Read()) // 流式推进，零反射定位目标属性
+                {
+                    // 只对顶级属性名感兴趣，其余 token（StartObject / EndObject / 标量等）一律跳过
+                    if (reader.TokenType != JsonToken.PropertyName)
+                        continue;
+
+                    string propName = (string)reader.Value;
+                    switch (propName)
+                    {
+                        case "personSet":
+                            if (reader.Read() && reader.TokenType == JsonToken.StartObject)
+                            {
+                                // 没有 forceSet 时退回全量加载
+                                personSet = serializer.Deserialize<Dictionary<int, ShortPerson>>(reader);
+                            }
+                            // personSet 是最后一个真正需要的目标，加载完成即可跳出
+                            personSetLoaded = true;
+                            break;
+                        default:
+                            // 跳过其他字段（Info / Map / Variables / CommonData 等）
+                            reader.Skip();
+                            break;
+                    }
+                }
+            }
+            loadFullPersons = true;
         }
 
         public string GetIDName()

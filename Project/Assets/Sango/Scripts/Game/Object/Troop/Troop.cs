@@ -431,6 +431,14 @@ namespace Sango.Core
                     }
                 }
             });
+
+            StrategySkills.Clear();
+            scenario.CommonData.Skills.ForEach(x =>
+            {
+                if (x.IsStrategy())
+                    StrategySkills.Add(SkillInstance.Create(this, x));
+            });
+
             CalculateAttribute(scenario);
             if (LandTroopType.isFight && LandTroopType.Id != 1)
                 BelongCity.allAttackTroops.Add(this);
@@ -439,12 +447,7 @@ namespace Sango.Core
             Render = new TroopRender(this);
             foodCost = (int)System.Math.Ceiling(scenario.Variables.baseFoodCostInTroop * (troops + woundedTroops) * TroopType.foodCostFactor);
             foodCost = (int)Math.Ceiling(foodCost * foodCostFactor);
-            StrategySkills.Clear();
-            scenario.CommonData.Skills.ForEach(x =>
-            {
-                if (x.IsStrategy())
-                    StrategySkills.Add(SkillInstance.Create(this, x));
-            });
+            
 
             buffManager.Init(this);
             GameEvent.OnTroopEnterCell?.Invoke(this, cell, null);
@@ -622,51 +625,57 @@ namespace Sango.Core
             waterNormalSkill = null;
             landNormalRangeSkill = null;
             waterNormalRangeSkill = null;
-            // 准备技能
-            for (int i = 0; i < LandTroopType.skills.Count; i++)
-            {
-                Skill skill = Scenario.Cur.GetObject<Skill>(LandTroopType.skills[i]);
-                if (skill != null && skill.CanAddToTroop(this))
+
+            if (LandTroopType.skills != null)
+            { // 准备技能
+                for (int i = 0; i < LandTroopType.skills.Length; i++)
                 {
-                    SkillInstance ins = null;
-                    if (skills != null)
-                        ins = skills.Find(x => x.skill == skill);
-                    if (ins == null)
-                        ins = SkillInstance.Create(this, skill);
-                    ins.master = this;
-                    skillInstances.Add(ins);
-                    if (skill.costEnergy == 0)
+                    Skill skill = Scenario.Cur.GetObject<Skill>(LandTroopType.skills[i]);
+                    if (skill != null && skill.CanAddToTroop(this))
                     {
-                        if (skill.isRange)
-                            landNormalRangeSkill = ins;
-                        else
-                            landNormalSkill = ins;
+                        SkillInstance ins = null;
+                        if (skills != null)
+                            ins = skills.Find(x => x.skill == skill);
+                        if (ins == null)
+                            ins = SkillInstance.Create(this, skill);
+                        ins.master = this;
+                        skillInstances.Add(ins);
+                        if (skill.costEnergy == 0)
+                        {
+                            if (skill.isRange)
+                                landNormalRangeSkill = ins;
+                            else
+                                landNormalSkill = ins;
+                        }
                     }
                 }
             }
             landSkills = skillInstances;
 
             skillInstances = new List<SkillInstance>();
-            for (int i = 0; i < WaterTroopType.skills.Count; i++)
+            if (WaterTroopType.skills != null)
             {
-                Skill skill = Scenario.Cur.GetObject<Skill>(WaterTroopType.skills[i]);
-                if (skill != null && skill.CanAddToTroop(this))
+                for (int i = 0; i < WaterTroopType.skills.Length; i++)
                 {
-
-
-                    SkillInstance ins = null;
-                    if (skills != null)
-                        ins = skills.Find(x => x.skill == skill);
-                    if (ins == null)
-                        ins = SkillInstance.Create(this, skill);
-
-                    skillInstances.Add(ins);
-                    if (skill.costEnergy == 0)
+                    Skill skill = Scenario.Cur.GetObject<Skill>(WaterTroopType.skills[i]);
+                    if (skill != null && skill.CanAddToTroop(this))
                     {
-                        if (skill.isRange)
-                            waterNormalRangeSkill = ins;
-                        else
-                            waterNormalSkill = ins;
+
+
+                        SkillInstance ins = null;
+                        if (skills != null)
+                            ins = skills.Find(x => x.skill == skill);
+                        if (ins == null)
+                            ins = SkillInstance.Create(this, skill);
+
+                        skillInstances.Add(ins);
+                        if (skill.costEnergy == 0)
+                        {
+                            if (skill.isRange)
+                                waterNormalRangeSkill = ins;
+                            else
+                                waterNormalSkill = ins;
+                        }
                     }
                 }
             }

@@ -90,7 +90,6 @@ namespace Sango.Core.Action
             Register("TroopSkillCalculateCritical", CraeteHandle<TroopSkillCalculateCritical>);
             Register("TroopSkillCalculateSuccess", CraeteHandle<TroopSkillCalculateSuccess>);
             Register("TroopSkillCalculateAttackBack", CraeteHandle<TroopSkillCalculateAttackBack>);
-            Register("TroopChangeTroops", CraeteHandle<TroopChangeTroops>);
             Register("BuildingImproveFoodGain", CraeteHandle<BuildingImproveFoodGain>);
             Register("BuildingImproveGoldGain", CraeteHandle<BuildingImproveGoldGain>);
             Register("BuildingImproveFoodGainByCityTroops", CraeteHandle<BuildingImproveFoodGainByCityTroops>);
@@ -107,7 +106,11 @@ namespace Sango.Core.Action
             Register("TroopRecure", CraeteHandle<TroopRecure>);
             Register("TroopSetFireDamage", CraeteHandle<TroopSetFireDamage>);
             Register("TroopIgnoreFire", CraeteHandle<TroopIgnoreFire>);
-            
+            Register("TroopChangeSkillCost", CraeteHandle<TroopChangeSkillCost>);
+            Register("TroopChangeSkillSpellRange", CraeteHandle<TroopChangeSkillSpellRange>);
+            Register("TroopSetSkillCost", CraeteHandle<TroopSetSkillCost>);
+            Register("TroopChangeDamage", CraeteHandle<TroopChangeDamage>);
+
         }
 
     }

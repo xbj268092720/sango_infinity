@@ -306,6 +306,7 @@ namespace Sango.Core
 
         public static void InitJobFeature(SangoObjectList<Person> people, params SangoObject[] sangoObjects)
         {
+            ClearJobFeature();
             if (people == null) return;
 
             sJobActions.Clear();
@@ -326,7 +327,7 @@ namespace Sango.Core
 
         public static void InitJobFeature(Person[] people, params SangoObject[] sangoObjects)
         {
-            sJobActions.Clear();
+            ClearJobFeature();
             for (int i = 0; i < people.Length; ++i)
             {
                 Person person = people[i];
@@ -344,7 +345,7 @@ namespace Sango.Core
 
         public static void InitJobFeature(Person person, params SangoObject[] sangoObjects)
         {
-            sJobActions.Clear();
+            ClearJobFeature();
             if (person != null && person.FeatureList != null)
             {
                 for (int j = 0; j < person.FeatureList.Count; j++)

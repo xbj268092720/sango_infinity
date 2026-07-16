@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TKNewtonsoft.Json;
 using TKNewtonsoft.Json.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Sango.Core
@@ -13,6 +14,7 @@ namespace Sango.Core
     public class SkillInstance : SangoObject
     {
         public override string Name => skill?.Name ?? string.Empty;
+        public override int Id => skill?.Id ?? -1;
 
         /// <summary>
         /// 技能
@@ -264,19 +266,21 @@ namespace Sango.Core
         /// <param name="cells"></param>
         public void GetSpellRange(Troop atker, Cell where, List<Cell> cells)
         {
+            List<Cell> ranges = new List<Cell>();
             if (spellRanges == null || spellRanges.Length == 0)
             {
-                cells.Add(where);
+                ranges.Add(where);
             }
             else
             {
                 for (int i = 0; i < spellRanges.Length; i++)
                 {
-                    Scenario.Cur.Map.GetRing(where, spellRanges[i], cells, true);
+                    Scenario.Cur.Map.GetRing(where, spellRanges[i], ranges, true);
                 }
             }
 
-            skillRangeFilterMethod?.Calculate(this, atker, where, cells);
+            skillRangeFilterMethod?.Calculate(this, atker, where, ranges);
+            cells.AddRange(ranges);
         }
 
 
@@ -352,7 +356,7 @@ namespace Sango.Core
             return true;
         }
 
-        public bool CanSpeellToHere(Troop who, Cell where)
+        public bool CanSpellToHere(Troop who, Cell where)
         {
             if (canSpellToCell)
                 return true;
@@ -405,7 +409,7 @@ namespace Sango.Core
 #endif
                 return true;
             }
-           else if (baseSuccessRate <= 0)
+           else if (baseSuccessRate <= -100)
             {
 #if SANGO_DEBUG
                 Sango.Log.Info($"{troop.BelongForce.Name}的[{troop.Name} 部队 准备释放技能: {Name} =>({spellCell.x},{spellCell.y})] 成功率:{baseSuccessRate}");
@@ -468,7 +472,7 @@ namespace Sango.Core
                 tempCriticalFactor = overrideData.ValueAndRecycle;
                 return tempCriticalFactor;
             }
-            else if(overrideData.ValueAndRecycle <= 0)
+            else if(overrideData.ValueAndRecycle <= -100)
             {
                 tempCriticalFactor = 100;
                 return tempCriticalFactor;
@@ -744,7 +748,7 @@ namespace Sango.Core
 
             if (troop.IsAlive)
             {
-                troop.ChangeMorale(-this.costEnergy);          
+                troop.ChangeMorale(-this.costEnergy, false);          
             }
 
             GameEvent.OnSkillActionOver?.Invoke(this);

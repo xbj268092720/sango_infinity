@@ -87,7 +87,7 @@ namespace Sango.Core
                                 for (int k = 0; k < spellRangeCells.Count; k++)
                                 {
                                     Cell spellCell = spellRangeCells[k];
-                                    if (!skill.CanSpeellToHere(troop, spellCell))
+                                    if (!skill.CanSpellToHere(troop, spellCell))
                                         continue;
 
                                     attackCells.Clear();

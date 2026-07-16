@@ -7,6 +7,7 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Rendering.Universal;
 
 namespace Sango.Core
 {
@@ -84,6 +85,11 @@ namespace Sango.Core
         /// 图形质量等级
         /// </summary>
         public int QualityLevel { get; set; } = 2; // 0=低, 1=中, 2=高, 3=超高
+
+        /// <summary>
+        /// 后处理开关（Bloom / 景深 / 色彩分级等屏幕后处理效果总开关）
+        /// </summary>
+        public bool IsPostProcessingEnabled { get; set; } = true;
         #endregion
 
         #region 控制设置
@@ -303,6 +309,26 @@ namespace Sango.Core
             PlayerPrefs.SetInt("VSync", VSync ? 1 : 0);
             PlayerPrefs.SetInt("FrameRateLimit", FrameRateLimit);
             PlayerPrefs.SetInt("QualityLevel", QualityLevel);
+            PlayerPrefs.SetInt("IsPostProcessingEnabled", IsPostProcessingEnabled ? 1 : 0);
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>
+        /// 应用后处理开关
+        /// 触发 OnPostProcessingChanged 事件，由监听者（如 PostProcessVolume 控制器）负责实际启用/禁用。
+        /// 同时将设置写入 PlayerPrefs 持久化。
+        /// </summary>
+        public void ApplyPostProcessingSettings()
+        {
+            // 通知外部监听者（如 PostProcessVolume 控制器）处理
+            GameEvent.OnPostProcessingChanged?.Invoke(IsPostProcessingEnabled);
+
+            Camera camera = Camera.main;
+            UniversalAdditionalCameraData additionalCameraData = camera.GetUniversalAdditionalCameraData();
+            additionalCameraData.renderPostProcessing = IsPostProcessingEnabled;
+
+            // 写入 PlayerPrefs 持久化
+            PlayerPrefs.SetInt("IsPostProcessingEnabled", IsPostProcessingEnabled ? 1 : 0);
             PlayerPrefs.Save();
         }
 
@@ -346,6 +372,7 @@ namespace Sango.Core
             ApplyResolution();
             ApplyGraphicsSettings();
 #endif
+            ApplyPostProcessingSettings();
             ApplyAudioSettings();
             ApplyControlSettings();
             ApplyLanguageSettings();
@@ -374,6 +401,9 @@ namespace Sango.Core
             VSync = PlayerPrefs.GetInt("VSync", 1) == 1;
             FrameRateLimit = PlayerPrefs.GetInt("FrameRateLimit", 60);
             QualityLevel = PlayerPrefs.GetInt("QualityLevel", 2);
+
+            // 后处理开关
+            IsPostProcessingEnabled = PlayerPrefs.GetInt("IsPostProcessingEnabled", 1) == 1;
 
             // 控制设置
             KeyboardMoveSpeed = PlayerPrefs.GetFloat("KeyboardMoveSpeed", 300f);
@@ -409,6 +439,7 @@ namespace Sango.Core
             VSync = true;
             FrameRateLimit = 60;
             QualityLevel = 2;
+            IsPostProcessingEnabled = true;
 
             // 控制设置
             KeyboardMoveSpeed = 300f;
@@ -541,6 +572,12 @@ namespace Sango.Core
             setting.AddToggleItem("垂直同步", VSync, (value) =>
             {
                 VSync = value;
+            });
+
+            setting.AddToggleItem("后处理效果", IsPostProcessingEnabled, (value) =>
+            {
+                IsPostProcessingEnabled = value;
+                ApplyPostProcessingSettings();
             });
 
             // 创建帧率选项列表
@@ -689,6 +726,7 @@ namespace Sango.Core
             FrameRateLimit = 60;
             CurrentFrameRateIndex = 1;
             QualityLevel = 2;
+            IsPostProcessingEnabled = true;
 
             // 控制设置
             KeyboardMoveSpeed = 300f;
@@ -702,8 +740,8 @@ namespace Sango.Core
             LargeFontScaleFactor = 0;
 
             // 清除PlayerPrefs
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.Save();
+            //PlayerPrefs.DeleteAll();
+            //PlayerPrefs.Save();
 
             // 应用设置
             ApplyAllSettings();
@@ -729,6 +767,7 @@ namespace Sango.Core
                 FrameRateLimit = FrameRateLimit,
                 CurrentFrameRateIndex = CurrentFrameRateIndex,
                 QualityLevel = QualityLevel,
+                IsPostProcessingEnabled = IsPostProcessingEnabled,
                 KeyboardMoveSpeed = KeyboardMoveSpeed,
                 MovementMode = MovementMode,
                 Language = Language,
@@ -758,6 +797,7 @@ namespace Sango.Core
             FrameRateLimit = snapshot.FrameRateLimit;
             CurrentFrameRateIndex = snapshot.CurrentFrameRateIndex;
             QualityLevel = snapshot.QualityLevel;
+            IsPostProcessingEnabled = snapshot.IsPostProcessingEnabled;
             KeyboardMoveSpeed = snapshot.KeyboardMoveSpeed;
             MovementMode = snapshot.MovementMode;
             Language = snapshot.Language;
@@ -829,6 +869,11 @@ namespace Sango.Core
         /// 图形质量等级
         /// </summary>
         public int QualityLevel { get; set; }
+
+        /// <summary>
+        /// 后处理开关
+        /// </summary>
+        public bool IsPostProcessingEnabled { get; set; }
 
         /// <summary>
         /// 键盘移动速度

@@ -371,6 +371,7 @@ using Sango.Core; namespace Sango.UI
 
         void OnCitySelected(List<City> objList)
         {
+            if (objList.Count == 0) return;
             List<SangoObject> result_list = new List<SangoObject>();
             result_list.AddRange(cityList);
             GameSystem.GetSystem<PortGateInformation>().Start(objList[0], result_list);
@@ -388,6 +389,7 @@ using Sango.Core; namespace Sango.UI
 
         void OnPortGateSelected(List<City> port_gate)
         {
+            if (port_gate.Count == 0) return;
             List<SangoObject> result_list = new List<SangoObject>();
             result_list.AddRange(portgateList);
             GameSystem.GetSystem<PortGateInformation>().Start(port_gate[0], result_list);
@@ -405,6 +407,7 @@ using Sango.Core; namespace Sango.UI
 
         void OnTroopSelected(List<Troop> person_list)
         {
+            if (person_list.Count == 0) return;
             List<SangoObject> result_list = new List<SangoObject>();
             result_list.AddRange(troopList);
             GameSystem.GetSystem<TroopInformation>().Start(person_list[0], result_list);
@@ -422,6 +425,7 @@ using Sango.Core; namespace Sango.UI
 
         void OnPersonSelected(List<Person> person_list)
         {
+            if (person_list.Count == 0) return;
             List<SangoObject> result_list = new List<SangoObject>();
             result_list.AddRange(personList);
             GameSystem.GetSystem<PersonInformation>().Start(person_list[0], result_list);

@@ -1651,37 +1651,27 @@ namespace Sango.Core
                 }
                 else
                 {
-                    // 没有执行任务的才能被捕获,暂时不能抓捕主公
-                    if (person.IsFree && person != person.BelongForce.Governor && GameRandom.Chance(cacaptureChangce))
+                    if (escapeCity != null)
                     {
-                        if (escapeCity != null)
+                        RemovePerson(person);
+                        person.ChangeBelongCity(escapeCity);
+                        escapeCity.AddPerson(person);
+                        if (person.CurrentCity == this && person != person.BelongForce.Governor && GameRandom.Chance(cacaptureChangce))
                         {
-                            RemovePerson(person);
-                            person.ChangeBelongCity(escapeCity);
-                            escapeCity.AddPerson(person);
+                            temp_captive_list.Add(person);
                         }
                         else
                         {
-                            person.ClearMission();
-                            person.LeaveToWild();
-                        }
-                        temp_captive_list.Add(person);
-                    }
-                    else
-                    {
-                        if (escapeCity != null)
-                        {
-                            RemovePerson(person);
-                            person.ChangeBelongCity(escapeCity);
-                            escapeCity.AddPerson(person);
                             if (person.BelongTroop == null)
                                 person.SetMission(MissionType.PersonReturn, person.BelongCity);
                         }
-                        else
-                        {
-                            person.ClearMission();
-                            person.LeaveToWild();
-                        }
+                    }
+                    else
+                    {
+                        // 最后一城
+                        person.ClearMission();
+                        person.LeaveToWild();
+                        temp_captive_list.Add(person);
                     }
                 }
             }
@@ -3052,6 +3042,7 @@ namespace Sango.Core
                 person.merit += meritGain;
                 person.GainExp(meritGain);
                 person.ActionOver = true;
+                ClearJobFeature();
                 return findGold;
             }
 

@@ -148,6 +148,37 @@ namespace Sango
             return null;
         }
 
+        static public string FindFile(string [] fileName)
+        {
+            if (fileName == null)
+                return null;
+
+            string fullPath;
+            for (int i = 0; i < searchPaths.Count; i++)
+            {
+                for(int j = 0; j < fileName.Length; j++)
+                {
+                    fullPath = string.Format("{0}/{1}", searchPaths[i], fileName[j]);
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        return fullPath;
+                    }
+                }
+            }
+
+            for (int j = 0; j < fileName.Length; j++)
+            {
+                fullPath = $"{ContentRootPath}/{fileName[j]}";
+                if (System.IO.File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+            }
+
+            return null;
+        }
+
+
         /// <summary>
         /// e.g. Assets/Texture/11.png -> ${ContentRootPath}/Assets/Texture/11.png 
         /// or ${ModName}/Assets/Texture/11.png 

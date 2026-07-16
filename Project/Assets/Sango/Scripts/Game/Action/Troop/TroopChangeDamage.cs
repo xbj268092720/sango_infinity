@@ -13,7 +13,7 @@ namespace Sango.Core.Action
     /// isRange 0都可以 1是 2不是
     /// condition： 额外条件 支持参数(troop,troop,skill)
     /// </summary>
-    public class TroopChangeTroops : TroopTroopActionBase
+    public class TroopChangeDamage : TroopTroopActionBase
     {
 
         public override void Init(JObject p, params SangoObject[] sangoObjects)

@@ -91,7 +91,7 @@ namespace Sango.Core
         /// 对象ID，用于唯一标识游戏对象
         /// </summary>
         [JsonProperty(Order = -99)]
-        public int Id { get { return _Id; } set { _Id = value; } }
+        public virtual int Id { get { return _Id; } set { _Id = value; } }
 
         /// <summary>
         /// 对象名称

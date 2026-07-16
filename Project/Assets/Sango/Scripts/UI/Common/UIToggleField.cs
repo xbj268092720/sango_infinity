@@ -12,6 +12,7 @@ using Sango.Core; namespace Sango.UI
 
         public void Set(string title, bool value, System.Action<bool> onValueChange)
         {
+            this.value = value;
             this.title.text = title;
             toggle.isOn = value;
             this.onValueChange = onValueChange;

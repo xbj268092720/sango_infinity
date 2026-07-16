@@ -204,7 +204,7 @@ namespace Sango.UI
             {
                 player.Save(index);
                 newestData = all_saved_scenario_list[index];
-                while (!newestData.loadOK) { }
+                newestData.LoadContent();
                 GameDialog.Close();
                 ShowPage(curShowPage);
             });

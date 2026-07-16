@@ -274,7 +274,7 @@ namespace Sango.Core.Player
                 //    }
 
 
-                case CommandEventType.RClick:
+                case CommandEventType.RClickUp:
                     {
                         if (SelectBuildingObject != null)
                         {

@@ -188,6 +188,13 @@ namespace Sango.Core
         public static EventDelegate OnGameSettingCancel;
 
         /// <summary>
+        /// 后处理开关变化
+        /// 参数：bool enabled - true=启用后处理，false=禁用
+        /// 由监听者（如 PostProcessVolume 控制器）负责实际启用/禁用场景中的后处理组件
+        /// </summary>
+        public static EventDelegate<bool> OnPostProcessingChanged;
+
+        /// <summary>
         /// 游戏保存
         /// </summary>
         public static EventDelegate<Scenario, int, bool> OnGameSave;

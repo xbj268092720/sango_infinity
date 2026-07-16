@@ -90,6 +90,8 @@ namespace Sango.UI
         {
             cityToggleList.Clear();
             ShortScenario scenario = ShortScenario.CurSelected;
+            scenario.LoadFullPersonContent();
+
             selectedForceCountLabel.text = $"{playerList.Count}/{selectedForceNameLabel.Length}";
             scenarioNameLabel.text = scenario.GetDateName();
             if (playerList.Count > 0)

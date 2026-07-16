@@ -77,7 +77,7 @@ namespace Sango.Core
                 fire.counter = finalCount;
             }
 
-            GameEvent.OnFireAdd(master, fire);
+            GameEvent.OnFireAdd?.Invoke(master, fire);
 
             targetCell.fire = fire;
             fire.Action();

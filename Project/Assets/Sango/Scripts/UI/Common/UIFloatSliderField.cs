@@ -17,6 +17,7 @@ using Sango.Core; namespace Sango.UI
 
         public void Set(string title, float value, float min, float max, System.Action<float> onValueChange)
         {
+            this.value = value;
             this.title.text = title;
             if (min >= max)
             {

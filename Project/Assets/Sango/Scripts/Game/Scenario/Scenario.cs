@@ -1524,6 +1524,8 @@ namespace Sango.Core
             View.cameraRotation = MapRender.Instance.mapCamera.lookRotate;
             View.cameraDistance = MapRender.Instance.mapCamera.distance;
             Info.dateTime = DateTime.Now.ToFileTime();
+            if (string.IsNullOrEmpty(Info.curForceName))
+                Info.curForceName = CurRunForce?.Name;
             Sango.Directory.Create(path, false);
             JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
             jsonSerializerSettings.Formatting = TKNewtonsoft.Json.Formatting.Indented;

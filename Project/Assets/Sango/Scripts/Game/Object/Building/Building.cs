@@ -166,6 +166,9 @@ namespace Sango.Core
 
             if (!isComplate && Builder != null)
             {
+                if (LeftCounter <= 0)
+                    LeftCounter = 1;
+
                 int totalValue = (BuildingType.durabilityLimit - durability) / LeftCounter;
                 durability += totalValue;
                 if (durability >= BuildingType.durabilityLimit)
@@ -173,19 +176,19 @@ namespace Sango.Core
                     durability = BuildingType.durabilityLimit;
                     isComplate = true;
                     //CalculateHarvest();
-            SangoObjectList<Person> builder = Builder;
-            OnBuildComplate();
-            BelongCity.OnBuildingComplete(this, builder);
-            GameEvent.OnBuildingComplete?.Invoke(this, builder);
+                    SangoObjectList<Person> builder = Builder;
+                    OnBuildComplate();
+                    BelongCity.OnBuildingComplete(this, builder);
+                    GameEvent.OnBuildingComplete?.Invoke(this, builder);
                 }
                 if (LeftCounter > 0)
                     LeftCounter--;
             }
             else if (isUpgrading && Builder != null)
             {
-                if (LeftCounter > 0)
-                    LeftCounter--;
-                int totalValue = GameUtility.Method_PersonBuildAbility(Builder);
+                if (LeftCounter <= 0)
+                    LeftCounter = 1;
+                int totalValue = (BuildingType.durabilityLimit - durability) / LeftCounter;
                 durability += totalValue;
                 if (durability >= BuildingType.durabilityLimit)
                 {
@@ -197,6 +200,9 @@ namespace Sango.Core
                     BelongCity.OnBuildingUpgradeComplete(this, builder);
                     GameEvent.OnBuildingUpgradeComplete?.Invoke(this, builder);
                 }
+
+                if (LeftCounter > 0)
+                    LeftCounter--;
             }
             else
             {

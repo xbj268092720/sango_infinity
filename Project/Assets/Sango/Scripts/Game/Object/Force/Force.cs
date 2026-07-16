@@ -280,6 +280,22 @@ namespace Sango.Core
             UpdateValidCreatedItemTypes();
         }
 
+        public override void Clear()
+        {
+            base.Clear();
+
+            if (actionList != null)
+            {
+                for (int i = 0; i < actionList.Count; i++)
+                    actionList[i].Clear();
+
+                actionList.Clear();
+                actionList = null;
+            }
+
+
+        }
+
         /// <summary>
         /// 准备科技列表
         /// </summary>
