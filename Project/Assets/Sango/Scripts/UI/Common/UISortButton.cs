@@ -26,7 +26,7 @@ using Sango.Core; namespace Sango.UI
             nameLab.text = name;
             return this;
         }
-        public UISortButton SetWidth(int width)
+        public UISortButton SetWidth(float width)
         {
             RectTransform rectTransform = GetComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(width, rectTransform.sizeDelta.y);

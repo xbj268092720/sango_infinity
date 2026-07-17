@@ -258,7 +258,9 @@ MonoBehaviour:
   offset: {x: 0, y: 0}
   delayTime: 0
   cachePosition: {x: 0, y: 0}
+  update_cachePosition: {x: 0, y: 0}
   dontResetCachePosition: 1
+  updateAlways: 1
 --- !u!1 &9039031632039893254
 GameObject:
   m_ObjectHideFlags: 0

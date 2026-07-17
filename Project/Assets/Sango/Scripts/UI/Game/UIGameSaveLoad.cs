@@ -245,13 +245,13 @@ namespace Sango.UI
 
             curSelectIndex = index;
             ShortScenario scenario = all_saved_scenario_list[index];
-            scenario.LoadContent();
             if (scenario == null)
             {
                 ResetScenarioDetail();
                 return;
             }
 
+            scenario.LoadContent();
             if (!isSave)
             {
                 Load(index);

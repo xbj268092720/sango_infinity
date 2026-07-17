@@ -640,13 +640,6 @@ namespace Sango.Core
                             ins = SkillInstance.Create(this, skill);
                         ins.master = this;
                         skillInstances.Add(ins);
-                        if (skill.costEnergy == 0)
-                        {
-                            if (skill.isRange)
-                                landNormalRangeSkill = ins;
-                            else
-                                landNormalSkill = ins;
-                        }
                     }
                 }
             }
@@ -669,13 +662,6 @@ namespace Sango.Core
                             ins = SkillInstance.Create(this, skill);
 
                         skillInstances.Add(ins);
-                        if (skill.costEnergy == 0)
-                        {
-                            if (skill.isRange)
-                                waterNormalRangeSkill = ins;
-                            else
-                                waterNormalSkill = ins;
-                        }
                     }
                 }
             }
@@ -729,6 +715,30 @@ namespace Sango.Core
 
             // 事件可二次修改属性
             GameEvent.OnTroopCalculateAttribute?.Invoke(this, scenario);
+
+            for (int i = 0; i < landSkills.Count; i++)
+            {
+                SkillInstance ins = landSkills[i];
+                if (ins.IsNormal())
+                {
+                    if (ins.IsRange())
+                        landNormalRangeSkill = ins;
+                    else
+                        landNormalSkill = ins;
+                }
+            }
+
+            for (int i = 0; i < waterSkills.Count; i++)
+            {
+                SkillInstance ins = waterSkills[i];
+                if (ins.IsNormal())
+                {
+                    if (ins.IsRange())
+                        waterNormalRangeSkill = ins;
+                    else
+                        waterNormalSkill = ins;
+                }
+            }
 
         }
 

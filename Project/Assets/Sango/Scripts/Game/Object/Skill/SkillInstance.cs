@@ -319,7 +319,7 @@ namespace Sango.Core
         /// <returns></returns>
         public bool IsNormal()
         {
-            return skill.costEnergy == 0;
+            return skill.IsNormalSkill;
         }
 
 
@@ -465,22 +465,26 @@ namespace Sango.Core
             // 必爆流程判断
             Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(0);
             GameEvent.OnTroopBeforeCalculateSkillCritical?.Invoke(troop, this, spellCell, overrideData);
-            if (overrideData.ValueAndRecycle >= 100)
+            if (overrideData.Value >= 100)
             {
+                overrideData.Recycle();
                 overrideData = Tools.OverrideData<int>.Create(scenarioVariables.skillCriticalFactor);
                 GameEvent.OnTroopCalculateSkillCriticalFactor?.Invoke(troop, this, spellCell, overrideData);
-                tempCriticalFactor = overrideData.ValueAndRecycle;
+                tempCriticalFactor = overrideData.Value;
+                overrideData.Recycle();
                 return tempCriticalFactor;
             }
-            else if(overrideData.ValueAndRecycle <= -100)
+            else if(overrideData.Value <= -100)
             {
                 tempCriticalFactor = 100;
+                overrideData.Recycle();
                 return tempCriticalFactor;
             }
 
             if (skillCriticalMethod == null)
             {
                 tempCriticalFactor = 100;
+                overrideData.Recycle();
                 return tempCriticalFactor;
             }
 

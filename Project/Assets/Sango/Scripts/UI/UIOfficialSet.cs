@@ -21,7 +21,7 @@ namespace Sango.UI
         public RectTransform maskRect;
         public RectTransform[] contentRect;
         protected int startIndex = 0;
-        protected int itemWidth = 0;
+        protected float itemWidth = 0;
         protected int itemCount = 0;
         public Button sureButton;
 
@@ -209,13 +209,13 @@ namespace Sango.UI
             sureButton.interactable = cityUpgradeOfficial.upgradeList.Count > 0;
         }
 
-        public int GetContentWidth()
+        public float GetContentWidth()
         {
-            int w = 0;
+            float w = 0;
             for (int i = 0; i < sortItems.Count; i++)
             {
                 ObjectSortTitle sortTitle = sortItems[i];
-                w += sortTitle.width;
+                w += sortTitle.ContentMaxWidth;
             }
             return w + 24;
         }
@@ -247,7 +247,7 @@ namespace Sango.UI
 
 
                 uIPersonSortButton.gameObject.SetActive(true);
-                uIPersonSortButton.Clear().SetWidth(sortTitle.width).SetName(sortTitle.name);
+                uIPersonSortButton.Clear().SetWidth(sortTitle.ContentMaxWidth).SetName(sortTitle.name);
 
                 uIPersonSortButton.onClick = (up) =>
                 {
@@ -262,7 +262,7 @@ namespace Sango.UI
                     for (int j = 0; j < itemCount; j++)
                     {
                         UIObjectListItem listItem = uIObjectListItems[j];
-                        listItem.Add("", sortTitle.width);
+                        listItem.Add("", sortTitle.ContentMaxWidth);
                     }
                 }
                 else
@@ -270,7 +270,7 @@ namespace Sango.UI
                     for (int j = 0; j < itemCount; j++)
                     {
                         UIObjectListItem listItem = uIObjectListItems[j];
-                        listItem.textItem.SetWidth(sortTitle.width);
+                        listItem.textItem.SetWidth(sortTitle.ContentMaxWidth);
                     }
                 }
             }

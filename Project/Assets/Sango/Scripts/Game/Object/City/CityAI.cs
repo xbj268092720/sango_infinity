@@ -25,7 +25,7 @@ namespace Sango.Core
                 if (city.TroopMissionType == MissionType.TroopOccupyCity)
                 {
                     City targetCity = scenario.citySet.Get(city.TroopMissionTargetId);
-                    if ((targetCity.BelongForce != null && city.AttackTroopsCount < GameRandom.Range(8, 20)) || (targetCity.BelongForce == null && city.AttackTroopsCount < 2))
+                    if ((targetCity.BelongForce != null && city.AttackTroopsCount < GameRandom.Range(8, 30)) || (targetCity.BelongForce == null && city.AttackTroopsCount < 2))
                     {
                         // 白城只去2支部队
                         Troop troop = AIMakeTroop(city, 20, true, scenario);

@@ -47,7 +47,7 @@ namespace Sango.UI
             textItem.SetText(content);
         }
 
-        public void Add(string content, int width)
+        public void Add(string content, float width)
         {
             UITextItem item;
             if (pool.Count == 0)

@@ -88,8 +88,6 @@ namespace Sango.Core
         /// </summary>
         [JsonProperty] public int agriculture_add_food = 10;
 
-
-
         /// <summary>
         /// 每一点商业点带来的金币收入
         /// </summary>
@@ -255,14 +253,24 @@ namespace Sango.Core
         [JsonProperty] public int AIAttackProtectedCount = 12;
 
         /// <summary>
-        /// 粮食倍率
+        /// 电脑粮食倍率
         /// </summary>
         [JsonProperty] public float foodFactor = 1f;
 
         /// <summary>
-        /// 金币倍率
+        /// 电脑资金倍率
         /// </summary>
         [JsonProperty] public float goldFactor = 1f;
+
+        /// <summary>
+        /// 玩家粮食倍率
+        /// </summary>
+        [JsonProperty] public float playerFoodFactor = 1f;
+
+        /// <summary>
+        /// 玩家资金倍率
+        /// </summary>
+        [JsonProperty] public float playerGoldFactor = 1f;
 
         /// <summary>
         /// 每月变化的关系值

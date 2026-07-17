@@ -32,13 +32,13 @@ namespace Sango.Core
         /// </summary>
         public override void Init()
         {
-            _diplomacyEvents = new List<DiplomacyEvent>();
-            // 初始化事件计数器
-            _eventTriggerCount = 0;
-            // 初始化默认外交事件
-            InitDefaultEvents();
-            // 注册回合开始事件监听（仅在回合开始时触发）
-            GameEvent.OnTurnStart += OnTurnStart;
+            //_diplomacyEvents = new List<DiplomacyEvent>();
+            //// 初始化事件计数器
+            //_eventTriggerCount = 0;
+            //// 初始化默认外交事件
+            //InitDefaultEvents();
+            //// 注册回合开始事件监听（仅在回合开始时触发）
+            //GameEvent.OnTurnStart += OnTurnStart;
         }
 
         /// <summary>

@@ -671,7 +671,8 @@ namespace Sango.Core
                 totalValue += (int)(city.population * scenario.Variables.populationFoodCostFactor * 0.5f);
             }
 
-            totalValue = (int)(totalValue * scenario.Variables.foodFactor);
+            float totalFoodFactor = (city.IsPlayer ? scenario.Variables.playerFoodFactor : scenario.Variables.foodFactor);
+            totalValue = (int)(totalValue * totalFoodFactor);
 
             //totalValue = GameRandom.Random(totalValue, 0.05f);
             city.AddFood(totalValue);
@@ -712,7 +713,8 @@ namespace Sango.Core
                 totalValue += (int)(city.population * scenario.Variables.populationGoldIncomeFactor);
             }
 
-            totalValue = (int)(totalValue * scenario.Variables.goldFactor);
+            float totalGoldFactor = (city.IsPlayer ? scenario.Variables.playerGoldFactor : scenario.Variables.goldFactor);
+            totalValue = (int)(totalValue * totalGoldFactor);
 
             //Sango.Log.Error($"all: t:{totalValue}");
             //totalFoodt = GameRandom.Random(totalFood, 0.05f);

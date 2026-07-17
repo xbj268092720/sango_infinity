@@ -8,7 +8,7 @@ using Sango.Core; namespace Sango.UI
     {
         public Text label;
         public Image image;
-        public UITextItem SetWidth(int width)
+        public UITextItem SetWidth(float width)
         {
             RectTransform rectTransform = GetComponent<RectTransform>();
             rectTransform.sizeDelta = new Vector2(width, rectTransform.sizeDelta.y);

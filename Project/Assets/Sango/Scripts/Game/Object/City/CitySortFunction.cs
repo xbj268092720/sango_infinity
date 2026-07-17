@@ -127,7 +127,7 @@ namespace Sango.Core
         public static SortTitle SortByName = new SortTitle()
         {
             name = "城池",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.Name,
             valueSortFunc = (a, b) => a.Name.CompareTo(b.Name),
         };
@@ -135,7 +135,7 @@ namespace Sango.Core
         public static SortTitle SortByLeader = new SortTitle()
         {
             name = "太守",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.Leader?.Name ?? "---",
             valueSortFunc = (a, b) => SangoObject.Compare(a.Leader, b.Leader),
         };
@@ -143,7 +143,7 @@ namespace Sango.Core
         public static SortTitle SortByPersonCount = new SortTitle()
         {
             name = "现役",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.allPersons.Count.ToString(),
             valueSortFunc = (a, b) => a.allPersons.Count.CompareTo(b.allPersons.Count),
         };
@@ -151,7 +151,7 @@ namespace Sango.Core
         public static SortTitle SortByTroops = new SortTitle()
         {
             name = "士兵",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.troops.ToString(),
             valueSortFunc = (a, b) => a.troops.CompareTo(b.troops),
         };
@@ -159,7 +159,7 @@ namespace Sango.Core
         public static SortTitle SortByTroopsLimit = new SortTitle()
         {
             name = "士兵上限",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.TroopsLimit.ToString(),
             valueSortFunc = (a, b) => a.TroopsLimit.CompareTo(b.TroopsLimit),
         };
@@ -167,7 +167,7 @@ namespace Sango.Core
         public static SortTitle SortByGold = new SortTitle()
         {
             name = "资金",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.gold.ToString(),
             valueSortFunc = (a, b) => a.gold.CompareTo(b.gold),
         };
@@ -175,7 +175,7 @@ namespace Sango.Core
         public static SortTitle SortByGoldLimit = new SortTitle()
         {
             name = "资金上限",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.GoldLimit.ToString(),
             valueSortFunc = (a, b) => a.GoldLimit.CompareTo(b.GoldLimit),
         };
@@ -183,7 +183,7 @@ namespace Sango.Core
         public static SortTitle SortByFood = new SortTitle()
         {
             name = "兵粮",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.food.ToString(),
             valueSortFunc = (a, b) => a.food.CompareTo(b.food),
         };
@@ -191,7 +191,7 @@ namespace Sango.Core
         public static SortTitle SortByFoodLimit = new SortTitle()
         {
             name = "兵粮上限",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.FoodLimit.ToString(),
             valueSortFunc = (a, b) => a.FoodLimit.CompareTo(b.FoodLimit),
         };
@@ -199,7 +199,7 @@ namespace Sango.Core
         public static SortTitle SortByLevel = new SortTitle()
         {
             name = "等级",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.CityLevelType.Name,
             valueSortFunc = (a, b) => a.CityLevelType.Id.CompareTo(b.CityLevelType.Id),
         };
@@ -207,7 +207,7 @@ namespace Sango.Core
         public static SortTitle SortByIsFree = new SortTitle()
         {
             name = "空闲",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.freePersons.Count.ToString(),
             valueSortFunc = (a, b) => a.freePersons.Count.CompareTo(b.freePersons.Count),
         };
@@ -215,7 +215,7 @@ namespace Sango.Core
         public static SortTitle SortByCaptiveCount = new SortTitle()
         {
             name = "俘虏",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.captiveList.Count.ToString(),
             valueSortFunc = (a, b) => a.captiveList.Count.CompareTo(b.captiveList.Count),
         };
@@ -223,7 +223,7 @@ namespace Sango.Core
         public static SortTitle SortByWildCount = new SortTitle()
         {
             name = "在野",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.wildPersons.Count.ToString(),
             valueSortFunc = (a, b) => a.wildPersons.Count.CompareTo(b.wildPersons.Count),
         };
@@ -231,7 +231,7 @@ namespace Sango.Core
         public static SortTitle SortByBelongForce = new SortTitle()
         {
             name = "势力",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.BelongForce?.Name ?? "无",
             valueSortFunc = (a, b) => SangoObject.Compare(a.BelongForce, b.BelongForce),
         };
@@ -239,7 +239,7 @@ namespace Sango.Core
         public static SortTitle SortByBelongCorps = new SortTitle()
         {
             name = "军团",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.BelongCorps?.Name ?? "无",
             valueSortFunc = (a, b) => SangoObject.Compare(a.BelongCorps, b.BelongCorps),
         };
@@ -247,7 +247,7 @@ namespace Sango.Core
         public static SortTitle SortByBelongCity = new SortTitle()
         {
             name = "所属",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.BelongCity?.Name ?? "无",
             valueSortFunc = (a, b) => SangoObject.Compare(a.BelongCity, b.BelongCity),
         };
@@ -255,7 +255,7 @@ namespace Sango.Core
         public static SortTitle SortBySecurity = new SortTitle()
         {
             name = "治安",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.security.ToString(),
             valueSortFunc = (a, b) => a.security.CompareTo(b.security),
         };
@@ -263,7 +263,7 @@ namespace Sango.Core
         public static SortTitle SortBySecurity_SecurityLimit = new SortTitle()
         {
             name = "治安",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => $"{x.security}/100",
             valueSortFunc = (a, b) => a.security.CompareTo(b.security),
         };
@@ -272,7 +272,7 @@ namespace Sango.Core
         public static SortTitle SortByDurability = new SortTitle()
         {
             name = "耐久",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.durability.ToString(),
             valueSortFunc = (a, b) => a.durability.CompareTo(b.durability),
         };
@@ -280,7 +280,7 @@ namespace Sango.Core
         public static SortTitle SortByDurability_DurabilityLimit = new SortTitle()
         {
             name = "耐久",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => $"{x.durability}/{x.DurabilityLimit}",
             valueSortFunc = (a, b) => a.durability.CompareTo(b.durability),
         };
@@ -288,7 +288,7 @@ namespace Sango.Core
         public static SortTitle SortByAllPersonCountInfo = new SortTitle()
         {
             name = "现役",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => $"{x.freePersons.Count}/{x.allPersons.Count}",
             valueSortFunc = (a, b) => a.allPersons.Count.CompareTo(b.allPersons.Count),
         };
@@ -296,7 +296,7 @@ namespace Sango.Core
         public static SortTitle SortByBuildingBuildCount_TotalCount = new SortTitle()
         {
             name = "设施",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => $"{x.GetInteriorCellUsedCount()}/{x.InteriorCellCount}",
             valueSortFunc = (a, b) => a.InteriorCellCount.CompareTo(b.InteriorCellCount),
         };
@@ -304,7 +304,7 @@ namespace Sango.Core
         public static SortTitle SortByMorale_MoraleLimit = new SortTitle()
         {
             name = "气力",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => $"{x.morale}/{x.MaxMorale}",
             valueSortFunc = (a, b) => a.morale.CompareTo(b.morale),
         };
@@ -312,7 +312,7 @@ namespace Sango.Core
         public static SortTitle SortByMorale = new SortTitle()
         {
             name = "气力",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.morale.ToString(),
             valueSortFunc = (a, b) => a.morale.CompareTo(b.morale),
         };
@@ -323,7 +323,7 @@ namespace Sango.Core
             return new SortTitle()
             {
                 name = itemType.Name,
-                width = 50,
+                width = 2.00f,
                 valueStrGetCall = x => x.itemStore.GetNumber(itemType).ToString(),
                 valueSortFunc = (a, b) => a.itemStore.GetNumber(itemType).CompareTo(b.itemStore.GetNumber(itemType)),
             };
@@ -343,7 +343,7 @@ namespace Sango.Core
             return new SortTitle()
             {
                 name = itemType.Name,
-                width = 50,
+                width = 2.00f,
                 valueStrGetCall = x => x.itemStore.GetNumber(itemType).ToString(),
                 valueSortFunc = (a, b) => a.itemStore.GetNumber(itemType).CompareTo(b.itemStore.GetNumber(itemType)),
             };
@@ -352,7 +352,7 @@ namespace Sango.Core
         public static SortTitle SortByTotalGainGold = new SortTitle()
         {
             name = "资金收入",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.totalGainGold.ToString(),
             valueSortFunc = (a, b) => a.totalGainGold.CompareTo(b.totalGainGold),
         };
@@ -360,7 +360,7 @@ namespace Sango.Core
         public static SortTitle SortByTotalGainFood = new SortTitle()
         {
             name = "兵粮收入",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.totalGainFood.ToString(),
             valueSortFunc = (a, b) => a.totalGainFood.CompareTo(b.totalGainFood),
         };
@@ -368,7 +368,7 @@ namespace Sango.Core
         public static SortTitle SortByHasBusiness = new SortTitle()
         {
             name = "市价",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => $"兵粮{x.hasBusiness}=资金1",
             valueSortFunc = (a, b) => a.hasBusiness.CompareTo(b.hasBusiness),
         };

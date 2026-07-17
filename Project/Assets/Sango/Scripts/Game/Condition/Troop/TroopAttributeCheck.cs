@@ -67,6 +67,10 @@ namespace Sango.Core
                     return troop.Politics;
                 case "glamour":
                     return troop.Glamour;
+                case "attack":
+                    return troop.Attack;
+                case "defence":
+                    return troop.Defence;
                 default:
                     return 0;
             }

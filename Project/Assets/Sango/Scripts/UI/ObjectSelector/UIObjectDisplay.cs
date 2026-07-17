@@ -26,7 +26,7 @@ using Sango.Core; namespace Sango.UI
         public RectTransform[] contentRect;
         ObjectsDisplaySystem objectSelectSystem;
         protected int startIndex = 0;
-        protected int itemWidth = 0;
+        protected float itemWidth = 0;
         protected int itemCount = 0;
 
         public RectTransform btnRoot;
@@ -67,8 +67,8 @@ using Sango.Core; namespace Sango.UI
             clickMode = objectSelectSystem.ClickMode;
             selectSortBtn.SetActive(!clickMode);
 
-            itemWidth = GetContentWidth();
             itemCount = uIObjectListItems.Length;
+            itemWidth = GetContentWidth();
             bool show_scrollbar_h = maskRect.rect.width < itemWidth;
             scrollbar_h.gameObject.SetActive(show_scrollbar_h);
             if (show_scrollbar_h)
@@ -152,19 +152,34 @@ using Sango.Core; namespace Sango.UI
 
         }
 
-        public int GetContentWidth()
+        public float GetContentWidth()
         {
-            int w = 0;
+            float w = 0;
             for (int i = 0; i < sortItems.Count; i++)
             {
                 ObjectSortTitle sortTitle = sortItems[i];
-                w += sortTitle.width;
+                w += sortTitle.ContentMaxWidth;
             }
             return w + 24;
         }
 
         public void UpdateSortContent()
         {
+            itemWidth = GetContentWidth();
+            bool show_scrollbar_h = maskRect.rect.width < itemWidth;
+            scrollbar_h.gameObject.SetActive(show_scrollbar_h);
+            if (show_scrollbar_h)
+            {
+                itemCount--;
+                scrollbar_h.size = (float)maskRect.rect.width / (float)itemWidth;
+                scrollbar_h.SetValueWithoutNotify(0);
+                uIObjectListItems[uIObjectListItems.Length - 1].gameObject.SetActive(false);
+            }
+            else
+            {
+                uIObjectListItems[uIObjectListItems.Length - 1].gameObject.SetActive(true);
+            }
+
             for (int j = 0; j < uIObjectListItems.Length; j++)
             {
                 UIObjectListItem listItem = uIObjectListItems[j];
@@ -190,7 +205,7 @@ using Sango.Core; namespace Sango.UI
 
 
                 uIPersonSortButton.gameObject.SetActive(true);
-                uIPersonSortButton.Clear().SetWidth(sortTitle.width).SetName(sortTitle.name);
+                uIPersonSortButton.Clear().SetWidth(sortTitle.ContentMaxWidth).SetName(sortTitle.name);
 
                 uIPersonSortButton.onClick = (up) =>
                 {
@@ -205,7 +220,7 @@ using Sango.Core; namespace Sango.UI
                     for (int j = 0; j < itemCount; j++)
                     {
                         UIObjectListItem listItem = uIObjectListItems[j];
-                        listItem.Add("", sortTitle.width);
+                        listItem.Add("", sortTitle.ContentMaxWidth);
                     }
                 }
                 else
@@ -213,7 +228,7 @@ using Sango.Core; namespace Sango.UI
                     for (int j = 0; j < itemCount; j++)
                     {
                         UIObjectListItem listItem = uIObjectListItems[j];
-                        listItem.textItem.SetWidth(sortTitle.width);
+                        listItem.textItem.SetWidth(sortTitle.ContentMaxWidth);
                     }
                 }
             }

@@ -424,7 +424,16 @@
       ],
       "techPointCost": 5000,
       "counter": 6,
-      "needTech": 14
+      "needTech": 14,
+      "effects": [
+        {
+          "class": "TroopAddSkill",
+          "value": 2,
+          "kinds": [
+            5
+          ]
+        }
+      ]
     },
     "16": {
       "Id": 16,

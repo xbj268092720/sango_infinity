@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     /// <summary>
     /// 剧本选择界面
@@ -41,13 +42,27 @@ using Sango.Core; namespace Sango.UI
             ShowVariables(Scenario.CurSelected);
         }
 
+        float[] lvlFactor = new float[] { 1f, 1f, 1.2f, 2f };
+        float[] player_lvlFactor = new float[] { 1.2f, 1f, 1f, 0.9f };
+
         public void ShowVariables(Scenario scenario)
         {
             ScenarioVariables variables = scenario.Variables;
             AddBigTitle(scenario.Name);
             AddTitle("难度选择");
-            AddToggleGroupItem("难度", variables.difficulty, new List<string> { "简单", "普通", "困难", "超级" }, (v) => { variables.difficulty = v; });
+            AddToggleGroupItem("难度", variables.difficulty, new List<string> { "简单", "普通", "困难", "超级" }, (v) =>
+            {
+                variables.difficulty = v;
+                variables.foodFactor = lvlFactor[v];
+                variables.goldFactor = lvlFactor[v];
+                variables.playerFoodFactor = player_lvlFactor[v];
+                variables.playerGoldFactor = player_lvlFactor[v];
+            });
             AddTitle("剧本基础参数");
+            AddNumberItem("电脑粮食倍率", variables.foodFactor, 0, 100, (v) => { variables.foodFactor = v; });
+            AddNumberItem("电脑资金倍率", variables.goldFactor, 0, 100, (v) => { variables.goldFactor = v; });
+            AddNumberItem("玩家粮食倍率", variables.playerFoodFactor, 0, 100, (v) => { variables.playerFoodFactor = v; });
+            AddNumberItem("玩家资金倍率", variables.playerGoldFactor, 0, 100, (v) => { variables.playerGoldFactor = v; });
             AddNumberItem("行动力上限", variables.ActionPointLimit, 0, 10000, (v) => { variables.ActionPointLimit = v; });
             AddNumberItem("行动力获取倍率", variables.ActionPointFactor, 0, 100, (v) => { variables.ActionPointFactor = v; });
             AddToggleItem("年龄生效", variables.AgeEnabled, (v) => { variables.AgeEnabled = v; RefreshSetting(); });
@@ -76,8 +91,7 @@ using Sango.Core; namespace Sango.UI
             AddNumberItem("每一月治安下降最大数", variables.securityChangeOnMonthStart, -100, 0, (v) => { variables.securityChangeOnMonthStart = v; });
             AddNumberItem("每一季度治安下降最大数", variables.securityChangeOnSeasonStart, -100, 0, (v) => { variables.securityChangeOnSeasonStart = v; });
             AddNumberItem("建筑建造最大回合数", variables.BuildMaxTurn, 0, 100, (v) => { variables.BuildMaxTurn = v; });
-            AddNumberItem("粮食倍率", variables.foodFactor, 0, 100, (v) => { variables.foodFactor = v; });
-            AddNumberItem("金币倍率", variables.goldFactor, 0, 100, (v) => { variables.goldFactor = v; });
+
             //AddNumberItem("每一点农业带来的粮食收入", variables.agriculture_add_food, 0, 100, (v) => { variables.agriculture_add_food = v; });
             //AddNumberItem("每一点商业点带来的金币收入", variables.commerce_add_gold, 0, 100, (v) => { variables.commerce_add_gold = v; });
             AddNumberItem("每月变化的关系值", variables.relationChangePerMonth, -1000, 1000, (v) => { variables.relationChangePerMonth = v; });
@@ -114,7 +128,7 @@ using Sango.Core; namespace Sango.UI
             AddNumberItem("武力对暴击的加成值", variables.skillCriticalRateAddByStength, 0, 100, (v) => { variables.skillCriticalRateAddByStength = v; });
             AddNumberItem("暴击倍率(百分比)", variables.skillCriticalFactor, 100, 300, (v) => { variables.skillCriticalFactor = v; });
             AddNumberItem("基础火焰伤害", variables.baseFireDamage, 100, 3000, (v) => { variables.baseFireDamage = v; });
-            
+
 
             AddTitle("缴获与保留参数");
             AddNumberItem("近战击溃部队缴获的金钱比例(百分比)", variables.defeatTroopCanGainGoldFactor, 0, 100, (v) => { variables.defeatTroopCanGainGoldFactor = v; });
@@ -198,44 +212,44 @@ using Sango.Core; namespace Sango.UI
             //AddNumberItem("通商持续时间", variables.diplomacyTradeDuration, 1, 100, (v) => { variables.diplomacyTradeDuration = v; });
             //AddNumberItem("每月同盟关系增加", variables.diplomacyMonthlyAllianceRelationIncrease, -1000, 1000, (v) => { variables.diplomacyMonthlyAllianceRelationIncrease = v; });
             //AddNumberItem("每月普通关系减少", variables.diplomacyMonthlyNormalRelationDecrease, -1000, 1000, (v) => { variables.diplomacyMonthlyNormalRelationDecrease = v; });
-            
+
             //AddTitle("外交成功率参数");
             //// 结盟成功率参数
             //AddNumberItem("结盟基础成功率", variables.diplomacyAllianceBaseSuccessRate, 0, 100, (v) => { variables.diplomacyAllianceBaseSuccessRate = v; });
             //AddNumberItem("结盟关系系数", variables.diplomacyAllianceRelationFactor, 1, 100, (v) => { variables.diplomacyAllianceRelationFactor = v; });
             //AddNumberItem("结盟最大成功率", variables.diplomacyAllianceMaxSuccessRate, 0, 100, (v) => { variables.diplomacyAllianceMaxSuccessRate = v; });
             //AddNumberItem("结盟最低成功率", variables.diplomacyAllianceMinSuccessRate, 0, 100, (v) => { variables.diplomacyAllianceMinSuccessRate = v; });
-            
+
             //// 停战成功率参数
             //AddNumberItem("停战基础成功率", variables.diplomacyTruceBaseSuccessRate, 0, 100, (v) => { variables.diplomacyTruceBaseSuccessRate = v; });
             //AddNumberItem("停战关系系数", variables.diplomacyTruceRelationFactor, 1, 100, (v) => { variables.diplomacyTruceRelationFactor = v; });
             //AddNumberItem("停战最大成功率", variables.diplomacyTruceMaxSuccessRate, 0, 100, (v) => { variables.diplomacyTruceMaxSuccessRate = v; });
             //AddNumberItem("停战最低成功率", variables.diplomacyTruceMinSuccessRate, 0, 100, (v) => { variables.diplomacyTruceMinSuccessRate = v; });
-            
+
             //// 请求技术成功率参数
             //AddNumberItem("请求技术基础成功率", variables.diplomacyRequestTechniqueBaseSuccessRate, 0, 100, (v) => { variables.diplomacyRequestTechniqueBaseSuccessRate = v; });
             //AddNumberItem("请求技术关系系数", variables.diplomacyRequestTechniqueRelationFactor, 1, 100, (v) => { variables.diplomacyRequestTechniqueRelationFactor = v; });
             //AddNumberItem("请求技术最大成功率", variables.diplomacyRequestTechniqueMaxSuccessRate, 0, 100, (v) => { variables.diplomacyRequestTechniqueMaxSuccessRate = v; });
             //AddNumberItem("请求技术最低成功率", variables.diplomacyRequestTechniqueMinSuccessRate, 0, 100, (v) => { variables.diplomacyRequestTechniqueMinSuccessRate = v; });
-            
+
             //// 请求兵力成功率参数
             //AddNumberItem("请求兵力基础成功率", variables.diplomacyRequestTroopsBaseSuccessRate, 0, 100, (v) => { variables.diplomacyRequestTroopsBaseSuccessRate = v; });
             //AddNumberItem("请求兵力关系系数", variables.diplomacyRequestTroopsRelationFactor, 1, 100, (v) => { variables.diplomacyRequestTroopsRelationFactor = v; });
             //AddNumberItem("请求兵力最大成功率", variables.diplomacyRequestTroopsMaxSuccessRate, 0, 100, (v) => { variables.diplomacyRequestTroopsMaxSuccessRate = v; });
             //AddNumberItem("请求兵力最低成功率", variables.diplomacyRequestTroopsMinSuccessRate, 0, 100, (v) => { variables.diplomacyRequestTroopsMinSuccessRate = v; });
-            
+
             //// 通商成功率参数
             //AddNumberItem("通商基础成功率", variables.diplomacyTradeBaseSuccessRate, 0, 100, (v) => { variables.diplomacyTradeBaseSuccessRate = v; });
             //AddNumberItem("通商关系系数", variables.diplomacyTradeRelationFactor, 1, 100, (v) => { variables.diplomacyTradeRelationFactor = v; });
             //AddNumberItem("通商最大成功率", variables.diplomacyTradeMaxSuccessRate, 0, 100, (v) => { variables.diplomacyTradeMaxSuccessRate = v; });
             //AddNumberItem("通商最低成功率", variables.diplomacyTradeMinSuccessRate, 0, 100, (v) => { variables.diplomacyTradeMinSuccessRate = v; });
-            
+
             //// 和亲成功率参数
             //AddNumberItem("和亲基础成功率", variables.diplomacyMarriageBaseSuccessRate, 0, 100, (v) => { variables.diplomacyMarriageBaseSuccessRate = v; });
             //AddNumberItem("和亲关系系数", variables.diplomacyMarriageRelationFactor, 1, 100, (v) => { variables.diplomacyMarriageRelationFactor = v; });
             //AddNumberItem("和亲最大成功率", variables.diplomacyMarriageMaxSuccessRate, 0, 100, (v) => { variables.diplomacyMarriageMaxSuccessRate = v; });
             //AddNumberItem("和亲最低成功率", variables.diplomacyMarriageMinSuccessRate, 0, 100, (v) => { variables.diplomacyMarriageMinSuccessRate = v; });
-            
+
             //// 请求结盟成功率参数
             //AddNumberItem("请求结盟基础成功率", variables.diplomacyAllianceRequestBaseSuccessRate, 0, 100, (v) => { variables.diplomacyAllianceRequestBaseSuccessRate = v; });
             //AddNumberItem("请求结盟关系系数", variables.diplomacyAllianceRequestRelationFactor, 1, 100, (v) => { variables.diplomacyAllianceRequestRelationFactor = v; });
@@ -243,7 +257,7 @@ using Sango.Core; namespace Sango.UI
             //AddNumberItem("请求结盟最低成功率", variables.diplomacyAllianceRequestMinSuccessRate, 0, 100, (v) => { variables.diplomacyAllianceRequestMinSuccessRate = v; });
             //AddNumberItem("请求结盟关系阈值", variables.diplomacyAllianceRequestSuccessRelationThreshold, -5000, 5000, (v) => { variables.diplomacyAllianceRequestSuccessRelationThreshold = v; });
             //AddNumberItem("请求结盟随机概率分母", variables.diplomacyAllianceRequestChanceDenominator, 1000, 5000, (v) => { variables.diplomacyAllianceRequestChanceDenominator = v; });
-            
+
             //// 请求停战成功率参数
             //AddNumberItem("请求停战基础成功率", variables.diplomacyTruceRequestBaseSuccessRate, 0, 100, (v) => { variables.diplomacyTruceRequestBaseSuccessRate = v; });
             //AddNumberItem("请求停战关系系数", variables.diplomacyTruceRequestRelationFactor, 1, 100, (v) => { variables.diplomacyTruceRequestRelationFactor = v; });
@@ -252,7 +266,7 @@ using Sango.Core; namespace Sango.UI
             //AddNumberItem("请求停战关系阈值", variables.diplomacyTruceRequestSuccessRelationThreshold, -5000, 5000, (v) => { variables.diplomacyTruceRequestSuccessRelationThreshold = v; });
             //AddNumberItem("请求停战随机概率分母", variables.diplomacyTruceRequestChanceDenominator, 1000, 5000, (v) => { variables.diplomacyTruceRequestChanceDenominator = v; });
             //AddNumberItem("请求停战随机概率偏移", variables.diplomacyTruceRequestChanceOffset, 0, 2000, (v) => { variables.diplomacyTruceRequestChanceOffset = v; });
-            
+
             //// 赎回俘虏成功率参数
             //AddNumberItem("赎回俘虏基础成功率", variables.diplomacyRansomBaseSuccessRate, 0, 100, (v) => { variables.diplomacyRansomBaseSuccessRate = v; });
             //AddNumberItem("赎回俘虏关系系数", variables.diplomacyRansomSuccessRelationFactor, 1, 100, (v) => { variables.diplomacyRansomSuccessRelationFactor = v; });

@@ -33,6 +33,11 @@ namespace Sango.Core.Tools
 
         public void Recycle()
         {
+            if(pool_list.Contains(this))
+            {
+                Sango.Log.Error("重复!!!!!!");
+                return;
+            }
             pool_list.Enqueue(this);
         }
     }

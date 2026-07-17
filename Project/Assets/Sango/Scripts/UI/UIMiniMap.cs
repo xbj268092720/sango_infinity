@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Sango.Core; namespace Sango.UI
+using Sango.Core;
+namespace Sango.UI
 {
     /// <summary>
     /// 游戏开始界面
@@ -13,10 +14,12 @@ using Sango.Core; namespace Sango.UI
     {
         abstract class MapNodeData
         {
+            public GameObject @object;
             public Image image;
             protected RectTransform rectTransform;
-            public MapNodeData(Image image)
+            public MapNodeData(Image image, GameObject gameObject)
             {
+                @object = gameObject;
                 this.image = image;
                 rectTransform = image.rectTransform;
             }
@@ -25,7 +28,7 @@ using Sango.Core; namespace Sango.UI
         class MapCityNodeData : MapNodeData
         {
             public City city;
-            public MapCityNodeData(City city, Image image) : base(image)
+            public MapCityNodeData(City city, Image image, GameObject gameObject) : base(image, gameObject)
             {
                 this.city = city;
                 Color c = city.BelongForce == null ? Color.white : city.BelongForce.Flag.color;
@@ -49,7 +52,7 @@ using Sango.Core; namespace Sango.UI
         class MapTroopNodeData : MapNodeData
         {
             public Troop troop;
-            public MapTroopNodeData(Image image) : base(image)
+            public MapTroopNodeData(Image image, GameObject gameObject) : base(image, gameObject)
             {
             }
 
@@ -94,8 +97,9 @@ using Sango.Core; namespace Sango.UI
             GameEvent.OnTroopCreated += OnTroopCreated;
             GameEvent.OnTroopDestroyed += OnTroopDestroyed;
             GameEvent.OnCityFall += OnCityFall;
-            InitCities();
+            GameEvent.OnScenarioInit += OnScenarioInit;
             MapRender.Instance.onValueChanged = OnCameraValueChanged;
+            InitCities();
         }
 
         Vector2 WorldPos2MiniMapPos(Vector3 worldPos)
@@ -131,6 +135,7 @@ using Sango.Core; namespace Sango.UI
 
         public void OnDestroy()
         {
+            ClearCities();
             mapCityNodes.Clear();
             mapTroopNodes.Clear();
             mapTroopNodesPool.Clear();
@@ -138,9 +143,30 @@ using Sango.Core; namespace Sango.UI
             GameEvent.OnTroopDestroyed -= OnTroopDestroyed;
             GameEvent.OnTroopEnterCell -= OnTroopEnterCell;
             GameEvent.OnCityFall -= OnCityFall;
+            GameEvent.OnScenarioInit -= OnScenarioInit;
 
             MapRender.Instance.onValueChanged = null;
 
+        }
+
+        void ClearCities()
+        {
+            for (int i = 0; i < mapTroopNodes.Count; i++)
+                mapTroopNodesPool.Enqueue(mapTroopNodes[i]);
+            mapTroopNodes.Clear();
+
+            for (int i = 0; i < mapCityNodes.Count; i++)
+            {
+                MapCityNodeData nodeData = mapCityNodes[i];
+                GameObject.Destroy(nodeData.@object);
+            }
+            mapCityNodes.Clear();
+        }
+
+        void OnScenarioInit(Scenario scenario)
+        {
+            ClearCities();
+            InitCities();
         }
 
         void OnCityFall(City city, Force lastForce, Troop troop)
@@ -165,7 +191,7 @@ using Sango.Core; namespace Sango.UI
                 GameObject go = GameObject.Instantiate(troopObj, troopObj.transform.parent);
                 go.SetActive(true);
                 Image image = go.GetComponentInChildren<Image>(true);
-                data = new MapTroopNodeData(image);
+                data = new MapTroopNodeData(image, go);
             }
 
             data.Init(troop);
@@ -210,14 +236,14 @@ using Sango.Core; namespace Sango.UI
                     GameObject go = GameObject.Instantiate(cityObj, cityObj.transform.parent);
                     go.SetActive(true);
                     Image image = go.GetComponentInChildren<Image>(true);
-                    mapCityNodes.Add(new MapCityNodeData(city, image).UpdateCell(mapBounds));
+                    mapCityNodes.Add(new MapCityNodeData(city, image, go).UpdateCell(mapBounds));
                 }
                 else
                 {
                     GameObject go = GameObject.Instantiate(miniCityObj, miniCityObj.transform.parent);
                     go.SetActive(true);
                     Image image = go.GetComponentInChildren<Image>(true);
-                    mapCityNodes.Add(new MapCityNodeData(city, image).UpdateCell(mapBounds));
+                    mapCityNodes.Add(new MapCityNodeData(city, image, go).UpdateCell(mapBounds));
                 }
             });
         }

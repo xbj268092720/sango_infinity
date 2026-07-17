@@ -124,7 +124,7 @@ namespace Sango.Core
         public static SortTitle SortByName = new SortTitle()
         {
             name = "建筑",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.Name,
             valueSortFunc = (a, b) => a.Name.CompareTo(b.Name),
         };
@@ -133,7 +133,7 @@ namespace Sango.Core
         public static SortTitle SortByBelongForce = new SortTitle()
         {
             name = "势力",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.BelongForce?.Name ?? "无",
             valueSortFunc = (a, b) => SangoObject.Compare(a.BelongForce, b.BelongForce),
         };
@@ -141,7 +141,7 @@ namespace Sango.Core
         public static SortTitle SortByBelongCorps = new SortTitle()
         {
             name = "军团",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.BelongCorps?.Name ?? "无",
             valueSortFunc = (a, b) => SangoObject.Compare(a.BelongCorps, b.BelongCorps),
         };
@@ -149,7 +149,7 @@ namespace Sango.Core
         public static SortTitle SortByBelongBuilding = new SortTitle()
         {
             name = "所属",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.BelongCity?.Name ?? "无",
             valueSortFunc = (a, b) => SangoObject.Compare(a.BelongCity, b.BelongCity),
         };
@@ -157,7 +157,7 @@ namespace Sango.Core
         public static SortTitle SortByDurability = new SortTitle()
         {
             name = "耐久",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => x.durability.ToString(),
             valueSortFunc = (a, b) => a.durability.CompareTo(b.durability),
         };
@@ -165,7 +165,7 @@ namespace Sango.Core
         public static SortTitle SortByDurability_DurabilityLimit = new SortTitle()
         {
             name = "耐久",
-            width = 60,
+            width = 2.40f,
             valueStrGetCall = x => $"{x.durability}/{x.DurabilityLimit}",
             valueSortFunc = (a, b) => a.durability.CompareTo(b.durability),
         };
@@ -175,7 +175,7 @@ namespace Sango.Core
             return new SortTitle()
             {
                 name = slotIndex == 0 ? "工作" : "",
-                width = 50,
+                width = 2.00f,
                 valueStrGetCall = x => x.GetWorker(slotIndex) != null ? x.GetWorker(slotIndex).Name : "-",
                 valueSortFunc = (a, b) => SangoObject.Compare(a.GetWorker(slotIndex), a.GetWorker(slotIndex)),
             };

@@ -118,7 +118,7 @@ namespace Sango.Core
         public static SortTitle SortByName = new SortTitle()
         {
             name = "势力",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.Name,
             valueSortFunc = (a, b) => a.Name.CompareTo(b.Name),
         };
@@ -126,7 +126,7 @@ namespace Sango.Core
         public static SortTitle SortByLeader = new SortTitle()
         {
             name = "主公",
-            width = 100,
+            width = 4.00f,
             valueStrGetCall = x => x.Governor?.Name ?? "---",
             valueSortFunc = (a, b) => SangoObject.Compare(a.Governor, b.Governor),
         };
@@ -136,7 +136,7 @@ namespace Sango.Core
             return new SortTitle()
             {
                 name = "期间",
-                width = 50,
+                width = 2.00f,
                 valueStrGetCall = x => $"{x.Governor.DistanceDays(where)}0日",
                 valueSortFunc = (a, b) => a.Governor.DistanceDays(where).CompareTo(b.Governor.DistanceDays(where)),
             };

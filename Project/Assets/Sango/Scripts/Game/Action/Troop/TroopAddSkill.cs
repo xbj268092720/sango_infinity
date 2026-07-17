@@ -30,8 +30,10 @@ namespace Sango.Core.Action
             Skill skill = scenario.GetObject<Skill>(value);
             if (kinds == null)
             {
-                troop.landSkills.Add(SkillInstance.Create(troop, skill));
-                troop.waterSkills.Add(SkillInstance.Create(troop, skill));
+                if(!troop.landSkills.Exists(x=>x.Id == skill.Id))
+                    troop.landSkills.Add(SkillInstance.Create(troop, skill));
+                if(!troop.waterSkills.Exists(x=>x.Id == skill.Id))
+                    troop.waterSkills.Add(SkillInstance.Create(troop, skill));
             }
             else
             {

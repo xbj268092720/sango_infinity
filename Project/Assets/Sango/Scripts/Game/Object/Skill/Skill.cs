@@ -150,6 +150,7 @@ namespace Sango.Core
         //{
 
         //}
+        public bool IsNormalSkill => kind == 1;
 
         public void GetAttackCells(Troop atker, Cell spell, List<Cell> cells)
         {

@@ -3,6 +3,7 @@ using Sango.Core;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 /// <summary>
@@ -22,18 +23,18 @@ public class GameStart : MonoBehaviour
     ScreenOrientation last_orientation;
     void Awake()
     {
-
-    //    StartCoroutine(GitDownloader.DownloadAndExtract(
-    //    "https://gitcode.com/gametank/sango_infinity_mod_test/releases/download/version/mod.info",
-    //    "https://gitcode.com/gametank/sango_infinity_mod_test/releases/download/1.0/official_rp.zip",
-    //    "D:/target/folder",
-    //    progress => UnityEngine.Debug.Log($"下载进度: {progress * 100f:F1}%"),
-    //    result =>
-    //    {
-    //        if (result.IsSuccess) UnityEngine.Debug.Log("完成: " + result.ExtractTargetPath);
-    //        else UnityEngine.Debug.LogError("失败: " + result.ErrorMessage);
-    //    }
-    //)); 
+        
+        //    StartCoroutine(GitDownloader.DownloadAndExtract(
+        //    "https://gitcode.com/gametank/sango_infinity_mod_test/releases/download/version/mod.info",
+        //    "https://gitcode.com/gametank/sango_infinity_mod_test/releases/download/1.0/official_rp.zip",
+        //    "D:/target/folder",
+        //    progress => UnityEngine.Debug.Log($"下载进度: {progress * 100f:F1}%"),
+        //    result =>
+        //    {
+        //        if (result.IsSuccess) UnityEngine.Debug.Log("完成: " + result.ExtractTargetPath);
+        //        else UnityEngine.Debug.LogError("失败: " + result.ErrorMessage);
+        //    }
+        //)); 
 
         initObject.SetActive(true);
         GameEvent.OnGameInit += OnGameInit;
@@ -96,6 +97,7 @@ public class GameStart : MonoBehaviour
 
     IEnumerator GameInit()
     {
+
 #if (UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR
         float pogress = 1f;
         bool appVersionNew = Sango.Platform.CheckAppVersion();
