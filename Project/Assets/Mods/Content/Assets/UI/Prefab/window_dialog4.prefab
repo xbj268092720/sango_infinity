@@ -403,6 +403,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 266453176333488632, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -343.3668
+      objectReference: {fileID: 0}
+    - target: {fileID: 266453176333488632, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -175.81686
+      objectReference: {fileID: 0}
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -410,6 +418,14 @@ PrefabInstance:
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_Pivot.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 143.5553
+      objectReference: {fileID: 0}
+    - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -76.73674
       objectReference: {fileID: 0}
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -435,9 +451,17 @@ PrefabInstance:
       propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2653327716523842166, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 34
+      objectReference: {fileID: 0}
     - target: {fileID: 3925287216087675063, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_RaycastTarget
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3925287216087675063, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 4245842946527191823, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_RaycastTarget

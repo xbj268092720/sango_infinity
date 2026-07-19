@@ -96,7 +96,9 @@ MonoBehaviour:
   offset: {x: 0, y: 0}
   delayTime: 0
   cachePosition: {x: 0, y: 0}
+  update_cachePosition: {x: 0, y: 0}
   dontResetCachePosition: 1
+  updateAlways: 0
 --- !u!1 &4617918967374172574
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,7 +212,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 74.29895, y: -60.085815}
-  m_SizeDelta: {x: 164.9973, y: -91.359}
+  m_SizeDelta: {x: 273.31683, y: -72.53644}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8715015381592475898
 CanvasRenderer:
@@ -242,7 +244,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 48a0223bfd5afd04c984eb6951bb3eaa, type: 3}
-    m_FontSize: 25
+    m_FontSize: 29
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -529,6 +531,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 4995103410688942992}
     m_Modifications:
     - target: {fileID: 1818296144072883677, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 15.360001
+      objectReference: {fileID: 0}
+    - target: {fileID: 1818296144072883677, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 2.4585762
+      objectReference: {fileID: 0}
+    - target: {fileID: 1818296144072883677, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.8
       objectReference: {fileID: 0}
@@ -550,7 +560,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2904138685985169836, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 25
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 4394840638323533118, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Pivot.x
@@ -667,6 +677,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 4995103410688942992}
     m_Modifications:
     - target: {fileID: 1818296144072883677, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 14.079994
+      objectReference: {fileID: 0}
+    - target: {fileID: 1818296144072883677, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 1.0842094
+      objectReference: {fileID: 0}
+    - target: {fileID: 1818296144072883677, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.8
       objectReference: {fileID: 0}
@@ -688,7 +706,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2904138685985169836, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 25
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 4394840638323533118, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_Pivot.x
