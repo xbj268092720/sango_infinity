@@ -391,7 +391,7 @@ namespace Sango.Core
         /// <summary>
         /// 每一月治安下降最大数
         /// </summary>
-        [JsonProperty] public int securityChangeOnMonthStart = -1;
+        [JsonProperty] public int securityChangeOnMonthStart = 0;
 
         /// <summary>
         /// 适应名称

@@ -383,7 +383,10 @@
       "Id": 6,
       "Name": "运输",
       "kind": 7,
-      "atk": 0,
+      "skills": [
+        1
+      ],
+      "atk": 30,
       "def": 50,
       "durabilityDmg": 0,
       "move": 25,
@@ -438,7 +441,10 @@
       "Id": 7,
       "Name": "木牛",
       "kind": 7,
-      "atk": 0,
+      "skills": [
+        1
+      ],
+      "atk": 30,
       "def": 50,
       "durabilityDmg": 0,
       "move": 28,

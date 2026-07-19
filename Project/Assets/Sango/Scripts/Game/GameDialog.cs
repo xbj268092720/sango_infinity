@@ -42,6 +42,7 @@ namespace Sango.Core
         public static void Close()
         {
             CurInstance?.Close();
+            GameController.Instance.Enabled = true;
             CurInstance = null;
         }
         public static void Close(IDialog uIDialog)
@@ -49,6 +50,7 @@ namespace Sango.Core
             if (uIDialog == CurInstance)
                 uIDialog.Close();
             CurInstance = null;
+            GameController.Instance.Enabled = true;
         }
 
 
@@ -94,7 +96,7 @@ namespace Sango.Core
             IDialog uIDialog = windowInterface.ugui_instance.GetComponent<IDialog>();
             if (uIDialog == null) return null;
             CurInstance = uIDialog;
-           
+            GameController.Instance.Enabled = false;
             return uIDialog;
         }
     }

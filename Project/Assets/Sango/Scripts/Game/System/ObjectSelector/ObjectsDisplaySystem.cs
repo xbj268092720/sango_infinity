@@ -88,7 +88,7 @@ namespace Sango.Core.Player
             switch (eventType)
             {
                 case CommandEventType.Cancel:
-                case CommandEventType.RClickUp:
+                case CommandEventType.RClick:
                     OnCancel(); break;
             }
 

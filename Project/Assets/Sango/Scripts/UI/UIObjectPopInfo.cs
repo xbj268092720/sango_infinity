@@ -183,7 +183,7 @@ using Sango.Core; namespace Sango.UI
         private void Update()
         {
             if (GameSystemManager.Instance.CurrentCommand != null
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_IPHONE
                 && !(GameSystemManager.Instance.CurrentCommand is BuildingSystem)
 #endif
                 )

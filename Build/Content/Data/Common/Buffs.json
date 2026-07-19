@@ -5,6 +5,7 @@
       "Name": "混乱",
       "kind": 1,
       "subKind": 1,
+      "limit": 0,
       "asset": "Assets/Effect/Prefab/ef_buff_xuanyun.prefab",
       "offset": [
         0.0,
@@ -22,6 +23,7 @@
       "Name": "伪报",
       "kind": 1,
       "subKind": 2,
+      "limit": 0,
       "asset": "Assets/Effect/Prefab/ef_buff_escape.prefab",
       "offset": [
         0.0,
@@ -31,6 +33,32 @@
       "buffEffects": [
         {
           "class": "Escape"
+        }
+      ]
+    },
+    "3": {
+      "Id": 3,
+      "Name": "增加防御",
+      "kind": 2,
+      "subKind": 3,
+      "limit": 1,
+      "buffEffects": [
+        {
+          "class": "AddDefence",
+          "value": 10
+        }
+      ]
+    },
+    "4": {
+      "Id": 4,
+      "Name": "增加攻击",
+      "kind": 2,
+      "subKind": 4,
+      "limit": 1,
+      "buffEffects": [
+        {
+          "class": "AddAttack",
+          "value": 10
         }
       ]
     }

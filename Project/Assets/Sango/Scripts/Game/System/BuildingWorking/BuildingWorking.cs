@@ -1,3 +1,4 @@
+using Sango.Core.Player;
 using Sango.Core.Tools;
 using Sango.Render;
 using System;
@@ -156,6 +157,9 @@ namespace Sango.Core
 
         void ScenarioInit()
         {
+            GameSystem.GetSystem<CityTrainTroops>().Init();     // 训练
+            GameSystem.GetSystem<CityInspection>().Init();     // 巡视
+
             GameEvent.OnBuildingContextMenuShow += OnBuildingContextMenuShow;
             GameEvent.OnBuildingTurnEnd += OnBuildingTurnEnd;
             GameEvent.OnCityMonthStart += OnCityMonthStart;
@@ -174,6 +178,9 @@ namespace Sango.Core
 
         void ScenarioClear()
         {
+            GameSystem.GetSystem<CityTrainTroops>().Clear();     // 训练
+            GameSystem.GetSystem<CityInspection>().Clear();     // 巡视
+
             GameEvent.OnBuildingContextMenuShow -= OnBuildingContextMenuShow;
             GameEvent.OnBuildingTurnEnd -= OnBuildingTurnEnd;
             GameEvent.OnCityMonthStart -= OnCityMonthStart;
@@ -606,8 +613,9 @@ namespace Sango.Core
 
                                 // 治安对征兵的影响
                                 overrideData.Value = (int)(overrideData.Value * (1f - Mathf.Max(0, (100 - belongCity.security)) * scenario.Variables.securityInfluenceRecruitTroops));
+                               
                                 // 额外降低治安
-                                int s = -GameRandom.Range(2, 5);
+                                int s = -GameRandom.Range(1, 3);
                                 belongCity.AddSecurity(s);
                                 building.Render?.ShowInfo(s, (int)InfoType.Security);
                                 belongCity.morale = (belongCity.troops * belongCity.morale + overrideData.Value * 30) / (belongCity.troops + overrideData.Value);
@@ -1121,7 +1129,7 @@ namespace Sango.Core
 
                             if (moraleP <= securityP)
                             {
-                                city.AddMorale(building.AccumulatedProduct);
+                                city.AddMorale(building.AccumulatedProduct * 2);
                                 city.Render?.UpdateRender();
                                 building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Morale);
                             }

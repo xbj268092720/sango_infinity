@@ -455,6 +455,12 @@ namespace Sango.Core
         public static EventDelegate<City, OverrideData<int>> OnCitySecurityChangeOnSeasonStart;
 
         /// <summary>
+        /// 可监听改计算城池每月治安下降值
+        /// City, Troop, OverrideData
+        /// </summary>
+        public static EventDelegate<City, OverrideData<int>> OnCitySecurityChangeOnMonthStart;
+
+        /// <summary>
         /// 可监听改写研究特定技巧的花费和时间
         /// 城市, 执行者, 科技, 技巧点花费, 资金花费, 时间
         /// </summary>

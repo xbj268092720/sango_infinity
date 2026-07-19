@@ -39,7 +39,7 @@
                 return;
             ChoiceData data = choiceDatas[index];
             data.call?.Invoke();
-            Done();
+            Back();
         }
     }
 }

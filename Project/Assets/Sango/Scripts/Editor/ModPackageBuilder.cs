@@ -53,7 +53,7 @@ public class ModPackageBuilder
             assetBundleBuild.assetBundleName = $"{modName}_{pkgName}";
             assetBundle.Add(assetBundleBuild);
 
-            string saveDir = $"{Application.dataPath.Substring(0, Application.dataPath.Length - 7)}/PackageTemp/{modName}";
+            string saveDir = $"{Application.dataPath.Substring(0, Application.dataPath.Length - 7)}/PackageTemp/{PlatformUtility.GetPlatformName()}/{modName}";
             if (!Directory.Exists(saveDir))
                 Directory.Create(saveDir);
 

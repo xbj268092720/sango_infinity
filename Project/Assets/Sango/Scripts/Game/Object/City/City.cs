@@ -256,12 +256,7 @@ namespace Sango.Core
         [JsonProperty]
         public CityLevelType CityLevelType;
 
-        /// <summary>
-        /// 俘虏
-        /// </summary>
-        [JsonConverter(typeof(SangoObjectListIDConverter<Person>))]
-        [JsonProperty]
-        public SangoObjectList<Person> captiveList = new SangoObjectList<Person>();
+
 
         /// <summary>
         /// 工作计数
@@ -354,6 +349,18 @@ namespace Sango.Core
         public List<Person> otherPersons = new List<Person>();
 
         /// <summary>
+        /// 所有武将
+        /// </summary>
+        public SangoObjectList<Person> allPersons = new SangoObjectList<Person>();
+
+        /// <summary>
+        /// 俘虏
+        /// </summary>
+        //[JsonConverter(typeof(SangoObjectListIDConverter<Person>))]
+        //[JsonProperty]
+        public SangoObjectList<Person> captiveList = new SangoObjectList<Person>();
+
+        /// <summary>
         /// 空闲人员数量
         /// </summary>
         public int FreePersonCount => freePersons.Count;
@@ -378,11 +385,6 @@ namespace Sango.Core
         /// 边界线是否已检查
         /// </summary>
         internal bool boderLineChecked = false;
-
-        /// <summary>
-        /// 所有武将
-        /// </summary>
-        public SangoObjectList<Person> allPersons = new SangoObjectList<Person>();
 
         /// <summary>
         /// 所有攻击部队
@@ -1561,7 +1563,6 @@ namespace Sango.Core
                 return;
             }
 
-
             BelongForce.CityBaseCount--;
             if (IsCity()) BelongForce.CityCount--;
 
@@ -1632,47 +1633,27 @@ namespace Sango.Core
             for (int i = allPersons.Count - 1; i >= 0; --i)
             {
                 Person person = allPersons[i];
-                if (person.IsPrisoner)
+                person.ClearMission();
+                if (escapeCity != null)
                 {
                     RemovePerson(person);
-                    if (escapeCity != null)
+                    person.ChangeBelongCity(escapeCity);
+                    escapeCity.AddPerson(person);
+                    if (person.BelongTroop == null && person.CurrentCity == this && person != person.BelongForce.Governor && GameRandom.Chance(cacaptureChangce))
                     {
-                        // 改变所属
-                        person.ChangeBelongCity(escapeCity);
-                        escapeCity.AddPerson(person);
+                        temp_captive_list.Add(person);
                     }
                     else
                     {
-                        // 灭亡时,作为俘虏失去势力
-                        person.BelongCity = person.CurrentCity;
-                        person.BelongCorps = null;
-                        person.BelongForce = null;
+                        if (person.BelongTroop == null)
+                            person.SetMission(MissionType.PersonReturn, person.BelongCity);
                     }
                 }
                 else
                 {
-                    if (escapeCity != null)
-                    {
-                        RemovePerson(person);
-                        person.ChangeBelongCity(escapeCity);
-                        escapeCity.AddPerson(person);
-                        if (person.CurrentCity == this && person != person.BelongForce.Governor && GameRandom.Chance(cacaptureChangce))
-                        {
-                            temp_captive_list.Add(person);
-                        }
-                        else
-                        {
-                            if (person.BelongTroop == null)
-                                person.SetMission(MissionType.PersonReturn, person.BelongCity);
-                        }
-                    }
-                    else
-                    {
-                        // 最后一城
-                        person.ClearMission();
-                        person.LeaveToWild();
-                        temp_captive_list.Add(person);
-                    }
+                    // 最后一城
+                    person.LeaveToWild();
+                    temp_captive_list.Add(person);
                 }
             }
 
@@ -1683,6 +1664,8 @@ namespace Sango.Core
                 if (building.isComplate && GameRandom.Chance(30))
                 {
                     building.ChangeCorps(atk.BelongCorps);
+                    if (building.Workers != null)
+                        building.Workers.ForEach(x => x.workingBuilding = null);
                     building.Builder?.Clear();
                     building.Workers?.Clear();
                 }
@@ -3797,40 +3780,67 @@ namespace Sango.Core
             for (int i = 0; i < allPersons.Count; i++)
             {
                 Person checker = allPersons[i];
-                if (checker != null && checker.IsAlive && !checker.IsPrisoner)
+                if (checker != null && checker.IsAlive)
                 {
                     if (checker.IsGovernor)
                     {
                         dest = checker;
                         break;
                     }
+                }
+            }
 
-                    if (dest == null)
+            if(dest == null)
+            {
+                for (int i = 0; i < allPersons.Count; i++)
+                {
+                    Person checker = allPersons[i];
+                    if (checker != null && checker.IsAlive)
                     {
-                        dest = checker;
-                        higher = dest.Official;
-                        commandHigher = dest.Command;
+                        if (checker.IsCommander)
+                        {
+                            dest = checker;
+                            break;
+                        }
                     }
-                    else
+                }
+            }
+
+            if (dest == null)
+            {
+                for (int i = 0; i < allPersons.Count; i++)
+                {
+                    Person checker = allPersons[i];
+                    if (checker != null && checker.IsAlive)
                     {
-                        if (checker.Official.level > higher.level)
+                        if (dest == null)
                         {
                             dest = checker;
                             higher = dest.Official;
                             commandHigher = dest.Command;
                         }
-                        else if (checker.Official.level == higher.level)
+                        else
                         {
-                            if (checker.Command > commandHigher)
+                            if (checker.Official.level > higher.level)
                             {
                                 dest = checker;
                                 higher = dest.Official;
                                 commandHigher = dest.Command;
                             }
+                            else if (checker.Official.level == higher.level)
+                            {
+                                if (checker.Command > commandHigher)
+                                {
+                                    dest = checker;
+                                    higher = dest.Official;
+                                    commandHigher = dest.Command;
+                                }
+                            }
                         }
                     }
                 }
             }
+            
             Leader = dest;
             Leader?.SetStateLeader();
         }

@@ -79,6 +79,9 @@ namespace Sango.Core.Player
             // 解散军团菜单
             menuData.Add("解散军团", 12, this, OnClickMenuItem_DisbandCorps, corps_list.Count > 0);
 
+            // 解散军团菜单
+            menuData.Add("返回", 12, this, OnClickMenuItem_Return, true);
+
             ContextMenu.CloseAll();
             ContextMenu.Show(menuData, UnityEngine.Input.mousePosition, ContextMenuType.Other);
         }
@@ -88,6 +91,12 @@ namespace Sango.Core.Player
             ContextMenu.CloseAll();
             ContextMenu.Show(ContextMenuData.MenuData, ContextMenuData.MenuData.startPosition);
         }
+
+        private void OnClickMenuItem_Return(IContextMenuItem contextMenuItem)
+        {
+            GameSystemManager.Instance.Done();
+        }
+
 
         /// <summary>
         /// 新建军团菜单点击事件
@@ -216,7 +225,7 @@ namespace Sango.Core.Player
             switch (eventType)
             {
                 case CommandEventType.Cancel:
-                case CommandEventType.RClickUp:
+                case CommandEventType.RClick:
                     {
                         if (showType == 1 || showType == 2)
                         {

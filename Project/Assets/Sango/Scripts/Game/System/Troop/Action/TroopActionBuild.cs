@@ -204,7 +204,43 @@ namespace Sango.Core.Player
                 }
             }
         }
+        void Action(Cell stayCell)
+        {
+            ClearShowBuildRange();
 
+            GameObject resObj = PoolManager.Create(iconRes);
+            if (resObj != null)
+            {
+                spellIconList.Add(resObj);
+                resObj.transform.SetParent(null);
+                resObj.transform.position = stayCell.Position;
+                if (!resObj.activeSelf)
+                    resObj.SetActive(true);
+            }
+
+            GameSystem.GetSystem<TroopActionMenu>().troopRender.Clear();
+            ContextMenu.CloseAll();
+            Cell start = TargetTroop.cell;
+
+            if (start == stayCell)
+            {
+                isShow = true;
+                isMoving = false;
+                return;
+            }
+
+            for (int i = 1; i < MovePath.Count; i++)
+            {
+                bool isLast = i == MovePath.Count - 1;
+                Cell dest = MovePath[i];
+                TroopMoveEvent @event = RenderEvent.Instance.Create<TroopMoveEvent>();
+                @event.Init(TargetTroop, start, dest, isLast, isLast ? OnMoveDone : null);
+                RenderEvent.Instance.Add(@event);
+                start = dest;
+            }
+            isShow = true;
+            isMoving = true;
+        }
         public override void HandleEvent(CommandEventType eventType, Cell cell, UnityEngine.Vector3 clickPosition, bool isOverUI)
         {
             if (isShow) return;
@@ -212,7 +248,7 @@ namespace Sango.Core.Player
             switch (eventType)
             {
                 case CommandEventType.Cancel:
-                case CommandEventType.RClickUp:
+                case CommandEventType.RClick:
                     {
                         GameSystemManager.Instance.Back();
                         break;
@@ -227,40 +263,19 @@ namespace Sango.Core.Player
                             Cell stayCell = MovePath[MovePath.Count - 1];
                             targetBuildCell = cell;
 
-                            ClearShowBuildRange();
-
-                            GameObject resObj = PoolManager.Create(iconRes);
-                            if (resObj != null)
-                            {
-                                spellIconList.Add(resObj);
-                                resObj.transform.SetParent(null);
-                                resObj.transform.position = cell.Position;
-                                if (!resObj.activeSelf)
-                                    resObj.SetActive(true);
-                            }
-
-                            GameSystem.GetSystem<TroopActionMenu>().troopRender.Clear();
-                            ContextMenu.CloseAll();
-                            Cell start = TargetTroop.cell;
-
-                            if (start == stayCell)
-                            {
-                                isShow = true;
-                                isMoving = false;
-                                return;
-                            }
-
-                            for (int i = 1; i < MovePath.Count; i++)
-                            {
-                                bool isLast = i == MovePath.Count - 1;
-                                Cell dest = MovePath[i];
-                                TroopMoveEvent @event = RenderEvent.Instance.Create<TroopMoveEvent>();
-                                @event.Init(TargetTroop, start, dest, isLast, isLast ? OnMoveDone : null);
-                                RenderEvent.Instance.Add(@event);
-                                start = dest;
-                            }
-                            isShow = true;
-                            isMoving = true;
+#if UNITY_ANDROID || UNITY_IPHONE
+                            ContextMenuData.MenuData.Clear();
+                            ContextMenuData.MenuData.Add("确认", 0, TargetTroop, (item)=> {
+                                Action(stayCell);
+                            });
+                            ContextMenuData.MenuData.Add("返回", 1, TargetTroop, (item) => {
+                                ContextMenu.CloseAll();
+                                Back();
+                            });
+                            ContextMenu.Show(ContextMenuData.MenuData, clickPosition);
+#else
+                            Action(stayCell);
+#endif
                         }
                         break;
                     }

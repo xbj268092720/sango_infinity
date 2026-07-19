@@ -53,11 +53,15 @@ namespace Sango.Core
                     return;
 
                 // 换季,治安降低
-                Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(scenario.Variables.securityChangeOnSeasonStart);
+                Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(
+                   -GameRandom.Range(1, -scenario.Variables.securityChangeOnSeasonStart));
                 GameEvent.OnCitySecurityChangeOnSeasonStart?.Invoke(city, overrideData);
-                city.AddSecurity(overrideData.Value);
-                city.Render?.UpdateRender();
-                city.Render?.ShowInfo(overrideData.Value, (int)InfoType.Security);
+                if (overrideData.Value != 0)
+                {
+                    city.AddSecurity(overrideData.Value);
+                    city.Render?.UpdateRender();
+                    city.Render?.ShowInfo(overrideData.Value, (int)InfoType.Security);
+                }
                 overrideData.Recycle();
             });
         }
@@ -75,11 +79,14 @@ namespace Sango.Core
                     return;
 
                 // 换季,治安降低
-                Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(scenario.Variables.securityChangeOnSeasonStart);
-                GameEvent.OnCitySecurityChangeOnSeasonStart?.Invoke(city, overrideData);
-                city.AddSecurity(overrideData.Value);
-                city.Render?.UpdateRender();
-                city.Render?.ShowInfo(overrideData.Value, (int)InfoType.Security);
+                Tools.OverrideData<int> overrideData = Tools.OverrideData<int>.Create(scenario.Variables.securityChangeOnMonthStart);
+                GameEvent.OnCitySecurityChangeOnMonthStart?.Invoke(city, overrideData);
+                if(overrideData.Value != 0)
+                {
+                    city.AddSecurity(overrideData.Value);
+                    city.Render?.UpdateRender();
+                    city.Render?.ShowInfo(overrideData.Value, (int)InfoType.Security);
+                }
                 overrideData.Recycle();
             });
         }

@@ -9,6 +9,38 @@ using UnityEngine.UI;
 
 public static class SangeEditorTools
 {
+    [MenuItem("Assets/UIprefab 加大字体")]
+    [MenuItem("Sango/UIprefab 加大字体")]
+    public static void AddFontSize()
+    {
+        int addSize = 4;
+        Object[] objects = Selection.objects;
+        foreach (Object o in objects)
+        {
+            GameObject uiPrefab = o as GameObject;
+            if (uiPrefab != null)
+            {
+                Text[] text = uiPrefab.GetComponentsInChildren<Text>(true);
+                if (text != null)
+                {
+                    foreach (Text t in text)
+                    {
+                        if (t.fontSize == 0) continue;
+                        float scale = (t.fontSize + addSize) / (float)t.fontSize;
+                        RectTransform rect = t.GetComponent<RectTransform>();
+                        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rect.rect.width * scale);
+                        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rect.rect.height * scale);
+                        t.fontSize = t.fontSize + (int)addSize;
+                    }
+                }
+
+                EditorUtility.SetDirty(uiPrefab);
+                AssetDatabase.SaveAssetIfDirty(o);
+            }
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
 
     [MenuItem("Sango/头像编辑工具导出头像名字批处理")]
     public static void RenameHeadIconName()

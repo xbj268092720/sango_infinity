@@ -33,7 +33,7 @@ namespace Sango.Core.Player
         {
             switch (eventType)
             {
-                case CommandEventType.RClickUp:
+                case CommandEventType.RClick:
                     GameSystemManager.Instance.Back(); break;
             }
 

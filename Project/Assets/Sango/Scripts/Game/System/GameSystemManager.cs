@@ -162,6 +162,18 @@ namespace Sango.Core
             CurrentCommand = command;
             command.OnEnter();
         }
+
+        public void BackTo(ICommandEvent commandEvent)
+        {
+            if(commads.Contains(commandEvent))
+            {
+                while(CurrentCommand != null && CurrentCommand != commandEvent)
+                {
+                    Back();
+                }
+            }
+        }
+
         public void Back()
         {
             ICommandEvent command = commads.Pop();

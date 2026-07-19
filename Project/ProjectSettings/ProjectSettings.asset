@@ -164,7 +164,7 @@ PlayerSettings:
     Standalone: com.tank.SangoInfinity
   buildNumber:
     Standalone: 1
-    iPhone: 0
+    iPhone: 01
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 86

@@ -105,7 +105,7 @@ namespace Sango.Core
             switch (eventType)
             {
                 case CommandEventType.Cancel:
-                case CommandEventType.RClickUp:
+                case CommandEventType.RClick:
                     {
                         GameSystemManager.Instance.Back();
                         break;

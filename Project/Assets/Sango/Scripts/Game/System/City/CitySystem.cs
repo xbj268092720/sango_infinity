@@ -75,6 +75,15 @@ namespace Sango.Core.Player
             TargetCity.Render?.SetFlash(true);
         }
 
+        public override void OnExit()
+        {
+            ContextMenu.SetVisible(false);
+        }
+        public override void OnBack(ICommandEvent commandEvent)
+        {
+            ContextMenu.SetVisible(true);
+        }
+
         /// <summary>
         /// 离开当前命令的时候触发
         /// </summary>

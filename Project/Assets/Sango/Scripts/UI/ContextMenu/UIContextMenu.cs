@@ -26,7 +26,7 @@ namespace Sango.UI
                 menuPools[i] = new CreatePool<UIMenuItem>(menuItem[i]);
             linePool = new CreatePool<RectTransform>(menuLine);
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_IPHONE
             for (int i = 0; i < menuRoot.Length; i++)
             {
                 menuRoot[i].localScale = Vector3.one * 1.4f;

@@ -90,6 +90,7 @@ namespace Sango.Core.Action
             Register("TroopSkillCalculateCritical", CraeteHandle<TroopSkillCalculateCritical>);
             Register("TroopSkillCalculateSuccess", CraeteHandle<TroopSkillCalculateSuccess>);
             Register("TroopSkillCalculateAttackBack", CraeteHandle<TroopSkillCalculateAttackBack>);
+            Register("BuildingAddBuff", CraeteHandle<BuildingAddBuff>);
             Register("BuildingImproveFoodGain", CraeteHandle<BuildingImproveFoodGain>);
             Register("BuildingImproveGoldGain", CraeteHandle<BuildingImproveGoldGain>);
             Register("BuildingImproveFoodGainByCityTroops", CraeteHandle<BuildingImproveFoodGainByCityTroops>);

@@ -267,14 +267,14 @@ namespace Sango.Core.Player
 
             switch (eventType)
             {
-                case CommandEventType.Cancel:                //case CommandEventType.RClickUp:
+                case CommandEventType.Cancel:                //case CommandEventType.RClick:
                 //    {
                         
                 //        break;
                 //    }
 
 
-                case CommandEventType.RClickUp:
+                case CommandEventType.RClick:
                     {
                         if (SelectBuildingObject != null)
                         {

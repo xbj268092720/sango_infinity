@@ -40,6 +40,8 @@ namespace Sango.Core
             Register("Silence", CraeteHandle<Silence>);
             Register("Invincible", CraeteHandle<Invincible>);
             Register("Shield", CraeteHandle<Shield>);
+            Register("AddAttack", CraeteHandle<AddAttack>);
+            Register("AddDefence", CraeteHandle<AddDefence>);
             //Register("AddBuff", CraeteHandle<AddBuff>);
 
         }

@@ -9,8 +9,27 @@ namespace Sango.Core.Player
     {
         public TroopActionReturn()
         {
-            customMenuName = "返回";
+            customMenuName = "取消";
             customMenuOrder = 99999;
+        }
+
+        public override void Init()
+        {
+            base.Init();
+            GameEvent.OnTroopContextMenuShow += OnTroopContextMenuShow;
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            GameEvent.OnTroopContextMenuShow -= OnTroopContextMenuShow;
+        }
+
+        protected virtual void OnTroopContextMenuShow(IContextMenuData menuData, Troop troop)
+        {
+            TargetTroop = troop;
+            //if(!troop.ActionOver)
+            //    menuData.Add(customMenuName, customMenuOrder, troop, OnClickMenuItem, true);
         }
 
         public override bool IsValid
@@ -30,7 +49,7 @@ namespace Sango.Core.Player
                 //if (actionCell.building != null && actionCell.building.IsSameForce(troop) && actionCell.building.IsCityBase())
                 //    menuData.Add("进入", customMenuOrder, actionCell, OnClickMenuItem, IsValid);
                 //else
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_IPHONE
                 menuData.Add(customMenuName, customMenuOrder, actionCell, OnClickMenuItem, IsValid);
 #endif
             }
@@ -38,7 +57,7 @@ namespace Sango.Core.Player
 
         protected override void OnClickMenuItem(IContextMenuItem contextMenuItem)
         {
-            GameController.Instance.OnCancel();
+            GameSystemManager.Instance.Done();
         }
     }
 }

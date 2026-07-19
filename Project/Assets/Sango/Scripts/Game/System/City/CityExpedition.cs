@@ -59,8 +59,14 @@ namespace Sango.Core.Player
 
             TargetTroop.Leader = personList[0];
 
-            if (personList.Count > 1) TargetTroop.Member1 = personList[1];
-            if (personList.Count > 2) TargetTroop.Member2 = personList[2];
+            if (personList.Count > 1)
+                TargetTroop.Member1 = personList[1];
+            else
+                TargetTroop.Member1 = null;
+            if (personList.Count > 2)
+                TargetTroop.Member2 = personList[2];
+            else
+                TargetTroop.Member2 = null;
 
             TargetTroop.LandTroopType = ActivedLandTroopTypes[CurSelectLandTrropTypeIndex];
             TargetTroop.WaterTroopType = ActivedWaterTroopTypes[CurSelectWaterTrropTypeIndex];

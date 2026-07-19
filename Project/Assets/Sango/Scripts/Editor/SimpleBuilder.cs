@@ -45,6 +45,10 @@ public class SimpleBuilder
         {
             BuildAndroid(isDevelopment);
         }
+        else if (targetPlatform == BuildTarget.iOS)
+        {
+            BuildIos(isDevelopment);
+        }
         else
         {
             Log.Info("当前平台不支持自动打包", Log.LogType.Game);
@@ -55,6 +59,12 @@ public class SimpleBuilder
     {
 
         string winPackagePath = System.IO.Path.Combine(Sango.Path.ContentRootPath, "Package", "android");
+        if (System.IO.Directory.Exists(winPackagePath))
+        {
+            System.IO.Directory.Delete(winPackagePath, true);
+        }
+
+        winPackagePath = System.IO.Path.Combine(Sango.Path.ContentRootPath, "Package", "ios");
         if (System.IO.Directory.Exists(winPackagePath))
         {
             System.IO.Directory.Delete(winPackagePath, true);
@@ -135,6 +145,12 @@ public class SimpleBuilder
             System.IO.Directory.Delete(winPackagePath, true);
         }
 
+        winPackagePath = System.IO.Path.Combine(Sango.Path.ContentRootPath, "Package", "ios");
+        if (System.IO.Directory.Exists(winPackagePath))
+        {
+            System.IO.Directory.Delete(winPackagePath, true);
+        }
+
         Platform.ZipContentToStreamingAssets();
 
         string version = Application.version;
@@ -173,8 +189,13 @@ public class SimpleBuilder
 
     private static void BuildIos(bool isDevelopment)
     {
+        string winPackagePath = System.IO.Path.Combine(Sango.Path.ContentRootPath, "Package", "win");
+        if (System.IO.Directory.Exists(winPackagePath))
+        {
+            System.IO.Directory.Delete(winPackagePath, true);
+        }
 
-        string winPackagePath = System.IO.Path.Combine(Sango.Path.ContentRootPath, "Package", "ios");
+        winPackagePath = System.IO.Path.Combine(Sango.Path.ContentRootPath, "Package", "android");
         if (System.IO.Directory.Exists(winPackagePath))
         {
             System.IO.Directory.Delete(winPackagePath, true);
@@ -183,9 +204,9 @@ public class SimpleBuilder
         Platform.ZipContentToStreamingAssets();
 
         string version = Application.version;
-        string buildType = isDevelopment ? "_dev" : "_release";
+        string buildType = isDevelopment ? "_dev_ios" : "_release_ios";
         string productName = Application.productName;
-        string buildPath = System.IO.Path.Combine(PublishRootPath, $"{productName}_v{version}{buildType}.apk");
+        string buildPath = System.IO.Path.Combine(PublishRootPath, $"{productName}_v{version}{buildType}");
         string[] scenes = EditorBuildSettings.scenes
             .Where(scene => scene.enabled)
             .Select(scene => scene.path)
@@ -204,16 +225,16 @@ public class SimpleBuilder
         {
             scenes = scenes,
             locationPathName = buildPath,
-            target = BuildTarget.Android,
+            target = BuildTarget.iOS,
             options = buildOptions
         };
 
-        UnityEditor.PlayerSettings.Android.bundleVersionCode = UnityEditor.PlayerSettings.Android.bundleVersionCode + 1;
+        UnityEditor.PlayerSettings.iOS.buildNumber = UnityEditor.PlayerSettings.iOS.buildNumber + 1;
         BuildPipeline.BuildPlayer(playerOptions);
 
-        Log.Info("Android平台构建完成", Log.LogType.Game);
+        Log.Info("IOS", Log.LogType.Game);
 
-        EditorUtility.DisplayDialog("发布完成", $"Android版本已发布成功！\n路径: {buildPath}", "确定");
+        EditorUtility.DisplayDialog("发布完成", $"IOS版本已发布成功！\n路径: {buildPath}", "确定");
     }
 
     private static void CopyDirectory(string sourceDir, string destDir)

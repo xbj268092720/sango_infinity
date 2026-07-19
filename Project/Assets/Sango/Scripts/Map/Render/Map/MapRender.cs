@@ -666,12 +666,12 @@ namespace Sango.Render
 
         public void ZoomCamera(float delta)
         {
-            mapCamera.ZoomCamera(delta);
+            mapCamera?.ZoomCamera(delta);
         }
 
         public void RotateCamera(Vector2 offset)
         {
-            mapCamera.RotateCamera(offset);
+            mapCamera?.RotateCamera(offset);
         }
 
         public byte GetTerrainType(int x, int y)
@@ -681,7 +681,7 @@ namespace Sango.Render
 
         public void MoveCameraTo(Vector3 pos)
         {
-            mapCamera.MoveCameraTo(pos);
+            mapCamera?.MoveCameraTo(pos);
         }
 
         public Vector3 GetCameraPos()

@@ -36,7 +36,7 @@ namespace Sango.Core
             GameEvent.OnCityRightMouseButtonContextMenuShow += OnCityRightMouseButtonContextMenuShow;
             GameEvent.OnGameSettingContextMenuShow += OnGameSettingContextMenuShow;
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_IPHONE
             GameEvent.OnCityContextMenuShow += OnCityContextMenuShow;
 #endif
             GameEvent.OnScenarioInit += OnScenarioInit;
@@ -49,13 +49,13 @@ namespace Sango.Core
         public override void Clear()
         {
             GameEvent.OnGameSettingContextMenuShow -= OnGameSettingContextMenuShow;
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_IPHONE
             GameEvent.OnCityContextMenuShow -= OnCityContextMenuShow;
 #endif
             GameEvent.OnCityRightMouseButtonContextMenuShow -= OnCityRightMouseButtonContextMenuShow;
             GameEvent.OnScenarioInit -= OnScenarioInit;
         }
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_IPHONE
 
 
         protected virtual void OnCityContextMenuShow(IContextMenuData menuData, City city)
@@ -137,7 +137,7 @@ namespace Sango.Core
             switch (eventType)
             {
                 case CommandEventType.Cancel:
-                case CommandEventType.RClickUp:
+                case CommandEventType.RClick:
                     {
                         GameSystemManager.Instance.Back();
                         break;

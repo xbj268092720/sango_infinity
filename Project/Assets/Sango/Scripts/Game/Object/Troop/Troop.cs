@@ -86,8 +86,8 @@ namespace Sango.Core
         /// <summary>
         /// 俘虏列表
         /// </summary>
-        [JsonConverter(typeof(SangoObjectListIDConverter<Person>))]
-        [JsonProperty]
+        //[JsonConverter(typeof(SangoObjectListIDConverter<Person>))]
+        //[JsonProperty]
         public SangoObjectList<Person> captiveList = new SangoObjectList<Person>();
 
 
@@ -197,6 +197,11 @@ namespace Sango.Core
         public ItemStore itemStore = new ItemStore();
 
         /// <summary>
+        /// 被影响的建筑,用来判断建筑影响唯一化
+        /// </summary>
+        public Dictionary<string, BuildingImproveBase> buildingImproveMap = new Dictionary<string, BuildingImproveBase>();
+
+        /// <summary>
         /// 是否行动完毕
         /// </summary>
         [JsonProperty]
@@ -299,13 +304,13 @@ namespace Sango.Core
         /// <summary>
         /// 当前技能
         /// </summary>
-        [JsonProperty]
+        //[JsonProperty]
         public List<SkillInstance> waterSkills;
 
         /// <summary>
         /// 当前技能
         /// </summary>
-        [JsonProperty]
+        //[JsonProperty]
         public List<SkillInstance> landSkills;
 
         /// <summary>
@@ -447,7 +452,7 @@ namespace Sango.Core
             Render = new TroopRender(this);
             foodCost = (int)System.Math.Ceiling(scenario.Variables.baseFoodCostInTroop * (troops + woundedTroops) * TroopType.foodCostFactor);
             foodCost = (int)Math.Ceiling(foodCost * foodCostFactor);
-            
+
 
             buffManager.Init(this);
             GameEvent.OnTroopEnterCell?.Invoke(this, cell, null);
@@ -469,14 +474,14 @@ namespace Sango.Core
                 if (person.BelongForce != null)
                     person.BelongForce.BeCaptiveList.Add(person);
             }
-            foreach (SkillInstance s in landSkills)
-            {
-                s.Init(this, s.skill);
-            }
-            foreach (SkillInstance s in waterSkills)
-            {
-                s.Init(this, s.skill);
-            }
+            //foreach (SkillInstance s in landSkills)
+            //{
+            //    s.Init(this, s.skill);
+            //}
+            //foreach (SkillInstance s in waterSkills)
+            //{
+            //    s.Init(this, s.skill);
+            //}
             PrepeareFoodCost();
 
             //MemberList?.InitCache();// = new SangoObjectList<Person>().FromString(_memberListStr, scenario.personSet);
@@ -1330,7 +1335,7 @@ namespace Sango.Core
 
             if (num == 0)
                 return;
-            
+
             morale += num;
 
             if (morale < 0)
@@ -1362,16 +1367,16 @@ namespace Sango.Core
                 Troop atkTroop = (Troop)atk;
                 int p = Math.Max(0, atkTroop.GetCaptureChangce() - GetEscapeChangce());
                 List<Person> captives = new List<Person>();
-                if (GameRandom.Chance(p) && Leader.state != (int)PersonStateType.Governor)
+                if (GameRandom.Chance(100) && Leader.state != (int)PersonStateType.Governor)
                 {
                     captives.Add(Leader);
                 }
-                if (Member1 != null && GameRandom.Chance(p) && Member1.state != (int)PersonStateType.Governor)
+                if (Member1 != null && GameRandom.Chance(100) && Member1.state != (int)PersonStateType.Governor)
                 {
                     captives.Add(Member1);
                 }
 
-                if (Member2 != null && GameRandom.Chance(p) && Member2.state != (int)PersonStateType.Governor)
+                if (Member2 != null && GameRandom.Chance(100) && Member2.state != (int)PersonStateType.Governor)
                 {
                     captives.Add(Member2);
                 }
@@ -1817,7 +1822,7 @@ namespace Sango.Core
         public override void Clear()
         {
             ReleaseCaptive();
-
+            buildingImproveMap.Clear();
             if (actionList != null)
             {
                 for (int i = 0; i < actionList.Count; i++)

@@ -10,6 +10,8 @@ namespace Sango.Core
     public class Buff : SangoObject
     {
         [JsonProperty] public int kind;
+        [JsonProperty] public int subKind;
+        [JsonProperty] public int limit;
 
         [JsonProperty] public string asset;
 

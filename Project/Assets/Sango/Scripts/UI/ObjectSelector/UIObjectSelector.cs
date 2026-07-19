@@ -67,6 +67,9 @@ using Sango.Core; namespace Sango.UI
         public void OnPersonListItemPressUp(UIObjectListItem item)
         {
             item.SetPressd(false);
+            if (Input.GetMouseButtonUp(1))
+                return;
+
             for (int i = 0; i < itemCount; i++)
             {
                 RectTransform itemRect = uIObjectListItemsRect[i];

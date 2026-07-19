@@ -13,15 +13,15 @@
         }
         void OnSystemStart()
         {
-#if UNITY_ANDROID
-             Window.Instance.Open("window_mobile_cancel");
+#if UNITY_ANDROID || UNITY_IPHONE
+             //Window.Instance.Open("window_mobile_cancel");
 #endif
         }
 
         void OnSystemEnd()
         {
-#if UNITY_ANDROID 
-             Window.Instance.Close("window_mobile_cancel");
+#if UNITY_ANDROID || UNITY_IPHONE 
+             //Window.Instance.Close("window_mobile_cancel");
 #endif
         }
     }

@@ -483,6 +483,7 @@ namespace Sango.Core
         /// <param name="atk">攻击者</param>
         public override void OnFall(SangoObject atk)
         {
+            RemoveAllWorkers();
             BelongCity?.OnBuildingDestroy(this);
             Clear();
         }

@@ -419,6 +419,7 @@ namespace Sango.Core
         }
 
         public bool IsLeader => state == (int)PersonStateType.Leader || state == (int)PersonStateType.Governor;
+        public bool IsCommander => state == (int)PersonStateType.Commander;
         public bool IsGovernor => state == (int)PersonStateType.Governor;
 
         public void SetStateNormal() { state = (int)PersonStateType.Normal; }
@@ -654,7 +655,10 @@ namespace Sango.Core
             return IsSameForce(BelongForce, other.BelongForce);
         }
 
-
+        /// <summary>
+        /// 所有的武将情况归属,全由武将决定,城池不再记录任何武将归属情况
+        /// </summary>
+        /// <param name="scenario"></param>
         public override void OnScenarioPrepare(Scenario scenario)
         {
             if (Brother != null)
@@ -667,47 +671,118 @@ namespace Sango.Core
 
             if (IsAlive)
             {
-                if (IsPrisoner)
+                switch((PersonStateType)state)
                 {
-                    if (BelongForce != null)
-                        BelongForce.BeCaptiveList.Add(this);
-                }
-                else
-                {
-                    if (IsValid && BelongCity != null)
-                    {
-
-                        if (Invisible)
-                        {
-                            BelongCity.invisiblePersons.Add(this);
-                        }
-                        else if (IsWild)
-                        {
-                            BelongCity.wildPersons.Add(this);
-                        }
-                        else
+                    case PersonStateType.Governor:
+                        if (BelongCity != null)
                         {
                             BelongCity.allPersons.Add(this);
-                            if (state == (int)PersonStateType.Leader)
-                            {
-                                BelongCity.Leader = this;
-                            }
-                            else if (state == (int)PersonStateType.Governor)
-                            {
-                                BelongCity.Leader = this;
-                            }
-
+                            BelongCity.Leader = this;
+                        }
+                        break;
+                    case PersonStateType.Commander:
+                        if (BelongCity != null)
+                        {
+                            BelongCity.allPersons.Add(this);
+                            BelongCity.Leader = this;
+                        }
+                        break;
+                    case PersonStateType.Leader:
+                        if (BelongCity != null)
+                        {
+                            BelongCity.allPersons.Add(this);
+                            BelongCity.Leader = this;
+                        }
+                        break;
+                    case PersonStateType.Normal:
+                        if(BelongCity != null)
+                        {
+                            BelongCity.allPersons.Add(this);
                             if (BelongForce != BelongCity.BelongForce || BelongCorps != BelongCity.BelongCorps)
                             {
                                 Sango.Log.Error($"[{Id}]{Name}归属force:{BelongForce?.Name} corps:{BelongCorps?.Name}, 但在city[{BelongCity?.Name}] force:{BelongCity.BelongForce?.Name} corps:{BelongCity.BelongCorps?.Name}");
-
                                 BelongForce = BelongCity.BelongForce;
                                 BelongCorps = BelongCity.BelongCorps;
                             }
                         }
-                    }
+                        break;
+                    case PersonStateType.Unemployed:
+                        CurrentCity.wildPersons.Add(this);
+                        break;
+                    case PersonStateType.Prisoner:
+                        // 准备俘虏
+                        if (BelongForce != null)
+                            BelongForce.BeCaptiveList.Add(this);
 
+                        if (BelongTroop != null)
+                        {
+                            BelongTroop.captiveList.Add(this);
+                        }
+                        else
+                        {
+                            CurrentCity.captiveList.Add(this);
+                        }
+                        break;
+                    case PersonStateType.Invalid:
+                        break;
+                    case PersonStateType.Invisible:
+                        if(CurrentCity != null)
+                            CurrentCity.invisiblePersons.Add(this);
+                        else if(BelongCity != null)
+                            BelongCity.invisiblePersons.Add(this);
+                        break;
+                    case PersonStateType.Dead:
+                        break;
                 }
+
+                //if (IsPrisoner)
+                //{
+                //    // 准备俘虏
+                //    if (BelongForce != null)
+                //        BelongForce.BeCaptiveList.Add(this);
+
+                //    if (BelongTroop != null)
+                //        BelongTroop.captiveList.Add(this);
+                //    else
+                //        CurrentCity.captiveList.Add(this);
+                //}
+                //else
+                //{
+
+                //    if (IsValid && BelongCity != null)
+                //    {
+
+                //        if (Invisible)
+                //        {
+                //            BelongCity.invisiblePersons.Add(this);
+                //        }
+                //        else if (IsWild)
+                //        {
+                //            BelongCity.wildPersons.Add(this);
+                //        }
+                //        else
+                //        {
+                //            BelongCity.allPersons.Add(this);
+                //            if (state == (int)PersonStateType.Leader)
+                //            {
+                //                BelongCity.Leader = this;
+                //            }
+                //            else if (state == (int)PersonStateType.Governor)
+                //            {
+                //                BelongCity.Leader = this;
+                //            }
+
+                //            if (BelongForce != BelongCity.BelongForce || BelongCorps != BelongCity.BelongCorps)
+                //            {
+                //                Sango.Log.Error($"[{Id}]{Name}归属force:{BelongForce?.Name} corps:{BelongCorps?.Name}, 但在city[{BelongCity?.Name}] force:{BelongCity.BelongForce?.Name} corps:{BelongCity.BelongCorps?.Name}");
+
+                //                BelongForce = BelongCity.BelongForce;
+                //                BelongCorps = BelongCity.BelongCorps;
+                //            }
+                //        }
+                //    }
+
+                //}
             }
 
 
@@ -1028,7 +1103,7 @@ namespace Sango.Core
         public void TransformToCity(City dest)
         {
             // 如果转移主公到其他军团城市,需要解散目标军团
-            if(IsGovernor && dest.BelongCorps != BelongCorps)
+            if (IsGovernor && dest.BelongCorps != BelongCorps)
             {
                 BelongForce.DeleteCorps(dest.BelongCorps);
             }

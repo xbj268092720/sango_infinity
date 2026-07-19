@@ -16,7 +16,7 @@ namespace Sango.Render
         public void Init(Building building, List<Troop> target_list, int value)
         {
             this.building = building;
-            this.target_list = target_list;
+            this.target_list = new List<Troop>(target_list);
             this.isAction = false;
             this.time = 0;
             this.value = value;

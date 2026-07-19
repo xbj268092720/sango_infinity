@@ -277,6 +277,7 @@ namespace Sango.Core
         public void HandleOverCell()
         {
             if (Scenario.Cur == null) return;
+            if (Scenario.Cur.Map == null) return;
 
             Cell overCell = CheckMouseIsOnMapCell(Input.mousePosition, out Vector3 hitPoint);
             if (overCell != mouseOverCell)
@@ -431,6 +432,7 @@ namespace Sango.Core
 
                 if (controlType != ControlType.Rotate)
                 {
+                    GameSystemManager.Instance.HandleEvent(CommandEventType.RClick, mouseOverCell, clickPosition, isOverUI);
                     GameSystemManager.Instance.HandleEvent(CommandEventType.RClickUp, mouseOverCell, clickPosition, isOverUI);
                     return;
                 }

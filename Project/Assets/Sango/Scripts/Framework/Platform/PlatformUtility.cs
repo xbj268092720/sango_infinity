@@ -8,10 +8,10 @@ namespace Sango
 {
     public static class PlatformUtility
     {
-#if UNITY_IPHONE && !UNITY_EDITOR
-        [System.Runtime.InteropServices.DllImport("__Internal")]
-        extern static public string GetDeviceId();
-#endif
+//#if UNITY_IPHONE && !UNITY_EDITOR
+//        [System.Runtime.InteropServices.DllImport("__Internal")]
+//        extern static public string GetDeviceId();
+//#endif
         static public void Init()
         {
 

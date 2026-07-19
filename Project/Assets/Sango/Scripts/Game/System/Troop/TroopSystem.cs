@@ -1,4 +1,5 @@
 ﻿using Sango.Render;
+using Sango.UI;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Sango.Core.Player
@@ -20,6 +21,12 @@ namespace Sango.Core.Player
             TargetTroop = troop;
             if (!troop.ActionOver && troop.BelongForce.IsPlayer && troop.BelongForce == Scenario.Cur.CurRunForce)
             {
+                ContextMenuData.MenuData.Clear();
+                GameEvent.OnTroopContextMenuShow?.Invoke(ContextMenuData.MenuData, troop);
+                if (!ContextMenuData.MenuData.IsEmpty())
+                {
+                    UI.ContextMenu.Show(ContextMenuData.MenuData, clickPosition);
+                }
                 Enter();
             }
             else
@@ -40,11 +47,18 @@ namespace Sango.Core.Player
         public void Start(Troop troop, Vector3 startPoint)
         {
             TargetTroop = troop;
+            ContextMenuData.MenuData.Clear();
+            GameEvent.OnTroopContextMenuShow?.Invoke(ContextMenuData.MenuData, troop);
+            if (!ContextMenuData.MenuData.IsEmpty())
+            {
+                UI.ContextMenu.Show(ContextMenuData.MenuData, startPoint);
+            }
             Enter();
         }
 
         public override void OnEnter()
         {
+
             TargetTroop.Render?.SetFlash(true);
 
             TargetTroop.MoveRange.Clear();
@@ -137,7 +151,7 @@ namespace Sango.Core.Player
             switch (eventType)
             {
                 case CommandEventType.Cancel:
-                case CommandEventType.RClickUp:
+                case CommandEventType.RClick:
                     {
                         GameSystemManager.Instance.Back();
                         break;

@@ -9,6 +9,7 @@ namespace Sango.Core.Player
     public class TroopMenu : GameSystem
     {
         public Troop TargetTroop { get; set; }
+
         public void Start(Troop troop, Vector3 startPoint)
         {
             if (!troop.IsAlive) return;
@@ -35,6 +36,12 @@ namespace Sango.Core.Player
             OnDestroy();
         }
 
+        public override void OnBack(ICommandEvent whoGone)
+        {
+            base.OnBack(whoGone);
+            Done();
+        }
+
         public override void HandleEvent(CommandEventType eventType, Cell cell, UnityEngine.Vector3 clickPosition, bool isOverUI)
         {
             switch (eventType)
@@ -43,11 +50,15 @@ namespace Sango.Core.Player
                 case CommandEventType.RClick:
                     {
                         ContextMenu.CloseAll();
+                        Back();
                         break;
                     }
 
-                case CommandEventType.Click:
+                case CommandEventType.ClickDown:
                     {
+                        if (isOverUI) return;
+
+                        Done();
                         break;
                     }
             }

@@ -35,8 +35,11 @@ namespace Sango.Core
             Name = "部队情报";
             GameEvent.OnTroopRightMouseButtonContextMenuShow += OnTroopRightMouseButtonContextMenuShow;
             GameEvent.OnGameSettingContextMenuShow += OnGameSettingContextMenuShow;
+#if UNITY_ANDROID || UNITY_IPHONE
+            GameEvent.OnTroopContextMenuShow += OnTroopContextMenuShow;
+#endif
         }
-        protected virtual bool CityMenuCanShow()
+        protected virtual bool MenuCanShow()
         {
             return true;
         }
@@ -45,6 +48,9 @@ namespace Sango.Core
         {
             GameEvent.OnTroopRightMouseButtonContextMenuShow -= OnTroopRightMouseButtonContextMenuShow;
             GameEvent.OnGameSettingContextMenuShow -= OnGameSettingContextMenuShow;
+#if UNITY_ANDROID || UNITY_IPHONE
+            GameEvent.OnTroopContextMenuShow -= OnTroopContextMenuShow;
+#endif
         }
 
         protected virtual void OnGameSettingContextMenuShow(IContextMenuData menuData)
@@ -66,10 +72,20 @@ namespace Sango.Core
             default_objects.Clear();
             Target = troop;
             default_objects.Add(troop);
-            if (CityMenuCanShow())
+            if (MenuCanShow())
                 menuData.Add(Name, 20, null, OnClickMenuItem, true);
         }
 
+#if UNITY_ANDROID || UNITY_IPHONE
+
+
+        protected virtual void OnTroopContextMenuShow(IContextMenuData menuData, Troop troop)
+        {
+            Target = troop;
+            if (!troop.IsPlayer || troop.ActionOver)
+                menuData.Add("情报", 1000, troop, OnClickMenuItem, true);
+        }
+#endif
         protected virtual void OnClickMenuItem(IContextMenuItem contextMenuItem)
         {
             ContextMenu.CloseAll();
@@ -102,7 +118,7 @@ namespace Sango.Core
             switch (eventType)
             {
                 case CommandEventType.Cancel:
-                case CommandEventType.RClickUp:
+                case CommandEventType.RClick:
                     {
                         GameSystemManager.Instance.Back();
                         break;

@@ -161,6 +161,32 @@ namespace Sango.Core.Player
             }
         }
 
+        void Action(Cell stayCell)
+        {
+            GameSystem.GetSystem<TroopActionMenu>().troopRender.Clear();
+            ContextMenu.CloseAll();
+            Cell start = TargetTroop.cell;
+
+            if (start == stayCell)
+            {
+                isShow = true;
+                isMoving = false;
+                return;
+            }
+
+            for (int i = 1; i < MovePath.Count; i++)
+            {
+                bool isLast = i == MovePath.Count - 1;
+                Cell dest = MovePath[i];
+                TroopMoveEvent @event = RenderEvent.Instance.Create<TroopMoveEvent>();
+                @event.Init(TargetTroop, start, dest, isLast, isLast ? OnMoveDone : null);
+                RenderEvent.Instance.Add(@event);
+                start = dest;
+            }
+            isShow = true;
+            isMoving = true;
+        }
+
         public override void HandleEvent(CommandEventType eventType, Cell cell, UnityEngine.Vector3 clickPosition, bool isOverUI)
         {
             if (isShow) return;
@@ -170,7 +196,7 @@ namespace Sango.Core.Player
                 case CommandEventType.Cancel:
                 case CommandEventType.RClick:
                     {
-                        GameSystemManager.Instance.Back();
+                        GameSystemManager.Instance.BackTo(GameSystem.GetSystem<TroopSystem>());
                         break;
                     }
 
@@ -194,28 +220,19 @@ namespace Sango.Core.Player
                             if (!spellSkill.CanSpellToHere(TargetTroop, cell))
                                 return;
 
-                            GameSystem.GetSystem<TroopActionMenu>().troopRender.Clear();
-                            ContextMenu.CloseAll();
-                            Cell start = TargetTroop.cell;
-
-                            if (start == stayCell)
-                            {
-                                isShow = true;
-                                isMoving = false;
-                                return;
-                            }
-
-                            for (int i = 1; i < MovePath.Count; i++)
-                            {
-                                bool isLast = i == MovePath.Count - 1;
-                                Cell dest = MovePath[i];
-                                TroopMoveEvent @event = RenderEvent.Instance.Create<TroopMoveEvent>();
-                                @event.Init(TargetTroop, start, dest, isLast, isLast ? OnMoveDone : null);
-                                RenderEvent.Instance.Add(@event);
-                                start = dest;
-                            }
-                            isShow = true;
-                            isMoving = true;
+#if UNITY_ANDROID || UNITY_IPHONE
+                            ContextMenuData.MenuData.Clear();
+                            ContextMenuData.MenuData.Add("确认", 0, TargetTroop, (item)=> {
+                                Action(stayCell);
+                            });
+                            ContextMenuData.MenuData.Add("返回", 1, TargetTroop, (item) => {
+                                ContextMenu.CloseAll();
+                                GameSystemManager.Instance.BackTo(GameSystem.GetSystem<TroopSystem>());
+                            });
+                            ContextMenu.Show(ContextMenuData.MenuData, clickPosition);
+#else
+                            Action(stayCell);
+#endif
                         }
                         break;
                     }

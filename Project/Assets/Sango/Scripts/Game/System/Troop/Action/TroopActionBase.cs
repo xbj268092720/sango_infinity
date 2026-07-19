@@ -42,6 +42,6 @@ namespace Sango.Core.Player
             ActionCell = actionCell;
             troop.ClearMission();
             GameSystemManager.Instance.Push(this);
-        }
+        }     
     }
 }
