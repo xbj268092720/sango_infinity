@@ -366,18 +366,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5692070136537267206}
     m_Modifications:
-    - target: {fileID: 1864667515432800011, guid: af3d85f7ccf0d224eab07c862fe9c977, type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 8876539243545294007, guid: af3d85f7ccf0d224eab07c862fe9c977, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 75.767235
-      objectReference: {fileID: 0}
-    - target: {fileID: 8876539243545294007, guid: af3d85f7ccf0d224eab07c862fe9c977, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: -4.1646233
-      objectReference: {fileID: 0}
     - target: {fileID: 9119580197716258250, guid: af3d85f7ccf0d224eab07c862fe9c977, type: 3}
       propertyPath: m_Name
       value: menuItem

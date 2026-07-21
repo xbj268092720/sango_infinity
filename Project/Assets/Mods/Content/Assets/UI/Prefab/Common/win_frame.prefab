@@ -263,7 +263,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5.0200195, y: -62.508987}
+  m_AnchoredPosition: {x: 5.0200195, y: -62.509003}
   m_SizeDelta: {x: 16, y: -121.5798}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &7931916260669494656
@@ -548,7 +548,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 93.5, y: -3.9959106}
+  m_AnchoredPosition: {x: 93.5, y: -3.9959717}
   m_SizeDelta: {x: -315, y: 64}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &8129120879321650198
@@ -777,8 +777,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 202.2, y: -33.2}
-  m_SizeDelta: {x: 364.29, y: 42.6349}
+  m_AnchoredPosition: {x: 195.3, y: -33.2}
+  m_SizeDelta: {x: 330.8264, y: 37.3055}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1605951977640189192
 CanvasRenderer:
@@ -810,7 +810,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 48a0223bfd5afd04c984eb6951bb3eaa, type: 3}
-    m_FontSize: 32
+    m_FontSize: 28
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -845,14 +845,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 6062729483653480700}
     m_Modifications:
     - target: {fileID: 1818296144072883677, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 1818296144072883677, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 2.7255821
-      objectReference: {fileID: 0}
-    - target: {fileID: 1818296144072883677, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 1.0999985
       objectReference: {fileID: 0}
@@ -866,7 +858,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2904138685985169836, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 28
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 3109037695918791049, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_IsActive
@@ -958,11 +950,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4613198878049111874, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnCancel
+      value: OnReturn
       objectReference: {fileID: 0}
     - target: {fileID: 4613198878049111874, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Sango.Game.Render.UI.UIBuildingUpgrade, Assembly-CSharp
+      value: Sango.Game.Render.UI.UIScenarioForceSelect, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6931592817000023179, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Name
@@ -1006,11 +998,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1818296144072883677, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 13.039169
-      objectReference: {fileID: 0}
-    - target: {fileID: 1818296144072883677, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 1.3433151
+      value: -1.395
       objectReference: {fileID: 0}
     - target: {fileID: 1818296144072883677, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1026,7 +1014,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2904138685985169836, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 28
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 4394840638323533118, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_Pivot.x
@@ -1114,11 +1102,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4613198878049111874, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnSure
+      value: OnNext
       objectReference: {fileID: 0}
     - target: {fileID: 4613198878049111874, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Sango.Game.Render.UI.UIBuildingUpgrade, Assembly-CSharp
+      value: Sango.Game.Render.UI.UIScenarioForceSelect, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6931592817000023179, guid: 73f5326d6686eae47a9885bd89d94ee6, type: 3}
       propertyPath: m_Name

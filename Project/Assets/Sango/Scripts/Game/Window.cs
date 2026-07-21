@@ -208,11 +208,9 @@ namespace Sango
             //else
             {
 #if UNITY_ANDROID || UNITY_IPHONE
-                //UnityEngine.Object winObj = ObjectLoader.LoadObject<UnityEngine.GameObject>($"Assets/UI/Prefab/{windowName}_mobile.prefab");
-                //if (winObj == null)
-                //    winObj = ObjectLoader.LoadObject<UnityEngine.GameObject>($"Assets/UI/Prefab/{windowName}.prefab");
-                UnityEngine.Object winObj = ObjectLoader.LoadObject<UnityEngine.GameObject>($"Assets/UI/Prefab/{windowName}.prefab");
-
+                UnityEngine.Object winObj = ObjectLoader.LoadObject<UnityEngine.GameObject>($"Assets/UI/Prefab/{windowName}_mobile.prefab");
+                if (winObj == null)
+                    winObj = ObjectLoader.LoadObject<UnityEngine.GameObject>($"Assets/UI/Prefab/{windowName}.prefab");
 #else
                 UnityEngine.Object winObj = ObjectLoader.LoadObject<UnityEngine.GameObject>($"Assets/UI/Prefab/{windowName}.prefab");
 

@@ -111,9 +111,7 @@ MonoBehaviour:
   offset: {x: 0, y: 0}
   delayTime: 0
   cachePosition: {x: 0, y: 0}
-  update_cachePosition: {x: 0, y: 0}
   dontResetCachePosition: 1
-  updateAlways: 0
 --- !u!1 &9039031632039893254
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,14 +210,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6180945499214224410}
     m_Modifications:
-    - target: {fileID: 1818296144072883677, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 1818296144072883677, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 11.260605
-      objectReference: {fileID: 0}
     - target: {fileID: 2747488509861702531, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Type
       value: 1
@@ -243,10 +233,6 @@ PrefabInstance:
     - target: {fileID: 2904138685985169836, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Color.r
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2904138685985169836, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 4394840638323533118, guid: b6ca83a866413de4fa6bc8021f74d52a, type: 3}
       propertyPath: m_Pivot.x

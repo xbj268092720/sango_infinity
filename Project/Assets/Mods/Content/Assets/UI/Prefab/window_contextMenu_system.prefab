@@ -458,22 +458,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1556206055319467760, guid: 2da3e9afdd450104e89839072f24d796, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 3.9100037
-      objectReference: {fileID: 0}
-    - target: {fileID: 1556206055319467760, guid: 2da3e9afdd450104e89839072f24d796, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 5.125
-      objectReference: {fileID: 0}
-    - target: {fileID: 8599532749417680204, guid: 2da3e9afdd450104e89839072f24d796, type: 3}
-      propertyPath: m_FontData.m_MaxSize
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 8599532749417680204, guid: 2da3e9afdd450104e89839072f24d796, type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 20
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2da3e9afdd450104e89839072f24d796, type: 3}
 --- !u!114 &6312873309564601749 stripped
