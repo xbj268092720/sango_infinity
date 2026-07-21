@@ -65,6 +65,7 @@ namespace Sango.Core
         {
             if (IsMissionComplete)
             {
+                Troop.actionRenderEvent = null;
                 Troop.ClearMission();
                 return true;
             }

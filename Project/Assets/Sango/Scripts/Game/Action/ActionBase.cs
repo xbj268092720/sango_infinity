@@ -111,7 +111,8 @@ namespace Sango.Core.Action
             Register("TroopChangeSkillSpellRange", CraeteHandle<TroopChangeSkillSpellRange>);
             Register("TroopSetSkillCost", CraeteHandle<TroopSetSkillCost>);
             Register("TroopChangeDamage", CraeteHandle<TroopChangeDamage>);
-
+            Register("TroopChangeSkillAttackRange", CraeteHandle<TroopChangeSkillAttackRange>);
+            
         }
 
     }

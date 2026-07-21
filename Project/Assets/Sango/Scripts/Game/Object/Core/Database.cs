@@ -37,6 +37,10 @@ namespace Sango.Core
         public abstract void Remove(T obj);
         public abstract void RemoveAll(Predicate<T> match);
         public abstract T Get(int index);
+        public virtual T RandomGet()
+        {
+            return null;
+        }
         public abstract T Find(int id);
         public abstract bool Check(int id);
         public abstract void Set(T obj);

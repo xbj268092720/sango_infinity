@@ -560,16 +560,8 @@ namespace Sango.Core
 
         public void OnPersonAgeUpdate(Scenario scenario)
         {
-            if (scenario.Variables.AgeEnabled)
-            {
-                Age = scenario.Info.year - yearBorn;
-            }
-            else
-            {
-                Age = 25;
-            }
-
-            if (scenario.Variables.EnableAgeAbilityFactor)
+            Age = scenario.Info.year - yearBorn;
+            if (scenario.Variables.AgeEnabled && scenario.Variables.EnableAgeAbilityFactor)
             {
                 command.Update(); strength.Update(); intelligence.Update(); politics.Update(); glamour.Update();
                 //spearLv.Update(); halberdLv.Update(); crossbowLv.Update(); horseLv.Update(); waterLv.Update(); machineLv.Update();
@@ -821,6 +813,37 @@ namespace Sango.Core
         public override bool OnYearStart(Scenario scenario)
         {
             OnPersonAgeUpdate(scenario);
+
+            if(state == (int)PersonStateType.Invalid)
+            {
+                if (yearAvailable <= scenario.Info.year)
+                {
+                    state = (int)PersonStateType.Invisible;
+                    // 这里要处理登场城池
+                    City city = scenario.citySet.RandomGet();
+                    city.invisiblePersons.Add(this);
+                    CurrentCity = city;
+                }
+            }
+            else
+            {
+                if (IsWild && sonList != null)
+                {
+                    sonList.ForEach(x =>
+                    {
+                        if (x.state == (int)PersonStateType.Invalid)
+                        {
+                            if (x.Age >= 16)
+                            {
+                                x.CurrentCity = CurrentCity;
+                                x.state = (int)PersonStateType.Invisible;
+                                CurrentCity.invisiblePersons.Add(this);
+                            }
+                        }
+                    });
+                }
+            }
+
             return base.OnYearStart(scenario);
         }
 
@@ -884,7 +907,7 @@ namespace Sango.Core
                     {
                         Person dest_person = scenario.personSet.Get(missionTarget);
                         City dest = scenario.citySet.Get(missionParams1);
-                        if (BelongCorps != null && this.IsSameForce(dest))
+                        if (BelongCorps != null && this.IsSameForce(dest_person))
                         {
                             // 已经有人招募成功
                             SetMission(MissionType.PersonReturn, BelongCity);
@@ -1054,6 +1077,34 @@ namespace Sango.Core
             {
                 BelongForce.GainHegemonyPoint(1);
             }
+
+            // 这里肯定有势力
+            if(sonList != null)
+            {
+                sonList.ForEach(x =>
+                {
+                    if(x.state == (int)PersonStateType.Invalid)
+                    {
+                        if(x.Age >= 16)
+                        {
+                            x.BelongForce = BelongForce;
+                            x.BelongCorps = BelongCorps;
+
+                            City becameCity = BelongCity;
+                            if(IsPrisoner)
+                            {
+                                becameCity = BelongForce.CapitalCity;
+                            }
+                            x.BelongCity = becameCity;
+                            x.CurrentCity = becameCity;
+                            becameCity.allPersons.Add(x);
+                            becameCity.freePersons.Add(x);
+                            x.state = (int)PersonStateType.Normal;
+                        }
+                    }
+                });
+            }
+
 
             ActionOver = !IsFree;
             return base.OnForceTurnStart(scenario);

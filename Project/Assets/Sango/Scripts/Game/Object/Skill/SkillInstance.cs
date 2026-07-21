@@ -102,7 +102,7 @@ namespace Sango.Core
         /// <summary>
         /// 额外的攻击位置
         /// </summary>
-        [JsonProperty] public List<int> atkOffsetPoint;
+        [JsonProperty] public int[] atkOffsetPoint;
 
         /// <summary>
         /// 位移配置
@@ -571,7 +571,7 @@ namespace Sango.Core
                 Cell atkCell = tempCellList[i];
                 Troop beAtkTroop = atkCell.troop;
 
-                if (beAtkTroop != null && canDamageTroop && (troop.IsEnemy(beAtkTroop) || canDamageTeam))
+                if (atk > 0 && beAtkTroop != null && canDamageTroop && (troop.IsEnemy(beAtkTroop) || canDamageTeam))
                 {
                     int damage = Troop.CalculateSkillDamage(troop, beAtkTroop, this) * criticalFactor / 100;
                     if (damage < 0)
@@ -657,7 +657,7 @@ namespace Sango.Core
                 }
 
                 BuildingBase beAtkBuildingBase = atkCell.building;
-                if (beAtkBuildingBase != null && this.canDamageBuilding && (troop.IsEnemy(beAtkBuildingBase) || this.canDamageTeam))
+                if (atkDurability > 0 && beAtkBuildingBase != null && this.canDamageBuilding && (troop.IsEnemy(beAtkBuildingBase) || this.canDamageTeam))
                 {
                     // 一个目标只会收到一次伤害
                     if (activedTargetList.Contains(beAtkBuildingBase))
@@ -973,7 +973,20 @@ namespace Sango.Core
 
             foreach (Cell target in atkCellList)
             {
-                effects.ForEach(s => s.Action(target));
+                Cell atkCell = target;
+                Troop beAtkTroop = atkCell.troop;
+                if (beAtkTroop != null && canDamageTroop && (troop.IsEnemy(beAtkTroop) || canDamageTeam))
+                {
+                    effects.ForEach(s => s.Action(target));
+                }
+                else
+                {
+                    BuildingBase beAtkBuildingBase = atkCell.building;
+                    if (beAtkBuildingBase != null && this.canDamageBuilding && (troop.IsEnemy(beAtkBuildingBase) || this.canDamageTeam))
+                    {
+                        effects.ForEach(s => s.Action(target));
+                    }
+                }
             }
         }
 

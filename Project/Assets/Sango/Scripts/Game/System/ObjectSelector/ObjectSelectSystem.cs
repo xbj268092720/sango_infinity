@@ -86,6 +86,7 @@ namespace Sango.Core.Player
         /// </summary>
         public override void OnEnter()
         {
+            donotFinishThisSystem = false;
             WindowInterface = Window.Instance.Open("window_object_selector", this);
         }
     }

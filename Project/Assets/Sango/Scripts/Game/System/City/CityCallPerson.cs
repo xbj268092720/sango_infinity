@@ -56,6 +56,9 @@ namespace Sango.Core.Player
             {
                 personList[i].TransformToCity(TargetCity);
             }
+
+            TargetCity.BelongCorps.ActionPoint -= JobType.GetJobCostAP((int)CityJobType.CallPerson) * personList.Count;
+            GameMedia.Instance.PlayDoAcitonSfx();
             base.DoJob();
         }
     }

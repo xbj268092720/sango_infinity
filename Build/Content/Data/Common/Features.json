@@ -1510,7 +1510,27 @@
       "Name": "连环",
       "desc": "部队计略成功时，与对象部队邻接的部队也会遭受计略波及",
       "level": 3,
-      "kind": 4
+      "kind": 4,
+      "actionEntities": [
+        {
+          "class": "TroopChangeSkillAttackRange",
+          "atkType": 5,
+          "atkRange": 1,
+          "conditon": {
+            "class": "SkillIdInList",
+            "ids": [
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28
+            ],
+            "result": 1
+          }
+        }
+      ]
     },
     "68": {
       "Id": 68,

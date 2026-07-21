@@ -1660,6 +1660,81 @@ namespace Sango.Core
             return MoveTo(tryToDest);
         }
 
+        public bool TryMoveToCell(Cell targetCell)
+        {
+            if (!isMoving)
+            {      //TODO: 尝试移动
+                tempCellList.Clear();
+                tryToDest = null;
+
+                // 先检查移动范围内是否可达目标
+                Map map = Scenario.Cur.Map;
+                if (MoveRange.Count == 0)
+                    map.GetMoveRange(this, MoveRange);
+                for (int i = 1; i < MoveRange.Count; ++i)
+                {
+                    Cell cell = MoveRange[i];
+                    if (cell == targetCell)
+                    {
+                        tryToDest = cell;
+                        break;
+                    }
+                }
+
+                if (tryToDest == null)
+                {
+                    //TODO: 移动
+                    map.GetDirectMovePath(this, targetCell, tempCellList);
+
+                    int totaleMoveAbility = MoveAbility;
+                    for (int i = 1; i < tempCellList.Count; i++)
+                    {
+                        Cell dest = tempCellList[i];
+                        int destCost = MoveCost(dest);
+                        if (totaleMoveAbility > destCost)
+                        {
+                            if (map.IsZOC(this, dest))
+                            {
+                                totaleMoveAbility = 0;
+                            }
+                            else
+                            {
+                                totaleMoveAbility -= destCost;
+                            }
+                            tryToDest = dest;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    if (tryToDest != null)
+                    {
+                        //List<Cell> temp = new List<Cell>();
+                        //map.GetMoveRange(this, temp);
+                        PriorityQueue<Cell> nearnestCellInMoveRange = new PriorityQueue<Cell>();
+                        for (int i = 0; i < MoveRange.Count; i++)
+                        {
+                            Cell cell = MoveRange[i];
+                            if (cell.IsEmpty())
+                            {
+                                nearnestCellInMoveRange.Push(cell, map.Distance(cell, tryToDest));
+                            }
+                        }
+                        tryToDest = nearnestCellInMoveRange.Lower();
+                    }
+                }
+            }
+
+            if (tryToDest == null)
+            {
+                return true;
+            }
+
+            return MoveTo(tryToDest);
+        }
+
         void UpdateTerrainBonus(Cell destCell)
         {
             // 地形影响

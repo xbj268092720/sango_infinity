@@ -654,7 +654,21 @@
       ],
       "techPointCost": 8000,
       "counter": 9,
-      "needTech": 23
+      "needTech": 23,
+      "effects": [
+        {
+          "class": "TroopChangeSkillAttackRange",
+          "atkType": 5,
+          "atkRange": 1,
+          "conditon": {
+            "class": "SkillIdInList",
+            "ids": [
+              18
+            ],
+            "result": 1
+          }
+        }
+      ]
     },
     "25": {
       "Id": 25,

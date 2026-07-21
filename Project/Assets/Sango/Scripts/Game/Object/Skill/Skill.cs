@@ -118,7 +118,7 @@ namespace Sango.Core
         /// <summary>
         /// 额外的攻击位置
         /// </summary>
-        [JsonProperty] public List<int> atkOffsetPoint;
+        [JsonProperty] public int[] atkOffsetPoint;
 
         /// <summary>
         /// 位移配置
@@ -154,7 +154,7 @@ namespace Sango.Core
 
         public void GetAttackCells(Troop atker, Cell spell, List<Cell> cells)
         {
-            if (atkOffsetPoint == null || atkOffsetPoint.Count == 0)
+            if (atkOffsetPoint == null || atkOffsetPoint.Length == 0)
             {
                 cells.Add(spell);
             }
@@ -166,7 +166,7 @@ namespace Sango.Core
                     // 0
                     case SkillAttackOffsetType.Customize:
                         {
-                            for (int i = 1; i < atkOffsetPoint.Count; i += 2)
+                            for (int i = 1; i < atkOffsetPoint.Length; i += 2)
                             {
                                 int offsetX = atkOffsetPoint[i];
                                 int offsetY = atkOffsetPoint[i + 1];
@@ -178,7 +178,7 @@ namespace Sango.Core
                     // 1
                     case SkillAttackOffsetType.Ring:
                         {
-                            if (atkOffsetPoint.Count > 1)
+                            if (atkOffsetPoint.Length > 1)
                             {
                                 int radius = atkOffsetPoint[1];
                                 if (radius <= 0)
@@ -195,7 +195,7 @@ namespace Sango.Core
                     // 2
                     case SkillAttackOffsetType.DirectionLine:
                         {
-                            if (atkOffsetPoint.Count > 1)
+                            if (atkOffsetPoint.Length > 1)
                             {
                                 int length = atkOffsetPoint[1];
                                 if (length <= 0)
@@ -217,7 +217,7 @@ namespace Sango.Core
                     //3
                     case SkillAttackOffsetType.SelfRing:
                         {
-                            if (atkOffsetPoint.Count > 1)
+                            if (atkOffsetPoint.Length > 1)
                             {
                                 int radius = atkOffsetPoint[1];
                                 if (radius <= 0)
@@ -247,7 +247,7 @@ namespace Sango.Core
                     // 5
                     case SkillAttackOffsetType.Spiral:
                         {
-                            if (atkOffsetPoint.Count > 1)
+                            if (atkOffsetPoint.Length > 1)
                             {
                                 int radius = atkOffsetPoint[1];
                                 if (radius <= 0)
@@ -264,7 +264,7 @@ namespace Sango.Core
                     // 6
                     case SkillAttackOffsetType.Fan:
                         {
-                            if (atkOffsetPoint.Count > 2)
+                            if (atkOffsetPoint.Length > 2)
                             {
                                 int radius = atkOffsetPoint[1];
                                 int angle = atkOffsetPoint[2]; // 扇形角度
@@ -294,7 +294,7 @@ namespace Sango.Core
                     // 7
                     case SkillAttackOffsetType.Rectangle:
                         {
-                            if (atkOffsetPoint.Count > 2)
+                            if (atkOffsetPoint.Length > 2)
                             {
                                 int width = atkOffsetPoint[1];
                                 int length = atkOffsetPoint[2];
@@ -326,7 +326,7 @@ namespace Sango.Core
                     // 8
                     case SkillAttackOffsetType.Cross:
                         {
-                            if (atkOffsetPoint.Count > 1)
+                            if (atkOffsetPoint.Length > 1)
                             {
                                 int length = atkOffsetPoint[1];
                                 if (length <= 0)
@@ -355,7 +355,7 @@ namespace Sango.Core
                     // 9
                     case SkillAttackOffsetType.Square:
                         {
-                            if (atkOffsetPoint.Count > 1)
+                            if (atkOffsetPoint.Length > 1)
                             {
                                 int size = atkOffsetPoint[1];
                                 if (size <= 0)
@@ -381,7 +381,7 @@ namespace Sango.Core
                     // 10
                     case SkillAttackOffsetType.Diamond:
                         {
-                            if (atkOffsetPoint.Count > 1)
+                            if (atkOffsetPoint.Length > 1)
                             {
                                 int radius = atkOffsetPoint[1];
                                 if (radius <= 0)
@@ -413,7 +413,7 @@ namespace Sango.Core
 
         public bool IsSingleSkill()
         {
-            return atkOffsetPoint == null || atkOffsetPoint.Count == 0;
+            return atkOffsetPoint == null || atkOffsetPoint.Length == 0;
         }
 
         public bool HasEffect()

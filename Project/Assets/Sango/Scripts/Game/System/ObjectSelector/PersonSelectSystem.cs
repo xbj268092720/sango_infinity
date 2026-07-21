@@ -56,6 +56,7 @@ namespace Sango.Core.Player
 
         public void Start(List<Person> persons, List<Person> resultList, int limit, Action<List<Person>> action, List<ObjectSortTitle> customSortTitles, string cutomSortTitleName, int sortIndex = 1)
         {
+            donotFinishThisSystem = false;
             selectLimit = Math.Min(limit, persons.Count);
             Objects = new List<SangoObject>(persons);
             finishAction = action;

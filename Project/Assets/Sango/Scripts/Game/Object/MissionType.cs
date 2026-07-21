@@ -43,7 +43,10 @@ namespace Sango.Core
         /// <summary>
         /// 外交任务
         /// </summary>
-        PersonDiplomacy
+        PersonDiplomacy,
+
+
+        TroopMovetoCell,
 
     }
 }
