@@ -791,7 +791,7 @@ namespace Sango.Core
                 return;
             }
             if (mouseOverCell != null)
-                GameSystemManager.Instance.HandleEvent(CommandEventType.Click, mouseOverCell, clickPosition, false);
+                GameSystemManager.Instance.HandleEvent(CommandEventType.Click, mouseOverCell, clickPosition, IsOverUI());
         }
 
         /// <summary>
@@ -806,7 +806,7 @@ namespace Sango.Core
             }
 
             if (mouseOverCell != null)
-                GameSystemManager.Instance.HandleEvent(CommandEventType.RClick, mouseOverCell, clickPosition, false);
+                GameSystemManager.Instance.HandleEvent(CommandEventType.RClick, mouseOverCell, clickPosition, IsOverUI());
         }
 
         /// <summary>

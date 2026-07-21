@@ -47,6 +47,7 @@ namespace Sango.Core
 
 
         TroopMovetoCell,
+        TroopMovetoBuild,
 
     }
 }

@@ -28,11 +28,11 @@ namespace Sango.Core
         }
         public static Texture LoadHeadIcon(string id, int type)
         {
-            string headPath = $"{HeadIconPath}/{id}_{type}.png";
+            string headPath = $"{HeadIconPath}/{id}_{type}";
             Texture headSpr = ObjectLoader.LoadObject<Texture>(headPath, "Face");
             if (headSpr == null)
             {
-                headPath = $"{HeadIconPath}/0_{type}.png";
+                headPath = $"{HeadIconPath}/0_{type}";
                 headSpr = ObjectLoader.LoadObject<Texture>(headPath);
             }
             return headSpr;

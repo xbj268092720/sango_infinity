@@ -42,11 +42,10 @@ namespace Sango.Core
             // 每个月变化一次商人系数
             scenario.citySet.ForEach(city =>
             {
-                if (!city.IsCity() || city.BelongCorps == null)
+                if (!city.IsCity())
                     return;
 
                 city.hasBusiness = (byte)businessValue[GameRandom.RandomWeightIndex(businessFactor)];
-
             });
         }
 

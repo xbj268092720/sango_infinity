@@ -173,6 +173,7 @@ namespace Sango.Core
         /// <returns></returns>
         public virtual int RecruitPersonProbability(Person actor, Person target, int type)
         {
+
             if (RecruitPersonProbabilityOverride != null)
                 return RecruitPersonProbabilityOverride(actor, target, type);
 
@@ -181,16 +182,19 @@ namespace Sango.Core
             //执行武将沒有君主时总是失敗
             if (actor.BelongForce == null) return 0;
 
+
+            ScenarioVariables variables = Scenario.Cur.Variables;
+
             //检测是否有特殊关系
             if (RecruitPersonProbabilityByRelationship(actor, target, type, out int p))
-                return p;
+                return p + variables.playerRecruitableAdd;
 
             int loyalty = target.loyalty;
             if (type == (int)PersonRecruitType.Normal)
             {
                 // 普通招募武将
                 loyalty = target.IsWild ? 0 : target.loyalty;
-                if (loyalty + target.argumentation.loyaltyAdd >= Scenario.Cur.Variables.recruitableLine)
+                if (loyalty + target.argumentation.loyaltyAdd >= variables.recruitableLine)
                     return 0;
             }
 
@@ -203,12 +207,11 @@ namespace Sango.Core
             if (target.BelongForce != null && type != (int)PersonRecruitType.OnForceFall)
                 targetGovernor = target.BelongForce.Governor;
 
-            ScenarioVariables variables = Scenario.Cur.Variables;
             int aishou = variables.recruitBaseCompatibility;
             //目标武将在野或是已灭亡势力的俘虏
             if (target.IsWild || type == (int)PersonRecruitType.OnForceFall)
             {
-                loyalty = variables.recruitWildLoyaltyBase + Scenario.Cur.Variables.difficulty * variables.recruitLoyaltyDifficultyFactor;
+                loyalty = variables.recruitWildLoyaltyBase + variables.difficulty * variables.recruitLoyaltyDifficultyFactor;
                 if (!target.IsPrisoner)
                     //义理_普通
                     argumentation = Scenario.Cur.GetObject<Argumentation>(variables.recruitDefaultArgumentationId);
@@ -240,7 +243,7 @@ namespace Sango.Core
                 giri = Math.Min(variables.recruitMaxGiri - argumentation.loyaltyAdd * variables.recruitGiriLoyaltyFactor, variables.recruitBaseGiri);
             n = Math.Min(n * giri / variables.recruitBaseGiri, 100);
 
-            return n;
+            return n + variables.playerRecruitableAdd;
         }
         public delegate int RecruitPersonProbabilityCall(Person actor, Person target, int type);
         public static RecruitPersonProbabilityCall RecruitPersonProbabilityOverride;

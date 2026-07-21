@@ -181,13 +181,29 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5973749658295835790}
     m_Modifications:
+    - target: {fileID: 467484032119448597, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 14.079994
+      objectReference: {fileID: 0}
+    - target: {fileID: 467484032119448597, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 1.0842094
+      objectReference: {fileID: 0}
     - target: {fileID: 2587771001238069250, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: -1346796018660687324}
+    - target: {fileID: 3966165258876565604, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 29
+      objectReference: {fileID: 0}
     - target: {fileID: 4404200160525501456, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
       propertyPath: m_Name
       value: bg_btn
+      objectReference: {fileID: 0}
+    - target: {fileID: 5449726412164337388, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 6864166453953795722, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -276,6 +292,14 @@ PrefabInstance:
     - target: {fileID: 8501246117761410697, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8851580178752475805, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 15.360001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8851580178752475805, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 2.4585762
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55c2c457cac97a3479711843ce19d2b1, type: 3}
@@ -375,6 +399,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 266453176333488632, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -343.3668
+      objectReference: {fileID: 0}
+    - target: {fileID: 266453176333488632, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -175.81686
+      objectReference: {fileID: 0}
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -385,11 +417,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -56.6255
+      value: 19.270264
       objectReference: {fileID: 0}
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -115.6258
+      value: -99.2301
       objectReference: {fileID: 0}
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_LocalScale.x
@@ -415,9 +447,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: bg_panel
       objectReference: {fileID: 0}
+    - target: {fileID: 2653327716523842166, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 34
+      objectReference: {fileID: 0}
     - target: {fileID: 3925287216087675063, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 24
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 3925287216087675063, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_FontData.m_LineSpacing

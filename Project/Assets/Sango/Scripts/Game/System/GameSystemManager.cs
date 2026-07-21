@@ -163,7 +163,7 @@ namespace Sango.Core
             command.OnEnter();
         }
 
-        public void BackTo(ICommandEvent commandEvent)
+        public bool BackTo(ICommandEvent commandEvent)
         {
             if(commads.Contains(commandEvent))
             {
@@ -171,7 +171,9 @@ namespace Sango.Core
                 {
                     Back();
                 }
+                return true;
             }
+            return false;
         }
 
         public void Back()

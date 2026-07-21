@@ -613,7 +613,7 @@ namespace Sango.Core
 
                                 // 治安对征兵的影响
                                 overrideData.Value = (int)(overrideData.Value * (1f - Mathf.Max(0, (100 - belongCity.security)) * scenario.Variables.securityInfluenceRecruitTroops));
-                               
+
                                 // 额外降低治安
                                 int s = -GameRandom.Range(1, 3);
                                 belongCity.AddSecurity(s);
@@ -1129,15 +1129,34 @@ namespace Sango.Core
 
                             if (moraleP <= securityP)
                             {
-                                city.AddMorale(building.AccumulatedProduct * 2);
+                                city.AddMorale(GameRandom.Range(building.AccumulatedProduct, building.AccumulatedProduct * 3));
                                 city.Render?.UpdateRender();
                                 building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Morale);
                             }
                             else
                             {
-                                city.AddSecurity(building.AccumulatedProduct);
+                                city.AddSecurity(GameRandom.Range(building.AccumulatedProduct / 2, building.AccumulatedProduct));
                                 city.Render?.UpdateRender();
                                 building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Security);
+                            }
+
+                            if (city.portList != null)
+                            {
+                                city.portList.ForEach(x =>
+                                {
+                                    x.AddMorale(GameRandom.Range(building.AccumulatedProduct / 2, building.AccumulatedProduct));
+                                    x.Render?.UpdateRender();
+                                    building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Morale);
+                                });
+                            }
+                            if (city.gateList != null)
+                            {
+                                city.gateList.ForEach(x =>
+                                {
+                                    x.AddMorale(GameRandom.Range(building.AccumulatedProduct / 2, building.AccumulatedProduct));
+                                    x.Render?.UpdateRender();
+                                    building.Render?.ShowInfo(building.AccumulatedProduct, (int)InfoType.Morale);
+                                });
                             }
                             building.AccumulatedProduct = 0;
                         }

@@ -20,13 +20,42 @@ namespace Sango.Core.Player
                 return true;
             }
         }
-       
+
         public override void OnEnter()
         {
             ContextMenu.CloseAll();
             base.OnEnter();
-            TargetBuilding.OnFall(null);
-            Done();
+
+            GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ChoosePersonSay,
+                $"拆除{TargetBuilding.ColorName}后,将无法恢复,确定吗?",
+                   () =>
+                   {
+                       GameDialog.Close();
+                       TargetBuilding.OnFall(null);
+                       Done();
+                   });
+            dialog.cancelAction = () =>
+            {
+                GameDialog.Close();
+                Done();
+            };
+
+            Force force = TargetBuilding.BelongForce;
+            //GameDialog.IDialog dialog = GameDialog.Open(GameDialog.DialogStyle.ClickPersonSay, $"{force.ColorName}大人，\n终于轮到我们了啊。", null);
+            Person person = force.Counsellor;
+            if (person == null || person.BelongForce != force)
+            {
+                int max = TargetBuilding.BelongCity.allPersons.Count;
+                if (max > 0)
+                {
+                    person = TargetBuilding.BelongCity.allPersons.Get(GameRandom.Range(0, max));
+                }
+                else
+                {
+                    person = force.Governor;
+                }
+            }
+            dialog.SetPerson(person);
         }
     }
 }

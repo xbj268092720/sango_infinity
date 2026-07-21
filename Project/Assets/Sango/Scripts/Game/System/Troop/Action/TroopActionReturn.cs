@@ -57,7 +57,13 @@ namespace Sango.Core.Player
 
         protected override void OnClickMenuItem(IContextMenuItem contextMenuItem)
         {
-            GameSystemManager.Instance.Done();
+            if (!GameSystemManager.Instance.BackTo(GameSystem.GetSystem<CityExpedition>()))
+            {
+                if (!GameSystemManager.Instance.BackTo(GameSystem.GetSystem<CityTransport>()))
+                {
+                    GameSystemManager.Instance.Done();
+                }
+            }
         }
     }
 }

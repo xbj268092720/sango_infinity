@@ -29,13 +29,11 @@ namespace Sango.Core.Tools
             else
                 obj = new OverrideData<T>(value);
 
-            Sango.Log.Warning("创建");
             return obj;
         }
 
         public void Recycle()
         {
-            Sango.Log.Warning("回收");
             if (pool_list.Contains(this))
             {
                 Sango.Log.Error("重复!!!!!!");

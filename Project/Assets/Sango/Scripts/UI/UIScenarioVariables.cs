@@ -68,10 +68,10 @@ namespace Sango.UI
             AddToggleItem("年龄生效", variables.AgeEnabled, (v) => { variables.AgeEnabled = v; RefreshSetting(); });
             if (variables.AgeEnabled)
                 AddToggleItem("能力随年龄变化", variables.EnableAgeAbilityFactor, (v) => { variables.EnableAgeAbilityFactor = v; });
-            AddNumberItem("能力每级经验", variables.AbilityExpLevelNeed, 0, 10000, (v) => { variables.AbilityExpLevelNeed = (ushort)v; });
-            AddNumberItem("最高能力等级", variables.MaxAbilityLevel, 1, 20, (v) => { variables.MaxAbilityLevel = (byte)v; });
-            AddNumberItem("属性每点经验", variables.AttributeExpLevelNeed, 0, 10000, (v) => { variables.AttributeExpLevelNeed = (ushort)v; });
-            AddNumberItem("属性成长上限", variables.MaxAttributeGet, 0, 100, (v) => { variables.MaxAttributeGet = (byte)v; });
+            //AddNumberItem("能力每级经验", variables.AbilityExpLevelNeed, 0, 10000, (v) => { variables.AbilityExpLevelNeed = (ushort)v; });
+            //AddNumberItem("最高能力等级", variables.MaxAbilityLevel, 1, 20, (v) => { variables.MaxAbilityLevel = (byte)v; });
+            //AddNumberItem("属性每点经验", variables.AttributeExpLevelNeed, 0, 10000, (v) => { variables.AttributeExpLevelNeed = (ushort)v; });
+            //AddNumberItem("属性成长上限", variables.MaxAttributeGet, 0, 100, (v) => { variables.MaxAttributeGet = (byte)v; });
             //AddToggleItem("人口系统开关", variables.populationEnable, (v) => { variables.populationEnable = v; });
             //AddNumberItem("基础人口增长率", variables.populationIncreaseBaseFactor, 0, 1, (v) => { variables.populationIncreaseBaseFactor = v; });
             //AddNumberItem("人口上限基础值", variables.populationLimitBase, 0, 100000, (v) => { variables.populationLimitBase = v; });
@@ -83,8 +83,8 @@ namespace Sango.UI
             AddNumberItem("队伍粮食基础消耗率", variables.baseFoodCostInTroop, 0, 100, (v) => { variables.baseFoodCostInTroop = v; });
             AddNumberItem("城池中粮食基础消耗率", variables.baseFoodCostInCity, 0, 100, (v) => { variables.baseFoodCostInCity = v; });
             AddNumberItem("城池缺粮后每回合逃跑的士兵比例", variables.runawayWhenCityFoodNotEnough, 0, 1, (v) => { variables.runawayWhenCityFoodNotEnough = v; });
-            AddNumberItem("民心对于收入的影响最低值", variables.popularSupportInfluenceMax, 0, 100, (v) => { variables.popularSupportInfluenceMax = v; });
-            AddNumberItem("民心影响的正负范围", variables.popularSupportInfluence, 0, 1, (v) => { variables.popularSupportInfluence = v; });
+            //AddNumberItem("民心对于收入的影响最低值", variables.popularSupportInfluenceMax, 0, 100, (v) => { variables.popularSupportInfluenceMax = v; });
+            //AddNumberItem("民心影响的正负范围", variables.popularSupportInfluence, 0, 1, (v) => { variables.popularSupportInfluence = v; });
             AddNumberItem("治安对于收入的影响最低值", variables.securityInfluenceMax, 0, 100, (v) => { variables.securityInfluenceMax = v; });
             AddNumberItem("治安影响的正负范围", variables.securityInfluence, 0, 1, (v) => { variables.securityInfluence = v; });
             AddNumberItem("治安对征兵的影响值比例", variables.securityInfluenceRecruitTroops, 0, 1, (v) => { variables.securityInfluenceRecruitTroops = v; });
@@ -99,7 +99,6 @@ namespace Sango.UI
             AddNumberItem("破城时候的抓捕率(百分比)", variables.captureChangceWhenCityFall, 0, 100, (v) => { variables.captureChangceWhenCityFall = v; });
             AddNumberItem("最后一城时候的抓捕率(百分比)", variables.captureChangceWhenLastCityFall, 0, 100, (v) => { variables.captureChangceWhenLastCityFall = v; });
             AddNumberItem("队伍溃败时候的抓捕率(百分比)", variables.captureChangceWhenTroopFall, 0, 100, (v) => { variables.captureChangceWhenTroopFall = v; });
-            AddNumberItem("可招募的忠诚度阈值", variables.recruitableLine, 0, 100, (v) => { variables.recruitableLine = v; });
 
             AddTitle("战斗参数");
             AddNumberItem("新游戏禁战回合", variables.AIAttackProtectedCount, 0, 100, (v) => { variables.AIAttackProtectedCount = v; });
@@ -274,29 +273,31 @@ namespace Sango.UI
             //AddNumberItem("赎回俘虏最低成功率", variables.diplomacyRansomMinSuccessRate, 0, 100, (v) => { variables.diplomacyRansomMinSuccessRate = v; });
 
             AddTitle("招募系统参数");
-            AddNumberItem("基础相性值", variables.recruitBaseCompatibility, 0, 100, (v) => { variables.recruitBaseCompatibility = v; });
-            AddNumberItem("在野武将忠诚度基础值", variables.recruitWildLoyaltyBase, 0, 100, (v) => { variables.recruitWildLoyaltyBase = v; });
-            AddNumberItem("忠诚度难度系数", variables.recruitLoyaltyDifficultyFactor, 1, 20, (v) => { variables.recruitLoyaltyDifficultyFactor = v; });
-            AddNumberItem("默认义理ID", variables.recruitDefaultArgumentationId, 1, 10, (v) => { variables.recruitDefaultArgumentationId = v; });
-            AddNumberItem("基础成功率", variables.recruitBaseSuccessRate, 0, 100, (v) => { variables.recruitBaseSuccessRate = v; });
-            AddNumberItem("相性影响系数分子", variables.recruitCompatibilityFactorNumerator, 1, 10, (v) => { variables.recruitCompatibilityFactorNumerator = v; });
-            AddNumberItem("相性影响系数分母", variables.recruitCompatibilityFactorDenominator, 1, 10, (v) => { variables.recruitCompatibilityFactorDenominator = v; });
-            AddNumberItem("忠诚度影响基础值", variables.recruitLoyaltyInfluenceBase, 0, 50, (v) => { variables.recruitLoyaltyInfluenceBase = v; });
-            AddNumberItem("忠诚度影响系数分子", variables.recruitLoyaltyInfluenceNumerator, 1, 100, (v) => { variables.recruitLoyaltyInfluenceNumerator = v; });
-            AddNumberItem("忠诚度影响系数分母", variables.recruitLoyaltyInfluenceDenominator, 1, 100, (v) => { variables.recruitLoyaltyInfluenceDenominator = v; });
-            AddNumberItem("魅力最低值", variables.recruitMinGlamour, 0, 100, (v) => { variables.recruitMinGlamour = v; });
-            AddNumberItem("魅力影响系数分子", variables.recruitGlamourFactorNumerator, 1, 10, (v) => { variables.recruitGlamourFactorNumerator = v; });
-            AddNumberItem("魅力影响系数分母", variables.recruitGlamourFactorDenominator, 1, 10, (v) => { variables.recruitGlamourFactorDenominator = v; });
-            AddNumberItem("亲爱武将影响值", variables.recruitLikePersonInfluence, 0, 50, (v) => { variables.recruitLikePersonInfluence = v; });
-            AddNumberItem("亲子关系影响值", variables.recruitParentChildInfluence, 0, 50, (v) => { variables.recruitParentChildInfluence = v; });
-            AddNumberItem("厌恶武将影响值", variables.recruitHatePersonInfluence, 0, 50, (v) => { variables.recruitHatePersonInfluence = v; });
-            AddNumberItem("俘虏影响值", variables.recruitPrisonerInfluence, 0, 50, (v) => { variables.recruitPrisonerInfluence = v; });
-            AddNumberItem("随机影响最大值", variables.recruitRandomMax, 0, 20, (v) => { variables.recruitRandomMax = v; });
-            AddNumberItem("君主魅力影响系数", variables.recruitGovernorGlamourFactor, 1, 10, (v) => { variables.recruitGovernorGlamourFactor = v; });
-            AddNumberItem("第一次发现加成", variables.recruitFirstDiscoveryBonus, 0, 50, (v) => { variables.recruitFirstDiscoveryBonus = v; });
-            AddNumberItem("基础义理值", variables.recruitBaseGiri, 1, 20, (v) => { variables.recruitBaseGiri = v; });
-            AddNumberItem("义理最大值", variables.recruitMaxGiri, 1, 20, (v) => { variables.recruitMaxGiri = v; });
-            AddNumberItem("义理忠诚度影响系数", variables.recruitGiriLoyaltyFactor, 1, 5, (v) => { variables.recruitGiriLoyaltyFactor = v; });
+            AddNumberItem("可招募的忠诚度阈值", variables.recruitableLine, 0, 100, (v) => { variables.recruitableLine = v; });
+            AddNumberItem("玩家招募加成", variables.playerRecruitableAdd, 0, 100, (v) => { variables.playerRecruitableAdd = v; });
+            //AddNumberItem("基础相性值", variables.recruitBaseCompatibility, 0, 100, (v) => { variables.recruitBaseCompatibility = v; });
+            //AddNumberItem("在野武将忠诚度基础值", variables.recruitWildLoyaltyBase, 0, 100, (v) => { variables.recruitWildLoyaltyBase = v; });
+            //AddNumberItem("忠诚度难度系数", variables.recruitLoyaltyDifficultyFactor, 1, 20, (v) => { variables.recruitLoyaltyDifficultyFactor = v; });
+            //AddNumberItem("默认义理ID", variables.recruitDefaultArgumentationId, 1, 10, (v) => { variables.recruitDefaultArgumentationId = v; });
+            //AddNumberItem("基础成功率", variables.recruitBaseSuccessRate, 0, 100, (v) => { variables.recruitBaseSuccessRate = v; });
+            //AddNumberItem("相性影响系数分子", variables.recruitCompatibilityFactorNumerator, 1, 10, (v) => { variables.recruitCompatibilityFactorNumerator = v; });
+            //AddNumberItem("相性影响系数分母", variables.recruitCompatibilityFactorDenominator, 1, 10, (v) => { variables.recruitCompatibilityFactorDenominator = v; });
+            //AddNumberItem("忠诚度影响基础值", variables.recruitLoyaltyInfluenceBase, 0, 50, (v) => { variables.recruitLoyaltyInfluenceBase = v; });
+            //AddNumberItem("忠诚度影响系数分子", variables.recruitLoyaltyInfluenceNumerator, 1, 100, (v) => { variables.recruitLoyaltyInfluenceNumerator = v; });
+            //AddNumberItem("忠诚度影响系数分母", variables.recruitLoyaltyInfluenceDenominator, 1, 100, (v) => { variables.recruitLoyaltyInfluenceDenominator = v; });
+            //AddNumberItem("魅力最低值", variables.recruitMinGlamour, 0, 100, (v) => { variables.recruitMinGlamour = v; });
+            //AddNumberItem("魅力影响系数分子", variables.recruitGlamourFactorNumerator, 1, 10, (v) => { variables.recruitGlamourFactorNumerator = v; });
+            //AddNumberItem("魅力影响系数分母", variables.recruitGlamourFactorDenominator, 1, 10, (v) => { variables.recruitGlamourFactorDenominator = v; });
+            //AddNumberItem("亲爱武将影响值", variables.recruitLikePersonInfluence, 0, 50, (v) => { variables.recruitLikePersonInfluence = v; });
+            //AddNumberItem("亲子关系影响值", variables.recruitParentChildInfluence, 0, 50, (v) => { variables.recruitParentChildInfluence = v; });
+            //AddNumberItem("厌恶武将影响值", variables.recruitHatePersonInfluence, 0, 50, (v) => { variables.recruitHatePersonInfluence = v; });
+            //AddNumberItem("俘虏影响值", variables.recruitPrisonerInfluence, 0, 50, (v) => { variables.recruitPrisonerInfluence = v; });
+            //AddNumberItem("随机影响最大值", variables.recruitRandomMax, 0, 20, (v) => { variables.recruitRandomMax = v; });
+            //AddNumberItem("君主魅力影响系数", variables.recruitGovernorGlamourFactor, 1, 10, (v) => { variables.recruitGovernorGlamourFactor = v; });
+            //AddNumberItem("第一次发现加成", variables.recruitFirstDiscoveryBonus, 0, 50, (v) => { variables.recruitFirstDiscoveryBonus = v; });
+            //AddNumberItem("基础义理值", variables.recruitBaseGiri, 1, 20, (v) => { variables.recruitBaseGiri = v; });
+            //AddNumberItem("义理最大值", variables.recruitMaxGiri, 1, 20, (v) => { variables.recruitMaxGiri = v; });
+            //AddNumberItem("义理忠诚度影响系数", variables.recruitGiriLoyaltyFactor, 1, 5, (v) => { variables.recruitGiriLoyaltyFactor = v; });
 
             AddTitle("逃跑系统参数");
             AddNumberItem("城市中逃跑概率减少值", variables.escapeCityReduction, 0, 1000, (v) => { variables.escapeCityReduction = v; });

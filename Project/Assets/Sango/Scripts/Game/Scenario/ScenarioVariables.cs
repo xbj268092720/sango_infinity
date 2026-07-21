@@ -84,6 +84,11 @@ namespace Sango.Core
         [JsonProperty] public float recruitableLine = 95;
 
         /// <summary>
+        /// 玩家招募加成
+        /// </summary>
+        [JsonProperty] public int playerRecruitableAdd = 95;
+
+        /// <summary>
         /// 每一点农业带来的粮食收入
         /// </summary>
         [JsonProperty] public int agriculture_add_food = 10;

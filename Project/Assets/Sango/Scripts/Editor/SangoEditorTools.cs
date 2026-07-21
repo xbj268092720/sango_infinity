@@ -9,8 +9,8 @@ using UnityEngine.UI;
 
 public static class SangeEditorTools
 {
-    [MenuItem("Assets/UIprefab 加大字体")]
-    [MenuItem("Sango/UIprefab 加大字体")]
+    [MenuItem("Assets/UIprefab 加大4字体")]
+    [MenuItem("Sango/UIprefab 加大4字体")]
     public static void AddFontSize()
     {
         int addSize = 4;
@@ -59,7 +59,18 @@ public static class SangeEditorTools
             Sango.File.Move(f, string.Format("{0}/{1}_{2}.png", savedir, id, part));
 
         }
+        files = Sango.Directory.GetFiles(savedir, "*.jpg", System.IO.SearchOption.AllDirectories);
+        foreach (string f in files)
+        {
+            string fileName = System.IO.Path.GetFileNameWithoutExtension(f);
+            string[] s = fileName.Split("_");
+            int id;
+            int part;
+            int.TryParse(s[0], out id);
+            int.TryParse(s[2], out part);
 
+            Sango.File.Move(f, string.Format("{0}/{1}_{2}.jpg", savedir, id, part));
+        }
     }
 
     [MenuItem("Sango/地形贴图文件夹文件名字替换")]
