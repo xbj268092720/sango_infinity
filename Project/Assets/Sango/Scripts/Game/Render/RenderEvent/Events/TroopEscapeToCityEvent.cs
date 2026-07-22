@@ -19,7 +19,8 @@ namespace Sango.Render
 
         public override void Enter(Scenario scenario)
         {
-            
+            if (!troop.ActionOver)
+                IsDone = true;
         }
 
         public override void Exit(Scenario scenario)
@@ -36,6 +37,7 @@ namespace Sango.Render
         {
             if (troop.TryMoveToCity(dest))
             {
+                troop.ActionOver = true;
                 // 移动完成，进入城市
                 if (troop.cell.building == dest)
                 {

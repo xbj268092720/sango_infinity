@@ -220,6 +220,10 @@ namespace Sango.Core
         private bool _actionOver;
         public System.Action overAction;
         public bool IsPlayer => BelongForce?.IsPlayer ?? false;
+        /// <summary>
+        /// 是否为玩家控制的
+        /// </summary>
+        public virtual bool IsPlayerControl => BelongCorps?.IsPlayerControl ?? false;
         public bool IsCurPlayer => BelongForce?.IsCurPlayer ?? false;
 
         /// <summary>

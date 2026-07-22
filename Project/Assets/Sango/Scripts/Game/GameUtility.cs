@@ -462,6 +462,22 @@ namespace Sango.Core
             return $"{n.ToString("F2")}{endStr[idx]}";
 
         }
+
+        public static bool IsValidPersonArray(Person[] personList)
+        {
+            if (personList == null || personList.Length == 0)
+                return false;
+            bool all_null = true;
+            for(int i = 0; i < personList.Length; i++)
+            {
+                if (personList[i] != null)
+                {
+                    all_null = false;
+                    break;
+                }
+            }
+            return all_null;
+        }
     }
 
 

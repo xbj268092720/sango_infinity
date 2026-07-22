@@ -173,7 +173,6 @@ namespace Sango.Core
         /// <returns></returns>
         public virtual int RecruitPersonProbability(Person actor, Person target, int type)
         {
-
             if (RecruitPersonProbabilityOverride != null)
                 return RecruitPersonProbabilityOverride(actor, target, type);
 
@@ -184,10 +183,11 @@ namespace Sango.Core
 
 
             ScenarioVariables variables = Scenario.Cur.Variables;
+            int playerAdd = actor.IsPlayer ? variables.playerRecruitAdd : 0;
 
             //检测是否有特殊关系
             if (RecruitPersonProbabilityByRelationship(actor, target, type, out int p))
-                return p + variables.playerRecruitableAdd;
+                return p + playerAdd;
 
             int loyalty = target.loyalty;
             if (type == (int)PersonRecruitType.Normal)
@@ -243,7 +243,7 @@ namespace Sango.Core
                 giri = Math.Min(variables.recruitMaxGiri - argumentation.loyaltyAdd * variables.recruitGiriLoyaltyFactor, variables.recruitBaseGiri);
             n = Math.Min(n * giri / variables.recruitBaseGiri, 100);
 
-            return n + variables.playerRecruitableAdd;
+            return n + playerAdd;
         }
         public delegate int RecruitPersonProbabilityCall(Person actor, Person target, int type);
         public static RecruitPersonProbabilityCall RecruitPersonProbabilityOverride;

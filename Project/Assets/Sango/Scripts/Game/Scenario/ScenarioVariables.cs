@@ -86,7 +86,7 @@ namespace Sango.Core
         /// <summary>
         /// 玩家招募加成
         /// </summary>
-        [JsonProperty] public int playerRecruitableAdd = 95;
+        [JsonProperty] public int playerRecruitAdd = 0;
 
         /// <summary>
         /// 每一点农业带来的粮食收入
@@ -988,6 +988,12 @@ namespace Sango.Core
         [JsonProperty] public int discoverEnemyTroopIntelligenceFactor = 70;
 
         #endregion 敌方部队发现参数
+
+        /// <summary>
+        /// 建造间隔
+        /// </summary>
+        [JsonProperty] public int BuildingSpace = 2;
+
 
         public float DifficultyDamageFactor
         {

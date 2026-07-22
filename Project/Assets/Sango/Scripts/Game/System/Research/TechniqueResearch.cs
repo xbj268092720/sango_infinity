@@ -82,6 +82,7 @@ namespace Sango.Core
         public static bool AIResearch(City city, Scenario scenario)
         {
             if (!city.IsCity()) return true;
+            if (city.IsPlayer) return true;
             if (city.freePersons.Count < 3) return true;
             if (city.BelongForce.ResearchTechnique > 0) return true;
             if (city.BelongForce.TechniquePoint < 1000) return true;

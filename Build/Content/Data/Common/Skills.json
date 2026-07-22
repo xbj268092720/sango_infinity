@@ -503,7 +503,7 @@
       "Name": "破碎",
       "kind": 2,
       "atk": 0,
-      "atkDurability": 120,
+      "atkDurability": 50,
       "costEnergy": 10,
       "successRate": 100,
       "successMethod": "CommonMethod",
@@ -527,7 +527,7 @@
       "Name": "放射",
       "kind": 2,
       "atk": 20,
-      "atkDurability": 150,
+      "atkDurability": 60,
       "costEnergy": 15,
       "successRate": 100,
       "successMethod": "CommonMethod",
@@ -585,7 +585,7 @@
       "Name": "投石",
       "kind": 2,
       "atk": 20,
-      "atkDurability": 80,
+      "atkDurability": 40,
       "costEnergy": 20,
       "successRate": 100,
       "successMethod": "CommonMethod",
@@ -702,7 +702,7 @@
       "Name": "投石",
       "kind": 2,
       "atk": 35,
-      "atkDurability": 80,
+      "atkDurability": 40,
       "costEnergy": 20,
       "successRate": 100,
       "successMethod": "CommonMethod",
@@ -731,7 +731,7 @@
       "Name": "火计",
       "kind": 3,
       "atk": 1,
-      "atkDurability": 10,
+      "atkDurability": 15,
       "costEnergy": 10,
       "successRate": 0,
       "successMethod": "FireSuccessMethod",
@@ -820,7 +820,7 @@
       "successMethod": "FalseReportSuccessMethod",
       "criticalMethod": "FalseReportCriticalMethod",
       "spellRanges": [
-        1
+        2
       ],
       "needAblilityLevel": 0,
       "isRange": true,
@@ -878,7 +878,7 @@
       "successMethod": "DisturbSuccessMethod",
       "criticalMethod": "DisturbCriticalMethod",
       "spellRanges": [
-        1
+        2
       ],
       "needAblilityLevel": 0,
       "isRange": true,
@@ -935,7 +935,7 @@
       "successMethod": "CalmdownSuccessMethod",
       "criticalMethod": "CalmdownCriticalMethod",
       "spellRanges": [
-        1
+        2
       ],
       "needAblilityLevel": 0,
       "isRange": true,
@@ -999,7 +999,7 @@
       "Id": 28,
       "Name": "内讧",
       "kind": 3,
-      "atk": 1,
+      "atk": 2,
       "costEnergy": 20,
       "successRate": 0,
       "successMethod": "InfightingSuccessMethod",

@@ -70,20 +70,26 @@ namespace Sango.Core
         /// </summary>
         Camp = 4,
 
-        /// <summary>
-        /// 砦
-        /// </summary>
-        Camp_2 = 5,
+        ///// <summary>
+        ///// 砦
+        ///// </summary>
+        //Camp_2 = 5,
 
-        /// <summary>
-        /// 城塞
-        /// </summary>
-        Camp_3 = 6,
+        ///// <summary>
+        ///// 城塞
+        ///// </summary>
+        //Camp_3 = 6,
 
         /// <summary>
         /// 箭楼
         /// </summary>
         ArrowTower = 7,
+
+        /// <summary>
+        /// 墙
+        /// </summary>
+        Wall = 9,
+
 
         /// <summary>
         /// 市场

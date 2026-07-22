@@ -108,6 +108,11 @@ namespace Sango.Core
         public bool IsWater => TerrainType.isWater;
 
         /// <summary>
+        /// 能否建造
+        /// </summary>
+        public bool CanBuild => TerrainType.canBuild;
+
+        /// <summary>
         /// 默认构造函数
         /// </summary>
         public Cell()
@@ -252,6 +257,53 @@ namespace Sango.Core
         {
             Scenario.Cur.Map.SpiralAction(this, radius, action);
         }
+
+        /// <summary>
+        /// 对螺旋区域的单元格执行操作
+        /// </summary>
+        /// <param name="radius">半径</param>
+        /// <param name="action">操作</param>
+        public bool SpiralHasBuilding(int radius)
+        {
+            for (int i = 1; i <= radius; i++)
+            {
+                Cell cell = this.Neighbors[4];
+                for (int j = 1; j < i; j++)
+                {
+                    Cell temp = cell.Neighbors[4];
+                    if (cell == null)
+                        break;
+                    cell = temp;
+                }
+
+                int dir = 0;
+                for (int j = 0; j < 6; j++)
+                {
+                    if (cell == null)
+                        break;
+                    int dir_i = dir + j;
+                    if (dir_i < 0)
+                    {
+                        dir_i += 6;
+                    }
+                    else if (dir_i > 5)
+                    {
+                        dir_i -= 6;
+                    }
+                    for (int k = 0; k < i; k++)
+                    {
+                        if(cell.building != null)
+                            return true;
+                        cell = cell.Neighbors[dir_i];
+                        if (cell == null)
+                            break;
+                    }
+                }
+            }
+
+            return false;
+        }
+
 
         /// <summary>
         /// 沿方向线对单元格执行操作

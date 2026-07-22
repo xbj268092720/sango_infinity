@@ -401,7 +401,12 @@ namespace Sango.UI
             if (GameSystemManager.Instance.CurrentCommand != null)
                 return;
             ContextMenu.CloseAll();
-            GameSystem.GetSystem<PlayerEndTurn>().Push();
+
+            Force force = Scenario.Cur.CurRunForce;
+            if (force != null && force.IsPlayer)
+            {
+                GameSystem.GetSystem<PlayerEndTurn>().Push();
+            }
         }
 
         public void OnSwitchCityInfoShow()

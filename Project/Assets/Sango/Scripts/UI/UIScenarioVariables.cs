@@ -274,7 +274,7 @@ namespace Sango.UI
 
             AddTitle("招募系统参数");
             AddNumberItem("可招募的忠诚度阈值", variables.recruitableLine, 0, 100, (v) => { variables.recruitableLine = v; });
-            AddNumberItem("玩家招募加成", variables.playerRecruitableAdd, 0, 100, (v) => { variables.playerRecruitableAdd = v; });
+            AddNumberItem("玩家招募加成", variables.playerRecruitAdd, 0, 100, (v) => { variables.playerRecruitAdd = v; });
             //AddNumberItem("基础相性值", variables.recruitBaseCompatibility, 0, 100, (v) => { variables.recruitBaseCompatibility = v; });
             //AddNumberItem("在野武将忠诚度基础值", variables.recruitWildLoyaltyBase, 0, 100, (v) => { variables.recruitWildLoyaltyBase = v; });
             //AddNumberItem("忠诚度难度系数", variables.recruitLoyaltyDifficultyFactor, 1, 20, (v) => { variables.recruitLoyaltyDifficultyFactor = v; });

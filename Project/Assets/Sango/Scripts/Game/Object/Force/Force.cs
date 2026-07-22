@@ -259,6 +259,12 @@ namespace Sango.Core
         public Dictionary<int, int> DiplomacyImmunityTime = new Dictionary<int, int>();
 
         /// <summary>
+        /// 能够建造的建筑集合
+        /// </summary>
+        public List<BuildingType> canBuildMilitaryBuildingType = new List<BuildingType>();
+
+
+        /// <summary>
         /// 初始化势力
         /// </summary>
         /// <param name="scenario">当前场景</param>
@@ -278,6 +284,7 @@ namespace Sango.Core
 
             prepareTechniqueList(scenario);
             UpdateValidCreatedItemTypes();
+            UpdateCanBuildBuildingTypes();
         }
 
         public override void Clear()
@@ -294,6 +301,28 @@ namespace Sango.Core
             }
 
 
+        }
+
+        public void UpdateCanBuildBuildingTypes()
+        {
+            canBuildMilitaryBuildingType.Clear();
+            Scenario.Cur.CommonData.BuildingTypes.ForEach(x =>
+            {
+                if (!x.IsIntrior && x.IsValid(this) && x.canBuild)
+                {
+                    if (x.level > 1)
+                    {
+                        canBuildMilitaryBuildingType.RemoveAll(b => b.kind == x.kind && b.level < x.level);
+                        canBuildMilitaryBuildingType.Add(x);
+                    }
+                    else
+                    {
+                        // 如果有level比这个大的 则不添加
+                        if (!canBuildMilitaryBuildingType.Exists(b => b.kind == x.kind && x.level > 1))
+                            canBuildMilitaryBuildingType.Add(x);
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -580,7 +609,7 @@ namespace Sango.Core
             AICommandList.Add(ForceAI.AICaptives);
             AICommandList.Add(ForceAI.AITechniques);
             AICommandList.Add(ForceAI.AISetOfficial);
-            
+
             GameEvent.OnForceAIPrepare?.Invoke(this, scenario);
         }
 
@@ -722,7 +751,7 @@ namespace Sango.Core
                                 intelligenceFactor = Counsellor.Intelligence * scenario.Variables.discoverEnemyTroopIntelligenceFactor;
                             }
                             int totalProbability = baseProbability + intelligenceFactor;
-                            
+
                             // 概率命中后生成相机移动事件
                             if (GameRandom.Chance(totalProbability, 10000))
                             {
@@ -734,7 +763,7 @@ namespace Sango.Core
                                     CameraMoveEvent cameraMoveEvent = RenderEvent.Instance.Create<CameraMoveEvent>();
                                     cameraMoveEvent.Init(troopCity.CenterCell.Position, 0.5f, GameDialog.DialogStyle.ClickPersonSay, $"{ColorName}大人，\n我军细作传来消息,有敌军正在往我方{targetCity.ColorName}靠近!!。", Counsellor, null, null);
                                     RenderEvent.Instance.AddFront(cameraMoveEvent);
-                                    
+
                                     // 触发发现敌方部队事件
                                     GameEvent.OnDiscoverEnemyTroop?.Invoke(this, targetCity, troop, Counsellor);
                                 }
@@ -1024,7 +1053,7 @@ namespace Sango.Core
         /// <returns>添加的科技对象</returns>
         public Technique AddTechnique(int techId)
         {
-            if(ResearchTechnique == techId)
+            if (ResearchTechnique == techId)
             {
                 ResearchTechnique = 0;
                 ResearchLeftCounter = 0;
@@ -1034,6 +1063,8 @@ namespace Sango.Core
             if (technique == null) return null;
             Techniques.Add(technique);
             technique.InitActions(actionList, this);
+            UpdateCanBuildBuildingTypes();
+            UpdateValidCreatedItemTypes();
             return technique;
         }
 
@@ -1054,7 +1085,7 @@ namespace Sango.Core
             foreach (var city in cities)
             {
                 city.BelongCorps = corps;
-                foreach(Person person in city.allPersons)
+                foreach (Person person in city.allPersons)
                 {
                     person.BelongCorps = corps;
 

@@ -1672,6 +1672,10 @@ namespace Sango.Core
                 else
                     return lvl_b.CompareTo(lvl_a);
             });
+
+            if(list.Count == 0)
+                return checkPersons;
+
             person1 = list[0];
             int templevel = Troop.CheckTroopTypeLevel(troopType, person1);
             if (level < templevel)

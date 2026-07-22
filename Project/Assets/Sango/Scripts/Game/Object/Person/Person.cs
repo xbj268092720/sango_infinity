@@ -44,6 +44,10 @@ namespace Sango.Core
 
         public bool IsPlayer => BelongForce?.IsPlayer ?? false;
         /// <summary>
+        /// 是否为玩家控制的
+        /// </summary>
+        public virtual bool IsPlayerControl => BelongCorps?.IsPlayerControl ?? false;
+        /// <summary>
         /// 获取是否为当前的玩家势力
         /// </summary>
         public bool IsCurPlayer => BelongForce?.IsCurPlayer ?? false;

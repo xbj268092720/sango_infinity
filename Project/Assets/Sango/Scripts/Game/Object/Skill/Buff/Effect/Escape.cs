@@ -19,8 +19,6 @@ namespace Sango.Core
         {
             if(troop == master.Target)
             {
-                troop.ActionOver = true;
-                troop.TryMoveToCity(troop.BelongCity);
                 TroopEscapeToCityEvent @event = Render.RenderEvent.Instance.Create<TroopEscapeToCityEvent>();
                 @event.Init(troop, troop.BelongCity, null);
                 Render.RenderEvent.Instance.Add(@event);

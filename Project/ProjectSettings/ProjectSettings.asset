@@ -162,9 +162,10 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.tank.sangoInfinity
     Standalone: com.tank.SangoInfinity
+    iPhone: com.tank.infinitysango
   buildNumber:
     Standalone: 1
-    iPhone: 01
+    iPhone: 12
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 86
@@ -188,7 +189,7 @@ PlayerSettings:
   tvOSRequireExtendedGameController: 0
   tvOSTargetOSVersionString: 12.0
   uIPrerenderedIcon: 0
-  uIRequiresPersistentWiFi: 0
+  uIRequiresPersistentWiFi: 1
   uIRequiresFullScreen: 1
   uIStatusBarHidden: 1
   uIExitOnSuspend: 0

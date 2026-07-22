@@ -50,22 +50,24 @@ namespace Sango.Core.Player
         {
             if (!updateTroopAI) return;
             base.Update();
-            Force force = Scenario.Cur.CurRunForce;
             Scenario scenario = Scenario.Cur;
-            for (int i = 0; i < scenario.troopsSet.Count; ++i)
+            Force force = scenario.CurRunForce;
+            if(force != null)
             {
-                var c = scenario.troopsSet[i];
-                if (c != null && c.IsAlive && c.BelongForce == force && !c.ActionOver && c.missionType > 0)
+                for (int i = 0; i < scenario.troopsSet.Count; ++i)
                 {
-                    if (!c.DoAI(scenario))
-                        return;
-                    c.Render?.UpdateRender();
+                    var c = scenario.troopsSet[i];
+                    if (c != null && c.IsAlive && c.BelongForce == force && !c.ActionOver && c.missionType > 0)
+                    {
+                        if (!c.DoAI(scenario))
+                            return;
+                        c.Render?.UpdateRender();
+                    }
                 }
+
+                if (force.CurRunCorps != null)
+                    force.CurRunCorps.ActionOver = true;
             }
-
-            if(force.CurRunCorps != null)
-                force.CurRunCorps.ActionOver = true;
-
             Done();
         }
 

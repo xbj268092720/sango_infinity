@@ -226,7 +226,7 @@ namespace Sango.Core
         /// <summary>
         /// 是否满兵
         /// </summary>
-        public bool TroopsIsFull => troops + woundedTroops >= TroopsLimit;
+        public bool TroopsIsFull => troops /*+ woundedTroops*/ >= TroopsLimit;
 
         /// <summary>
         /// 太守
@@ -2238,7 +2238,8 @@ namespace Sango.Core
         /// <returns>生产信息数组</returns>
         public int[] JobCreateMachine(Person[] personList, ItemType itemType, Building building, bool isTest = false)
         {
-            if (personList == null || personList.Length == 0 || itemType == null) return null;
+            if (!GameUtility.IsValidPersonArray(personList)) return null;
+            if (itemType == null) return null;
 
             if (itemType.kind != (int)ItemKindType.Machine) return null;
 
@@ -2436,7 +2437,7 @@ namespace Sango.Core
         /// <returns>农业值增加量</returns>
         public int JobFarming(Person[] personList, bool isTest = false)
         {
-            if (personList == null || personList.Length == 0) return 0;
+            if (!GameUtility.IsValidPersonArray(personList)) return 0;
             if (agriculture >= AgricultureLimit) return 0;
             Scenario scenario = Scenario.Cur;
             ScenarioVariables variables = scenario.Variables;
@@ -2526,7 +2527,8 @@ namespace Sango.Core
         /// <returns>商业值增加量</returns>
         public int JobDevelop(Person[] personList, bool isTest = false)
         {
-            if (personList == null || personList.Length == 0) return 0;
+            if (!GameUtility.IsValidPersonArray(personList)) return 0;
+
             if (commerce >= CommerceLimit) return 0;
             Scenario scenario = Scenario.Cur;
 
@@ -2617,7 +2619,8 @@ namespace Sango.Core
         /// <returns>治安值增加量</returns>
         public int JobInspection(Person[] personList, bool isTest = false)
         {
-            if (personList == null || personList.Length == 0) return 0;
+            if (!GameUtility.IsValidPersonArray(personList)) return 0;
+
             if (security >= 100) return 0;
 
             Scenario scenario = Scenario.Cur;
@@ -2715,7 +2718,8 @@ namespace Sango.Core
         /// <returns>士气增加量</returns>
         public int JobTrainTroops(Person[] personList, bool isTest = false)
         {
-            if (personList == null || personList.Length == 0) return 0;
+            if (!GameUtility.IsValidPersonArray(personList)) return 0;
+
             if (morale >= MaxMorale) return 0;
             Scenario scenario = Scenario.Cur;
 
@@ -2860,8 +2864,8 @@ namespace Sango.Core
         /// <returns>是否成功</returns>
         public bool JobRewardPersons(Person[] persons)
         {
-            if (persons == null || persons.Length == 0)
-                return true;
+            if (!GameUtility.IsValidPersonArray(persons)) return true;
+
 
             Scenario scenario = Scenario.Cur;
             ScenarioVariables variables = scenario.Variables;
@@ -2939,7 +2943,7 @@ namespace Sango.Core
         /// <returns>是否成功</returns>
         public bool JobSearching(Person[] personList)
         {
-            if (personList == null || personList.Length == 0) return false;
+            if (!GameUtility.IsValidPersonArray(personList)) return false;
             for (int i = 0; i < personList.Length; i++)
             {
                 Person person = personList[i];
@@ -3096,7 +3100,8 @@ namespace Sango.Core
         /// <returns>招募的士兵数量</returns>
         public int JobRecruitTroop(Person[] personList, Building barracks, bool isTest = false)
         {
-            if (personList == null || personList.Length == 0) return 0;
+            if (!GameUtility.IsValidPersonArray(personList)) return 0;
+
             // 城池满了不再招募
             if (TroopsIsFull) return 0;
 
@@ -3215,7 +3220,7 @@ namespace Sango.Core
         /// <returns>生产的兵装数量</returns>
         public int JobCreateItems(Person[] personList, ItemType itemType, Building building, bool isTest = false)
         {
-            if (personList == null || personList.Length == 0) return 0;
+            if (!GameUtility.IsValidPersonArray(personList)) return 0;
             if (itemStore.TotalNumber >= StoreLimit) return 0;
 
             Scenario scenario = Scenario.Cur;
@@ -3345,7 +3350,8 @@ namespace Sango.Core
         /// <returns>是否成功</returns>
         public bool JobTradeFood(Person[] personList, int goldNum)
         {
-            if (personList == null || personList.Length == 0 || goldNum == 0) return false;
+            if (!GameUtility.IsValidPersonArray(personList)) return false;
+            if (goldNum == 0) return false;
             if (hasBusiness == 0) return false;
 
             Scenario scenario = Scenario.Cur;

@@ -9,7 +9,7 @@ namespace Sango.Core
         public float width;
         public int alignment;
         public object customData;
-        public float ContentMaxWidth { get { return width * 25f; } }
+        public float ContentMaxWidth { get { return width * 35f; } }
 
         public abstract string GetValueStr(SangoObject obj);
         public abstract int Sort(SangoObject a, SangoObject b);

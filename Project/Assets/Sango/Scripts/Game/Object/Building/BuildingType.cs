@@ -101,7 +101,19 @@ namespace Sango.Core
         {
             if (cell.IsInterior)
                 return IsIntrior;
-
+            else
+            {
+                if (cell.CanBuild)
+                {
+                    int buildSpace = Scenario.Cur.Variables.BuildingSpace;
+                    if (cell.SpiralHasBuilding(buildSpace))
+                    {
+                        return false;
+                    }
+                }
+                else
+                    return false;
+            }
             return true;
         }
 

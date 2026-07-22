@@ -11,7 +11,12 @@ namespace Sango.Core
         {
             get
             {
-                return (TargetCell == null || (TargetCell.building != null && TargetCell.building.isComplate));
+                return (
+                    TargetCell == null
+                    || (TargetCell.building != null && TargetCell.building.IsSameForce(Troop) && TargetCell.building.isComplate) 
+                    || (TargetCell.building != null && !TargetCell.building.IsSameForce(Troop))
+                    || TargetCell.SpiralHasBuilding(Scenario.Cur.Variables.BuildingSpace)
+                    );
             }
         }
 

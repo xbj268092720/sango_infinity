@@ -480,6 +480,9 @@ namespace Sango.Core
             return true;
         }
 
+
+        static int[] buildTypes = new int[] { (int)BuildingKindType.ArrowTower, (int)BuildingKindType.Camp, 11, 12, 13 };
+        static int[] build_weight = new int[] { 50, 40, 20, 20, 20 };
         /// <summary>
         /// AI建造军事建筑逻辑
         /// </summary>
@@ -489,7 +492,7 @@ namespace Sango.Core
         public static bool AIBuildMilitaryBuilding(City city, Scenario scenario)
         {
 
-            if (city.defenceCellList.Count == 0)
+            if (city.areaCellList.Count == 0)
                 return true;
 
             if (!city.IsInteriorBuildFull())
@@ -505,6 +508,10 @@ namespace Sango.Core
                 return true;
 
             if (city.food < 10000)
+                return true;
+
+            //建筑概率 40%
+            if (GameRandom.Chance(60))
                 return true;
 
             // 最大允许两只建设队伍
@@ -524,50 +531,50 @@ namespace Sango.Core
                 }
             }
 
-            Cell dest = city.defenceCellList[GameRandom.Range(0, city.defenceCellList.Count)];
-            if (dest.building != null) return true;
-
-            for (int j = 0; j < dest.Neighbors.Length; ++j)
+            // 先统计已经去人建造的地块
+            int buildSpace = Scenario.Cur.Variables.BuildingSpace;
+            List<Cell> troop_dst_cell = new List<Cell>();
+            for (int m = 0; m < city.allTroops.Count; m++)
             {
-                Cell cell = dest.Neighbors[j];
-                if (cell.building != null)
+                Troop t = city.allTroops[m];
+                if (t.missionType == (int)MissionType.TroopBuildBuilding)
                 {
-                    return true;
-                }
-                else
-                {
-                    for (int m = 0; m < city.allPersons.Count; m++)
-                    {
-                        Person person = city.allPersons[m];
-                        if (person.BelongTroop != null)
-                        {
-                            if (person.BelongTroop.missionType == (int)MissionType.TroopBuildBuilding && person.BelongTroop.missionTargetCell == cell)
-                            {
-                                return true;
-                            }
-                        }
-                    }
+                    troop_dst_cell.Add(t.missionTargetCell);
                 }
             }
-
-            bool alreadyBuild = false;
-            for (int j = 0; j < city.allPersons.Count; j++)
+            Cell dest = null;
+            for (int i = 0; i < city.areaCellList.Count; i++)
             {
-                Person person = city.allPersons[j];
-                if (person.BelongTroop != null)
+                Cell c = city.areaCellList[i];
+                if (!c.CanBuild || !c.IsEmpty() || c.IsInterior || c.SpiralHasBuilding(buildSpace))
+                    continue;
+                if (troop_dst_cell.Contains(c))
+                    continue;
+
+                bool toNear = false;
+                for (int j = 0; j < troop_dst_cell.Count; j++)
                 {
-                    if (person.BelongTroop.missionType == (int)MissionType.TroopBuildBuilding && person.BelongTroop.missionTargetCell == dest)
+                    if (c.Distance(troop_dst_cell[j]) < buildSpace)
                     {
-                        alreadyBuild = true;
+                        toNear = true;
                         break;
                     }
                 }
+
+                if (toNear) { continue; }
+
+                // 找到能建造的地方
+                dest = c;
             }
-            if (alreadyBuild) return true;
 
-            int[] buildTypes = new int[2] { (int)BuildingKindType.ArrowTower, (int)BuildingKindType.Camp };
+            if (dest == null)
+                return true;
 
-            BuildingType buildingType = scenario.GetObject<BuildingType>(buildTypes[GameRandom.Range(2)]);
+            int randomType = buildTypes[GameRandom.RandomWeightIndex(build_weight, 150)];
+
+            BuildingType buildingType = city.BelongForce.canBuildMilitaryBuildingType.Find(x => x.kind == randomType);
+            if (buildingType == null)
+                return true;
 
             TroopType troopType = scenario.GetObject<TroopType>(1);
 
@@ -1333,7 +1340,7 @@ namespace Sango.Core
         /// <returns>创建的部队</returns>
         public static Troop AIMakeTroop(City city, int minTurn, bool isAttack, Scenario scenario)
         {
-            if(city.troops == 0) return null;
+            if (city.troops == 0) return null;
 
             int minEquipNeed = 5000;
             if (isAttack)
@@ -1401,7 +1408,7 @@ namespace Sango.Core
             //troop.MaxMorale = city.MaxMorale;
             troop.Leader = people[0];
             troop.TroopType = spType;
-         
+
             if (people.Length > 1) troop.Member1 = people[1];
             if (people.Length > 2) troop.Member2 = people[2];
 
