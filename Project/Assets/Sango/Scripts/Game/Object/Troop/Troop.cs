@@ -681,8 +681,8 @@ namespace Sango.Core
                 Command * Variables.fight_troop_defence_command_factor
                 + Strength * Variables.fight_troop_defence_strength_factor
                 + Intelligence * Variables.fight_troop_defence_intelligence_factor
-                + Politics * Variables.fight_troop_defence_intelligence_factor
-                + Glamour * Variables.fight_troop_defence_intelligence_factor
+                + Politics * Variables.fight_troop_defence_politics_factor
+                + Glamour * Variables.fight_troop_defence_glamour_factor
                 ) / 10000 * LandTroopType.def, LandTroopTypeLv) / 100;
 
             // 攻击力 = (70%武力+30%统率) * 兵种攻击力 / 100 * 适应力加成(A为1)
@@ -700,8 +700,8 @@ namespace Sango.Core
                 Command * Variables.fight_troop_defence_command_factor
                 + Strength * Variables.fight_troop_defence_strength_factor
                 + Intelligence * Variables.fight_troop_defence_intelligence_factor
-                + Politics * Variables.fight_troop_defence_intelligence_factor
-                + Glamour * Variables.fight_troop_defence_intelligence_factor
+                + Politics * Variables.fight_troop_defence_politics_factor
+                + Glamour * Variables.fight_troop_defence_glamour_factor
                 ) / 10000 * WaterTroopType.def, WaterTroopTypeLv) / 100;
 
             // 攻击力 = (70%武力+30%统率) * 兵种攻击力 / 100 * 适应力加成(A为1)
