@@ -220,19 +220,21 @@ namespace Sango.Core.Player
                             if (!spellSkill.CanSpellToHere(TargetTroop, cell))
                                 return;
 
-#if UNITY_ANDROID || UNITY_IPHONE
-                            ContextMenuData.MenuData.Clear();
-                            ContextMenuData.MenuData.Add("确认", 0, TargetTroop, (item)=> {
-                                Action(stayCell);
-                            });
-                            ContextMenuData.MenuData.Add("返回", 1, TargetTroop, (item) => {
-                                ContextMenu.CloseAll();
-                                GameSystemManager.Instance.BackTo(GameSystem.GetSystem<TroopSystem>());
-                            });
-                            ContextMenu.Show(ContextMenuData.MenuData, clickPosition);
-#else
+//#if UNITY_ANDROID || UNITY_IPHONE
+//                            ContextMenuData.MenuData.Clear();
+//                            ContextMenuData.MenuData.Add("确认", 0, TargetTroop, (item)=> {
+//                                Action(stayCell);
+//                            });
+//                            ContextMenuData.MenuData.Add("返回", 1, TargetTroop, (item) => {
+//                                ContextMenu.CloseAll();
+//                                GameSystemManager.Instance.BackTo(GameSystem.GetSystem<TroopSystem>());
+//                            });
+//                            ContextMenu.Show(ContextMenuData.MenuData, clickPosition);
+//#else
+//                            Action(stayCell);
+//#endif
                             Action(stayCell);
-#endif
+
                         }
                         break;
                     }

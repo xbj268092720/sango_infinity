@@ -208,6 +208,7 @@ namespace Sango.Core
                 AICommandList.Add(CityAI.AITradeFood);
 
                 AICommandList.Add(CityAI.AIIntrior);
+                AICommandList.Add(CityAI.AITradeFood);
             }
             else
             {
@@ -215,6 +216,8 @@ namespace Sango.Core
                 // 物资输送
                 AICommandList.Add(CityAI.AITransfrom);
                 AICommandList.Add(CityAI.AIIntrior);
+                AICommandList.Add(CityAI.AIAttack);
+
             }
         }
 

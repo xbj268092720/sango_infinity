@@ -109,7 +109,7 @@ namespace Sango.Core
                 list.Add(x);
             });
             int index = GameRandom.Range(0, list.Count);
-            return Get(index);
+            return list[index];
         }
 
         public override bool Check(int id)

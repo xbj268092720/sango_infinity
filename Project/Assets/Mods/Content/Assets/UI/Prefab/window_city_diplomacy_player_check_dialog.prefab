@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.65882355}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -136,8 +136,8 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: -1
-  m_SortingLayerID: -903361245
-  m_SortingOrder: 100
+  m_SortingLayerID: -1468689581
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!114 &576643473640125865
 MonoBehaviour:
@@ -216,7 +216,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -30.179626, y: -1.5078125}
+  m_AnchoredPosition: {x: -30.179688, y: -1.5078125}
   m_SizeDelta: {x: 303.4523, y: 299.2664}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4397544555610224132

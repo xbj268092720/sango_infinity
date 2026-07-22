@@ -1,7 +1,11 @@
-﻿namespace Sango.Core
+﻿using System.Collections.Generic;
+
+namespace Sango.Core
 {
     public class TroopTransformGoodsToCity : TroopMissionBehaviour
     {
+        internal static List<Cell> tempCellList = new List<Cell>(256);
+
         public override MissionType MissionType { get { return MissionType.TroopTransformGoodsToCity; } }
         public override bool IsMissionComplete { get { return !TargetCity.IsSameForce(Troop); } }
         public override void Prepare(Troop troop, Scenario scenario)
@@ -15,6 +19,19 @@
                 Troop.SetMission(MissionType.TroopReturnCity, Troop.BelongCity.Id);
                 Troop.NeedPrepareMission();
             }
+
+            tempCellList.Clear();
+            scenario.Map.GetDirectPath(Troop.cell, TargetCity.CenterCell, tempCellList);
+            for (int i = 0; i < tempCellList.Count; ++i)
+            {
+                Cell road = tempCellList[i];
+                if (road.building != null && !road.building.IsCity() && !road.building.IsSameForce(Troop))
+                {
+                    priorityActionData = TroopAIUtility.PriorityAction(Troop, road, scenario);
+                    break;
+                }
+            }
+
         }
 
         public override bool DoAI(Troop troop, Scenario scenario)
@@ -25,17 +42,30 @@
                 return false;
             }
 
-            if (troop.TryMoveToCity(TargetCity))
+            if (priorityActionData != null)
             {
-                // 移动完成，进入城市
-                if(troop.cell.building == TargetCity)
-                {
-                    troop.EnterCity(TargetCity);
-                }
+                if (!priorityActionData.moveFinish && !troop.MoveTo(priorityActionData.movetoCell))
+                    return false;
+                if (!priorityActionData.moveFinish)
+                    priorityActionData.moveFinish = true;
+                if (!troop.SpellSkill(priorityActionData.skill, priorityActionData.spellCell))
+                    return false;
                 return true;
             }
-
-            return false;
+            else
+            {
+                if (troop.TryMoveToCity(TargetCity))
+                {
+                    // 移动完成，进入城市
+                    if (troop.cell.building == TargetCity)
+                    {
+                        troop.EnterCity(TargetCity);
+                    }
+                    return true;
+                }
+                return false;
+            }
         }
+
     }
 }

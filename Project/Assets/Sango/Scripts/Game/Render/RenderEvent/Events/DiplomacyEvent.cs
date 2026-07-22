@@ -98,7 +98,7 @@ namespace Sango.Render
                                             IsDone = true;
                                         });
                                     };
-                                    Window.Instance.Open("window_city_diplomacy_alliance_check_dialog", actionType, person, receiverForce, resourceValue, sureAction, cancelAction);
+                                    Window.Instance.Open("window_city_diplomacy_player_check_dialog", actionType, person, receiverForce, resourceValue, sureAction, cancelAction);
                                 });
                             }
                             else

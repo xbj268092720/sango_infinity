@@ -298,7 +298,8 @@ namespace Sango.UI
             day.SetText(date.ToString("yyyy-MM-dd"));
             time.SetText(date.ToString("HH:mm:ss"));
             playTime.SetText("");
-            desc.SetText(scenarioInfo.description);
+
+            //desc.SetText(scenarioInfo.description);
             // 是否渲染形势图
             return RenderCities(scenario);
         }

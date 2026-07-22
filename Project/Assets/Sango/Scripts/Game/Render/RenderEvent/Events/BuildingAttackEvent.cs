@@ -5,12 +5,12 @@ namespace Sango.Render
 {
     public class BuildingAttackEvent : RenderEventBase
     {
-        public Building building;
+        public BuildingBase building;
         public Cell targetCell;
         private bool isAction = false;
         private float time = 0;
 
-        public void Init(Building building, Cell targetCell)
+        public void Init(BuildingBase building, Cell targetCell)
         {
             this.building = building;
             this.targetCell = targetCell;

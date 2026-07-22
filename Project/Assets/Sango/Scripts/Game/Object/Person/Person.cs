@@ -131,7 +131,22 @@ namespace Sango.Core
         /// <summary>
         /// 登场年份
         /// </summary>
-        [JsonProperty] public int yearAvailable;
+        [JsonProperty] public int appearance;
+
+        /// <summary>
+        /// 出生地
+        /// </summary>
+        [JsonProperty] public int birthplace;
+
+        /// <summary>
+        /// 语气
+        /// </summary>
+        [JsonProperty] public int tone;
+
+        /// <summary>
+        /// 声音
+        /// </summary>
+        [JsonProperty] public int voice;
 
         /// <summary>
         /// 是否被发现
@@ -667,7 +682,7 @@ namespace Sango.Core
 
             if (IsAlive)
             {
-                switch((PersonStateType)state)
+                switch ((PersonStateType)state)
                 {
                     case PersonStateType.Governor:
                         if (BelongCity != null)
@@ -691,7 +706,7 @@ namespace Sango.Core
                         }
                         break;
                     case PersonStateType.Normal:
-                        if(BelongCity != null)
+                        if (BelongCity != null)
                         {
                             BelongCity.allPersons.Add(this);
                             if (BelongForce != BelongCity.BelongForce || BelongCorps != BelongCity.BelongCorps)
@@ -722,9 +737,9 @@ namespace Sango.Core
                     case PersonStateType.Invalid:
                         break;
                     case PersonStateType.Invisible:
-                        if(CurrentCity != null)
+                        if (CurrentCity != null)
                             CurrentCity.invisiblePersons.Add(this);
-                        else if(BelongCity != null)
+                        else if (BelongCity != null)
                             BelongCity.invisiblePersons.Add(this);
                         break;
                     case PersonStateType.Dead:
@@ -816,15 +831,23 @@ namespace Sango.Core
 
         public override bool OnYearStart(Scenario scenario)
         {
+            if (IsDead) return true;
+
             OnPersonAgeUpdate(scenario);
 
-            if(state == (int)PersonStateType.Invalid)
+            if (state == (int)PersonStateType.Invalid)
             {
-                if (yearAvailable <= scenario.Info.year)
+                if (appearance > 0 && appearance <= scenario.Info.year)
                 {
                     state = (int)PersonStateType.Invisible;
+
+                    City city = null;
+                    if(birthplace > 0)
+                        city = scenario.citySet.Get(birthplace);
+                    if (city == null)
+                        city = scenario.citySet.RandomGet();
+
                     // 这里要处理登场城池
-                    City city = scenario.citySet.RandomGet();
                     city.invisiblePersons.Add(this);
                     CurrentCity = city;
                 }
@@ -1083,19 +1106,19 @@ namespace Sango.Core
             }
 
             // 这里肯定有势力
-            if(sonList != null)
+            if (sonList != null)
             {
                 sonList.ForEach(x =>
                 {
-                    if(x.state == (int)PersonStateType.Invalid)
+                    if (x.state == (int)PersonStateType.Invalid)
                     {
-                        if(x.Age >= 16)
+                        if (x.Age >= 16)
                         {
                             x.BelongForce = BelongForce;
                             x.BelongCorps = BelongCorps;
 
                             City becameCity = BelongCity;
-                            if(IsPrisoner)
+                            if (IsPrisoner)
                             {
                                 becameCity = BelongForce.CapitalCity;
                             }

@@ -648,8 +648,8 @@ namespace Sango.Core
         {
             name = "登场年",
             width = 2.00f,
-            valueGetCall = x => x.yearAvailable.ToString(),
-            personSortFunc = (a, b) => a.yearAvailable.CompareTo(b.yearAvailable),
+            valueGetCall = x => x.appearance.ToString(),
+            personSortFunc = (a, b) => a.appearance.CompareTo(b.appearance),
         };
 
         public static SortTitle SortByIsValid = new SortTitle()

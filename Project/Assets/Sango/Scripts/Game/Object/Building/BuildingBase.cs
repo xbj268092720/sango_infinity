@@ -296,5 +296,25 @@ namespace Sango.Core
             else
                 return Scenario.Cur.GetObject<BuildingType>(BuildingType.kind);
         }
+
+        public override bool OnForceTurnStart(Scenario scenario)
+        {
+            // 暂时写死
+            if (isComplate && BuildingType.atk > 0 && BuildingType.atkRange > 0)
+            {
+                for (int i = 1; i < effectCells.Count; i++)
+                {
+                    Cell cell = effectCells[i];
+                    if (cell.troop != null && IsEnemy(cell.troop))
+                    {
+                        BuildingAttackEvent @event = RenderEvent.Instance.Create<BuildingAttackEvent>();
+                        @event.Init(this, cell);
+                        RenderEvent.Instance.Add(@event);
+                    }
+                }
+            }
+
+            return base.OnForceTurnStart(scenario);
+        }
     }
 }

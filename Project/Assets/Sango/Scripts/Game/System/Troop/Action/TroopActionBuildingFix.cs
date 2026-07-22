@@ -61,6 +61,10 @@ namespace Sango.Core.Player
 
         public override void OnEnter()
         {
+            GameController.Instance.RotateViewEnabled = true;
+            GameController.Instance.ZoomViewEnabled = true;
+            GameController.Instance.DragMoveViewEnabled = true;
+            GameController.Instance.KeyboardMoveEnabled = true;
             base.OnEnter();
             isShow = false;
             isMoving = false;
@@ -102,6 +106,10 @@ namespace Sango.Core.Player
 
         public override void OnDestroy()
         {
+            GameController.Instance.RotateViewEnabled = false;
+            GameController.Instance.ZoomViewEnabled = false;
+            GameController.Instance.DragMoveViewEnabled = false;
+            GameController.Instance.KeyboardMoveEnabled = false;
             ClearShowFixCells();
             fixBuildingCell.Clear();
         }
@@ -174,19 +182,21 @@ namespace Sango.Core.Player
                             Cell stayCell = MovePath[MovePath.Count - 1];
                             targetBuildCell = cell;
 
-#if UNITY_ANDROID || UNITY_IPHONE
-                            ContextMenuData.MenuData.Clear();
-                            ContextMenuData.MenuData.Add("确认", 0, TargetTroop, (item)=> {
-                                Action(stayCell);
-                            });
-                            ContextMenuData.MenuData.Add("返回", 1, TargetTroop, (item) => {
-                                ContextMenu.CloseAll();
-                                GameSystemManager.Instance.BackTo(GameSystem.GetSystem<TroopSystem>());
-                            });
-                            ContextMenu.Show(ContextMenuData.MenuData, clickPosition);
-#else
+//#if UNITY_ANDROID || UNITY_IPHONE
+//                            ContextMenuData.MenuData.Clear();
+//                            ContextMenuData.MenuData.Add("确认", 0, TargetTroop, (item)=> {
+//                                Action(stayCell);
+//                            });
+//                            ContextMenuData.MenuData.Add("返回", 1, TargetTroop, (item) => {
+//                                ContextMenu.CloseAll();
+//                                GameSystemManager.Instance.BackTo(GameSystem.GetSystem<TroopSystem>());
+//                            });
+//                            ContextMenu.Show(ContextMenuData.MenuData, clickPosition);
+//#else
+//                            Action(stayCell);
+//#endif
                             Action(stayCell);
-#endif
+
                         }
                         break;
                     }
