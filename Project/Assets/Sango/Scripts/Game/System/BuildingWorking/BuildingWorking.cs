@@ -157,9 +157,6 @@ namespace Sango.Core
 
         void ScenarioInit()
         {
-            GameSystem.GetSystem<CityTrainTroops>().Init();     // 训练
-            GameSystem.GetSystem<CityInspection>().Init();     // 巡视
-
             GameEvent.OnBuildingContextMenuShow += OnBuildingContextMenuShow;
             GameEvent.OnBuildingTurnEnd += OnBuildingTurnEnd;
             GameEvent.OnCityMonthStart += OnCityMonthStart;
@@ -178,9 +175,6 @@ namespace Sango.Core
 
         void ScenarioClear()
         {
-            GameSystem.GetSystem<CityTrainTroops>().Clear();     // 训练
-            GameSystem.GetSystem<CityInspection>().Clear();     // 巡视
-
             GameEvent.OnBuildingContextMenuShow -= OnBuildingContextMenuShow;
             GameEvent.OnBuildingTurnEnd -= OnBuildingTurnEnd;
             GameEvent.OnCityMonthStart -= OnCityMonthStart;

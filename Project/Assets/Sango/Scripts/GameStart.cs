@@ -55,7 +55,7 @@ public class GameStart : MonoBehaviour
         }
 #endif
 
-#if UNITY_ANDROID || UNITY_EDITOR
+#if UNITY_ANDROID || UNITY_IPHONE || UNITY_EDITOR
         last_orientation = Screen.orientation;
         canvasScaler.referenceResolution = new Vector2(1366, 768);
         float ratio = ((float)Screen.width / (float)Screen.height);

@@ -32,7 +32,16 @@ namespace Sango.Render
 
         public void Add(IRenderEventBase renderEvent)
         {
-            eventQueue.Add(renderEvent);
+            if(CurEvent != null && CurEvent.MarkDepends)
+            {
+                eventQueue.Add(renderEvent);
+                eventQueue.Remove(CurEvent);
+                eventQueue.Add(CurEvent);
+            }
+            else
+            {
+                eventQueue.Add(renderEvent);
+            }
         }
 
         public void AddFront(IRenderEventBase renderEvent)

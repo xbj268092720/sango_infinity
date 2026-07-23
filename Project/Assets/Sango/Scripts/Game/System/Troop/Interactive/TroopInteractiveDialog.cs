@@ -26,7 +26,13 @@ namespace Sango.Core.Player
                 dialog.cancelAction = () =>
                 {
                     GameDialog.Close();
-                    GameSystemManager.Instance.Back();
+                    if (!GameSystemManager.Instance.BackTo(GameSystem.GetSystem<CityExpedition>()))
+                    {
+                        if (!GameSystemManager.Instance.BackTo(GameSystem.GetSystem<CityTransport>()))
+                        {
+                            GameSystemManager.Instance.Done();
+                        }
+                    }
                 };
                 dialog.SetPerson(troop.Leader);
                 GameSystemManager.Instance.Push(this);

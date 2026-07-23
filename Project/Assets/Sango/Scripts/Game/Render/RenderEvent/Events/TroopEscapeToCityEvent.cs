@@ -19,7 +19,7 @@ namespace Sango.Render
 
         public override void Enter(Scenario scenario)
         {
-            if (!troop.ActionOver)
+            if (troop.ActionOver)
                 IsDone = true;
         }
 
@@ -35,8 +35,10 @@ namespace Sango.Render
 
         public override bool Update(Scenario scenario, float deltaTime)
         {
+            MarkDepends = true;
             if (troop.TryMoveToCity(dest))
             {
+                MarkDepends = false;
                 troop.ActionOver = true;
                 // 移动完成，进入城市
                 if (troop.cell.building == dest)
@@ -45,7 +47,7 @@ namespace Sango.Render
                 }
                 return true;
             }
-
+            MarkDepends = false;
             return false;
         }
     }

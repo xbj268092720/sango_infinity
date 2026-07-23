@@ -467,16 +467,14 @@ namespace Sango.Core
         {
             if (personList == null || personList.Length == 0)
                 return false;
-            bool all_null = true;
             for(int i = 0; i < personList.Length; i++)
             {
                 if (personList[i] != null)
                 {
-                    all_null = false;
-                    break;
+                    return true;
                 }
             }
-            return all_null;
+            return false;
         }
     }
 

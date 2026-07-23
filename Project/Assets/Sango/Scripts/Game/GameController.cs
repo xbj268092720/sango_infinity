@@ -381,7 +381,7 @@ namespace Sango.Core
                     GameSystemManager.Instance.HandleEvent(CommandEventType.ClickUp, mouseOverCell, clickPosition, isOverUI);
                     return;
                 }
-                OnClickWorld();
+                OnClickWorld(isOverUI);
                 GameSystemManager.Instance.HandleEvent(CommandEventType.ClickUp, mouseOverCell, clickPosition, isOverUI);
 
             }
@@ -522,7 +522,7 @@ namespace Sango.Core
                         }
                     }
                 }
-                else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                else if (touch.phase == TouchPhase.Ended)
                 {
                     //if (controlType != ControlType.Move)
                     //    return;
@@ -551,7 +551,7 @@ namespace Sango.Core
                         onCellOverExit?.Invoke(touchBeganCell);
                     }
                     clickPosition = touch.position;
-                    OnClickWorld();
+                    OnClickWorld(isOverUI);
                     GameSystemManager.Instance.HandleEvent(CommandEventType.ClickUp, mouseOverCell, dragPosition, isOverUI);
 
                 }
@@ -574,7 +574,7 @@ namespace Sango.Core
                     controlType = ControlType.Rotate;
                 }
                 // 需要先检测,不然会由于有一个是Move而导致检测不到End
-                else if (touch1.phase == TouchPhase.Ended || touch2.phase == TouchPhase.Ended || touch1.phase == TouchPhase.Canceled || touch2.phase == TouchPhase.Canceled)
+                else if (touch1.phase == TouchPhase.Ended || touch2.phase == TouchPhase.Ended /*|| touch1.phase == TouchPhase.Canceled || touch2.phase == TouchPhase.Canceled*/)
                 {
                     // 返回单手指移动
                     controlType = ControlType.Move;
@@ -583,7 +583,7 @@ namespace Sango.Core
                     isDragMoving = true;
 
                     Vector3 touchPosition;
-                    if (touch1.phase != TouchPhase.Ended && touch1.phase != TouchPhase.Canceled)
+                    if (touch1.phase != TouchPhase.Ended /*&& touch1.phase != TouchPhase.Canceled*/)
                     {
                         touchPosition = touch1.position;
                     }
@@ -783,7 +783,7 @@ namespace Sango.Core
         /// <summary>
         /// 点击世界
         /// </summary>
-        public void OnClickWorld()
+        public void OnClickWorld(bool isOverUI)
         {
             if (onClickHandle != null && mouseOverCell != null)
             {
@@ -791,7 +791,7 @@ namespace Sango.Core
                 return;
             }
             if (mouseOverCell != null)
-                GameSystemManager.Instance.HandleEvent(CommandEventType.Click, mouseOverCell, clickPosition, IsOverUI());
+                GameSystemManager.Instance.HandleEvent(CommandEventType.Click, mouseOverCell, clickPosition, isOverUI);
         }
 
         /// <summary>

@@ -57,6 +57,7 @@ namespace Sango.UI
                 variables.goldFactor = lvlFactor[v];
                 variables.playerFoodFactor = player_lvlFactor[v];
                 variables.playerGoldFactor = player_lvlFactor[v];
+                RefreshSetting();
             });
             AddTitle("剧本基础参数");
             AddNumberItem("电脑粮食倍率", variables.foodFactor, 0, 100, (v) => { variables.foodFactor = v; });

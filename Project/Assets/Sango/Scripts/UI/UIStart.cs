@@ -12,6 +12,13 @@ namespace Sango.UI
     {
         public Text version;
         public GameObject mapEditorBtn;
+        public GameObject thxNode;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            thxNode.SetActive(false);
+        }
 
         private void Start()
         {

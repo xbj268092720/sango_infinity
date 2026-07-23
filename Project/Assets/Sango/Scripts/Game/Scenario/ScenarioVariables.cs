@@ -249,8 +249,7 @@ namespace Sango.Core
         /// <summary>
         /// 建筑最大回合数
         /// </summary>
-        [JsonProperty]
-        public int BuildMaxTurn = 10;
+        [JsonProperty] public int BuildMaxTurn = 10;
 
         /// <summary>
         /// 玩家保护回合(不会受电脑攻击)

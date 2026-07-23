@@ -108,6 +108,7 @@ namespace Sango.Core.Player
             targetCorps.BelongForce = TargetCity.BelongForce;
             targetCorps.number = targetNumber;
             targetCorps.policy = 0;
+            targetCorps.ActionPoint = 255;
             Window.Instance.Open("window_corps_setting", targetCorps, "军团", (System.Action)CreateCorps);
         }
 

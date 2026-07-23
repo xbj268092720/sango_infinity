@@ -7,6 +7,7 @@ namespace Sango.Render
         public virtual bool IsInited { get; set; }
         public virtual bool IsDone { get; set; }
         public virtual bool IsVisible() => true;
+        public virtual bool MarkDepends{ get; set; }
         public virtual bool Update(Scenario scenario, float deltaTime)
         {
             return IsDone;

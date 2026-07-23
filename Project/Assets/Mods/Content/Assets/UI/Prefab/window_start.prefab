@@ -177,7 +177,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u624B\u673A\u622A\u5C4F,\u7528\u5BF9\u5E94\u7684\u8F6F\u4EF6\u626B\u4E00\u626B\u5373\u53EF\u4E3A\u7231\u53D1\u7535"
+  m_Text: "\u624B\u673A\u622A\u5C4F,\u7528\u5BF9\u5E94\u7684\u8F6F\u4EF6\u626B\u4E00\u626B\u5373\u53EF\u4E3A\u7231\u53D1\u7535\n\u8BF7\u5907\u6CE8\u597D\u4F60\u7684\u6635\u79F0,\u65B9\u4FBF\u8BB0\u5F55\u5728\u540D\u5355\u5185"
 --- !u!114 &4950290881300812928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -768,8 +768,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 428.9418, y: -100}
-  m_SizeDelta: {x: 857.8836, y: 170}
+  m_AnchoredPosition: {x: 428.9418, y: -139.5}
+  m_SizeDelta: {x: 857.8836, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9115980048602966621
 CanvasRenderer:
@@ -811,9 +811,9 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: "\u76EE\u524D\u672C\u6E38\u620F\u514D\u8D39,\u4EC5\u652F\u6301\u6350\u8D60,\u4F5C\u8005\u6301\u7EED\u653E\u7535\u4E2D,\u559C\u6B22\u7684\u8BDD\u53EF\u4E3A\u7231\u53D1\u7535\u4EE5\u652F\u6301\u4F5C\u8005\u7EE7\u7EED\u5F00\u53D1\u5B8C\u5584.\nQQ\u4EA4\u6D41\u7FA4:
-    <color=#00ff00>526620498</color>\n\n\u6350\u8D60\u4EBA\u540D\u5355:\n<color=#ff0340>\u624B\u673A\u4ED4,komorebi</color>"
+    m_LineSpacing: 1.1
+  m_Text: "\u76EE\u524D\u672C\u6E38\u620F\u514D\u8D39,\u4EC5\u652F\u6301\u6350\u8D60,\u5236\u4F5C\u4E0D\u6613,\u4F5C\u8005\u4FDD\u6301\u6301\u7EED\u653E\u7535\u4E2D,\u559C\u6B22\u7684\u8BDD\u53EF\u4E3A\u7231\u53D1\u7535\u4EE5\u652F\u6301\u4F5C\u8005\u7EE7\u7EED\u5F00\u53D1\u5B8C\u5584.\nQQ\u4EA4\u6D41\u7FA4:
+    <color=#00ff00>526620498</color>\n\n\u6350\u8D60\u4EBA\u540D\u5355:\n<color=#ff9330>\u624B\u673A\u4ED4,komorebi,zd\u540C\u5B66,\n\u51AC\u4E4B\u7EFF\u53F6,\u9C81\u8FEA,*\u72D2,\n\u96E8\u8FB0-\u6D4B\u8BD5\u5458</color>"
 --- !u!114 &-279333457613969420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -826,7 +826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28b9d10c4bd60c34799c18ab5949bbf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_OutlineColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
+  m_OutlineColor: {r: 0.09433961, g: 0.023918651, b: 0.00044499923, a: 1}
   m_OutlineWidth: 1
   m_gray: 0
 --- !u!114 &7769026213391050794
@@ -1383,7 +1383,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u611F\u8C22&\u4E3A\u7231\u53D1\u7535"
+  m_Text: "\u611F\u8C22\u4E3A\u7231\u53D1\u7535"
 --- !u!114 &-2499247538690994289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1620,6 +1620,7 @@ GameObject:
   - component: {fileID: 1263600996625675939}
   - component: {fileID: 1896089604794717789}
   - component: {fileID: 3279249063957967915}
+  - component: {fileID: 2977847728487262680}
   m_Layer: 0
   m_Name: pic_20260723002514_10_168
   m_TagString: Untagged
@@ -1675,13 +1676,26 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: a3be997604ca5ec43be836feebbbe0c8, type: 3}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
     height: 1
+--- !u!114 &2977847728487262680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5280541340825283019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a80e6c0716c3ae04e81a46c5fd29aaeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imgName: wx_20260723004729_11_168
 --- !u!1 &6173028374278205959
 GameObject:
   m_ObjectHideFlags: 0
@@ -2105,7 +2119,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: -1.2821045, y: 0}
-  m_SizeDelta: {x: 869.267, y: 185}
+  m_SizeDelta: {x: 869.267, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2149064703825705308
 MonoBehaviour:
@@ -2382,6 +2396,7 @@ GameObject:
   - component: {fileID: 3693846228315232015}
   - component: {fileID: 7844478355429690765}
   - component: {fileID: 3829480625865701586}
+  - component: {fileID: 682733636498644410}
   m_Layer: 0
   m_Name: pic_20260723002513_9_168
   m_TagString: Untagged
@@ -2437,13 +2452,26 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: de935ed8cac2821459173ace9f11b5d5, type: 3}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
     height: 1
+--- !u!114 &682733636498644410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7699735858357916465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a80e6c0716c3ae04e81a46c5fd29aaeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imgName: pic_20260723002513_9_168
 --- !u!1 &7981012108448172643
 GameObject:
   m_ObjectHideFlags: 0
@@ -2839,7 +2867,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6362917048539030077
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3128,6 +3156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: {fileID: 6109800555525701124}
   mapEditorBtn: {fileID: 8242029783159239740}
+  thxNode: {fileID: 8433296219159987584}
 --- !u!111 &595760306896646220
 Animation:
   m_ObjectHideFlags: 0

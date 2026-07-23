@@ -47,7 +47,7 @@ namespace Sango.Core
             }
             return true;
         }
-
+        static List<SkillInstance> skill_list_temp = new List<SkillInstance>();
         /// <summary>
         /// 获取技能的收益权重行动
         /// </summary>
@@ -56,7 +56,10 @@ namespace Sango.Core
         /// <returns></returns>
         public static PriorityActionData PriorityAction(Troop troop, Cell targetCell, Scenario scenario, SkillAttackPriorityCalculateMethod prioritySkillAtkMethod = null, SkillDefencePriorityCalculateMethod prioritySkillDefMethod = null)
         {
-            List<SkillInstance> skill_list = troop.skills;
+            skill_list_temp.Clear();
+            skill_list_temp.AddRange(troop.skills);
+            skill_list_temp.AddRange(troop.StrategySkills);
+            List<SkillInstance> skill_list = skill_list_temp;
             troop.MoveRange.Clear();
             prioritySkillAtkMethod = prioritySkillAtkMethod ?? SkillStatusPriority;
             prioritySkillDefMethod = prioritySkillDefMethod ?? SkillDefencePriority;
@@ -183,7 +186,7 @@ namespace Sango.Core
             // 现在是给了一个随机优先级行动
             return wightList.RandomGet();
         }
-        
+
         /// <summary>
         /// 评估格子的安全性
         /// </summary>
@@ -194,7 +197,7 @@ namespace Sango.Core
         public static int EvaluateCellSafety(Troop troop, Cell cell, Scenario scenario)
         {
             int safetyScore = 0;
-            
+
             // 检查周围敌人
             scenario.Map.SpiralAction(cell, 2, (checkCell) =>
             {
@@ -205,7 +208,7 @@ namespace Sango.Core
                     safetyScore -= threat;
                 }
             });
-            
+
             // 检查地形加成
             if (troop.TroopType.terrainDefenceBonus != null && cell.TerrainType != null)
             {
@@ -215,10 +218,10 @@ namespace Sango.Core
                     safetyScore += (int)(troop.TroopType.terrainDefenceBonus[terrainId] * 5);
                 }
             }
-            
+
             return safetyScore;
         }
-        
+
         /// <summary>
         /// 评估城市防御强度
         /// </summary>
@@ -229,20 +232,20 @@ namespace Sango.Core
         public static int EvaluateCityDefenceStrength(Troop troop, City city, Scenario scenario)
         {
             int defenceStrength = 0;
-            
+
             // 城市耐久度（降低权重）
             defenceStrength += city.durability * 2;
-            
+
             // 城市驻军（保持合理权重）
             defenceStrength += city.troops;
-            
+
             // 城市建筑防御加成（降低权重）
             foreach (Building building in city.allBuildings)
             {
                 if (!building.IsIntorBuilding())
                     defenceStrength += 100;
             }
-            
+
             // 周围敌方部队（保持合理权重）
             List<Cell> enemyCells = new List<Cell>();
             RangeEnemyCell(troop, 3, enemyCells, scenario);
@@ -251,10 +254,10 @@ namespace Sango.Core
                 if (cell.troop != null)
                     defenceStrength += cell.troop.troops;
             }
-            
+
             return defenceStrength;
         }
-        
+
         /// <summary>
         /// 安全地移动到目标
         /// </summary>
@@ -267,25 +270,25 @@ namespace Sango.Core
             // 确保tempMoveRange已填充
             if (troop.MoveRange.Count == 0)
                 scenario.Map.GetMoveRange(troop, troop.MoveRange);
-            
+
             // 评估移动范围内的格子安全性
             Cell bestNextCell = null;
             int bestSafetyScore = int.MinValue;
             int bestDistance = int.MaxValue;
-            
+
             for (int i = 0; i < troop.MoveRange.Count; i++)
             {
                 Cell moveCell = troop.MoveRange[i];
                 // 跳过当前格子和不可进入的格子
                 if (moveCell == troop.cell || !moveCell.IsEmpty())
                     continue;
-                
+
                 // 计算到目标的距离
                 int distance = moveCell.Distance(targetCell);
-                
+
                 // 评估安全性
                 int safetyScore = EvaluateCellSafety(troop, moveCell, scenario);
-                
+
                 // 优先选择距离目标近且安全的格子
                 if (safetyScore > bestSafetyScore || (safetyScore == bestSafetyScore && distance < bestDistance))
                 {
@@ -294,12 +297,12 @@ namespace Sango.Core
                     bestNextCell = moveCell;
                 }
             }
-            
+
             if (bestNextCell != null)
             {
                 return troop.MoveTo(bestNextCell);
             }
-            
+
             // 如果找不到安全路径，使用默认移动
             return troop.TryCloseTo(targetCell);
         }
@@ -443,7 +446,42 @@ namespace Sango.Core
             {
                 if (troop.IsEnemy(target.troop))
                 {
-                    return (skill.atk + (skill.IsRange() ? 15 : 0) + (skill.IsSingleSkill() ? 5 : 0) + (skill.HasEffect() ? 5 : 0)) * 150 / Math.Max(10, skill.costEnergy) * (troop.Attack - target.troop.Defence + 200);
+                    int strategy_factor = 0;
+                    if (skill.IsStrategy())
+                    {
+                        if (skill.onlySpellToTeam)
+                        {
+                            if (!target.troop.IsSameForce(troop))
+                                return 0;
+                            else if (target.troop.HasControlBuff())
+                                strategy_factor = 30;
+                        }
+                        else
+                        {
+                            // 不对着火的地方释放火计
+                            if(skill.Id == 22 && target.fire != null)
+                                return 0;
+                            else if (skill.Id == 23 && target.fire == null)
+                                return 0;
+                            else if (skill.skillSuccessMethod == null)
+                                return 0;
+                            else if (target.troop.HasControlBuff())
+                                return 0;
+
+                            int succ = skill.skillSuccessMethod.Calculate(skill, troop, target);
+                            if (succ < 75)
+                            {
+                                return 0;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (target.troop.HasControlBuff())
+                            strategy_factor += 30;
+                    }
+
+                    return (skill.atk + strategy_factor + (skill.IsRange() ? 15 : 0) + (skill.IsSingleSkill() ? 5 : 0) + (skill.HasEffect() ? 5 : 0)) * 150 / Math.Max(10, skill.costEnergy) * (troop.Attack - target.troop.Defence + 200);
                 }
                 else if (skill.canDamageTeam && spellCell != target)
                 {
@@ -456,6 +494,21 @@ namespace Sango.Core
                 //TODO: 对建筑的攻击评分
                 if (troop.IsEnemy(target.building))
                 {
+                    if (skill.IsStrategy())
+                    {
+                        if (skill.onlySpellToTeam)
+                        {
+                            return 0;
+                        }
+                        else
+                        {
+                            int succ = skill.skillSuccessMethod.Calculate(skill, troop, target);
+                            if (succ > 75)
+                            {
+                                rangeFactor += 2 * (succ - 75);
+                            }
+                        }
+                    }
                     return (skill.atkDurability + (skill.IsSingleSkill() ? 5 : 0) + (skill.HasEffect() ? 5 : 0)) * 4 * rangeFactor * (skill.IsSingleSkill() ? 15 : 10);
                 }
                 else if (skill.canDamageTeam && spellCell != target)

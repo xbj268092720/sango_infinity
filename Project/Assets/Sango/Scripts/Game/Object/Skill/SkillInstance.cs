@@ -144,9 +144,9 @@ namespace Sango.Core
         protected SkillVisualizer skillVisualizer;
         public int tempCriticalFactor;
 
-        SkillSuccessMethod skillSuccessMethod;
-        SkillCriticalMethod skillCriticalMethod;
-        SkillRangeFilterMethod skillRangeFilterMethod;
+        public SkillSuccessMethod skillSuccessMethod;
+        public SkillCriticalMethod skillCriticalMethod;
+        public SkillRangeFilterMethod skillRangeFilterMethod;
 
 
         // 时间轴事件处理相关

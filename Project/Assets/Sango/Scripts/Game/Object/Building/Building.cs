@@ -87,6 +87,8 @@ namespace Sango.Core
         /// </summary>
         public List<ActionBase> actionList;
 
+        bool isInited = false;
+
         /// <summary>
         /// 比较两个建筑对象
         /// </summary>
@@ -116,24 +118,7 @@ namespace Sango.Core
         public override void OnScenarioPrepare(Scenario scenario)
         {
             base.OnScenarioPrepare(scenario);
-            //Init(scenario);
-        }
 
-        /// <summary>
-        /// 准备渲染时的回调方法
-        /// </summary>
-        public override void OnPrepareRender()
-        {
-            if (Render == null)
-                Render = new BuildingRender(this);
-        }
-
-        /// <summary>
-        /// 初始化建筑
-        /// </summary>
-        /// <param name="scenario">当前场景</param>
-        public override void Init(Scenario scenario)
-        {
             BelongCity?.OnBuildingCreate(this);
             // 地格占用
             OccupyCellList = new List<Cell>();
@@ -151,6 +136,48 @@ namespace Sango.Core
             // 效果范围
             effectCells = new System.Collections.Generic.List<Cell>();
             scenario.Map.GetDirectSpiral(CenterCell, BuildingType.radius + 1, BuildingType.radius + BuildingType.atkRange, effectCells);
+            isInited = true;
+            //Init(scenario);
+        }
+
+        /// <summary>
+        /// 准备渲染时的回调方法
+        /// </summary>
+        public override void OnPrepareRender()
+        {
+
+            if (Render == null)
+                Render = new BuildingRender(this);
+        }
+
+        /// <summary>
+        /// 初始化建筑
+        /// </summary>
+        /// <param name="scenario">当前场景</param>
+        public override void Init(Scenario scenario)
+        {
+            if (!isInited)
+            {
+                BelongCity?.OnBuildingCreate(this);
+                // 地格占用
+                OccupyCellList = new List<Cell>();
+                scenario.Map.GetSpiral(x, y, BuildingType.radius, OccupyCellList);
+                foreach (Cell cell in OccupyCellList)
+                    cell.building = this;
+                CenterCell = OccupyCellList[0];
+
+                if (CenterCell.IsInterior)
+                    CenterCell.ClearInteriorModel();
+
+                actionList = new List<ActionBase>();
+                BuildingType.InitActions(actionList, this);
+
+                // 效果范围
+                effectCells = new System.Collections.Generic.List<Cell>();
+                scenario.Map.GetDirectSpiral(CenterCell, BuildingType.radius + 1, BuildingType.radius + BuildingType.atkRange, effectCells);
+                isInited = true;
+            }
+
             OnPrepareRender();
         }
 

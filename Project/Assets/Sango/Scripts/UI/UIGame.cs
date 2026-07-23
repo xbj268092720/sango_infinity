@@ -202,7 +202,8 @@ namespace Sango.UI
 
         public void OnCorpsActionPointChange(Corps corps)
         {
-            actionNumberLabel.text = corps.ActionPoint.ToString();
+            if(corps.number == 1)
+                actionNumberLabel.text = corps.ActionPoint.ToString();
         }
 
         public void OnForceGainTechniquePoint(Force force, int value)

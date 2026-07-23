@@ -467,7 +467,7 @@
               {
                 "class": "TroopAttributeCheck",
                 "attributeType": "troops",
-                "value": 1000,
+                "value": 3000,
                 "operator": "lte"
               }
             ]
@@ -497,12 +497,6 @@
               {
                 "class": "ProbabilityCheck",
                 "probability": 5000
-              },
-              {
-                "class": "TroopAttributeCheck",
-                "attributeType": "troops",
-                "value": 1000,
-                "operator": "lte"
               }
             ]
           }
