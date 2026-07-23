@@ -609,6 +609,7 @@ namespace Sango.Core
         public void CalculateAttribute(Scenario scenario)
         {
             ScenarioVariables Variables = Scenario.Cur.Variables;
+            captiveChangce = Variables.captureChangceWhenTroopFall;
 
             if (WaterTroopType == null)
                 WaterTroopType = scenario.GetObject<TroopType>(8);
@@ -752,7 +753,6 @@ namespace Sango.Core
                         waterNormalSkill = ins;
                 }
             }
-            captiveChangce = Scenario.Cur.Variables.captureChangceWhenTroopFall;
         }
 
         public void CalculateMaxTroops()
@@ -1431,7 +1431,7 @@ namespace Sango.Core
             {
 
                 int criticalFactor = skill.CheckCritical(spellCell);
-                if (criticalFactor > 100)
+                if (criticalFactor > 100 && !skill.IsNormal())
                 {
 #if SANGO_DEBUG
                     Sango.Log.Info($"{BelongForce.Name}的[{Name} 部队 技能: {skill.Name} =>({spellCell.x},{spellCell.y})]  暴击判定成功!  暴击伤害倍率{criticalFactor}!!");

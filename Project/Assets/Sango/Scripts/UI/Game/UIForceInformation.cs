@@ -433,15 +433,15 @@ using Sango.Core; namespace Sango.UI
 
         public void OnDiplomacyButton()
         {
-            List<Force> allForces = new List<Force>();
-            Scenario.Cur.forceSet.ForEach(force =>
-            {
-                if (force.IsAlive)
-                {
-                    allForces.Add(force);
-                }
-            });
-            GameSystem.GetSystem<DiplomacySystem>().Start(Target, allForces);
+            //List<Force> allForces = new List<Force>();
+            //Scenario.Cur.forceSet.ForEach(force =>
+            //{
+            //    if (force.IsAlive)
+            //    {
+            //        allForces.Add(force);
+            //    }
+            //});
+            //GameSystem.GetSystem<DiplomacySystem>().Start(Target, allForces);
         }
 
         public void OnTechniqueButton()

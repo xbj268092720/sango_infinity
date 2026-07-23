@@ -30,7 +30,7 @@ namespace Sango.Core.Action
 
         void OnTroopChangeTroops(Troop defencer, SangoObject atker, SkillInstance skill, int atkBack, OverrideData<int> overrideData)
         {
-            if (belowDamage > 0 && overrideData.Value > belowDamage)
+            if (belowDamage > 0 && System.Math.Abs(overrideData.Value) > belowDamage)
                 return;
             if (!CheckTroop(defencer, atker, skill)) return;
             overrideData.Value = value;

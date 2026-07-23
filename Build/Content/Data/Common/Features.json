@@ -458,7 +458,7 @@
             "list": [
               {
                 "class": "SkillIsNormalSkill",
-                "value": 1
+                "result": 1
               },
               {
                 "class": "ProbabilityCheck",
@@ -492,7 +492,7 @@
             "list": [
               {
                 "class": "SkillIsNormalSkill",
-                "value": 1
+                "result": 1
               },
               {
                 "class": "ProbabilityCheck",
@@ -1581,7 +1581,7 @@
           "class": "TroopChangeSkillAttackRange",
           "atkType": 5,
           "atkRange": 1,
-          "conditon": {
+          "condition": {
             "class": "SkillIdInList",
             "ids": [
               22,
