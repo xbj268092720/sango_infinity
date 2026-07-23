@@ -857,7 +857,7 @@
       ],
       "atk": 80,
       "def": 85,
-      "durabilityDmg": 100,
+      "durabilityDmg": 50,
       "move": 18,
       "influenceAbility": 5,
       "matchFeatures": [

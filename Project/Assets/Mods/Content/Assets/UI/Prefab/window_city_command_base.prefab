@@ -231,7 +231,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6889701118073908320}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1024.0596}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2403,7 +2403,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2795483318831252755, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 93.8041
+      value: 85
       objectReference: {fileID: 0}
     - target: {fileID: 2795483318831252755, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
       propertyPath: m_SizeDelta.y
@@ -2457,33 +2457,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3192346763073743841, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 15.827896
-      objectReference: {fileID: 0}
-    - target: {fileID: 3192346763073743841, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 9.267124
-      objectReference: {fileID: 0}
-    - target: {fileID: 3245511936654870729, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 7461603385837015943, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
       propertyPath: m_Name
       value: action_value
-      objectReference: {fileID: 0}
-    - target: {fileID: 7972386625325203049, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 8062774823336484161, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 10.729752
-      objectReference: {fileID: 0}
-    - target: {fileID: 8062774823336484161, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 3.5465012
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae0cea97f936c2545b1d55f77d4c57e6, type: 3}

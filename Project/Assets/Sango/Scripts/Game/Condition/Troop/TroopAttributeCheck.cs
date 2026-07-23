@@ -71,6 +71,8 @@ namespace Sango.Core
                     return troop.Attack;
                 case "defence":
                     return troop.Defence;
+                case "troops":
+                    return troop.troops;
                 default:
                     return 0;
             }

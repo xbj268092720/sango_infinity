@@ -201,6 +201,9 @@ namespace Sango.Core
         /// </summary>
         public Dictionary<string, BuildingImproveBase> buildingImproveMap = new Dictionary<string, BuildingImproveBase>();
 
+
+        public int captiveChangce = 0;
+
         /// <summary>
         /// 是否行动完毕
         /// </summary>
@@ -436,7 +439,7 @@ namespace Sango.Core
                 {
                     for (int i = 0; i < x.FeatureList.Count; i++)
                     {
-                        x.FeatureList[i].InitActions(actionList, this);
+                        x.FeatureList[i].InitActions(actionList, this, x);
                     }
                 }
             });
@@ -627,6 +630,7 @@ namespace Sango.Core
                 Glamour = System.Math.Max(Glamour, p.Glamour);
                 LandTroopTypeLv = System.Math.Max(LandTroopTypeLv, CheckTroopTypeLevel(LandTroopType, p));
                 WaterTroopTypeLv = System.Math.Max(WaterTroopTypeLv, p.WaterLv);
+                p.escapeFactorWhenTroopDestroy = 0;
             });
 
             List<SkillInstance> skillInstances = new List<SkillInstance>();
@@ -748,7 +752,7 @@ namespace Sango.Core
                         waterNormalSkill = ins;
                 }
             }
-
+            captiveChangce = Scenario.Cur.Variables.captureChangceWhenTroopFall;
         }
 
         public void CalculateMaxTroops()
@@ -1354,14 +1358,8 @@ namespace Sango.Core
 
         public int GetCaptureChangce()
         {
-            return Scenario.Cur.Variables.captureChangceWhenTroopFall;
+            return captiveChangce;
         }
-
-        public int GetEscapeChangce()
-        {
-            return 0;
-        }
-
 
         public void OnDestroy(SangoObject atk, SkillInstance skill, int atkBack)
         {
@@ -1369,20 +1367,26 @@ namespace Sango.Core
             if (atk.ObjectType == SangoObjectType.Troops)
             {
                 Troop atkTroop = (Troop)atk;
-                int p = Math.Max(0, atkTroop.GetCaptureChangce() - GetEscapeChangce());
+
                 List<Person> captives = new List<Person>();
-                if (GameRandom.Chance(100) && Leader.state != (int)PersonStateType.Governor)
+                if (Leader.state != (int)PersonStateType.Governor)
                 {
-                    captives.Add(Leader);
+                    int p = Math.Max(0, atkTroop.GetCaptureChangce() - Leader.escapeFactorWhenTroopDestroy);
+                    if (GameRandom.Chance(p))
+                        captives.Add(Leader);
                 }
-                if (Member1 != null && GameRandom.Chance(100) && Member1.state != (int)PersonStateType.Governor)
+                if (Member1 != null && Member1.state != (int)PersonStateType.Governor)
                 {
-                    captives.Add(Member1);
+                    int p = Math.Max(0, atkTroop.GetCaptureChangce() - Member1.escapeFactorWhenTroopDestroy);
+                    if (GameRandom.Chance(p))
+                        captives.Add(Member1);
                 }
 
-                if (Member2 != null && GameRandom.Chance(100) && Member2.state != (int)PersonStateType.Governor)
+                if (Member2 != null && Member2.state != (int)PersonStateType.Governor)
                 {
-                    captives.Add(Member2);
+                    int p = Math.Max(0, atkTroop.GetCaptureChangce() - Member2.escapeFactorWhenTroopDestroy);
+                    if (GameRandom.Chance(p))
+                        captives.Add(Member2);
                 }
 
                 if (captives.Count > 0)

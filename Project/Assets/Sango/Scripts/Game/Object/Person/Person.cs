@@ -432,6 +432,8 @@ namespace Sango.Core
         [JsonConverter(typeof(Id2ObjConverter<Building>))]
         public Building workingBuilding;
 
+        public int escapeFactorWhenTroopDestroy = 0;
+
         public bool HasItem(int itemTypeId)
         {
             return itemStore.GetNumber(itemTypeId) > 0;

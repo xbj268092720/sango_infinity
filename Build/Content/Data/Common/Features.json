@@ -339,7 +339,13 @@
       "Name": "捕缚",
       "desc": "击破敌方部队时，必定可捕捉无特技「强运」或名马的敌将",
       "level": 2,
-      "kind": 2
+      "kind": 2,
+      "actionEntities": [
+        {
+          "class": "TroopChangeCaptiveFactor",
+          "value": 100
+        }
+      ]
     },
     "21": {
       "Id": 21,
@@ -441,14 +447,67 @@
       "Name": "不屈",
       "desc": "若在部队的士兵不多时被攻击，不会受到损伤",
       "level": 2,
-      "kind": 3
+      "kind": 3,
+      "actionEntities": [
+        {
+          "class": "TroopSetDamage",
+          "value": 0,
+          "isDefender": 1,
+          "condition": {
+            "class": "andList",
+            "list": [
+              {
+                "class": "SkillIsNormalSkill",
+                "value": 1
+              },
+              {
+                "class": "ProbabilityCheck",
+                "probability": 5000
+              },
+              {
+                "class": "TroopAttributeCheck",
+                "attributeType": "troops",
+                "value": 1000,
+                "operator": "lte"
+              }
+            ]
+          }
+        }
+      ]
     },
     "29": {
       "Id": 29,
       "Name": "金刚",
       "desc": "在敌方攻击力微弱时被攻击的话，不会受到损伤",
       "level": 2,
-      "kind": 3
+      "kind": 3,
+      "actionEntities": [
+        {
+          "class": "TroopSetDamage",
+          "value": 0,
+          "isDefender": 1,
+          "belowDamage": 500,
+          "condition": {
+            "class": "andList",
+            "list": [
+              {
+                "class": "SkillIsNormalSkill",
+                "value": 1
+              },
+              {
+                "class": "ProbabilityCheck",
+                "probability": 5000
+              },
+              {
+                "class": "TroopAttributeCheck",
+                "attributeType": "troops",
+                "value": 1000,
+                "operator": "lte"
+              }
+            ]
+          }
+        }
+      ]
     },
     "30": {
       "Id": 30,
@@ -476,14 +535,26 @@
       "Name": "强运",
       "desc": "不会战死、被俘、负伤",
       "level": 4,
-      "kind": 3
+      "kind": 3,
+      "actionEntities": [
+        {
+          "class": "TroopChangePersonEscapeFactor",
+          "value": 200
+        }
+      ]
     },
     "34": {
       "Id": 34,
       "Name": "血路",
       "desc": "就算部队溃灭，同部队的武将也不会被俘虏",
       "level": 2,
-      "kind": 3
+      "kind": 3,
+      "actionEntities": [
+        {
+          "class": "TroopChangeEscapeFactor",
+          "value": 200
+        }
+      ]
     },
     "35": {
       "Id": 35,

@@ -421,11 +421,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 143.5553
+      value: 72.6791
       objectReference: {fileID: 0}
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -76.73674
+      value: -82.9905
       objectReference: {fileID: 0}
     - target: {fileID: 830866837823889335, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -461,7 +461,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3925287216087675063, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_FontData.m_FontSize
-      value: 29
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4245842946527191823, guid: 0c5d02b2f9e28854e90b9e9f95f81df1, type: 3}
       propertyPath: m_RaycastTarget

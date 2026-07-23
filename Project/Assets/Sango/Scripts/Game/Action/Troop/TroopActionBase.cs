@@ -65,6 +65,35 @@ namespace Sango.Core.Action
             public object TargetObject => null;
         }
 
+        public struct TroopConditionDatabase : IConditionDatabase
+        {
+            Troop self;
+            public TroopConditionDatabase(Troop self)
+            {
+                this.self = self;
+            }
+
+            public SkillInstance ActionSkill => null;
+            public SkillInstance TargetSkill => null;
+            public Person ActionPerson => self.Leader;
+            public Person TargetPerson => null;
+            public Troop ActionTroop => self;
+            public Troop TargetTroop => null;
+            public Cell ActionCell => null;
+            public Cell TargetCell => null;
+            public City ActionCity => self.BelongCity;
+            public City TargetCity => null;
+            public Corps ActionCorps => self.BelongCorps;
+            public Corps TargetCorps => null;
+            public Force ActionForce => self.BelongForce;
+            public Force TargetForce => null;
+
+            public Fire ActiveFire => null;
+            public Fire TargetFire => null;
+            public object ActionObject => self;
+            public object TargetObject => null;
+        }
+
         protected Force Force { get; set; }
         protected Troop Troop { get; set; }
         protected JObject Params { get; set; }
